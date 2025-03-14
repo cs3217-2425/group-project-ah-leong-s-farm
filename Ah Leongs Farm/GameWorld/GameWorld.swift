@@ -33,6 +33,7 @@ class GameWorld {
     }
 
     func removeSystem(_ system: System) {
-        systems.insert(system)
+        systems.remove(system)
     }
+
 }
