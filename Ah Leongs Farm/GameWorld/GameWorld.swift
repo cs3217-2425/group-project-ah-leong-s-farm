@@ -8,32 +8,39 @@
 import GameplayKit
 
 class GameWorld {
-    typealias Entity = GKEntity
-    typealias System = GKComponentSystem<GKComponent>
 
-    private var entities: Set<Entity> = []
-    private var systems: Set<System> = []
+    private var entities: Set<GKEntity> = []
+    private var systems: [any ISystem] = []
 
-    func addEntity(_ entity: Entity) {
+    func addEntity(_ entity: GKEntity) {
         entities.insert(entity)
         for system in systems {
             system.addComponent(foundIn: entity)
         }
     }
 
-    func removeEntity(_ entity: Entity) {
+    func removeEntity(_ entity: GKEntity) {
         entities.remove(entity)
         for system in systems {
             system.removeComponent(foundIn: entity)
         }
     }
 
-    func addSystem(_ system: System) {
-        systems.insert(system)
+    func addSystem(_ system: ISystem) {
+        systems.append(system)
+
+        for entity in entities {
+            system.addComponent(foundIn: entity)
+        }
     }
 
-    func removeSystem(_ system: System) {
-        systems.remove(system)
+    func removeSystem(_ system: ISystem) {
+        systems.removeAll(where: { $0 === system })
     }
 
+    func updateSystems(deltaTime: TimeInterval) {
+        for system in systems {
+            system.update(deltaTime: deltaTime)
+        }
+    }
 }

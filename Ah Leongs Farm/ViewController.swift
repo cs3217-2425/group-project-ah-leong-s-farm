@@ -6,14 +6,24 @@
 //
 
 import UIKit
+import SpriteKit
 
 class ViewController: UIViewController {
+
+    private var gameScene: GameScene!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+
+        guard let skView = self.view as? SKView else {
+            return
+        }
+
+        gameScene = GameScene(size: skView.bounds.size)
+        gameScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+
+        skView.presentScene(gameScene)
     }
-
-
 }
 
