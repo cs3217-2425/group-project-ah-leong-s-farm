@@ -1,20 +1,13 @@
-import Foundation
-
 class LevelSystem {
-    private var levelComponent = LevelComponent()
+
+    private var levelComponent: LevelComponent
 
     init(startLevel: Int = 1, startXP: Float = 0) {
         self.levelComponent = LevelComponent(level: startLevel, currentXP: startXP)
     }
 
     func addXP(_ amount: Float) {
-        levelComponent.currentXP += amount
-
-        while levelComponent.currentXP >= levelComponent.thresholdXP {
-            levelComponent.currentXP -= levelComponent.thresholdXP
-            levelComponent.level += 1
-            levelComponent.updateThresholdXP()
-        }
+        levelComponent.addXP(amount)
     }
 
     func getCurrentLevel() -> Int {
@@ -26,10 +19,10 @@ class LevelSystem {
     }
 
     func getXPForNextLevel() -> Float {
-        return levelComponent.thresholdXP
+        return LevelComponent.calculateXPThreshold(for: levelComponent.level + 1)
     }
 
     func getXPProgress() -> Double {
-        return Double(levelComponent.currentXP) / Double(levelComponent.thresholdXP)
+        return levelComponent.getXPProgress()
     }
 }
