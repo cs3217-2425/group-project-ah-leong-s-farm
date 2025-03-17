@@ -1,6 +1,7 @@
 import Foundation
+import GameplayKit
 
-struct LevelComponent {
+class LevelComponent: GKComponent {
     private(set) var level: Int
     private(set) var currentXP: Float
     private(set) var thresholdXP: Float
@@ -9,13 +10,19 @@ struct LevelComponent {
         self.level = level
         self.currentXP = currentXP
         self.thresholdXP = LevelComponent.calculateXPThreshold(for: level)
+        super.init()
     }
-
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // Calculates XP threshold for a level
     static func calculateXPThreshold(for level: Int) -> Float {
         return Float(level * 100)
     }
 
-    mutating func addXP(_ amount: Float) {
+    func addXP(_ amount: Float) {
         currentXP += amount
 
         while currentXP >= thresholdXP {
