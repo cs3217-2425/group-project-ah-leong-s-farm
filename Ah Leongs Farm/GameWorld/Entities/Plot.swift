@@ -8,16 +8,26 @@
 import GameplayKit
 
 class Plot: GKEntity {
+    private static let DirtImageName: String = "dirt"
+    private static let DefaultSoilQuality: Float = 0
+    private static let DefaultSoilMoisture: Float = 0
+
+    var crop: Crop?
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        addComponent(PositionComponent(x: 0, y: 0))
     }
 
-    init(x: CGFloat, y: CGFloat) {
+    init(position: CGPoint) {
         super.init()
-        addComponent(PositionComponent(x: x, y: y))
+        setUpComponents(position: position)
     }
 
-    
+    func setUpComponents(position: CGPoint) {
+        addComponent(PositionComponent(x: position.x, y: position.y))
+        addComponent(SoilComponent(quality: Plot.DefaultSoilQuality, moisture: Plot.DefaultSoilMoisture))
+
+        let dirtTexture = SKTexture(imageNamed: Plot.DirtImageName)
+        addComponent(SpriteComponent(texture: dirtTexture))
+    }
 }

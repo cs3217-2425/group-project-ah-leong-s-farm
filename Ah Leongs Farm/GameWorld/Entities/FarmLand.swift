@@ -14,7 +14,6 @@ class FarmLand: GKEntity {
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setUpComponents(rows: 0, columns: 0)
     }
 
     init(rows: Int, columns: Int) {
@@ -23,13 +22,19 @@ class FarmLand: GKEntity {
     }
 
     private func setUpComponents(rows: Int, columns: Int) {
-        if let tileSet = SKTileSet(named: FarmLand.TileSetName) {
-            let component = TileMapComponent(tileSet: tileSet, rows: rows, columns: columns, tileSize: FarmLand.TileSize)
-            component.fill(with: FarmLand.LandTileGroupName)
-            addComponent(component)
+        guard let tileSet = SKTileSet(named: FarmLand.TileSetName) else {
+            return
         }
 
-        let gridComponent: GridComponent<Plot> = GridComponent(rows: rows, columns: columns)
-        addComponent(gridComponent)
+        let tileMapComponent = TileMapComponent(
+            tileSet: tileSet,
+            rows: rows,
+            columns: columns,
+            tileSize: FarmLand.TileSize
+        )
+        tileMapComponent.fill(with: FarmLand.LandTileGroupName)
+
+        addComponent(tileMapComponent)
+        addComponent(GridComponent(rows: rows, columns: columns))
     }
 }

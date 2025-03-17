@@ -16,3 +16,9 @@ class PositionComponent: GKComponent {
         super.init()
     }
 }
+
+extension PositionComponent {
+    func toCGPoint() -> CGPoint {
+        CGPoint(x: x, y: y)
+    }
+}
