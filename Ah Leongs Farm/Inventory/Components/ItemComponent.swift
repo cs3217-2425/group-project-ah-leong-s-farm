@@ -35,6 +35,15 @@ class ItemComponent: GKComponent {
         let total = quantity + amount
         quantity = total
     }
+
+    func remove(_ amount: Int) {
+        let newTotal = quantity - amount
+        quantity = newTotal
+    }
+
+    func hasSufficientQuantity(_ amount: Int) -> Bool {
+        quantity >= amount
+    }
 }
 
 enum ItemType {
