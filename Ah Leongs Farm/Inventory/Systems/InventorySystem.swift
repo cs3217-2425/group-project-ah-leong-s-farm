@@ -61,7 +61,7 @@ class InventorySystem: GKComponentSystem<ItemComponent> {
             guard let existingItemComponent = existingItem.component(ofType: ItemComponent.self) else {
                 continue
             }
-            
+
             guard existingItemComponent.itemType == type else {
                 continue
             }
@@ -84,5 +84,25 @@ class InventorySystem: GKComponentSystem<ItemComponent> {
 
     func hasItem(_ item: GKEntity) -> Bool {
         items.contains(item)
+    }
+
+    func getAllEntities() -> Set<GKEntity> {
+        items
+    }
+
+    func getNumberOfItem(of type: ItemType) -> Int {
+        var count = 0
+
+        for item in items {
+            guard let itemComponent = item.component(ofType: ItemComponent.self) else {
+                continue
+            }
+
+            if itemComponent.itemType == type {
+                count += 1
+            }
+        }
+
+        return count
     }
 }
