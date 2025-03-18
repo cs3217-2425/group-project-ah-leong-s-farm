@@ -6,11 +6,14 @@
 //
 
 import GameplayKit
-import SpriteKit
 
-class TileMapComponent: GKComponent {
+class TileMapRenderNode: IRenderNode {
 
-    let tileMapNode: SKTileMapNode
+    private let tileMapNode: SKTileMapNode
+
+    var skNode: SKNode {
+        tileMapNode
+    }
 
     var rows: Int {
         tileMapNode.numberOfRows
@@ -20,15 +23,8 @@ class TileMapComponent: GKComponent {
         tileMapNode.numberOfColumns
     }
 
-    required init?(coder: NSCoder) {
-        tileMapNode = SKTileMapNode()
-        super.init(coder: coder)
-        tileMapNode.enableAutomapping = false
-    }
-
     init(tileSet: SKTileSet, rows: Int, columns: Int, tileSize: CGSize) {
         tileMapNode = SKTileMapNode(tileSet: tileSet, columns: columns, rows: rows, tileSize: tileSize)
-        super.init()
         tileMapNode.enableAutomapping = false
     }
 
@@ -41,3 +37,4 @@ class TileMapComponent: GKComponent {
         tileMapNode.fill(with: tileGroup)
     }
 }
+

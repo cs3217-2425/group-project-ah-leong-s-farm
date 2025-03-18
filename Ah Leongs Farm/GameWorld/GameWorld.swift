@@ -9,7 +9,7 @@ import GameplayKit
 
 class GameWorld {
 
-    private var entities: Set<GKEntity> = []
+    private(set) var entities: Set<GKEntity> = []
     private var systems: [any ISystem] = []
 
     func addEntity(_ entity: GKEntity) {
