@@ -1,8 +1,8 @@
 import SpriteKit
 
 class GameScene: SKScene {
-    private var gameManager: GameManager!
-    private var gameCamera: GameCamera!
+    private var gameManager: GameManager?
+    private var gameCamera: GameCamera?
 
     override func didMove(to view: SKView) {
         setUpGameManager()
@@ -10,8 +10,8 @@ class GameScene: SKScene {
     }
 
     override func update(_ currentTime: TimeInterval) {
-        gameManager.update(currentTime)
-        gameCamera.move()
+        gameManager?.update(currentTime)
+        gameCamera?.move()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -20,7 +20,7 @@ class GameScene: SKScene {
         }
 
         let touchPosition = touch.location(in: self)
-        gameCamera.lastTouchPosition = touchPosition
+        gameCamera?.lastTouchPosition = touchPosition
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -29,13 +29,14 @@ class GameScene: SKScene {
         }
 
         let touchPosition = touch.location(in: self)
-        gameCamera.setTargetPosition(using: touchPosition)
+        gameCamera?.setTargetPosition(using: touchPosition)
     }
 
     private func setUpCamera() {
-        gameCamera = GameCamera(startingPosition: position)
-        camera = gameCamera
-        addChild(gameCamera)
+        let camera = GameCamera(startingPosition: position)
+        self.camera = camera
+        gameCamera = camera
+        addChild(camera)
     }
 
     private func setUpGameManager() {

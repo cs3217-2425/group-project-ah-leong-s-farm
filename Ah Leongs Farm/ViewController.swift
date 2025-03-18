@@ -10,7 +10,7 @@ import SpriteKit
 
 class ViewController: UIViewController {
 
-    private var gameScene: GameScene!
+    private var gameScene: GameScene?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,9 +20,9 @@ class ViewController: UIViewController {
             return
         }
 
-        gameScene = GameScene(size: skView.bounds.size)
+        let gameScene = GameScene(size: skView.bounds.size)
+        self.gameScene = gameScene
         gameScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-
         skView.presentScene(gameScene)
     }
 }
