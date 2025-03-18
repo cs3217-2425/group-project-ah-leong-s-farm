@@ -1,10 +1,10 @@
 import GameplayKit
 
 class TurnComponent: GKComponent {
-    private(set) var currentTurn: Int
-    private(set) var maxTurns: Int
-    private(set) var currentEnergy: Float
-    private(set) var maxEnergy: Float
+    var currentTurn: Int
+    var maxTurns: Int
+    var currentEnergy: Int
+    var maxEnergy: Int
 
     required init?(coder: NSCoder) {
         currentTurn = 1
@@ -14,7 +14,7 @@ class TurnComponent: GKComponent {
         super.init(coder: coder)
     }
 
-    init(maxTurns: Int, maxEnergy: Float) {
+    init(maxTurns: Int, maxEnergy: Int) {
         self.currentTurn = 1
         self.maxTurns = maxTurns
         self.maxEnergy = maxEnergy
@@ -22,28 +22,4 @@ class TurnComponent: GKComponent {
         super.init()
     }
 
-    func incrementTurn() -> Bool {
-        currentTurn += 1
-        replenishEnergy()
-        return currentTurn <= maxTurns
-    }
-
-    func useEnergy(amount: Float) -> Bool {
-        guard currentEnergy >= amount else { return false }
-
-        currentEnergy -= amount
-        return true
-    }
-
-    func replenishEnergy() {
-        currentEnergy = maxEnergy
-    }
-
-    func increaseMaxEnergy(by amount: Float) {
-        maxEnergy += amount
-    }
-
-    func isGameOver() -> Bool {
-        return currentTurn > maxTurns
-    }
 }

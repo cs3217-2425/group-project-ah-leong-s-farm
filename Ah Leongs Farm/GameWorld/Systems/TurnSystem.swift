@@ -2,30 +2,37 @@ import GameplayKit
 
 class TurnSystem: GKComponentSystem<TurnComponent> {
 
+    override init() {
+        super.init(componentClass: TurnComponent.self)
+    }
+
     func incrementTurn() -> Bool {
         guard let turnComponent = components.first else { return false }
 
-        let oldTurn = turnComponent.currentTurn
-        let shouldContinue = turnComponent.incrementTurn()
-        let newTurn = turnComponent.currentTurn
+        turnComponent.currentTurn += 1
+        replenishEnergy()
+        let shouldContinue = turnComponent.currentTurn <= turnComponent.maxTurns
 
         return shouldContinue
     }
 
     // Energy management functions
-    func useEnergy(amount: Float) -> Bool {
+    func useEnergy(amount: Int) -> Bool {
         guard let turnComponent = components.first else { return false }
-        return turnComponent.useEnergy(amount: amount)
+        guard turnComponent.currentEnergy >= amount else { return false }
+
+        turnComponent.currentEnergy -= amount
+        return true
     }
 
     func replenishEnergy() {
         guard let turnComponent = components.first else { return }
-        turnComponent.replenishEnergy()
+        turnComponent.currentEnergy = turnComponent.maxEnergy
     }
 
-    func increaseMaxEnergy(by amount: Float) {
+    func increaseMaxEnergy(by amount: Int) {
         guard let turnComponent = components.first else { return }
-        turnComponent.increaseMaxEnergy(by: amount)
+        turnComponent.maxEnergy += amount
     }
 
     // Getter methods for turn state
@@ -39,18 +46,18 @@ class TurnSystem: GKComponentSystem<TurnComponent> {
         return turnComponent.maxTurns
     }
 
-    func getCurrentEnergy() -> Float {
+    func getCurrentEnergy() -> Int {
         guard let turnComponent = components.first else { return 0 }
         return turnComponent.currentEnergy
     }
 
-    func getMaxEnergy() -> Float {
+    func getMaxEnergy() -> Int {
         guard let turnComponent = components.first else { return 0 }
         return turnComponent.maxEnergy
     }
 
     func isGameOver() -> Bool {
         guard let turnComponent = components.first else { return true }
-        return turnComponent.isGameOver()
+        return turnComponent.currentTurn > turnComponent.maxTurns
     }
 }
