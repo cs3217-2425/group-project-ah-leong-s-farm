@@ -14,30 +14,42 @@ class EnergySystem: GKComponentSystem<EnergyComponent> {
     }
 
     func useEnergy(amount: Int) -> Bool {
-        guard let energyComponent = components.first else { return false }
-        guard energyComponent.currentEnergy >= amount else { return false }
+        guard let energyComponent = components.first else {
+            return false
+        }
+        guard energyComponent.currentEnergy >= amount else {
+            return false
+        }
 
         energyComponent.currentEnergy -= amount
         return true
     }
 
     func replenishEnergy() {
-        guard let energyComponent = components.first else { return }
+        guard let energyComponent = components.first else {
+            return
+        }
         energyComponent.currentEnergy = energyComponent.maxEnergy
     }
 
     func increaseMaxEnergy(by amount: Int) {
-        guard let energyComponent = components.first else { return }
+        guard let energyComponent = components.first else {
+            return
+        }
         energyComponent.maxEnergy += amount
     }
 
     func getCurrentEnergy() -> Int {
-        guard let turnComponent = components.first else { return 0 }
+        guard let turnComponent = components.first else {
+            return 0
+        }
         return turnComponent.currentEnergy
     }
 
     func getMaxEnergy() -> Int {
-        guard let turnComponent = components.first else { return 0 }
+        guard let turnComponent = components.first else {
+            return 0
+        }
         return turnComponent.maxEnergy
     }
 

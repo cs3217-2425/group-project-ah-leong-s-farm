@@ -7,7 +7,9 @@ class TurnSystem: GKComponentSystem<TurnComponent> {
     }
 
     func incrementTurn() -> Bool {
-        guard let turnComponent = components.first else { return false }
+        guard let turnComponent = components.first else {
+            return false
+        }
 
         turnComponent.currentTurn += 1
         let shouldContinue = turnComponent.currentTurn <= turnComponent.maxTurns
@@ -16,17 +18,23 @@ class TurnSystem: GKComponentSystem<TurnComponent> {
     }
 
     func getCurrentTurn() -> Int {
-        guard let turnComponent = components.first else { return 0 }
+        guard let turnComponent = components.first else {
+            return 0
+        }
         return turnComponent.currentTurn
     }
 
     func getMaxTurns() -> Int {
-        guard let turnComponent = components.first else { return 0 }
+        guard let turnComponent = components.first else {
+            return 0
+        }
         return turnComponent.maxTurns
     }
 
     func isGameOver() -> Bool {
-        guard let turnComponent = components.first else { return true }
+        guard let turnComponent = components.first else {
+            return true
+        }
         return turnComponent.currentTurn > turnComponent.maxTurns
     }
 }
