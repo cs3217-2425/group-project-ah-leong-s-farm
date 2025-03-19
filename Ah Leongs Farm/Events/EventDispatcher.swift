@@ -29,9 +29,5 @@ class EventDispatcher {
         for event in currentEvents {
             event.execute(in: context)
         }
-
-        if !eventQueue.isEmpty {
-            processEvents()
-        }
     }
 }
