@@ -11,12 +11,13 @@ class QuestObjective {
         self.target = target
     }
 
+    @discardableResult
     func setProgress(by amount: Float) -> Bool {
         progress = amount
         return progress >= target
     }
     
-    func isCompleted() -> Bool {
+    var isCompleted: Bool {
         return progress >= target
     }
 }

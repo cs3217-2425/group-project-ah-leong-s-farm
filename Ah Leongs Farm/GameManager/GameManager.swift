@@ -3,7 +3,7 @@ import GameplayKit
 class GameManager {
     private let gameWorld: GameWorld
     private var gameObservers: [any IGameObserver] = []
-    
+
     init(scene: SKScene) {
         gameWorld = GameWorld()
         setUpSystems()

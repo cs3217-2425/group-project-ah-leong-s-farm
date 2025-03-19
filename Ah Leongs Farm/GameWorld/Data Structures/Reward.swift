@@ -4,6 +4,6 @@ struct Reward {
 
 enum RewardType {
     case xp(Int)
-    case currency(Int)
-    case item(String)
+    case currency(CurrencyType, Int)
+    case item(String, Int)
 }

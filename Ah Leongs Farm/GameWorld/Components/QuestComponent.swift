@@ -21,7 +21,7 @@ class QuestComponent: GKComponent {
     }
 
     var isCompleted: Bool {
-        objectives.allSatisfy { $0.isCompleted() }
+        objectives.allSatisfy { $0.isCompleted }
     }
 }
 

@@ -38,7 +38,7 @@ class QuestSystem: GKComponentSystem<QuestComponent> {
             var objective = quest.objectives[index]
             let updatedProgress = quest.objectives[index].progress + amount
 
-            _ = objective.setProgress(by: updatedProgress)
+            objective.setProgress(by: updatedProgress)
         }
     }
 
