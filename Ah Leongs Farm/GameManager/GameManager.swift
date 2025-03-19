@@ -24,33 +24,35 @@ class GameManager {
     }
 
     private func setUpEntities() {
+        gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
+        gameWorld.addEntity(Wallet())
+
         let farmLand = FarmLand(rows: 20, columns: 20)
         gameWorld.addEntity(farmLand)
 
-        guard let gridComponent = farmLand.component(ofType: GridComponent.self) else {
-            return
+        if let gridComponent = farmLand.component(ofType: GridComponent.self) {
+            setUpPlotEntities(using: gridComponent)
         }
-
-        for row in 0..<gridComponent.numberOfRows {
-            for column in 0..<gridComponent.numberOfColumns {
-                let plot = Plot(position: CGPoint(x: row, y: column))
-                gridComponent.setObject(plot, row: row, column: column)
-                gameWorld.addEntity(plot)
-            }
-        }
-
-        gameWorld.addEntity(FarmLand(rows: 20, columns: 20))
-        gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
-        gameWorld.addEntity(Wallet())
     }
 
     private func setUpSystems() {
         gameWorld.addSystem(EnergySystem())
         gameWorld.addSystem(TurnSystem())
         gameWorld.addSystem(WalletSystem())
+        gameWorld.addSystem(CropSystem())
     }
 
     private func setUpGameObservers(scene: SKScene) {
         gameObservers.append(GameRenderer(scene: scene))
+    }
+
+    private func setUpPlotEntities(using grid: GridComponent) {
+        for row in 0..<grid.numberOfRows {
+            for column in 0..<grid.numberOfColumns {
+                let plot = Plot(position: CGPoint(x: row, y: column))
+                grid.setEntity(plot, row: row, column: column)
+                gameWorld.addEntity(plot)
+            }
+        }
     }
 }

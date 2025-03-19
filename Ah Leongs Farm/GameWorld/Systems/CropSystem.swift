@@ -7,13 +7,10 @@ class CropSystem: GKComponentSystem<CropComponent> {
     }
 
     /// Create a new entity for a crop
-    func plantCrop(ofType cropType: CropType, at plot: Plot) -> CropComponent? {
-        if let crop = plot.component(ofType: CropComponent.self) {
-            return nil
-        }
-    
-        guard let position = plot.component(ofType: PositionComponent.self),
-              let soil = plot.component(ofType: SoilComponent.self) else {
+    func plantCrop(ofType cropType: CropType, grid: GridComponent, row: Int, column: Int) -> CropComponent? {
+        guard let entity = grid.getObject(row: row, column: column),
+              let position = entity.component(ofType: PositionComponent.self),
+              let soil = entity.component(ofType: SoilComponent.self) else {
             return nil
         }
 
@@ -25,20 +22,19 @@ class CropSystem: GKComponentSystem<CropComponent> {
             plantedTurn: 1
         )
 
-        plot.addComponent(crop)
+        entity.addComponent(crop)
         return crop
     }
 
     /// Remove crop entity and add harvested crop entityx
-    func harvestCrop(at plot: Plot) -> CropComponent? {
-        guard let crop = plot.component(ofType: CropComponent.self) else {
+    func harvestCrop(grid: GridComponent, row: Int, column: Int) -> CropComponent? {
+        guard let entity = grid.getObject(row: row, column: column),
+              let crop = entity.component(ofType: CropComponent.self) else {
             return nil
         }
 
-        plot.removeComponent(ofType: CropComponent.self)
+        entity.removeComponent(ofType: CropComponent.self)
 
         return crop
     }
-
 }
-
