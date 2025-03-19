@@ -1,5 +1,5 @@
 //
-//  WalletEntity.swift
+//  Wallet.swift
 //  Ah Leongs Farm
 //
 //  Created by Lester Ong on 19/3/25.
@@ -8,7 +8,7 @@
 import Foundation
 import GameplayKit
 
-class WalletEntity: GKEntity {
+class Wallet: GKEntity {
     override init() {
         super.init()
         setUpComponents()

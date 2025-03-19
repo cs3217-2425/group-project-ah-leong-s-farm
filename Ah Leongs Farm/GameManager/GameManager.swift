@@ -17,6 +17,7 @@ class GameManager {
 
     private func setUpEntities() {
         gameWorld.addEntity(FarmLand(rows: 20, columns: 20))
+        gameWorld.addEntity(Wallet())
     }
 
     private func setUpGameObservers(scene: SKScene) {
