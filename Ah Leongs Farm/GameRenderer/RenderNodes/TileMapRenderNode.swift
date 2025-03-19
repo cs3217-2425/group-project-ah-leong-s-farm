@@ -37,4 +37,3 @@ class TileMapRenderNode: IRenderNode {
         tileMapNode.fill(with: tileGroup)
     }
 }
-

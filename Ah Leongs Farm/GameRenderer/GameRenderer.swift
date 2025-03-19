@@ -30,4 +30,3 @@ class GameRenderer: IGameObserver {
         renderSystems.append(TileMapRenderSystem())
     }
 }
-
