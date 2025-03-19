@@ -37,10 +37,10 @@ class LevelSystem: GKComponentSystem<LevelComponent> {
         components.first.map { LevelComponent.calculateXPThreshold(for: $0.level + 1) } ?? 0
     }
 
-    func getXPProgress() -> Double {
+    func getXPProgress() -> Float {
         guard let component = components.first else {
             return 0
         }
-        return Double(component.currentXP) / Double(component.thresholdXP)
+        return component.currentXP / component.thresholdXP
     }
 }
