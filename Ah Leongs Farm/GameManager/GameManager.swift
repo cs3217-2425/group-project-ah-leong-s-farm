@@ -6,8 +6,8 @@ class GameManager {
 
     init(scene: SKScene) {
         gameWorld = GameWorld()
-        setUpEntities()
         setUpSystems()
+        setUpEntities()
         setUpGameObservers(scene: scene)
     }
 
