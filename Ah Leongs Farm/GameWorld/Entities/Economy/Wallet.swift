@@ -14,6 +14,7 @@ class Wallet: GKEntity {
         setUpComponents()
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")
     }
