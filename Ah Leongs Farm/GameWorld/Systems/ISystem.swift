@@ -1,6 +1,5 @@
 import GameplayKit
 
-
 protocol ISystem: AnyObject {
     func addComponent(foundIn entity: GKEntity)
 
