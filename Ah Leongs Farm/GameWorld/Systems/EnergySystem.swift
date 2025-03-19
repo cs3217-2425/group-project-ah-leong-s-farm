@@ -4,12 +4,6 @@
 //
 //  Created by Ma Yuchen on 19/3/25.
 //
-//
-//  EnergyComponent.swift
-//  Ah Leongs Farm
-//
-//  Created by Ma Yuchen on 19/3/25.
-//
 
 import GameplayKit
 
