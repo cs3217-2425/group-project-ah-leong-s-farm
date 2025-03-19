@@ -4,7 +4,7 @@ import GameplayKit
 class QuestSystem: GKComponentSystem<QuestComponent> {
 
     override init() {
-        super.init()
+        super.init(componentClass: QuestComponent.self)
     }
 
     // Get the current quest (first in the queue)

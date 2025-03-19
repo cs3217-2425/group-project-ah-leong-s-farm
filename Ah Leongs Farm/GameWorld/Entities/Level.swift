@@ -1,7 +1,7 @@
 import Foundation
 import GameplayKit
 
-class LevelEntity: GKEntity {
+class Level: GKEntity {
 
     init(level: Int = 1, currentXP: Float = 0) {
         super.init()

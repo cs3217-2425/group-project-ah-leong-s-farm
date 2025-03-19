@@ -3,7 +3,7 @@ import GameplayKit
 class GameManager {
     private let gameWorld: GameWorld
     private var gameObservers: [any IGameObserver] = []
-
+    
     init(scene: SKScene) {
         gameWorld = GameWorld()
         setUpSystems()
@@ -20,12 +20,16 @@ class GameManager {
         gameWorld.addEntity(FarmLand(rows: 20, columns: 20))
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
         gameWorld.addEntity(Wallet())
+        gameWorld.addEntity(Level(level: 1, currentXP: 0))
+        gameWorld.addEntity(Quest(objectives: [QuestObjective(description: "Collect 10 apples", progress: 0, target: 10)], reward: Reward(rewards: [.xp(100)])))
     }
 
     private func setUpSystems() {
         gameWorld.addSystem(EnergySystem())
         gameWorld.addSystem(TurnSystem())
         gameWorld.addSystem(WalletSystem())
+        gameWorld.addSystem(LevelSystem())
+        gameWorld.addSystem(QuestSystem())
     }
 
     private func setUpGameObservers(scene: SKScene) {

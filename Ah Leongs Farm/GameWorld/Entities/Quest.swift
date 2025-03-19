@@ -1,6 +1,6 @@
 import GameplayKit
 
-class QuestEntity: GKEntity {
+class Quest: GKEntity {
 
     init(objectives: [QuestObjective], reward: Reward) {
         super.init()
