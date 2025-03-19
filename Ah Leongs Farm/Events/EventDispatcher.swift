@@ -6,7 +6,7 @@
 //
 
 class EventDispatcher {
-    private var eventQueue: [GameEvent] = []
+    private var eventQueue: Queue<GameEvent> = Queue()
     private weak var context: EventContext?
 
     init(context: EventContext) {
@@ -14,20 +14,22 @@ class EventDispatcher {
     }
 
     func queueEvent(_ event: GameEvent) {
-        eventQueue.append(event)
+        eventQueue.enqueue(event)
     }
 
     func processEvents() {
         guard let context = context else { return }
 
-        // Take a copy of the current queue
-        // This prevents concurrent modification of the event queue
-        // as an event could queue additional events.
-        let currentEvents = eventQueue
-        eventQueue.removeAll()
-
-        for event in currentEvents {
+        // Maintain a counter such that we only execute events in the initial queue
+        // (and not any additional events queued by other events)
+        var currentEventCount = eventQueue.count
+        while currentEventCount > 0 {
+            guard let event = eventQueue.dequeue() else {
+                fatalError("EventDispatcher.processEvents() dequeued an empty EventQueue")
+            }
             event.execute(in: context)
+
+            currentEventCount -= 1
         }
     }
 }
