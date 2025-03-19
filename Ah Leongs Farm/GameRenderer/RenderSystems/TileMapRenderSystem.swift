@@ -10,7 +10,7 @@ import GameplayKit
 class TileMapRenderSystem: IRenderSystem {
     private static let TileSetName: String = "Farm Tile Set"
     private static let LandTileGroupName: String = "Land"
-    private static let TileSize: CGSize = CGSize(width: 48, height: 48)
+    private static let TileSize = CGSize(width: 48, height: 48)
 
     func createNode(of entity: EntityType) -> IRenderNode? {
         guard let gridComponent = entity.component(ofType: GridComponent.self),

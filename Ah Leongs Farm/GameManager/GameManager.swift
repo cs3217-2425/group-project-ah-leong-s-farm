@@ -18,10 +18,13 @@ class GameManager {
 
     private func setUpEntities() {
         gameWorld.addEntity(FarmLand(rows: 20, columns: 20))
+        gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
         gameWorld.addEntity(Wallet())
     }
 
     private func setUpSystems() {
+        gameWorld.addSystem(EnergySystem())
+        gameWorld.addSystem(TurnSystem())
         gameWorld.addSystem(WalletSystem())
     }
 
