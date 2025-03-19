@@ -27,12 +27,14 @@ class GameManager {
         gameWorld.addEntity(FarmLand(rows: 20, columns: 20))
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
         gameWorld.addEntity(Wallet())
+        gameWorld.addEntity(Inventory())
     }
 
     private func setUpSystems() {
         gameWorld.addSystem(EnergySystem())
         gameWorld.addSystem(TurnSystem())
         gameWorld.addSystem(WalletSystem())
+        gameWorld.addSystem(InventorySystem())
     }
 
     private func setUpGameObservers(scene: SKScene) {
