@@ -18,7 +18,7 @@ class FarmLand: GKEntity {
     }
 
     private func setUpComponents(rows: Int, columns: Int) {
-        let gridComponent: GridComponent = GridComponent(rows: rows, columns: columns)
+        let gridComponent = GridComponent(rows: rows, columns: columns)
         addComponent(gridComponent)
     }
 }

@@ -51,4 +51,3 @@ class TileMapRenderNode: IRenderNode {
         return (row, column)
     }
 }
-

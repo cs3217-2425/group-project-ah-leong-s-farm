@@ -1,6 +1,5 @@
 import GameplayKit
 
-
 protocol ISystem: AnyObject {
     var componentClass: AnyClass { get }
 
