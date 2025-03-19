@@ -12,8 +12,6 @@ class Plot: GKEntity {
     private static let DefaultSoilQuality: Float = 0
     private static let DefaultSoilMoisture: Float = 0
 
-    var crop: Crop?
-
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }

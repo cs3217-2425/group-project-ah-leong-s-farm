@@ -8,7 +8,8 @@
 import GameplayKit
 
 class GridComponent: GKComponent {
-    private(set) var matrix: [[Plot?]]
+    private var matrix: [[AnyObject?]]
+
     let numberOfRows: Int
     let numberOfColumns: Int
 
@@ -26,12 +27,20 @@ class GridComponent: GKComponent {
         super.init()
     }
 
-    func setPlot(_ plot: Plot?, row: Int, column: Int) {
+    func setObject(_ object: AnyObject?, row: Int, column: Int) {
         guard isRowValid(row), isColumnValid(column) else {
             return
         }
 
-        matrix[row][column] = plot
+        matrix[row][column] = object
+    }
+
+    func getObject(row: Int, column: Int) -> AnyObject? {
+        guard isRowValid(row), isColumnValid(column) else {
+            return nil
+        }
+
+        return matrix[row][column]
     }
 
     private func isRowValid(_ row: Int) -> Bool {

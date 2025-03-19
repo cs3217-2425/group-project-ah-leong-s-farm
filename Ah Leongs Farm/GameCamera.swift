@@ -1,7 +1,7 @@
 import SpriteKit
 
 class GameCamera: SKCameraNode {
-    private static let SmoothingFactor: Double = 0.1
+    private static let SmoothingFactor: Double = 0.2
 
     var lastTouchPosition: CGPoint?
 
