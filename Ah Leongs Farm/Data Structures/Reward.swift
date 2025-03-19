@@ -7,4 +7,3 @@ enum RewardType {
     case currency(Int)
     case item(String)
 }
-

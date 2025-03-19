@@ -3,19 +3,13 @@ import GameplayKit
 
 class QuestSystem: GKComponentSystem<QuestComponent> {
 
-    private var currentQuestIndex: Int?
-
     override init() {
         super.init()
     }
 
-    // Get the current quest
+    // Get the current quest (first in the queue)
     private var currentQuest: QuestComponent? {
-        guard let index = currentQuestIndex else {
-            return nil
-        }
-
-        return components[index]
+        return components.first
     }
 
     func getCurrentQuest() -> QuestComponent? {
@@ -25,33 +19,25 @@ class QuestSystem: GKComponentSystem<QuestComponent> {
     func getAllQuests() -> [QuestComponent] {
         return components
     }
-
-    func updateCurrentQuestProgress(objective: QuestObjective, by amount: Float) {
-        guard var quest = currentQuest else {
-            return
-        }
-
-        quest.updateObjectiveProgress(for: objective, by: amount)
-
-        if quest.isCompleted {
-            moveToNextQuest()
-        }
+    
+    func isCurrentQuestCompleted() -> Bool {
+        return currentQuest?.isCompleted ?? false
     }
-
-    private func moveToNextQuest() {
-        guard let index = currentQuestIndex, index + 1 < components.count else {
-            currentQuestIndex = nil // No more quests left
-            return
-        }
-        currentQuestIndex = index + 1
-    }
-
+    
     func addQuest(_ quest: QuestComponent) {
         self.addComponent(quest)
     }
 
-    func setCurrentQuestIndex(_ index: Int) {
-        guard index >= 0 && index < components.count else { return }
-        currentQuestIndex = index
+    func updateCurrentQuestProgress(objective: QuestObjective, by amount: Float) {
+        guard let quest = currentQuest else { return }
+
+        quest.updateObjectiveProgress(for: objective, by: amount)
+
+    }
+
+    private func moveToNextQuest() {
+        guard !components.isEmpty else { return }
+
+        self.removeComponent(components[0])
     }
 }

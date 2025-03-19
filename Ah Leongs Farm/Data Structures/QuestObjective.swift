@@ -15,5 +15,9 @@ class QuestObjective {
         progress += amount
         return progress >= target
     }
+    
+    func isCompleted() -> Bool {
+        return progress >= target
+    }
 }
 

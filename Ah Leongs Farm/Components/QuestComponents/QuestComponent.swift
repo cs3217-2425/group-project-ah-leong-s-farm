@@ -5,16 +5,16 @@ class QuestComponent: GKComponent {
     private(set) var status: QuestStatus
     private(set) var progress: Float
     private(set) var objectives: [QuestObjective]
-    private(set) var reward: Reward
+    private(set) var completionReward: Reward
 
-    init(status: QuestStatus = .inactive, objectives: [QuestObjective], reward: Reward) {
+    init(status: QuestStatus = .inactive, objectives: [QuestObjective], completionReward: Reward) {
         self.status = status
         self.progress = 0
         self.objectives = objectives
-        self.reward = reward
+        self.completionReward = completionReward
         super.init()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -35,7 +35,6 @@ class QuestComponent: GKComponent {
             status = .completed
         }
     }
-
 }
 
 enum QuestStatus {
