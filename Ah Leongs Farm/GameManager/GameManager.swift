@@ -3,21 +3,20 @@ import GameplayKit
 class GameManager {
     private let gameWorld: GameWorld
     private var gameObservers: [any IGameObserver] = []
-    private var eventDispatcher: EventDispatcher
+    private var eventDispatcher: EventDispatcher?
 
     init(scene: SKScene) {
         gameWorld = GameWorld()
-        eventDispatcher = EventDispatcher(context: gameWorld)
         setUpSystems()
         setUpEntities()
         setUpGameObservers(scene: scene)
-    }
-
-    func queueEvent(_ event: GameEvent) {
-        eventDispatcher.queueEvent(event)
+        eventDispatcher = EventDispatcher(context: self)
     }
 
     func update(_ currentTime: TimeInterval) {
+        guard let eventDispatcher = eventDispatcher else {
+            return
+        }
         gameWorld.updateSystems(deltaTime: currentTime)
         eventDispatcher.processEvents()
         gameObservers.forEach { $0.notify(gameWorld) }
@@ -37,5 +36,18 @@ class GameManager {
 
     private func setUpGameObservers(scene: SKScene) {
         gameObservers.append(GameRenderer(scene: scene))
+    }
+}
+
+extension GameManager: EventContext {
+    func getSystem<T>(ofType: T.Type) -> T? {
+        return gameWorld.getSystem(ofType: ofType)
+    }
+
+    func queueEvent(_ event: GameEvent) {
+        guard let eventDispatcher = eventDispatcher else {
+            return
+        }
+        eventDispatcher.queueEvent(event)
     }
 }

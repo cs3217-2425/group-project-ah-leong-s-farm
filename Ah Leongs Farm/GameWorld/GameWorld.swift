@@ -43,9 +43,7 @@ class GameWorld {
             system.update(deltaTime: deltaTime)
         }
     }
-}
 
-extension GameWorld: EventContext {
     func getSystem<T>(ofType: T.Type) -> T? {
         return systems.first { $0 is T } as? T
     }
