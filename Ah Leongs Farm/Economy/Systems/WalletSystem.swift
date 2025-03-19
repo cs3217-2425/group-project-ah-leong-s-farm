@@ -15,13 +15,13 @@ class WalletSystem: GKComponentSystem<WalletComponent> {
 
     func addCurrencyToAll(_ currency: CurrencyType, amount: Double) {
         for component in components {
-            component.addCurrency(currency, amount: amount)
+            addCurrencyToWallet(component, of: currency, amount: amount)
         }
     }
 
     func removeCurrencyFromAll(_ currency: CurrencyType, amount: Double) {
         for component in components {
-            component.removeCurrency(currency, amount: amount)
+            removeCurrencyFromWallet(component, of: currency, amount: amount)
         }
     }
 
@@ -35,5 +35,51 @@ class WalletSystem: GKComponentSystem<WalletComponent> {
         }
 
         return total
+    }
+
+    /// Adds a specific type of currency if and only if the currency type exists.
+    /// - Parameter walletComponent: The wallet to add to.
+    /// - Parameter currency: The type of currency to add.
+    /// - Parameter amount: The amount to add, must be a non-negative value.
+    private func addCurrencyToWallet(_ walletComponent: WalletComponent, of currency: CurrencyType,
+                                     amount: Double) {
+        var wallet = walletComponent.wallet
+        guard let currentAmount = wallet[currency] else {
+            return
+        }
+
+        guard amount >= 0 else {
+            print("The amount to add must be positive.")
+            return
+        }
+
+        let newAmount = currentAmount + amount
+        wallet[currency] = newAmount
+    }
+
+    /// Removes a specific type of currency if and only if the currency type exists, and the specified
+    /// amount is less than or equal to the amount of the currency type available.
+    /// - Parameter walletComponent: The wallet to remove from.
+    /// - Parameter currency: The type of currency to update.
+    /// - Parameter amount: The amount to remove, must be a non-negative value.
+    private func removeCurrencyFromWallet(_ walletComponent: WalletComponent, of currency: CurrencyType,
+                                          amount: Double) {
+        var wallet = walletComponent.wallet
+        guard let currentAmount = wallet[currency] else {
+            return
+        }
+
+        guard amount >= 0 else {
+            print("The amount to remove must be positive.")
+            return
+        }
+
+        guard currentAmount >= amount else {
+            print("Insufficient currency.")
+            return
+        }
+
+        let newAmount = currentAmount - amount
+        wallet[currency] = newAmount
     }
 }
