@@ -6,6 +6,7 @@ class GameManager {
 
     init(scene: SKScene) {
         gameWorld = GameWorld()
+        setUpSystems()
         setUpEntities()
         setUpGameObservers(scene: scene)
     }
@@ -17,6 +18,11 @@ class GameManager {
 
     private func setUpEntities() {
         gameWorld.addEntity(FarmLand(rows: 20, columns: 20))
+        gameWorld.addEntity(Wallet())
+    }
+
+    private func setUpSystems() {
+        gameWorld.addSystem(WalletSystem())
     }
 
     private func setUpGameObservers(scene: SKScene) {
