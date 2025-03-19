@@ -11,8 +11,8 @@ class QuestObjective {
         self.target = target
     }
 
-    func updateProgress(by amount: Float) -> Bool {
-        progress += amount
+    func setProgress(by amount: Float) -> Bool {
+        progress = amount
         return progress >= target
     }
     

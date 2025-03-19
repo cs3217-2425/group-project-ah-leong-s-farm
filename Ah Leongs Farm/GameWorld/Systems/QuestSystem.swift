@@ -9,34 +9,43 @@ class QuestSystem: GKComponentSystem<QuestComponent> {
 
     // Get the current quest (first in the queue)
     private var currentQuest: QuestComponent? {
-        return components.first
+        components.first
     }
 
     func getCurrentQuest() -> QuestComponent? {
-        return currentQuest
+        currentQuest
     }
 
     func getAllQuests() -> [QuestComponent] {
-        return components
+        components
     }
-    
+
     func isCurrentQuestCompleted() -> Bool {
-        return currentQuest?.isCompleted ?? false
+        currentQuest?.isCompleted ?? false
     }
-    
+
     func addQuest(_ quest: QuestComponent) {
         self.addComponent(quest)
     }
 
     func updateCurrentQuestProgress(objective: QuestObjective, by amount: Float) {
-        guard let quest = currentQuest else { return }
+        guard let quest = currentQuest else {
+            return
+        }
 
-        quest.updateObjectiveProgress(for: objective, by: amount)
+        if let index = quest.objectives.firstIndex(where: { $0.description == objective.description }) {
 
+            var objective = quest.objectives[index]
+            let updatedProgress = quest.objectives[index].progress + amount
+
+            _ = objective.setProgress(by: updatedProgress)
+        }
     }
 
-    private func moveToNextQuest() {
-        guard !components.isEmpty else { return }
+    func moveToNextQuest() {
+        guard !components.isEmpty else {
+            return
+        }
 
         self.removeComponent(components[0])
     }
