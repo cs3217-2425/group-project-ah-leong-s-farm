@@ -24,7 +24,6 @@ class GameManager {
     }
 
     private func setUpEntities() {
-        gameWorld.addEntity(FarmLand(rows: 20, columns: 20))
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
         gameWorld.addEntity(Wallet())
         gameWorld.addEntity(Inventory())
@@ -32,6 +31,13 @@ class GameManager {
         gameWorld.addEntity(Quest(
             objectives: [QuestObjective(description: "Collect 10 apples", progress: 0, target: 10)],
             reward: Reward(rewards: [.xp(100)])))
+
+        let farmLand = FarmLand(rows: 20, columns: 20)
+        gameWorld.addEntity(farmLand)
+
+        if let gridComponent = farmLand.component(ofType: GridComponent.self) {
+            setUpPlotEntities(using: gridComponent)
+        }
     }
 
     private func setUpSystems() {
@@ -41,9 +47,20 @@ class GameManager {
         gameWorld.addSystem(InventorySystem())
         gameWorld.addSystem(LevelSystem())
         gameWorld.addSystem(QuestSystem())
+        gameWorld.addSystem(CropSystem())
     }
 
     private func setUpGameObservers(scene: SKScene) {
         gameObservers.append(GameRenderer(scene: scene))
+    }
+
+    private func setUpPlotEntities(using grid: GridComponent) {
+        for row in 0..<grid.numberOfRows {
+            for column in 0..<grid.numberOfColumns {
+                let plot = Plot(position: CGPoint(x: row, y: column))
+                grid.setEntity(plot, row: row, column: column)
+                gameWorld.addEntity(plot)
+            }
+        }
     }
 }

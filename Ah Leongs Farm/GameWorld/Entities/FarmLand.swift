@@ -10,7 +10,6 @@ import GameplayKit
 class FarmLand: GKEntity {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setUpComponents(rows: 0, columns: 0)
     }
 
     init(rows: Int, columns: Int) {

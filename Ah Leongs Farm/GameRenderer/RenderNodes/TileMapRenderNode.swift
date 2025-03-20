@@ -36,4 +36,18 @@ class TileMapRenderNode: IRenderNode {
 
         tileMapNode.fill(with: tileGroup)
     }
+
+    func getSelectedRowAndColumn(at touchPosition: CGPoint) -> (Int, Int)? {
+        guard let scene = tileMapNode.scene else {
+            return nil
+        }
+
+        // Convert the touch position to the tile map node's coordinate system
+        let locationInTileMap = scene.convert(touchPosition, to: tileMapNode)
+
+        let column = tileMapNode.tileColumnIndex(fromPosition: locationInTileMap)
+        let row = tileMapNode.tileRowIndex(fromPosition: locationInTileMap)
+
+        return (row, column)
+    }
 }
