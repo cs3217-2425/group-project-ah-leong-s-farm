@@ -33,9 +33,21 @@ class GameManager {
         gameObservers.forEach { $0.notify(gameWorld) }
     }
 
-    // Method to queue events from UI or other external sources
-    func queueEvent(_ event: GameEvent) {
-        gameWorld.queueEvent(event)
+    private func setUpEntities() {
+        gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
+        gameWorld.addEntity(Wallet())
+        gameWorld.addEntity(Inventory())
+        gameWorld.addEntity(Level(level: 1, currentXP: 0))
+        gameWorld.addEntity(Quest(
+            objectives: [QuestObjective(description: "Collect 10 apples", progress: 0, target: 10)],
+            reward: Reward(rewards: [.xp(100)])))
+
+        let farmLand = FarmLand(rows: 20, columns: 20)
+        gameWorld.addEntity(farmLand)
+
+        if let gridComponent = farmLand.component(ofType: GridComponent.self) {
+            setUpPlotEntities(using: gridComponent)
+        }
     }
 
     // MARK: - Setup Methods
@@ -47,6 +59,7 @@ class GameManager {
         gameWorld.addSystem(WalletSystem())
         gameWorld.addSystem(InventorySystem())
         gameWorld.addSystem(LevelSystem())
+        gameWorld.addSystem(CropSystem())
 
         // Quest system needs special handling for event observation
         let questSystem = QuestSystem(eventContext: gameWorld)
@@ -167,5 +180,15 @@ class GameManager {
         )
 
         gameWorld.addEntity(tutorialQuest)
+    }
+
+    private func setUpPlotEntities(using grid: GridComponent) {
+        for row in 0..<grid.numberOfRows {
+            for column in 0..<grid.numberOfColumns {
+                let plot = Plot(position: CGPoint(x: row, y: column))
+                grid.setEntity(plot, row: row, column: column)
+                gameWorld.addEntity(plot)
+            }
+        }
     }
 }

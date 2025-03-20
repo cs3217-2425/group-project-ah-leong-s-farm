@@ -8,7 +8,7 @@
 import GameplayKit
 
 class GridComponent: GKComponent {
-    private var matrix: [[AnyObject?]]
+    private var matrix: [[GKEntity?]]
 
     let numberOfRows: Int
     let numberOfColumns: Int
@@ -27,15 +27,15 @@ class GridComponent: GKComponent {
         super.init()
     }
 
-    func setObject(_ object: AnyObject?, row: Int, column: Int) {
+    func setEntity(_ entity: GKEntity?, row: Int, column: Int) {
         guard isRowValid(row), isColumnValid(column) else {
             return
         }
 
-        matrix[row][column] = object
+        matrix[row][column] = entity
     }
 
-    func getObject(row: Int, column: Int) -> AnyObject? {
+    func getObject(row: Int, column: Int) -> GKEntity? {
         guard isRowValid(row), isColumnValid(column) else {
             return nil
         }
