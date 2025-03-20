@@ -26,6 +26,11 @@ class GameManager {
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
         gameWorld.addEntity(Wallet())
+        gameWorld.addEntity(Inventory())
+        gameWorld.addEntity(Level(level: 1, currentXP: 0))
+        gameWorld.addEntity(Quest(
+            objectives: [QuestObjective(description: "Collect 10 apples", progress: 0, target: 10)],
+            reward: Reward(rewards: [.xp(100)])))
 
         let farmLand = FarmLand(rows: 20, columns: 20)
         gameWorld.addEntity(farmLand)
@@ -39,6 +44,9 @@ class GameManager {
         gameWorld.addSystem(EnergySystem())
         gameWorld.addSystem(TurnSystem())
         gameWorld.addSystem(WalletSystem())
+        gameWorld.addSystem(InventorySystem())
+        gameWorld.addSystem(LevelSystem())
+        gameWorld.addSystem(QuestSystem())
         gameWorld.addSystem(CropSystem())
     }
 
