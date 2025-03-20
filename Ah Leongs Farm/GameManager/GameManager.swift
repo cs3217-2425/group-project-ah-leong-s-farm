@@ -38,16 +38,6 @@ class GameManager {
         gameWorld.addEntity(Wallet())
         gameWorld.addEntity(Inventory())
         gameWorld.addEntity(Level(level: 1, currentXP: 0))
-        gameWorld.addEntity(Quest(
-            objectives: [QuestObjective(description: "Collect 10 apples", progress: 0, target: 10)],
-            reward: Reward(rewards: [.xp(100)])))
-
-        let farmLand = FarmLand(rows: 20, columns: 20)
-        gameWorld.addEntity(farmLand)
-
-        if let gridComponent = farmLand.component(ofType: GridComponent.self) {
-            setUpPlotEntities(using: gridComponent)
-        }
     }
 
     // MARK: - Setup Methods
@@ -65,13 +55,10 @@ class GameManager {
         let questSystem = QuestSystem(eventContext: gameWorld)
         gameWorld.addSystem(questSystem)
         gameWorld.registerEventObserver(questSystem)
-
-        // Add any other systems here
     }
 
     private func setUpBaseEntities() {
         // Farm and world entities
-        gameWorld.addEntity(FarmLand(rows: 20, columns: 20))
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
 
         // Player-related entities
@@ -81,30 +68,27 @@ class GameManager {
 
         // Add starting items to inventory
         addStartingItems()
+
+        let farmLand = FarmLand(rows: 20, columns: 20)
+        gameWorld.addEntity(farmLand)
+        if let gridComponent = farmLand.component(ofType: GridComponent.self) {
+            setUpPlotEntities(using: gridComponent)
+        }
     }
 
     private func setUpQuests() {
-        // Main story quests
         addMainStoryQuests()
-
-        // Side quests
         addSideQuests()
-
-        // Tutorial quests
         addTutorialQuests()
     }
 
     private func setUpGameObservers(scene: SKScene) {
-        // Add game renderer
         gameObservers.append(GameRenderer(scene: scene))
-
-        // Could add other observers here (UI updaters, analytics, etc.)
     }
 
     // MARK: - Entity Creation Helpers
 
     private func addStartingItems() {
-        // Add some starting seeds to the player's inventory
         if let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) {
             let seedItem = createSeedItem(type: .bokChoySeed, quantity: 5)
             inventorySystem.addItem(seedItem)
@@ -136,7 +120,7 @@ class GameManager {
         ])
 
         let farmBusinessQuest = QuestFactory.createFarmBusinessQuest(
-            cropType: "apple",
+            cropType: .apple,
             reward: businessReward
         )
 
@@ -158,7 +142,7 @@ class GameManager {
 
         let sellQuest = QuestFactory.createSellQuest(
             title: "Market Sales",
-            cropType: "bokchoy",
+            cropType: .bokChoy,
             amount: 8,
             reward: sellQuestReward
         )
@@ -174,7 +158,7 @@ class GameManager {
 
         let tutorialQuest = QuestFactory.createHarvestQuest(
             title: "Learning to Harvest",
-            cropType: "bokchoy",
+            cropType: .bokChoy,
             amount: 3,
             reward: tutorialReward
         )

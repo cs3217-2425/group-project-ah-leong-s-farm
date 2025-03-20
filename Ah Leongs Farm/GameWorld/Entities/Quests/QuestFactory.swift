@@ -28,7 +28,7 @@ class QuestFactory {
 
     static func createHarvestQuest(
         title: String,
-        cropType: String,
+        cropType: CropType,
         amount: Int,
         reward: Reward
     ) -> Quest {
@@ -85,7 +85,7 @@ class QuestFactory {
 
     static func createSellQuest(
         title: String,
-        cropType: String,
+        cropType: CropType,
         amount: Int,
         reward: Reward
     ) -> Quest {
@@ -115,7 +115,7 @@ class QuestFactory {
     // MARK: - Multi-Objective Quests
 
     static func createFarmBusinessQuest(
-        cropType: String = "apple",
+        cropType: CropType = .apple,
         harvestAmount: Int = 15,
         sellAmount: Int = 10,
         survivalDays: Int = 3,
@@ -160,7 +160,7 @@ class QuestFactory {
         )
 
         // Create the quest with all objectives
-        let title = "\(cropType.capitalized) Business Venture"
+        let title = "\(cropType.rawValue.capitalized) Business Venture"
 
         let component = QuestComponent(
             title: title,
@@ -178,7 +178,7 @@ class QuestFactory {
 
         return createHarvestQuest(
             title: "Apple Collection",
-            cropType: "apple",
+            cropType: .apple,
             amount: 10,
             reward: reward
         )

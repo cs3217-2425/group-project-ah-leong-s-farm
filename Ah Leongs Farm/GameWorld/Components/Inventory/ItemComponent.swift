@@ -46,7 +46,11 @@ class ItemComponent: GKComponent {
     }
 }
 
-enum ItemType {
+enum ItemType: Hashable {
     case bokChoyHarvested
     case bokChoySeed
+    case appleSeed
+    case appleHarvested
+    case potatoSeed
+    case potatoHarvested
 }
