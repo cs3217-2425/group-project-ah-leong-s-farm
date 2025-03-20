@@ -16,9 +16,8 @@ class QuestObjective {
         progress = amount
         return progress >= target
     }
-    
+
     var isCompleted: Bool {
-        return progress >= target
+        progress >= target
     }
 }
-
