@@ -54,7 +54,7 @@ class GameWorld {
         }
     }
 
-    func registerEventObserver(_ observer: EventObserver) {
+    func registerEventObserver(_ observer: IEventObserver) {
         guard let eventDispatcher = eventDispatcher else {
             return
         }
@@ -71,7 +71,7 @@ class GameWorld {
 
 extension GameWorld: EventContext {
     func getSystem<T>(ofType: T.Type) -> T? {
-        return systems.first { $0 is T } as? T
+        systems.first { $0 is T } as? T
     }
 
     func queueEvent(_ event: GameEvent) {

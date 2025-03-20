@@ -1,7 +1,4 @@
 import GameplayKit
-
-// GameManager.swift
-import GameplayKit
 import SpriteKit
 
 class GameManager {
@@ -90,17 +87,9 @@ class GameManager {
 
     private func addStartingItems() {
         if let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) {
-            let seedItem = createSeedItem(type: .bokChoySeed, quantity: 5)
+            let seedItem = inventorySystem.createItem(type: .bokChoySeed, quantity: 5, stackable: true)
             inventorySystem.addItem(seedItem)
         }
-    }
-
-    private func createSeedItem(type: ItemType, quantity: Int) -> GKEntity {
-        let entity = GKEntity()
-        let itemComponent = ItemComponent(itemType: type, stackable: true)
-        itemComponent.quantity = quantity
-        entity.addComponent(itemComponent)
-        return entity
     }
 
     // MARK: - Quest Setup Methods
@@ -113,15 +102,18 @@ class GameManager {
         gameWorld.addEntity(appleQuest)
 
         // Farm business quest (more complex, multi-objective)
-        let businessReward = Reward(rewards: [
-            .currency(.coin, 200),
-            .xp(150),
-            .item("premium_fertilizer", 2)
-        ])
+        let businessReward = Reward(xpReward: 150,
+                                    currencyReward: (type: CurrencyType.coin,
+                                                     amount: Double(200)),
+                                    itemReward: (type: ItemType.fertiliser,
+                                                 stackable: true,
+                                                 quantity: 2)
+
+        )
 
         let farmBusinessQuest = QuestFactory.createFarmBusinessQuest(
-            cropType: .apple,
-            reward: businessReward
+            reward: businessReward,
+            cropType: .apple
         )
 
         gameWorld.addEntity(farmBusinessQuest)
@@ -135,10 +127,9 @@ class GameManager {
         gameWorld.addEntity(survivalQuest)
 
         // Create a sell quest
-        let sellQuestReward = Reward(rewards: [
-            .currency(.coin, 100),
-            .xp(75)
-        ])
+        let sellQuestReward = Reward(xpReward: 75,
+                                     currencyReward: (type: CurrencyType.coin,
+                                                                    amount: 100))
 
         let sellQuest = QuestFactory.createSellQuest(
             title: "Market Sales",
@@ -154,7 +145,7 @@ class GameManager {
         // Tutorial quests - simple quests to teach game mechanics
 
         // Very simple harvest quest with small reward
-        let tutorialReward = Reward(rewards: [.xp(25)])
+        let tutorialReward = Reward(xpReward: 25)
 
         let tutorialQuest = QuestFactory.createHarvestQuest(
             title: "Learning to Harvest",

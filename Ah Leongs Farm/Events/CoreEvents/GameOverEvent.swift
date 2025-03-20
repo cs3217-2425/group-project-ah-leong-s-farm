@@ -30,6 +30,6 @@ struct GameOverEvent: GameEvent {
 
     private func calculateScore(turns: Int, coins: Double) -> Int {
         // Placeholder score formula
-        return Int(coins) * 10
+        Int(coins) * 10
     }
 }

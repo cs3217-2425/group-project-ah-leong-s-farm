@@ -36,8 +36,8 @@ class QuestFactory {
 
         let criteria = QuestCriteria(
             eventType: .harvestCrop,
-            requiredData: [.cropType: cropType],
-            progressCalculator: progressCalculator
+            progressCalculator: progressCalculator,
+            requiredData: [.cropType: cropType]
         )
 
         let objective = QuestObjective(
@@ -93,8 +93,8 @@ class QuestFactory {
 
         let criteria = QuestCriteria(
             eventType: .sellCrop,
-            requiredData: [.cropType: cropType],
-            progressCalculator: progressCalculator
+            progressCalculator: progressCalculator,
+            requiredData: [.cropType: cropType]
         )
 
         let objective = QuestObjective(
@@ -115,17 +115,17 @@ class QuestFactory {
     // MARK: - Multi-Objective Quests
 
     static func createFarmBusinessQuest(
+        reward: Reward,
         cropType: CropType = .apple,
         harvestAmount: Int = 15,
         sellAmount: Int = 10,
-        survivalDays: Int = 3,
-        reward: Reward
+        survivalDays: Int = 3
     ) -> Quest {
         // First objective: Harvest crops
         let harvestCriteria = QuestCriteria(
             eventType: .harvestCrop,
-            requiredData: [.cropType: cropType],
-            progressCalculator: EventAmountCalculator(dataType: .cropAmount)
+            progressCalculator: EventAmountCalculator(dataType: .cropAmount),
+            requiredData: [.cropType: cropType]
         )
 
         let harvestObjective = QuestObjective(
@@ -137,8 +137,8 @@ class QuestFactory {
         // Second objective: Sell crops
         let sellCriteria = QuestCriteria(
             eventType: .sellCrop,
-            requiredData: [.cropType: cropType],
-            progressCalculator: EventAmountCalculator(dataType: .cropAmount)
+            progressCalculator: EventAmountCalculator(dataType: .cropAmount),
+            requiredData: [.cropType: cropType]
         )
 
         let sellObjective = QuestObjective(
@@ -174,7 +174,9 @@ class QuestFactory {
     // MARK: - Utility Methods
 
     static func createAppleCollectionQuest() -> Quest {
-        let reward = Reward(rewards: [.xp(100), .currency(.coin, 50)])
+        let reward = Reward(xpReward: 100,
+                            currencyReward: (type: CurrencyType.coin,
+                                             amount: 50))
 
         return createHarvestQuest(
             title: "Apple Collection",
@@ -185,8 +187,10 @@ class QuestFactory {
     }
 
     static func createFarmStarterQuest() -> Quest {
-        // TODO: Actually create the upgraded water can item type
-        let reward = Reward(rewards: [.xp(50), .item("watering_can_upgrade", 1)])
+        let reward = Reward(xpReward: 50,
+                            itemReward: (type: ItemType.upgradedWateringCan,
+                                         stackable: false,
+                                         quantity: 1))
 
         return createSurvivalQuest(
             title: "Farm Beginnings",

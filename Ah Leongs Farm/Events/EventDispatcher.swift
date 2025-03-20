@@ -7,7 +7,7 @@
 
 class EventDispatcher {
     private var eventQueue: Queue<GameEvent> = Queue()
-    private var eventObservers: [EventObserver]
+    private var eventObservers: [IEventObserver]
     private weak var context: EventContext?
 
     init(context: EventContext) {
@@ -19,7 +19,7 @@ class EventDispatcher {
         eventQueue.enqueue(event)
     }
 
-    func addEventObserver(_ observer: EventObserver) {
+    func addEventObserver(_ observer: IEventObserver) {
         eventObservers.append(observer)
     }
 

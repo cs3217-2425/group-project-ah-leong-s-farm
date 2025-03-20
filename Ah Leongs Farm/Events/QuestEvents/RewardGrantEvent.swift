@@ -14,25 +14,56 @@ class RewardGrantEvent: GameEvent {
 
     func execute(in context: EventContext) -> EventData? {
         var eventData = EventData(eventType: .rewardGrant)
-        for rewardItem in reward.rewards {
-            switch rewardItem {
-            case .xp(let amount):
-                if let levelSystem = context.getSystem(ofType: LevelSystem.self) {
-                    levelSystem.addXP(Float(amount))
-                    eventData.addData(type: .xpGrantAmount, value: amount)
-                }
+        if let currencyReward = reward.currencyReward {
+            grantCurrencyReward(type: currencyReward.type,
+                                amount: currencyReward.amount,
+                                in: context,
+                                eventData: &eventData)
+        }
 
-            case .currency(let type, let amount):
-                if let walletSystem = context.getSystem(ofType: WalletSystem.self) {
-                    walletSystem.addCurrencyToAll(type, amount: Double(amount))
-                    eventData.addData(type: .currencyGrant, value: type)
-                }
+        if let itemReward = reward.itemReward {
+            grantItemReward(type: itemReward.type,
+                            stackable: itemReward.stackable,
+                            quantity: itemReward.quantity,
+                            in: context,
+                            eventData: &eventData)
+        }
 
-            case .item(let itemType, let quantity):
-                // TODO: Add items to inventory
-                break
-            }
+        if let xpReward = reward.xpReward {
+            grantXPReward(amount: xpReward,
+                          in: context,
+                          eventData: &eventData)
         }
         return eventData
+    }
+
+    private func grantXPReward(amount: Float, in context: EventContext, eventData: inout EventData) {
+        if let levelSystem = context.getSystem(ofType: LevelSystem.self) {
+            levelSystem.addXP(Float(amount))
+            eventData.addData(type: .xpGrantAmount, value: amount)
+        }
+    }
+
+    private func grantCurrencyReward(type: CurrencyType,
+                                     amount: Double,
+                                     in context: EventContext,
+                                     eventData: inout EventData) {
+        if let walletSystem = context.getSystem(ofType: WalletSystem.self) {
+            walletSystem.addCurrencyToAll(type, amount: Double(amount))
+            eventData.addData(type: .currencyGrant, value: type)
+        }
+    }
+
+    private func grantItemReward(type: ItemType,
+                                 stackable: Bool,
+                                 quantity: Int,
+                                 in context: EventContext,
+                                 eventData: inout EventData) {
+        if let inventorySystem = context.getSystem(ofType: InventorySystem.self) {
+            let newItem = inventorySystem.createItem(type: type,
+                                                     quantity: quantity,
+                                                     stackable: stackable)
+            inventorySystem.addItem(newItem)
+        }
     }
 }

@@ -13,6 +13,6 @@ struct FixedProgressCalculator: ProgressCalculator {
     }
 
     func calculateProgress(from eventData: EventData) -> Float {
-        return amount
+        amount
     }
 }

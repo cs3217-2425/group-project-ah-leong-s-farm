@@ -13,6 +13,16 @@ class InventorySystem: GKComponentSystem<InventoryComponent> {
         super.init(componentClass: InventoryComponent.self)
     }
 
+    func createItem(type: ItemType,
+                    quantity: Int,
+                    stackable: Bool) -> GKEntity {
+        let entity = GKEntity()
+        let itemComponent = ItemComponent(itemType: type, stackable: stackable)
+        itemComponent.quantity = quantity
+        entity.addComponent(itemComponent)
+        return entity
+    }
+
     /// Adds a GKEntity to the inventory if and only if it is an item component.
     /// - Returns: True if the item is added successfully, false otherwise.
     @discardableResult

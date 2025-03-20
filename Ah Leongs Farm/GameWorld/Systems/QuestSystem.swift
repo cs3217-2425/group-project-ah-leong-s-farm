@@ -20,18 +20,16 @@ class QuestSystem: GKComponentSystem<QuestComponent> {
                 continue
             }
 
-            if criteria.eventType == eventData.eventType {
-                let criteriaMet = checkCriteria(criteria, againstEvent: eventData)
+            let criteriaMet = checkCriteria(criteria, againstEvent: eventData)
 
-                if criteriaMet {
-                    let increment = criteria.progressCalculator.calculateProgress(from: eventData)
+            if criteriaMet {
+                let increment = criteria.progressCalculator.calculateProgress(from: eventData)
 
-                    objective.progress += increment
-                    objective.progress = min(objective.progress, objective.target)
+                objective.progress += increment
+                objective.progress = min(objective.progress, objective.target)
 
-                    questComponent.objectives[i] = objective
-                    questUpdated = true
-                }
+                questComponent.objectives[i] = objective
+                questUpdated = true
             }
         }
 
@@ -41,6 +39,9 @@ class QuestSystem: GKComponentSystem<QuestComponent> {
     }
 
     private func checkCriteria(_ criteria: QuestCriteria, againstEvent eventData: EventData) -> Bool {
+        if criteria.eventType != eventData.eventType {
+            return false
+        }
         // Check each required data attribute
         for (dataType, requiredValue) in criteria.requiredData {
             guard let eventValue = eventData.data[dataType] else {
@@ -94,7 +95,7 @@ class QuestSystem: GKComponentSystem<QuestComponent> {
         self.removeComponent(components[0])
     }
 }
-extension QuestSystem: EventObserver {
+extension QuestSystem: IEventObserver {
     func onEvent(_ eventData: EventData) {
         for component in components where component.status == .active {
             updateQuestProgress(component, with: eventData)

@@ -11,9 +11,8 @@ struct QuestCriteria {
     let progressCalculator: ProgressCalculator
 
     init(eventType: EventType,
-         requiredData: [EventDataType: any Hashable] = [:],
-         progressCalculator: ProgressCalculator
-    ) {
+         progressCalculator: ProgressCalculator,
+         requiredData: [EventDataType: any Hashable] = [:]) {
         self.eventType = eventType
         self.requiredData = requiredData
         self.progressCalculator = progressCalculator

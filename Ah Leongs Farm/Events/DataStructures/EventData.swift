@@ -7,6 +7,7 @@
 
 struct EventData {
     let eventType: EventType
+    // Make value hashable for simpler equality checks
     var data: [EventDataType: any Hashable] = [:]
 
     mutating func addData(type: EventDataType, value: any Hashable) {

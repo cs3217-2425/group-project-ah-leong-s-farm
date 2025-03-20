@@ -53,4 +53,6 @@ enum ItemType: Hashable {
     case appleHarvested
     case potatoSeed
     case potatoHarvested
+    case fertiliser
+    case upgradedWateringCan
 }
