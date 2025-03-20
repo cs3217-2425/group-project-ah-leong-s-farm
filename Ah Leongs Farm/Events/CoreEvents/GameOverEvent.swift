@@ -7,10 +7,10 @@
 
 struct GameOverEvent: GameEvent {
 
-    func execute(in context: EventContext) {
+    func execute(in context: EventContext) -> EventData? {
         guard let turnSystem = context.getSystem(ofType: TurnSystem.self),
               let walletSystem = context.getSystem(ofType: WalletSystem.self) else {
-            return
+            return nil
         }
 
         let finalTurn = turnSystem.getCurrentTurn()
@@ -25,6 +25,7 @@ struct GameOverEvent: GameEvent {
         print("Final coins: \(finalCoins)")
         print("Final score: \(finalScore)")
 
+        return nil
     }
 
     private func calculateScore(turns: Int, coins: Double) -> Int {

@@ -11,6 +11,16 @@ class GameWorld {
 
     private(set) var entities: Set<GKEntity> = []
     private var systems: [any ISystem] = []
+    private var eventDispatcher: EventDispatcher?
+
+    init() {
+        self.eventDispatcher = EventDispatcher(context: self)
+    }
+
+    func update(deltaTime: TimeInterval) {
+        updateSystems(deltaTime: deltaTime)
+        processEvents()
+    }
 
     func addEntity(_ entity: GKEntity) {
         entities.insert(entity)
@@ -38,13 +48,36 @@ class GameWorld {
         systems.removeAll(where: { $0 === system })
     }
 
-    func updateSystems(deltaTime: TimeInterval) {
+    private func updateSystems(deltaTime: TimeInterval) {
         for system in systems {
             system.update(deltaTime: deltaTime)
         }
     }
 
+    func registerEventObserver(_ observer: EventObserver) {
+        guard let eventDispatcher = eventDispatcher else {
+            return
+        }
+        eventDispatcher.addEventObserver(observer)
+    }
+
+    private func processEvents() {
+        guard let eventDispatcher = eventDispatcher else {
+            return
+        }
+        eventDispatcher.processEvents()
+    }
+}
+
+extension GameWorld: EventContext {
     func getSystem<T>(ofType: T.Type) -> T? {
         return systems.first { $0 is T } as? T
+    }
+
+    func queueEvent(_ event: GameEvent) {
+        guard let eventDispatcher = eventDispatcher else {
+            return
+        }
+        eventDispatcher.queueEvent(event)
     }
 }

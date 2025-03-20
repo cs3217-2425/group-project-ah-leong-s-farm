@@ -2,12 +2,70 @@ import Foundation
 import GameplayKit
 
 class QuestSystem: GKComponentSystem<QuestComponent> {
+    private weak var eventContext: EventContext?
 
-    override init() {
+    init(eventContext: EventContext) {
+        self.eventContext = eventContext
         super.init(componentClass: QuestComponent.self)
     }
 
-    // Get the current quest (first in the queue)
+    private func updateQuestProgress(_ questComponent: QuestComponent, with eventData: EventData) {
+        var questUpdated = false
+
+        for i in 0..<questComponent.objectives.count {
+            var objective = questComponent.objectives[i]
+            let criteria = objective.criteria
+
+            if objective.isCompleted {
+                continue
+            }
+
+            if criteria.eventType == eventData.eventType {
+                let criteriaMet = checkCriteria(criteria, againstEvent: eventData)
+
+                if criteriaMet {
+                    let increment = criteria.progressCalculator.calculateProgress(from: eventData)
+
+                    objective.progress += increment
+                    objective.progress = min(objective.progress, objective.target)
+
+                    questComponent.objectives[i] = objective
+                    questUpdated = true
+                }
+            }
+        }
+
+        if questUpdated && questComponent.isCompleted && questComponent.status != .completed {
+            completeQuest(questComponent)
+        }
+    }
+
+    private func checkCriteria(_ criteria: QuestCriteria, againstEvent eventData: EventData) -> Bool {
+        // Check each required data attribute
+        for (dataType, requiredValue) in criteria.requiredData {
+            guard let eventValue = eventData.data[dataType] else {
+                return false
+            }
+            if AnyHashable(eventValue) != AnyHashable(requiredValue) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    private func completeQuest(_ questComponent: QuestComponent) {
+        questComponent.status = .completed
+
+        if let eventContext = eventContext {
+            let completionEvent = QuestCompletedEvent(
+                reward: questComponent.completionReward
+            )
+
+            eventContext.queueEvent(completionEvent)
+        }
+    }
+
     private var currentQuest: QuestComponent? {
         components.first
     }
@@ -28,25 +86,18 @@ class QuestSystem: GKComponentSystem<QuestComponent> {
         self.addComponent(quest)
     }
 
-    func updateCurrentQuestProgress(objective: QuestObjective, by amount: Float) {
-        guard let quest = currentQuest else {
-            return
-        }
-
-        if let index = quest.objectives.firstIndex(where: { $0.description == objective.description }) {
-
-            var objective = quest.objectives[index]
-            let updatedProgress = quest.objectives[index].progress + amount
-
-            objective.setProgress(by: updatedProgress)
-        }
-    }
-
     func moveToNextQuest() {
         guard !components.isEmpty else {
             return
         }
 
         self.removeComponent(components[0])
+    }
+}
+extension QuestSystem: EventObserver {
+    func onEvent(_ eventData: EventData) {
+        for component in components where component.status == .active {
+            updateQuestProgress(component, with: eventData)
+        }
     }
 }
