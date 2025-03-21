@@ -14,12 +14,9 @@ class WalletSystem: GKComponentSystem<WalletComponent> {
     }
 
     func addCurrencyToAll(_ currency: CurrencyType, amount: Double) {
-        print("---------")
-        print(components)
         for component in components {
             addCurrencyToWallet(component, of: currency, amount: amount)
         }
-        print("---------")
     }
 
     func removeCurrencyFromAll(_ currency: CurrencyType, amount: Double) {
@@ -57,7 +54,6 @@ class WalletSystem: GKComponentSystem<WalletComponent> {
 
         let newAmount = currentAmount + amount
         walletComponent.wallet[currency] = newAmount
-        print(newAmount)
     }
 
     /// Removes a specific type of currency if and only if the currency type exists, and the specified
