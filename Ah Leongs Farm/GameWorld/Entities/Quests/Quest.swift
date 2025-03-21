@@ -1,7 +1,6 @@
 import GameplayKit
 
 class Quest: GKEntity {
-    // Reference to the quest component for easy access
     private(set) var questComponent: QuestComponent
 
     init(questComponent: QuestComponent) {

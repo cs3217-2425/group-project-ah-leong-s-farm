@@ -6,27 +6,15 @@ class GameManager {
     private var gameObservers: [any IGameObserver] = []
 
     init(scene: SKScene) {
-        // Initialize game world
         gameWorld = GameWorld()
-
-        // Set up systems first
         setUpSystems()
-
-        // Set up base entities
         setUpBaseEntities()
-
-        // Set up quests - do this after setting up systems and base entities
         setUpQuests()
-
-        // Set up renderers and observers
         setUpGameObservers(scene: scene)
     }
 
     func update(_ currentTime: TimeInterval) {
-        // Update game world (which updates systems and processes events)
         gameWorld.update(deltaTime: currentTime)
-
-        // Notify observers about the updated game state
         gameObservers.forEach { $0.notify(gameWorld) }
     }
 
@@ -40,7 +28,6 @@ class GameManager {
     // MARK: - Setup Methods
 
     private func setUpSystems() {
-        // Core game systems
         gameWorld.addSystem(EnergySystem())
         gameWorld.addSystem(TurnSystem())
         gameWorld.addSystem(WalletSystem())
@@ -48,22 +35,18 @@ class GameManager {
         gameWorld.addSystem(LevelSystem())
         gameWorld.addSystem(CropSystem())
 
-        // Quest system needs special handling for event observation
         let questSystem = QuestSystem(eventContext: gameWorld)
         gameWorld.addSystem(questSystem)
         gameWorld.registerEventObserver(questSystem)
     }
 
     private func setUpBaseEntities() {
-        // Farm and world entities
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
 
-        // Player-related entities
         gameWorld.addEntity(Wallet())
         gameWorld.addEntity(Inventory())
         gameWorld.addEntity(Level(level: 1, currentXP: 0))
 
-        // Add starting items to inventory
         addStartingItems()
 
         let farmLand = FarmLand(rows: 20, columns: 20)
@@ -74,9 +57,9 @@ class GameManager {
     }
 
     private func setUpQuests() {
-        addMainStoryQuests()
-        addSideQuests()
         addTutorialQuests()
+        addMainStoryQuests()
+        addMoreQuests()
     }
 
     private func setUpGameObservers(scene: SKScene) {
@@ -95,8 +78,6 @@ class GameManager {
     // MARK: - Quest Setup Methods
 
     private func addMainStoryQuests() {
-        // Main story questline - typically would be sequential
-
         // First main quest - Apple collection quest
         let appleQuest = QuestFactory.createAppleCollectionQuest()
         gameWorld.addEntity(appleQuest)
@@ -119,10 +100,9 @@ class GameManager {
         gameWorld.addEntity(farmBusinessQuest)
     }
 
-    private func addSideQuests() {
-        // Side quests - optional quests for additional rewards
+    private func addMoreQuests() {
 
-        // Create a survival side quest
+        // Create a survival quest
         let survivalQuest = QuestFactory.createFarmStarterQuest()
         gameWorld.addEntity(survivalQuest)
 
@@ -144,7 +124,6 @@ class GameManager {
     private func addTutorialQuests() {
         // Tutorial quests - simple quests to teach game mechanics
 
-        // Very simple harvest quest with small reward
         let tutorialReward = Reward(xpReward: 25)
 
         let tutorialQuest = QuestFactory.createHarvestQuest(

@@ -6,7 +6,7 @@
 //
 
 struct EndTurnEvent: GameEvent {
-
+    // TODO: update crops!
     func execute(in context: EventContext) -> EventData? {
         var eventData = EventData(eventType: .endTurn)
         guard let turnSystem = context.getSystem(ofType: TurnSystem.self),
