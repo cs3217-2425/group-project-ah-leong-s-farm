@@ -14,9 +14,12 @@ class WalletSystem: GKComponentSystem<WalletComponent> {
     }
 
     func addCurrencyToAll(_ currency: CurrencyType, amount: Double) {
+        print("---------")
+        print(components)
         for component in components {
             addCurrencyToWallet(component, of: currency, amount: amount)
         }
+        print("---------")
     }
 
     func removeCurrencyFromAll(_ currency: CurrencyType, amount: Double) {
@@ -43,8 +46,7 @@ class WalletSystem: GKComponentSystem<WalletComponent> {
     /// - Parameter amount: The amount to add, must be a non-negative value.
     private func addCurrencyToWallet(_ walletComponent: WalletComponent, of currency: CurrencyType,
                                      amount: Double) {
-        var wallet = walletComponent.wallet
-        guard let currentAmount = wallet[currency] else {
+        guard let currentAmount = walletComponent.wallet[currency] else {
             return
         }
 
@@ -54,7 +56,8 @@ class WalletSystem: GKComponentSystem<WalletComponent> {
         }
 
         let newAmount = currentAmount + amount
-        wallet[currency] = newAmount
+        walletComponent.wallet[currency] = newAmount
+        print(newAmount)
     }
 
     /// Removes a specific type of currency if and only if the currency type exists, and the specified
@@ -64,8 +67,7 @@ class WalletSystem: GKComponentSystem<WalletComponent> {
     /// - Parameter amount: The amount to remove, must be a non-negative value.
     private func removeCurrencyFromWallet(_ walletComponent: WalletComponent, of currency: CurrencyType,
                                           amount: Double) {
-        var wallet = walletComponent.wallet
-        guard let currentAmount = wallet[currency] else {
+        guard let currentAmount = walletComponent.wallet[currency] else {
             return
         }
 
@@ -80,6 +82,6 @@ class WalletSystem: GKComponentSystem<WalletComponent> {
         }
 
         let newAmount = currentAmount - amount
-        wallet[currency] = newAmount
+        walletComponent.wallet[currency] = newAmount
     }
 }
