@@ -47,7 +47,8 @@ class InventorySystem: GKComponentSystem<InventoryComponent> {
             return true
         }
 
-        return false
+        inventoryComponent.items.insert(itemToAdd)
+        return true
     }
 
     func removeItem(_ item: GKEntity) {
