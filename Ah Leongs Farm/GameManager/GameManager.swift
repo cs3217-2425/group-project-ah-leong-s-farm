@@ -48,6 +48,7 @@ class GameManager {
         gameWorld.addSystem(LevelSystem())
         gameWorld.addSystem(QuestSystem())
         gameWorld.addSystem(CropSystem())
+        gameWorld.addSystem(GridSystem())
     }
 
     private func setUpGameObservers(scene: SKScene) {

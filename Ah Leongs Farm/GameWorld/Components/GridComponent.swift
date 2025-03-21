@@ -35,7 +35,7 @@ class GridComponent: GKComponent {
         matrix[row][column] = entity
     }
 
-    func getObject(row: Int, column: Int) -> GKEntity? {
+    func getEntity(row: Int, column: Int) -> GKEntity? {
         guard isRowValid(row), isColumnValid(column) else {
             return nil
         }
