@@ -16,7 +16,7 @@ class RewardHandlerFactory {
     static func getStrategy(for rewardType: RewardType) -> RewardHandler {
         // Return the existing strategy or create a new one if needed
         guard let strategy = strategies[rewardType] else {
-            fatalError("Strategy not registered for \(rewardType)")
+            fatalError("Strategy not registered within for \(rewardType)")
         }
         return strategy
     }

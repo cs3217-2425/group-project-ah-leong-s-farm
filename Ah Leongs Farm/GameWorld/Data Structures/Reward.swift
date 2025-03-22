@@ -19,12 +19,10 @@ struct XPSpecificReward: SpecificReward {
 
 struct CurrencySpecificReward: SpecificReward {
     let type = RewardType.currency
-    let currency: CurrencyType
-    let amount: Double
+    let currencies: [CurrencyType: Double]
 }
 
 struct ItemSpecificReward: SpecificReward {
     let type = RewardType.item
-    let itemType: ItemType
-    let quantity: Int
+    let itemTypes: [ItemType: Int]
 }

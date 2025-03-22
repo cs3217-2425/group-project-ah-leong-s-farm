@@ -27,10 +27,15 @@ class CurrencyRewardHandler: RewardHandler {
               let walletSystem = context.getSystem(ofType: WalletSystem.self) else {
             return
         }
+        for currencyType in currencyReward.currencies.keys {
+            guard let amount = currencyReward.currencies[currencyType] else {
+                fatalError("Failed to get value for \(currencyType).")
+            }
+            walletSystem.addCurrencyToAll(currencyType, amount: amount)
+            eventData.addData(type: .currencyGrant, value: currencyType)
+            eventData.addData(type: .currencyTransactionAmount, value: amount)
+        }
 
-        walletSystem.addCurrencyToAll(currencyReward.currency, amount: currencyReward.amount)
-        eventData.addData(type: .currencyGrant, value: currencyReward.currency)
-        eventData.addData(type: .currencyGrantAmount, value: currencyReward.amount)
     }
 }
 
@@ -41,9 +46,14 @@ class ItemRewardHandler: RewardHandler {
             return
         }
 
-        let newItem = inventorySystem.createItem(type: itemReward.itemType, quantity: itemReward.quantity)
-        inventorySystem.addItem(newItem)
-        eventData.addData(type: .itemGrant, value: itemReward.itemType)
-        eventData.addData(type: .itemGrantQuantity, value: itemReward.quantity)
+        for itemType in itemReward.itemTypes.keys {
+            guard let quantity = itemReward.itemTypes[itemType] else {
+                fatalError("Failed to get value for \(itemType)")
+            }
+            let newItem = inventorySystem.createItem(type: itemType, quantity: quantity)
+            inventorySystem.addItem(newItem)
+            eventData.addData(type: .itemGrant, value: itemType)
+            eventData.addData(type: .itemGrantQuantity, value: quantity)
+        }
     }
 }

@@ -21,7 +21,8 @@ enum EventDataType {
     case cropAmount
     case xpGrantAmount
     case currencyGrant
-    case currencyGrantAmount
+    case currencySpend
+    case currencyTransactionAmount
     case itemGrant
     case itemGrantQuantity
 }

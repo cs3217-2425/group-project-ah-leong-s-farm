@@ -85,10 +85,9 @@ class GameManager {
         // Farm business quest (more complex, multi-objective)
         let businessReward = Reward(rewards: [
             XPSpecificReward(amount: 150),
-            CurrencySpecificReward(currency: CurrencyType.coin,
-                                   amount: Double(200)),
-            ItemSpecificReward(itemType: ItemType.fertiliser,
-                               quantity: 2)
+            CurrencySpecificReward(currencies: [CurrencyType.coin: 200]),
+            ItemSpecificReward(itemTypes: [ItemType.fertiliser: 2,
+                                           ItemType.potatoSeed: 3])
         ])
 
         let farmBusinessQuest = QuestFactory.createFarmBusinessQuest(
@@ -107,8 +106,7 @@ class GameManager {
 
         let sellQuestReward = Reward(rewards: [
             XPSpecificReward(amount: 75),
-            CurrencySpecificReward(currency: CurrencyType.coin,
-                                   amount: 100)
+            CurrencySpecificReward(currencies: [CurrencyType.coin: 100])
         ])
 
         // Create a sell quest
