@@ -14,10 +14,9 @@ class InventorySystem: GKComponentSystem<InventoryComponent> {
     }
 
     func createItem(type: ItemType,
-                    quantity: Int,
-                    stackable: Bool) -> GKEntity {
+                    quantity: Int) -> GKEntity {
         let entity = GKEntity()
-        let itemComponent = ItemComponent(itemType: type, stackable: stackable)
+        let itemComponent = ItemComponent(itemType: type)
         itemComponent.quantity = quantity
         entity.addComponent(itemComponent)
         return entity

@@ -70,7 +70,7 @@ class GameManager {
 
     private func addStartingItems() {
         if let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) {
-            let seedItem = inventorySystem.createItem(type: .bokChoySeed, quantity: 5, stackable: true)
+            let seedItem = inventorySystem.createItem(type: .bokChoySeed, quantity: 5)
             inventorySystem.addItem(seedItem)
         }
     }
@@ -83,14 +83,13 @@ class GameManager {
         gameWorld.addEntity(appleQuest)
 
         // Farm business quest (more complex, multi-objective)
-        let businessReward = Reward(xpReward: 150,
-                                    currencyReward: (type: CurrencyType.coin,
-                                                     amount: Double(200)),
-                                    itemReward: (type: ItemType.fertiliser,
-                                                 stackable: true,
-                                                 quantity: 2)
-
-        )
+        let businessReward = Reward(rewards: [
+            XPSpecificReward(amount: 150),
+            CurrencySpecificReward(currency: CurrencyType.coin,
+                                   amount: Double(200)),
+            ItemSpecificReward(itemType: ItemType.fertiliser,
+                               quantity: 2)
+        ])
 
         let farmBusinessQuest = QuestFactory.createFarmBusinessQuest(
             reward: businessReward,
@@ -106,11 +105,13 @@ class GameManager {
         let survivalQuest = QuestFactory.createFarmStarterQuest()
         gameWorld.addEntity(survivalQuest)
 
-        // Create a sell quest
-        let sellQuestReward = Reward(xpReward: 75,
-                                     currencyReward: (type: CurrencyType.coin,
-                                                                    amount: 100))
+        let sellQuestReward = Reward(rewards: [
+            XPSpecificReward(amount: 75),
+            CurrencySpecificReward(currency: CurrencyType.coin,
+                                   amount: 100)
+        ])
 
+        // Create a sell quest
         let sellQuest = QuestFactory.createSellQuest(
             title: "Market Sales",
             cropType: .bokChoy,
@@ -124,7 +125,9 @@ class GameManager {
     private func addTutorialQuests() {
         // Tutorial quests - simple quests to teach game mechanics
 
-        let tutorialReward = Reward(xpReward: 25)
+        let tutorialReward = Reward(rewards: [
+            XPSpecificReward(amount: 25)
+        ])
 
         let tutorialQuest = QuestFactory.createHarvestQuest(
             title: "Learning to Harvest",

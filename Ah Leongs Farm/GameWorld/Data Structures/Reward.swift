@@ -1,5 +1,30 @@
 struct Reward {
-    var xpReward: Float?
-    var currencyReward: (type: CurrencyType, amount: Double)?
-    var itemReward: (type: ItemType, stackable: Bool, quantity: Int)?
+    var rewards: [any SpecificReward]
+}
+
+enum RewardType {
+    case xp
+    case currency
+    case item
+}
+
+protocol SpecificReward {
+    var type: RewardType { get }
+}
+
+struct XPSpecificReward: SpecificReward {
+    let type = RewardType.xp
+    let amount: Float
+}
+
+struct CurrencySpecificReward: SpecificReward {
+    let type = RewardType.currency
+    let currency: CurrencyType
+    let amount: Double
+}
+
+struct ItemSpecificReward: SpecificReward {
+    let type = RewardType.item
+    let itemType: ItemType
+    let quantity: Int
 }

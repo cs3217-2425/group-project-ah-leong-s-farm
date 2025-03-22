@@ -174,9 +174,11 @@ class QuestFactory {
     // MARK: - Utility Methods
 
     static func createAppleCollectionQuest() -> Quest {
-        let reward = Reward(xpReward: 100,
-                            currencyReward: (type: CurrencyType.coin,
-                                             amount: 50))
+        let reward = Reward(rewards: [
+            XPSpecificReward(amount: 100),
+            CurrencySpecificReward(currency: CurrencyType.coin,
+                                   amount: 50)
+        ])
 
         return createHarvestQuest(
             title: "Apple Collection",
@@ -187,10 +189,11 @@ class QuestFactory {
     }
 
     static func createFarmStarterQuest() -> Quest {
-        let reward = Reward(xpReward: 50,
-                            itemReward: (type: ItemType.upgradedWateringCan,
-                                         stackable: false,
-                                         quantity: 1))
+        let reward = Reward(rewards: [
+            XPSpecificReward(amount: 50),
+            ItemSpecificReward(itemType: ItemType.upgradedWateringCan,
+                               quantity: 1)
+        ])
 
         return createSurvivalQuest(
             title: "Farm Beginnings",
