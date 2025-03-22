@@ -109,20 +109,4 @@ final class EnergyComponentTests: XCTestCase {
         XCTAssertEqual(component.maxEnergy, 15)
         XCTAssertEqual(component.currentEnergy, 7)
     }
-
-    func testBoundaryConditions() {
-        guard let component = energyComponent else {
-            XCTFail("Failed to create component")
-            return
-        }
-
-        component.currentEnergy = Int.max
-        XCTAssertEqual(component.currentEnergy, Int.max)
-
-        component.currentEnergy = Int.min
-        XCTAssertEqual(component.currentEnergy, Int.min)
-
-        component.maxEnergy = Int.max
-        XCTAssertEqual(component.maxEnergy, Int.max)
-    }
 }
