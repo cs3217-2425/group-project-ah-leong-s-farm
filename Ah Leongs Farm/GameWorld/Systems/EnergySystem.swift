@@ -20,6 +20,9 @@ class EnergySystem: GKComponentSystem<EnergyComponent> {
         guard energyComponent.currentEnergy >= amount else {
             return false
         }
+        guard amount >= 0 else {
+            return false
+        }
 
         energyComponent.currentEnergy -= amount
         return true
