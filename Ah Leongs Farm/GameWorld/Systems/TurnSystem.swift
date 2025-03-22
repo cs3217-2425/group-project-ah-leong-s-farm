@@ -12,7 +12,7 @@ class TurnSystem: GKComponentSystem<TurnComponent> {
         }
 
         turnComponent.currentTurn += 1
-        let shouldContinue = turnComponent.currentTurn < turnComponent.maxTurns
+        let shouldContinue = turnComponent.currentTurn <= turnComponent.maxTurns
 
         return shouldContinue
     }
