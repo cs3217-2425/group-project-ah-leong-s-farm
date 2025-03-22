@@ -4,10 +4,9 @@ class PositionComponent: GKComponent {
     var x: CGFloat
     var y: CGFloat
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        x = 0
-        y = 0
-        super.init(coder: coder)
+        fatalError("init(coder:) not implemented")
     }
 
     init(x: CGFloat, y: CGFloat) {

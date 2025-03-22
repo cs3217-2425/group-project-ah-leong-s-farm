@@ -1,20 +1,16 @@
 import Foundation
 
-class QuestObjective {
+struct QuestObjective {
+    let description: String
+    let criteria: QuestCriteria
+    let target: Float
     var progress: Float
-    var target: Float
-    var description: String
 
-    init(description: String, progress: Float, target: Float) {
+    init(description: String, criteria: QuestCriteria, target: Float) {
         self.description = description
-        self.progress = progress
+        self.criteria = criteria
         self.target = target
-    }
-
-    @discardableResult
-    func setProgress(by amount: Float) -> Bool {
-        progress = amount
-        return progress >= target
+        self.progress = 0
     }
 
     var isCompleted: Bool {

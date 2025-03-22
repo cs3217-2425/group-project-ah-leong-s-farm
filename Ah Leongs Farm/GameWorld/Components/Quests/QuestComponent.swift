@@ -2,16 +2,16 @@ import Foundation
 import GameplayKit
 
 class QuestComponent: GKComponent {
-    private(set) var status: QuestStatus
-    private(set) var progress: Float
-    private(set) var objectives: [QuestObjective]
-    private(set) var completionReward: Reward
+    let title: String
+    var status: QuestStatus
+    var objectives: [QuestObjective]
+    let completionReward: Reward
 
-    init(status: QuestStatus, objectives: [QuestObjective], completionReward: Reward) {
-        self.status = status
-        self.progress = 0
+    init(title: String, objectives: [QuestObjective], reward: Reward) {
+        self.title = title
+        self.status = .active
         self.objectives = objectives
-        self.completionReward = completionReward
+        self.completionReward = reward
         super.init()
     }
 
