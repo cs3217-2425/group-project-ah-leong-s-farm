@@ -190,7 +190,7 @@ class QuestFactory {
     static func createFarmStarterQuest() -> Quest {
         let reward = Reward(rewards: [
             XPSpecificReward(amount: 50),
-            ItemSpecificReward(itemTypes: [ItemType.upgradedWateringCan: 1])
+            ItemSpecificReward(itemTypes: [ItemType.premiumFertiliser: 1])
         ])
 
         return createSurvivalQuest(

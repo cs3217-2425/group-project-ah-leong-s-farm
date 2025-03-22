@@ -53,7 +53,7 @@ enum ItemType: Hashable {
     case potatoSeed
     case potatoHarvested
     case fertiliser
-    case upgradedWateringCan
+    case premiumFertiliser
 
     private struct Properties {
         static let stackable: Set<ItemType> = [
