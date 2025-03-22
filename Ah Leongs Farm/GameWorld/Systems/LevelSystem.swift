@@ -4,7 +4,7 @@ import GameplayKit
 class LevelSystem: GKComponentSystem<LevelComponent> {
 
     override init() {
-        super.init()
+        super.init(componentClass: LevelComponent.self)
     }
 
     func addXP(_ amount: Float) {
@@ -22,7 +22,7 @@ class LevelSystem: GKComponentSystem<LevelComponent> {
             newThreshold = LevelComponent.calculateXPThreshold(for: newLevel)
         }
 
-        levelComponent.setLevel(newLevel, xp: newXP, threshold: newThreshold)
+        levelComponent.setLevel(newLevel, xp: newXP)
     }
 
     func getCurrentLevel() -> Int {

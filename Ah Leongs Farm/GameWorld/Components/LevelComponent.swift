@@ -22,9 +22,9 @@ class LevelComponent: GKComponent {
         Float(level * 100)
     }
 
-    func setLevel(_ level: Int, xp: Float, threshold: Float) {
+    func setLevel(_ level: Int, xp: Float) {
         self.level = level
         self.currentXP = xp
-        self.thresholdXP = threshold
+        self.thresholdXP = LevelComponent.calculateXPThreshold(for: level)
     }
 }
