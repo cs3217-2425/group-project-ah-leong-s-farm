@@ -14,6 +14,6 @@ struct QuestObjective {
     }
 
     var isCompleted: Bool {
-        return progress >= target
+        progress >= target
     }
 }
