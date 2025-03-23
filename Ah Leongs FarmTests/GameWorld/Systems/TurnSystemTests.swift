@@ -48,7 +48,7 @@ final class TurnSystemTests: XCTestCase {
     }
 
     private func createEmptySystem() -> TurnSystem {
-        return TurnSystem()
+        TurnSystem()
     }
 
     func testInitialization() {
@@ -70,7 +70,9 @@ final class TurnSystemTests: XCTestCase {
     }
 
     func testRemoveComponent() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (turnSystem, gameEntity, _) = setup
 
         turnSystem.removeComponent(foundIn: gameEntity)
@@ -79,7 +81,9 @@ final class TurnSystemTests: XCTestCase {
     }
 
     func testIncrementTurn_WhenBelowMaxTurns_ShouldIncrementAndReturnTrue() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (turnSystem, _, turnComponent) = setup
 
         let shouldContinue = turnSystem.incrementTurn()
@@ -89,7 +93,9 @@ final class TurnSystemTests: XCTestCase {
     }
 
     func testIncrementTurn_WhenAtMaxTurns_ShouldIncrementAndReturnFalse() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (turnSystem, _, turnComponent) = setup
 
         turnComponent.currentTurn = 10
@@ -101,7 +107,9 @@ final class TurnSystemTests: XCTestCase {
     }
 
     func testIncrementTurn_WhenMultipleTimes_ShouldTrackCorrectly() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (turnSystem, _, turnComponent) = setup
 
         XCTAssertTrue(turnSystem.incrementTurn())
@@ -127,7 +135,9 @@ final class TurnSystemTests: XCTestCase {
     }
 
     func testGetCurrentTurn_ShouldReturnCorrectValue() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (turnSystem, _, turnComponent) = setup
 
         turnComponent.currentTurn = 5
@@ -146,7 +156,9 @@ final class TurnSystemTests: XCTestCase {
     }
 
     func testGetMaxTurns_ShouldReturnCorrectValue() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (turnSystem, _, _) = setup
 
         let maxTurns = turnSystem.getMaxTurns()
@@ -163,7 +175,9 @@ final class TurnSystemTests: XCTestCase {
     }
 
     func testIsGameOver_WhenUnderMaxTurns_ShouldReturnFalse() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (turnSystem, _, turnComponent) = setup
 
         turnComponent.currentTurn = 5
@@ -174,7 +188,9 @@ final class TurnSystemTests: XCTestCase {
     }
 
     func testIsGameOver_WhenAtMaxTurns_ShouldReturnFalse() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (turnSystem, _, turnComponent) = setup
 
         turnComponent.currentTurn = 10
@@ -185,7 +201,9 @@ final class TurnSystemTests: XCTestCase {
     }
 
     func testIsGameOver_WhenExceedingMaxTurns_ShouldReturnTrue() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (turnSystem, _, turnComponent) = setup
 
         turnComponent.currentTurn = 11
@@ -204,7 +222,9 @@ final class TurnSystemTests: XCTestCase {
     }
 
     func testMultipleComponentsSupport() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (turnSystem, _, _) = setup
 
         let secondEntity = GKEntity()

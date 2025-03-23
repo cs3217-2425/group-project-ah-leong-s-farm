@@ -11,7 +11,7 @@ import XCTest
 final class WalletComponentTests: XCTestCase {
     func testInit_createsWalletComponent() {
         let walletComponent = WalletComponent()
-        
+
         XCTAssertNotNil(walletComponent)
     }
 
