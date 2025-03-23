@@ -34,6 +34,7 @@ class GameManager {
         gameWorld.addSystem(InventorySystem())
         gameWorld.addSystem(LevelSystem())
         gameWorld.addSystem(CropSystem())
+        gameWorld.addSystem(GridSystem())
 
         let questSystem = QuestSystem(eventContext: gameWorld)
         gameWorld.addSystem(questSystem)
