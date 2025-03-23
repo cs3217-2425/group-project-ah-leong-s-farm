@@ -42,10 +42,10 @@ final class InventorySystemTests: XCTestCase {
 
     func testAddItem_nonStackableEntityWithItemComponent_returnsTrue() {
         let entity1 = GKEntity()
-        entity1.addComponent(UnstackableItemComponent(itemType: .bokChoySeed))
+        entity1.addComponent(ItemComponent(itemType: .premiumFertiliser))
 
         let entity2 = GKEntity()
-        entity2.addComponent(UnstackableItemComponent(itemType: .bokChoySeed))
+        entity2.addComponent(ItemComponent(itemType: .premiumFertiliser))
 
         let isItemAdded1 = inventorySystem.addItem(entity1)
         let isItemAdded2 = inventorySystem.addItem(entity2)
@@ -57,10 +57,10 @@ final class InventorySystemTests: XCTestCase {
 
     func testAddItem_stackableEntityWithItemComponent_returnsTrue() {
         let entity1 = GKEntity()
-        entity1.addComponent(StackableItemComponent(itemType: .bokChoySeed))
+        entity1.addComponent(ItemComponent(itemType: .bokChoySeed))
 
         let entity2 = GKEntity()
-        entity2.addComponent(StackableItemComponent(itemType: .bokChoySeed))
+        entity2.addComponent(ItemComponent(itemType: .bokChoySeed))
 
         let isItemAdded1 = inventorySystem.addItem(entity1)
         let isItemAdded2 = inventorySystem.addItem(entity2)
@@ -72,7 +72,7 @@ final class InventorySystemTests: XCTestCase {
 
     func testRemoveItem_existingEntity_removesEntity() {
         let entity = GKEntity()
-        entity.addComponent(StackableItemComponent(itemType: .bokChoySeed))
+        entity.addComponent(ItemComponent(itemType: .bokChoySeed))
 
         inventorySystem.addItem(entity)
         inventorySystem.removeItem(entity)
@@ -82,10 +82,10 @@ final class InventorySystemTests: XCTestCase {
 
     func testRemoveItem_nonExistingEntity_removesEntity() {
         let entity1 = GKEntity()
-        entity1.addComponent(StackableItemComponent(itemType: .bokChoySeed))
+        entity1.addComponent(ItemComponent(itemType: .bokChoySeed))
 
         let entity2 = GKEntity()
-        entity2.addComponent(StackableItemComponent(itemType: .bokChoyHarvested))
+        entity2.addComponent(ItemComponent(itemType: .bokChoyHarvested))
 
         inventorySystem.addItem(entity1)
         inventorySystem.removeItem(entity2)
@@ -95,7 +95,7 @@ final class InventorySystemTests: XCTestCase {
 
     func testRemoveItem_existingTypeRemovesAll_removesEntity() {
         let entity = GKEntity()
-        entity.addComponent(StackableItemComponent(itemType: .bokChoySeed))
+        entity.addComponent(ItemComponent(itemType: .bokChoySeed))
 
         inventorySystem.addItem(entity)
         let isRemoved = inventorySystem.removeItem(of: .bokChoySeed)
@@ -106,7 +106,7 @@ final class InventorySystemTests: XCTestCase {
 
     func testRemoveItem_nonExistingType_doesNotRemoveEntity() {
         let entity = GKEntity()
-        entity.addComponent(StackableItemComponent(itemType: .bokChoySeed))
+        entity.addComponent(ItemComponent(itemType: .bokChoySeed))
 
         inventorySystem.addItem(entity)
         let isRemoved = inventorySystem.removeItem(of: .bokChoyHarvested)
@@ -117,10 +117,10 @@ final class InventorySystemTests: XCTestCase {
 
     func testRemoveItem_existingTypeRemovesSome_doesNotRemoveEntity() {
         let entity1 = GKEntity()
-        entity1.addComponent(StackableItemComponent(itemType: .bokChoySeed))
+        entity1.addComponent(ItemComponent(itemType: .bokChoySeed))
 
         let entity2 = GKEntity()
-        entity2.addComponent(StackableItemComponent(itemType: .bokChoySeed))
+        entity2.addComponent(ItemComponent(itemType: .bokChoySeed))
 
         inventorySystem.addItem(entity1)
         inventorySystem.addItem(entity2)
@@ -132,7 +132,7 @@ final class InventorySystemTests: XCTestCase {
 
     func testHasItem_existingItem_returnsTrue() {
         let entity = GKEntity()
-        entity.addComponent(StackableItemComponent(itemType: .bokChoySeed))
+        entity.addComponent(ItemComponent(itemType: .bokChoySeed))
 
         inventorySystem.addItem(entity)
         let hasItem = inventorySystem.hasItem(entity)
@@ -142,7 +142,7 @@ final class InventorySystemTests: XCTestCase {
 
     func testHasItem_nonExistingItem_returnsFalse() {
         let entity = GKEntity()
-        entity.addComponent(StackableItemComponent(itemType: .bokChoySeed))
+        entity.addComponent(ItemComponent(itemType: .bokChoySeed))
 
         let hasItem = inventorySystem.hasItem(entity)
 
@@ -157,10 +157,10 @@ final class InventorySystemTests: XCTestCase {
 
     func testGetAllEntities_hasEntities_returnsEntitiesSet() {
         let entity1 = GKEntity()
-        entity1.addComponent(UnstackableItemComponent(itemType: .bokChoySeed))
+        entity1.addComponent(ItemComponent(itemType: .premiumFertiliser))
 
         let entity2 = GKEntity()
-        entity2.addComponent(UnstackableItemComponent(itemType: .bokChoySeed))
+        entity2.addComponent(ItemComponent(itemType: .premiumFertiliser))
 
         inventorySystem.addItem(entity1)
         inventorySystem.addItem(entity2)
@@ -173,10 +173,10 @@ final class InventorySystemTests: XCTestCase {
 
     func testGetNumberOfItems_twoStackableItem_returnsCorrectNumber() {
         let entity1 = GKEntity()
-        entity1.addComponent(StackableItemComponent(itemType: .bokChoySeed))
+        entity1.addComponent(ItemComponent(itemType: .bokChoySeed))
 
         let entity2 = GKEntity()
-        entity2.addComponent(StackableItemComponent(itemType: .bokChoySeed))
+        entity2.addComponent(ItemComponent(itemType: .bokChoySeed))
 
         inventorySystem.addItem(entity1)
         inventorySystem.addItem(entity2)
@@ -187,14 +187,14 @@ final class InventorySystemTests: XCTestCase {
 
     func testGetNumberOfItems_twoUnstackableItem_returnsCorrectNumber() {
         let entity1 = GKEntity()
-        entity1.addComponent(UnstackableItemComponent(itemType: .bokChoySeed))
+        entity1.addComponent(ItemComponent(itemType: .premiumFertiliser))
 
         let entity2 = GKEntity()
-        entity2.addComponent(UnstackableItemComponent(itemType: .bokChoySeed))
+        entity2.addComponent(ItemComponent(itemType: .premiumFertiliser))
 
         inventorySystem.addItem(entity1)
         inventorySystem.addItem(entity2)
-        let numOfItems = inventorySystem.getNumberOfItems(of: .bokChoySeed)
+        let numOfItems = inventorySystem.getNumberOfItems(of: .premiumFertiliser)
 
         XCTAssertEqual(numOfItems, 2)
     }

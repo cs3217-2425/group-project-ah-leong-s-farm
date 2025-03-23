@@ -10,7 +10,7 @@ import XCTest
 
 final class ItemComponentTests: XCTestCase {
     func testInit_nonStackable_returnsItemComponent() {
-        let itemComponent = ItemComponent(itemType: .bokChoySeed)
+        let itemComponent = ItemComponent(itemType: .premiumFertiliser)
 
         XCTAssertNotNil(itemComponent)
         XCTAssertEqual(itemComponent.quantity, 1)
@@ -18,7 +18,7 @@ final class ItemComponentTests: XCTestCase {
     }
 
     func testInit_stackable_returnsItemComponent() {
-        let itemComponent = ItemComponent(itemType: .premiumFertiliser)
+        let itemComponent = ItemComponent(itemType: .bokChoySeed)
 
         XCTAssertNotNil(itemComponent)
         XCTAssertEqual(itemComponent.quantity, 1)
@@ -26,7 +26,7 @@ final class ItemComponentTests: XCTestCase {
     }
 
     func testAdd_stackableValidAmount_increasesQuantity() {
-        var itemComponent = ItemComponent(itemType: .bokChoySeed)
+        let itemComponent = ItemComponent(itemType: .bokChoySeed)
         itemComponent.add(10)
 
         XCTAssertEqual(itemComponent.quantity, 11)
