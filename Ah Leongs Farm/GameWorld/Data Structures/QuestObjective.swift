@@ -14,6 +14,8 @@ struct QuestObjective {
     }
 
     var isCompleted: Bool {
-        progress >= target
+        print(self.progress)
+        print("huhhh", progress >= target)
+        return progress >= target
     }
 }

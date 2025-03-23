@@ -67,20 +67,16 @@ class QuestSystem: GKComponentSystem<QuestComponent> {
         }
     }
 
-    private var currentQuest: QuestComponent? {
-        components.first
+    private var currentQuests: [QuestComponent] {
+        components.filter { $0.status == .active }
     }
 
-    func getCurrentQuest() -> QuestComponent? {
-        currentQuest
+    func getCurrentQuests() -> [QuestComponent] {
+        currentQuests
     }
 
     func getAllQuests() -> [QuestComponent] {
         components
-    }
-
-    func isCurrentQuestCompleted() -> Bool {
-        currentQuest?.isCompleted ?? false
     }
 
     func addQuest(_ quest: QuestComponent) {
@@ -92,9 +88,17 @@ class QuestSystem: GKComponentSystem<QuestComponent> {
             return
         }
 
-        self.removeComponent(components[0])
+        // Change the first inactive quest to active
+        if let firstInactiveQuest = components.first(where: { $0.status == .inactive }) {
+            firstInactiveQuest.status = .active
+        }
+
+        for component in components where component.status == .completed {
+            self.removeComponent(component)
+        }
     }
 }
+
 extension QuestSystem: IEventObserver {
     func onEvent(_ eventData: EventData) {
         for component in components where component.status == .active {
