@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import GameplayKit
 @testable import Ah_Leongs_Farm
 
 final class InventoryComponentTests: XCTestCase {
@@ -17,8 +18,8 @@ final class InventoryComponentTests: XCTestCase {
     }
 
     func testInit_withEntities_createsInventoryComponentWithItems() {
-        let entity1 = MockGKEntity()
-        let entity2 = MockGKEntity()
+        let entity1 = GKEntity()
+        let entity2 = GKEntity()
         let inventoryComponent = InventoryComponent(items: [entity1, entity2])
 
         XCTAssertNotNil(inventoryComponent)

@@ -10,7 +10,7 @@ import XCTest
 
 final class ItemComponentTests: XCTestCase {
     func testInit_nonStackable_returnsItemComponent() {
-        let itemComponent = ItemComponent(itemType: .bokChoySeed, stackable: false)
+        let itemComponent = ItemComponent(itemType: .bokChoySeed)
 
         XCTAssertNotNil(itemComponent)
         XCTAssertEqual(itemComponent.quantity, 1)
@@ -18,7 +18,7 @@ final class ItemComponentTests: XCTestCase {
     }
 
     func testInit_stackable_returnsItemComponent() {
-        let itemComponent = ItemComponent(itemType: .bokChoySeed, stackable: true)
+        let itemComponent = ItemComponent(itemType: .premiumFertiliser)
 
         XCTAssertNotNil(itemComponent)
         XCTAssertEqual(itemComponent.quantity, 1)
@@ -26,69 +26,69 @@ final class ItemComponentTests: XCTestCase {
     }
 
     func testAdd_stackableValidAmount_increasesQuantity() {
-        var itemComponent = ItemComponent(itemType: .bokChoySeed, stackable: true)
+        var itemComponent = ItemComponent(itemType: .bokChoySeed)
         itemComponent.add(10)
 
         XCTAssertEqual(itemComponent.quantity, 11)
     }
 
     func testAdd_stackableInvalidAmount_doesNothing() {
-        var itemComponent = ItemComponent(itemType: .bokChoySeed, stackable: true)
+        var itemComponent = ItemComponent(itemType: .bokChoySeed)
         itemComponent.add(-5)
 
         XCTAssertEqual(itemComponent.quantity, 1)
     }
 
     func testAdd_stackableZeroAmount_doesNothing() {
-        var itemComponent = ItemComponent(itemType: .bokChoySeed, stackable: true)
+        var itemComponent = ItemComponent(itemType: .bokChoySeed)
         itemComponent.add(0)
 
         XCTAssertEqual(itemComponent.quantity, 1)
     }
 
     func testAdd_nonStackableValidAmount_doesNothing() {
-        var itemComponent = ItemComponent(itemType: .bokChoySeed, stackable: false)
+        var itemComponent = ItemComponent(itemType: .premiumFertiliser)
         itemComponent.add(10)
 
         XCTAssertEqual(itemComponent.quantity, 1)
     }
 
     func testRemove_nonStackableExcessAmount_doesNothing() {
-        var itemComponent = ItemComponent(itemType: .bokChoySeed, stackable: false)
+        var itemComponent = ItemComponent(itemType: .premiumFertiliser)
         itemComponent.remove(10)
 
         XCTAssertEqual(itemComponent.quantity, 1)
     }
 
     func testRemove_nonStackableValidAmount_doesNothing() {
-        var itemComponent = ItemComponent(itemType: .bokChoySeed, stackable: false)
+        var itemComponent = ItemComponent(itemType: .premiumFertiliser)
         itemComponent.remove(1)
 
         XCTAssertEqual(itemComponent.quantity, 0)
     }
 
     func testRemove_stackableNegativeAmount_doesNothing() {
-        var itemComponent = ItemComponent(itemType: .bokChoySeed, stackable: true)
+        var itemComponent = ItemComponent(itemType: .bokChoySeed)
         itemComponent.remove(-10)
 
         XCTAssertEqual(itemComponent.quantity, 1)
     }
 
     func testRemove_stackableValidAmount_doesNothing() {
-        var itemComponent = ItemComponent(itemType: .bokChoySeed, stackable: true)
+        var itemComponent = ItemComponent(itemType: .bokChoySeed)
         itemComponent.remove(1)
 
         XCTAssertEqual(itemComponent.quantity, 0)
     }
 
     func testHasSufficientQuantity_hasSufficient_returnsTrue() {
-        var itemComponent = ItemComponent(itemType: .bokChoySeed, stackable: true)
+        var itemComponent = ItemComponent(itemType: .bokChoySeed)
 
         XCTAssertTrue(itemComponent.hasSufficientQuantity(1))
     }
 
     func testHasSufficientQuantity_hasInsufficient_returnsFalse() {
-        var itemComponent = ItemComponent(itemType: .bokChoySeed, stackable: false)
+        var itemComponent = ItemComponent(itemType: .premiumFertiliser)
 
         XCTAssertFalse(itemComponent.hasSufficientQuantity(10))
     }
