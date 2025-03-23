@@ -13,11 +13,9 @@ class GridComponent: GKComponent {
     let numberOfRows: Int
     let numberOfColumns: Int
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        matrix = []
-        numberOfRows = 0
-        numberOfColumns = 0
-        super.init(coder: coder)
+        fatalError("init(coder:) not implemented")
     }
 
     init(rows numberOfRows: Int, columns numberOfColumns: Int) {
@@ -35,7 +33,7 @@ class GridComponent: GKComponent {
         matrix[row][column] = entity
     }
 
-    func getObject(row: Int, column: Int) -> GKEntity? {
+    func getEntity(row: Int, column: Int) -> GKEntity? {
         guard isRowValid(row), isColumnValid(column) else {
             return nil
         }

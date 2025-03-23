@@ -7,4 +7,5 @@
 
 protocol EventContext: AnyObject {
     func getSystem<T>(ofType: T.Type) -> T?
+    func queueEvent(_ event: GameEvent)
 }
