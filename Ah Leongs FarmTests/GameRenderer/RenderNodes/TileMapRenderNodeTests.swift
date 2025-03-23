@@ -10,7 +10,12 @@ class TileMapRenderNodeTests: XCTestCase {
             return
         }
 
-        let tileMapRenderNode = TileMapRenderNode(tileSet: tileSet, rows: 3, columns: 3, tileSize: CGSize(width: 48, height: 48))
+        let tileMapRenderNode = TileMapRenderNode(
+            tileSet: tileSet,
+            rows: 3,
+            columns: 3,
+            tileSize: CGSize(width: 48, height: 48)
+        )
 
         XCTAssertNotNil(tileMapRenderNode)
         XCTAssertEqual(tileMapRenderNode.rows, 3)
@@ -23,7 +28,12 @@ class TileMapRenderNodeTests: XCTestCase {
             return
         }
 
-        let tileMapRenderNode = TileMapRenderNode(tileSet: tileSet, rows: 3, columns: 3, tileSize: CGSize(width: 48, height: 48))
+        let tileMapRenderNode = TileMapRenderNode(
+            tileSet: tileSet,
+            rows: 3,
+            columns: 3,
+            tileSize: CGSize(width: 48, height: 48)
+        )
 
         XCTAssertEqual(tileMapRenderNode.rows, 3)
     }
@@ -34,7 +44,12 @@ class TileMapRenderNodeTests: XCTestCase {
             return
         }
 
-        let tileMapRenderNode = TileMapRenderNode(tileSet: tileSet, rows: 3, columns: 3, tileSize: CGSize(width: 48, height: 48))
+        let tileMapRenderNode = TileMapRenderNode(
+            tileSet: tileSet,
+            rows: 3,
+            columns: 3,
+            tileSize: CGSize(width: 48, height: 48)
+        )
 
         XCTAssertEqual(tileMapRenderNode.columns, 3)
     }
@@ -45,10 +60,14 @@ class TileMapRenderNodeTests: XCTestCase {
             return
         }
 
-        let tileMapRenderNode = TileMapRenderNode(tileSet: tileSet, rows: 3, columns: 3, tileSize: CGSize(width: 48, height: 48))
+        let tileMapRenderNode = TileMapRenderNode(
+            tileSet: tileSet,
+            rows: 3,
+            columns: 3,
+            tileSize: CGSize(width: 48, height: 48)
+        )
 
         tileMapRenderNode.fill(with: "Land")
-
 
         guard let skTileMapNode = tileMapRenderNode.skNode as? SKTileMapNode else {
             XCTFail("Could not cast tileMapRenderNode's skNode as SKTileMapNode")
