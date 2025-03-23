@@ -23,7 +23,7 @@ final class WalletSystemTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        walletComponents = []
+        walletComponents.removeAll()
     }
 
     func testInit_createsWalletSystem() {
