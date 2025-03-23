@@ -48,7 +48,7 @@ final class EnergySystemTests: XCTestCase {
     }
 
     private func createEmptySystem() -> EnergySystem {
-        return EnergySystem()
+        EnergySystem()
     }
 
     func testInitialization() {
@@ -70,7 +70,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testRemoveComponent() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, gameEntity, _) = setup
 
         energySystem.removeComponent(foundIn: gameEntity)
@@ -79,7 +81,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testUseEnergy_WithSufficientEnergy_ShouldSucceed() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         let success = energySystem.useEnergy(amount: 5)
@@ -89,7 +93,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testUseEnergy_WithExactlyAvailableEnergy_ShouldSucceed() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         let success = energySystem.useEnergy(amount: 10)
@@ -99,7 +105,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testUseEnergy_WithInsufficientEnergy_ShouldFail() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         energyComponent.currentEnergy = 5
@@ -111,7 +119,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testUseEnergy_WithZeroAmount_ShouldSucceed() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         let success = energySystem.useEnergy(amount: 0)
@@ -121,7 +131,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testUseEnergy_WithNegativeAmount_ShouldFailSafely() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         let success = energySystem.useEnergy(amount: -5)
@@ -139,7 +151,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testReplenishEnergy_WhenPartiallyDepleted_ShouldRestoreToMax() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         energyComponent.currentEnergy = 3
@@ -150,7 +164,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testReplenishEnergy_WhenFullyDepleted_ShouldRestoreToMax() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         energyComponent.currentEnergy = 0
@@ -161,7 +177,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testReplenishEnergy_WhenAlreadyFull_ShouldMaintainMax() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         energySystem.replenishEnergy()
@@ -176,7 +194,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testIncreaseMaxEnergy_ShouldIncreaseMaximum() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         energySystem.increaseMaxEnergy(by: 5)
@@ -186,7 +206,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testIncreaseMaxEnergy_WithZeroAmount_ShouldNotChange() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         energySystem.increaseMaxEnergy(by: 0)
@@ -195,7 +217,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testIncreaseMaxEnergy_WithNegativeAmount_ShouldHandleSafely() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         energySystem.increaseMaxEnergy(by: -5)
@@ -210,7 +234,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testGetCurrentEnergy_ShouldReturnCorrectValue() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         energyComponent.currentEnergy = 7
@@ -229,7 +255,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testGetMaxEnergy_ShouldReturnCorrectValue() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, _) = setup
 
         let maxEnergy = energySystem.getMaxEnergy()
@@ -246,7 +274,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testMultipleComponentsSupport() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, _) = setup
 
         let secondEntity = GKEntity()
@@ -264,7 +294,9 @@ final class EnergySystemTests: XCTestCase {
     }
 
     func testSequentialOperations() {
-        guard let setup = validateSetup() else { return }
+        guard let setup = validateSetup() else {
+            return
+        }
         let (energySystem, _, energyComponent) = setup
 
         XCTAssertEqual(energyComponent.currentEnergy, 10)

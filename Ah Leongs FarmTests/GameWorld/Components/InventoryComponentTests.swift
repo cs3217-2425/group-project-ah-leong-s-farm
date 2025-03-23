@@ -26,6 +26,3 @@ final class InventoryComponentTests: XCTestCase {
         XCTAssertEqual(inventoryComponent.items.count, 2)
     }
 }
-
-        
-
