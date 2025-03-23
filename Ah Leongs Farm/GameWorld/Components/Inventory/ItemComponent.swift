@@ -31,11 +31,23 @@ class ItemComponent: GKComponent {
             return
         }
 
+        guard amount >= 0 else {
+            return
+        }
+
         let total = quantity + amount
         quantity = total
     }
 
     func remove(_ amount: Int) {
+        guard amount >= 0 else {
+            return
+        }
+
+        guard amount <= quantity else {
+            return
+        }
+
         let newTotal = quantity - amount
         quantity = newTotal
     }

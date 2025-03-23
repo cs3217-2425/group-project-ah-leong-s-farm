@@ -56,7 +56,8 @@ class InventorySystem: GKComponentSystem<InventoryComponent> {
             return true
         }
 
-        return false
+        inventoryComponent.items.insert(itemToAdd)
+        return true
     }
 
     func removeItem(_ item: GKEntity) {
@@ -116,7 +117,7 @@ class InventorySystem: GKComponentSystem<InventoryComponent> {
         return inventoryComponent.items
     }
 
-    func getNumberOfItem(of type: ItemType) -> Int {
+    func getNumberOfItems(of type: ItemType) -> Int {
         guard let inventoryComponent = components.first else {
             return 0
         }
@@ -128,7 +129,7 @@ class InventorySystem: GKComponentSystem<InventoryComponent> {
             }
 
             if itemComponent.itemType == type {
-                count += 1
+                count += itemComponent.quantity
             }
         }
 
