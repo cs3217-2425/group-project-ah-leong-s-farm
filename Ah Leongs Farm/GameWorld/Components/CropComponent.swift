@@ -7,8 +7,10 @@
 
 import GameplayKit
 
-enum CropType {
-    case potato, none
+enum CropType: String, Hashable {
+    case potato
+    case apple
+    case bokChoy
 }
 
 class CropComponent: GKComponent {
@@ -18,13 +20,9 @@ class CropComponent: GKComponent {
     var yieldPotential: Float
     var plantedTurn: Int
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        health = 0
-        growth = 0
-        yieldPotential = 0
-        plantedTurn = 0
-        cropType = .none
-        super.init(coder: coder)
+        fatalError("init(coder:) not implemented")
     }
 
     init(cropType: CropType, health: Float, growth: Float, yieldPotential: Float, plantedTurn: Int) {

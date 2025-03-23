@@ -10,21 +10,20 @@ import GameplayKit
 
 class ItemComponent: GKComponent {
     let itemType: ItemType
-    let stackable: Bool
     var quantity: Int
+    var stackable: Bool {
+        itemType.isStackable
+    }
 
-    init(itemType: ItemType, stackable: Bool) {
+    init(itemType: ItemType) {
         self.itemType = itemType
-        self.stackable = stackable
         self.quantity = 1
         super.init()
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        self.itemType = .bokChoySeed
-        self.stackable = true
-        self.quantity = 1
-        super.init(coder: coder)
+        fatalError("init(coder:) not implemented")
     }
 
     func add(_ amount: Int) {
@@ -46,7 +45,25 @@ class ItemComponent: GKComponent {
     }
 }
 
-enum ItemType {
+enum ItemType: Hashable {
     case bokChoyHarvested
     case bokChoySeed
+    case appleSeed
+    case appleHarvested
+    case potatoSeed
+    case potatoHarvested
+    case fertiliser
+    case premiumFertiliser
+
+    private struct Properties {
+        static let stackable: Set<ItemType> = [
+            .bokChoyHarvested, .bokChoySeed, .appleSeed,
+            .appleHarvested, .potatoSeed, .potatoHarvested,
+            .fertiliser
+        ]
+    }
+
+    var isStackable: Bool {
+        Properties.stackable.contains(self)
+    }
 }

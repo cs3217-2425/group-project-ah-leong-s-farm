@@ -11,10 +11,9 @@ class SoilComponent: GKComponent {
     var quality: Float
     var moisture: Float
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        quality = 0
-        moisture = 0
-        super.init(coder: coder)
+        fatalError("init(coder:) not implemented")
     }
 
     init(quality: Float, moisture: Float) {
