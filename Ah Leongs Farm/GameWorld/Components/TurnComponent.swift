@@ -11,10 +11,9 @@ class TurnComponent: GKComponent {
     var currentTurn: Int
     var maxTurns: Int
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        currentTurn = 1
-        maxTurns = 30
-        super.init(coder: coder)
+        fatalError("init(coder:) not implemented")
     }
 
     init(maxTurns: Int) {

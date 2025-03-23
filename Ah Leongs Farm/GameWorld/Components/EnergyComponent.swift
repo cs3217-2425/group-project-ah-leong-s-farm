@@ -11,10 +11,9 @@ class EnergyComponent: GKComponent {
     var currentEnergy: Int
     var maxEnergy: Int
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        currentEnergy = 10
-        maxEnergy = 10
-        super.init(coder: coder)
+        fatalError("init(coder:) not implemented")
     }
 
     init(maxEnergy: Int) {
