@@ -19,14 +19,14 @@ class TurnSystem: GKComponentSystem<TurnComponent> {
 
     func getCurrentTurn() -> Int {
         guard let turnComponent = components.first else {
-            return 0
+            return 1
         }
         return turnComponent.currentTurn
     }
 
     func getMaxTurns() -> Int {
         guard let turnComponent = components.first else {
-            return 0
+            return 1
         }
         return turnComponent.maxTurns
     }
