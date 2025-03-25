@@ -1,13 +1,18 @@
 import GameplayKit
 
-class TurnSystem: GKComponentSystem<TurnComponent> {
+class TurnSystem: ISystem {
+    unowned var manager: EntityManager?
 
-    override init() {
-        super.init(componentClass: TurnComponent.self)
+    private var turnComponent: TurnComponent? {
+        manager?.getSingletonComponent(ofType: TurnComponent.self)
+    }
+
+    required init(for manager: EntityManager) {
+        self.manager = manager
     }
 
     func incrementTurn() -> Bool {
-        guard let turnComponent = components.first else {
+        guard let turnComponent = turnComponent else {
             return false
         }
 
@@ -18,21 +23,21 @@ class TurnSystem: GKComponentSystem<TurnComponent> {
     }
 
     func getCurrentTurn() -> Int {
-        guard let turnComponent = components.first else {
+        guard let turnComponent = turnComponent else {
             return 1
         }
         return turnComponent.currentTurn
     }
 
     func getMaxTurns() -> Int {
-        guard let turnComponent = components.first else {
+        guard let turnComponent = turnComponent else {
             return 1
         }
         return turnComponent.maxTurns
     }
 
     func isGameOver() -> Bool {
-        guard let turnComponent = components.first else {
+        guard let turnComponent = turnComponent else {
             return true
         }
         return turnComponent.currentTurn > turnComponent.maxTurns
