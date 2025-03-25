@@ -36,7 +36,7 @@ class GameManager {
         gameWorld.addSystem(CropSystem())
         gameWorld.addSystem(GridSystem())
 
-        let questSystem = QuestSystem(eventContext: gameWorld)
+        let questSystem = QuestSystem(eventQueueable: gameWorld)
         gameWorld.addSystem(questSystem)
         gameWorld.registerEventObserver(questSystem)
     }

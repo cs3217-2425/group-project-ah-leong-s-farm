@@ -2,10 +2,11 @@ import Foundation
 import GameplayKit
 
 class QuestSystem: GKComponentSystem<QuestComponent> {
-    private weak var eventContext: EventContext?
 
-    init(eventContext: EventContext) {
-        self.eventContext = eventContext
+    private weak var eventQueueable: EventQueueable?
+
+    init(eventQueueable: EventQueueable) {
+        self.eventQueueable = eventQueueable
         super.init(componentClass: QuestComponent.self)
     }
 
@@ -58,12 +59,12 @@ class QuestSystem: GKComponentSystem<QuestComponent> {
     private func completeQuest(_ questComponent: QuestComponent) {
         questComponent.status = .completed
 
-        if let eventContext = eventContext {
+        if let eventQueueable = eventQueueable {
             let completionEvent = QuestCompletedEvent(
                 reward: questComponent.completionReward
             )
 
-            eventContext.queueEvent(completionEvent)
+            eventQueueable.queueEvent(completionEvent)
         }
     }
 

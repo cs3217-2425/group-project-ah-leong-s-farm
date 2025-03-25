@@ -14,7 +14,7 @@ class GameWorld {
     private var eventDispatcher: EventDispatcher?
 
     init() {
-        self.eventDispatcher = EventDispatcher(context: self)
+        self.eventDispatcher = EventDispatcher(context: self, queueable: self)
     }
 
     func update(deltaTime: TimeInterval) {
@@ -73,7 +73,9 @@ extension GameWorld: EventContext {
     func getSystem<T>(ofType: T.Type) -> T? {
         systems.first { $0 is T } as? T
     }
+}
 
+extension GameWorld: EventQueueable {
     func queueEvent(_ event: GameEvent) {
         guard let eventDispatcher = eventDispatcher else {
             return
