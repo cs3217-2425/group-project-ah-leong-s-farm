@@ -15,22 +15,14 @@ enum CropType: String, Hashable {
 
 class CropComponent: GKComponent {
     var cropType: CropType
-    var health: Float
-    var growth: Float
-    var yieldPotential: Float
-    var plantedTurn: Int
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")
     }
 
-    init(cropType: CropType, health: Float, growth: Float, yieldPotential: Float, plantedTurn: Int) {
+    init(cropType: CropType) {
         self.cropType = cropType
-        self.health = health
-        self.growth = growth
-        self.yieldPotential = yieldPotential
-        self.plantedTurn = plantedTurn
         super.init()
     }
 
