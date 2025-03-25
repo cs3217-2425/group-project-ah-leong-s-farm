@@ -15,12 +15,13 @@ class Plot: GKEntity {
         super.init(coder: coder)
     }
 
-    init(position: CGPoint) {
+    init(position: CGPoint, crop: GKEntity? = nil) {
         super.init()
-        setUpComponents(position: position)
+        setUpComponents(position: position, crop: crop)
     }
 
-    func setUpComponents(position: CGPoint) {
+    func setUpComponents(position: CGPoint, crop: GKEntity? = nil) {
+        addComponent(CropSlotComponent(crop: crop))
         addComponent(PositionComponent(x: position.x, y: position.y))
         addComponent(SoilComponent(quality: Plot.DefaultSoilQuality, moisture: Plot.DefaultSoilMoisture))
     }

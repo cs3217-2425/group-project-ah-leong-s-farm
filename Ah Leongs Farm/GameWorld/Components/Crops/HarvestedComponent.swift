@@ -9,6 +9,10 @@ import Foundation
 import GameplayKit
 
 class HarvestedComponent: GKComponent {
+    override init() {
+        super.init()
+    }
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")
