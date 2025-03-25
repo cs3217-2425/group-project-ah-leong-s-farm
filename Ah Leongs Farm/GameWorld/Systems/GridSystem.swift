@@ -32,13 +32,7 @@ class GridSystem: GKComponentSystem<GridComponent> {
             return nil
         }
 
-        let crop = CropComponent(
-            cropType: cropType,
-            health: 1,
-            growth: 1,
-            yieldPotential: 1,
-            plantedTurn: 1
-        )
+        let crop = CropComponent(cropType: cropType)
 
         // Add crop component to entity
         entity.addComponent(crop)

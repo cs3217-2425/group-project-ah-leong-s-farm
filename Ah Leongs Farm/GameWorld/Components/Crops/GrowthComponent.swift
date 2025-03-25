@@ -11,6 +11,9 @@ import GameplayKit
 class GrowthComponent: GKComponent {
     var totalGrowthTurns: Int
     var currentGrowthTurn: Int = 0
+    var canHarvest: Bool {
+        currentGrowthTurn >= totalGrowthTurns
+    }
 
     init(totalGrowthTurns: Int) {
         self.totalGrowthTurns = totalGrowthTurns

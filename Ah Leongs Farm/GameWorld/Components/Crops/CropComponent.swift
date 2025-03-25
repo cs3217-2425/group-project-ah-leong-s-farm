@@ -16,14 +16,13 @@ enum CropType: String, Hashable {
 class CropComponent: GKComponent {
     var cropType: CropType
 
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) not implemented")
-    }
-
     init(cropType: CropType) {
         self.cropType = cropType
         super.init()
     }
 
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) not implemented")
+    }
 }
