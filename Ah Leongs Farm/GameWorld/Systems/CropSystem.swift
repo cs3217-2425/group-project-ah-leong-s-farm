@@ -52,9 +52,9 @@ class CropSystem: ISystem {
             return false
         }
 
-        crop.removeComponent(ofType: SeedComponent.self)
-        crop.addComponent(GrowthComponent(totalGrowthTurns:
-                                            CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)))
+        manager?.removeComponent(ofType: SeedComponent.self, from: crop)
+        manager?.addComponent(GrowthComponent(
+            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: crop)
         cropSlot.crop = crop
         return true
     }
@@ -79,8 +79,8 @@ class CropSystem: ISystem {
             return false
         }
 
-        crop.removeComponent(ofType: GrowthComponent.self)
-        crop.addComponent(HarvestedComponent())
+        manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
+        manager?.addComponent(HarvestedComponent(), to: crop)
         cropSlot.crop = nil
         // TODO: Send event to store in Inventory
 
