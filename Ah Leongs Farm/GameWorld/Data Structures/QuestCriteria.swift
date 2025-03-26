@@ -9,7 +9,10 @@ protocol QuestCriteria {
     func calculateValue(from eventData: EventData) -> Float
 }
 
-// Calculates the quest progress based on harvested crop quantity, ensuring the event data matches the required crop type.
+/*
+ Calculates the quest progress based on harvested crop quantity,
+ ensuring the event data matches the required crop type.
+ */
 struct HarvestCropCriteria: QuestCriteria {
     let cropType: CropType
 
@@ -27,7 +30,10 @@ struct HarvestCropCriteria: QuestCriteria {
     }
 }
 
-// Calculates the quest progress based on the number of turns survived, ensuring the event data corresponds to end turn event.
+/*
+ Calculates the quest progress based on the number of turns survived,
+ ensuring the event data corresponds to end turn event.
+ */
 struct SurviveNumberOfTurnsCriteria: QuestCriteria {
 
     func calculateValue(from eventData: EventData) -> Float {
@@ -39,7 +45,10 @@ struct SurviveNumberOfTurnsCriteria: QuestCriteria {
     }
 }
 
-// Calculates the quest progress based on sold crop quantity, ensuring the event data matches the required crop type.
+/*
+ Calculates the quest progress based on sold crop quantity,
+ ensuring the event data matches the required crop type.
+ */
 struct SellCropCriteria: QuestCriteria {
     let cropType: CropType
 
