@@ -8,19 +8,18 @@
 struct EndTurnEvent: GameEvent {
     // TODO: update crops!
     func execute(in context: EventContext) -> EventData? {
-        var eventData = EventData(eventType: .endTurn)
+
         guard let turnSystem = context.getSystem(ofType: TurnSystem.self),
               let energySystem = context.getSystem(ofType: EnergySystem.self) else {
             return nil
         }
 
         let shouldContinue = turnSystem.incrementTurn()
-        eventData.addData(type: .endTurnCount, value: 1)
         energySystem.replenishEnergy()
 
         if !shouldContinue {
             context.queueEvent(GameOverEvent())
         }
-        return eventData
+        return EndTurnEventData()
     }
 }

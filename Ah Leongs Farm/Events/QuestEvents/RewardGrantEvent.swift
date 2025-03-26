@@ -12,14 +12,14 @@ class RewardGrantEvent: GameEvent {
             self.reward = reward
         }
 
-        func execute(in context: EventContext) -> EventData? {
-            var eventData = EventData(eventType: .rewardGrant)
+    func execute(in context: EventContext) -> EventData? {
+        var eventData = RewardGrantEventData()
 
-            for specificReward in reward.rewards {
-                let strategy = RewardHandlerFactory.getStrategy(for: specificReward.type)
-                strategy.processReward(specificReward, in: context, eventData: &eventData)
-            }
-
-            return eventData
+        for specificReward in reward.rewards {
+            let strategy = RewardHandlerFactory.getStrategy(for: specificReward.type)
+            strategy.processReward(specificReward, in: context, eventData: &eventData)
         }
+
+        return eventData
+    }
 }
