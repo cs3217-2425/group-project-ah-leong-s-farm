@@ -7,7 +7,7 @@
 
 struct GameOverEvent: GameEvent {
 
-    func execute(in context: EventContext) -> EventData? {
+    func execute(in context: EventContext, queueable: EventQueueable) -> EventData? {
         guard let turnSystem = context.getSystem(ofType: TurnSystem.self),
               let walletSystem = context.getSystem(ofType: WalletSystem.self) else {
             return nil

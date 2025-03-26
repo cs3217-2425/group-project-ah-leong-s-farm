@@ -12,8 +12,8 @@ class QuestCompletedEvent: GameEvent {
         self.reward = reward
     }
 
-    func execute(in context: EventContext) -> EventData? {
-        context.queueEvent(RewardGrantEvent(reward: reward))
+    func execute(in context: EventContext, queueable: EventQueueable) -> EventData? {
+        queueable.queueEvent(RewardGrantEvent(reward: reward))
         return nil
     }
 }

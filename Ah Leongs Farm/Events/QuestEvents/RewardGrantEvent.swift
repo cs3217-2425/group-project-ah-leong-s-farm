@@ -12,7 +12,7 @@ class RewardGrantEvent: GameEvent {
             self.reward = reward
         }
 
-        func execute(in context: EventContext) -> EventData? {
+    func execute(in context: EventContext, queueable: EventQueueable) -> EventData? {
             var eventData = EventData(eventType: .rewardGrant)
 
             for specificReward in reward.rewards {

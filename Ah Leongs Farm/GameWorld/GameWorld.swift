@@ -15,7 +15,7 @@ class GameWorld {
 
     init() {
         self.entityManager = EntityManager()
-        self.eventDispatcher = EventDispatcher(context: self)
+        self.eventDispatcher = EventDispatcher(context: self, queueable: self)
         setUpSystems()
     }
 
@@ -28,10 +28,9 @@ class GameWorld {
         addSystem(CropSystem(for: entityManager))
         addSystem(GridSystem(for: entityManager))
 
-        // TODO: Once EventQueueable is done, add it to QuestSystem
-        let questSystem = QuestSystem(for: entityManager)
+        let questSystem = QuestSystem(for: entityManager, eventQueueable: self)
         addSystem(questSystem)
-//        registerEventObserver(questSystem)
+        // registerEventObserver(questSystem)
     }
 
     func update(deltaTime: TimeInterval) {
@@ -84,7 +83,9 @@ extension GameWorld: EventContext {
     func getSystem<T>(ofType: T.Type) -> T? {
         systems.first { $0 is T } as? T
     }
+}
 
+extension GameWorld: EventQueueable {
     func queueEvent(_ event: GameEvent) {
         guard let eventDispatcher = eventDispatcher else {
             return
