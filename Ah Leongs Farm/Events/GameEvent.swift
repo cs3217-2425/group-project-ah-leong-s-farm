@@ -6,5 +6,5 @@
 //
 
 protocol GameEvent {
-    func execute(in context: EventContext) -> EventData?
+    func execute(in context: EventContext, queueable: EventQueueable) -> EventData?
 }

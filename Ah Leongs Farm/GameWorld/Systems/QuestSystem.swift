@@ -2,7 +2,14 @@ import Foundation
 import GameplayKit
 
 class QuestSystem: ISystem {
+
     unowned var manager: EntityManager?
+    private weak var eventQueueable: EventQueueable?
+
+    required init(for manager: EntityManager, eventQueueable: EventQueueable) {
+        self.manager = manager
+        self.eventQueueable = eventQueueable
+    }
 
     required init(for manager: EntityManager) {
         self.manager = manager
@@ -36,6 +43,18 @@ class QuestSystem: ISystem {
 
     private var quests: [QuestComponent] {
         manager?.getAllComponents(ofType: QuestComponent.self) ?? []
+    }
+
+    private func completeQuest(_ questComponent: QuestComponent) {
+        questComponent.status = .completed
+
+        if let eventQueueable = eventQueueable {
+            let completionEvent = QuestCompletedEvent(
+                reward: questComponent.completionReward
+            )
+
+            eventQueueable.queueEvent(completionEvent)
+        }
     }
 
     // TODO: Redefine quest logic once EventQueueable is done
@@ -134,6 +153,7 @@ class QuestSystem: ISystem {
 //            self.removeComponent(component)
 //        }
 //    }
+
 }
 
 // extension QuestSystem: IEventObserver {

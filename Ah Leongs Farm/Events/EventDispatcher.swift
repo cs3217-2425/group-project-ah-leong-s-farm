@@ -9,9 +9,11 @@ class EventDispatcher {
     private var eventQueue: Queue<GameEvent> = Queue()
     private var eventObservers: [IEventObserver]
     private weak var context: EventContext?
+    private weak var queueable: EventQueueable?
 
-    init(context: EventContext) {
+    init(context: EventContext, queueable: EventQueueable) {
         self.context = context
+        self.queueable = queueable
         self.eventObservers = []
     }
 
@@ -28,6 +30,10 @@ class EventDispatcher {
             return
         }
 
+        guard let queueable = queueable else {
+            return
+        }
+
         // Maintain a counter such that we only execute events in the initial queue
         // (and not any additional events queued by other events)
         var currentEventCount = eventQueue.count
@@ -37,7 +43,7 @@ class EventDispatcher {
             }
 
             // Execute the event, then notify observers if data is obtained from the execution.
-            if let eventData = event.execute(in: context) {
+            if let eventData = event.execute(in: context, queueable: queueable) {
                 for observer in eventObservers {
                     observer.onEvent(eventData)
                 }
