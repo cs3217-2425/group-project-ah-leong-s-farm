@@ -21,6 +21,10 @@ class CropSystem: ISystem {
         manager?.getSingletonComponent(ofType: GridComponent.self)
     }
 
+    private var growingCrops: [GrowthComponent] {
+        manager?.getAllComponents(ofType: GrowthComponent.self) ?? []
+    }
+
     /// Adds a crop entity to the `CropSlotComponent` of the entity at the specified row and column.
     /// - Returns: True if the crop is successfully added, false otherwise.
     /// Crop is only planted if the following conditions are fulfilled:
@@ -81,5 +85,11 @@ class CropSystem: ISystem {
         // TODO: Send event to store in Inventory
 
         return true
+    }
+
+    func growCrops() {
+        for crop in growingCrops {
+            crop.currentGrowthTurn += 1
+        }
     }
 }
