@@ -11,25 +11,37 @@ class GridSystem: ISystem {
         manager?.getSingletonComponent(ofType: GridComponent.self)
     }
 
-    /// Adds crop component to the entity at the specified row and column
-    /// Crop component is not added if the entity already has one.
-    /// **This method does not add crop to `CropSystem`.**
-    func plantCrop(cropType: CropType, row: Int, column: Int) -> CropComponent? {
-        guard let entity = grid?.getEntity(row: row, column: column) else {
-            return nil
+    /// Adds a crop entity to the `CropSlotComponent` of the entity at the specified row and column.
+    /// - Returns: True if the crop is successfully added, false otherwise.
+    /// Crop is only planted if the following conditions are fulfilled:
+    /// - The entity at the specified row and column must have a `CropSlotComponent`.
+    /// - The CropSlotComponent must not have any crops on it.
+    /// - The entity to add `crop`, must have a `SeedComponent` and a `CropComponent`.
+    @discardableResult
+    func plantCrop(crop: GKEntity, row: Int, column: Int) -> Bool {
+        guard let cropComponent = crop.component(ofType: CropComponent.self),
+              crop.component(ofType: SeedComponent.self) != nil else {
+            return false
+        }
+
+        guard let plotEntity = grid?.getEntity(row: row, column: column) else {
+            return false
+        }
+
+        // Must have a crop slot
+        guard let cropSlot = plotEntity.component(ofType: CropSlotComponent.self) else {
+            return false
         }
 
         // Disallow planting on entity with an existing crop
-        if entity.component(ofType: CropComponent.self) != nil {
-            return nil
+        guard cropSlot.crop == nil else {
+            return false
         }
 
-        let crop = CropComponent(cropType: cropType)
-
-        // Add crop component to entity
-        entity.addComponent(crop)
-
-        return crop
+        crop.removeComponent(ofType: SeedComponent.self)
+        crop.addComponent(GrowthComponent(totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)))
+        cropSlot.crop = crop
+        return true
     }
 
     /// Harvests the crop at the specified row and column.
