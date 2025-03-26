@@ -1,9 +1,14 @@
 import GameplayKit
 
 protocol ISystem: AnyObject {
-    func addComponent(foundIn entity: GKEntity)
+    var manager: EntityManager? { get set }
+    // TODO: For systems to be able to queue events.
+    // var eventQueueable: EventQueueable? { get set }
 
-    func removeComponent(foundIn entity: GKEntity)
+    init(for manager: EntityManager)
+    func update(deltaTime: CGFloat)
+}
 
-    func update(deltaTime seconds: TimeInterval)
+extension ISystem {
+    func update(deltaTime: CGFloat) { }
 }

@@ -1,14 +1,19 @@
 import Foundation
 import GameplayKit
 
-class LevelSystem: GKComponentSystem<LevelComponent> {
+class LevelSystem: ISystem {
+    unowned var manager: EntityManager?
 
-    override init() {
-        super.init(componentClass: LevelComponent.self)
+    required init(for manager: EntityManager) {
+        self.manager = manager
+    }
+
+    private var levelComponent: LevelComponent? {
+        manager?.getSingletonComponent(ofType: LevelComponent.self)
     }
 
     func addXP(_ amount: Float) {
-        guard let levelComponent = components.first else {
+        guard let levelComponent = levelComponent else {
             return
         }
 
@@ -26,19 +31,19 @@ class LevelSystem: GKComponentSystem<LevelComponent> {
     }
 
     func getCurrentLevel() -> Int {
-        components.first?.level ?? 0
+        levelComponent?.level ?? 0
     }
 
     func getCurrentXP() -> Float {
-        components.first?.currentXP ?? 0
+        levelComponent?.currentXP ?? 0
     }
 
     func getXPForNextLevel() -> Float {
-        components.first.map { LevelComponent.calculateXPThreshold(for: $0.level + 1) } ?? 0
+        levelComponent.map { LevelComponent.calculateXPThreshold(for: $0.level + 1) } ?? 0
     }
 
     func getXPProgress() -> Float {
-        guard let component = components.first else {
+        guard let component = levelComponent else {
             return 0
         }
         return component.currentXP / component.thresholdXP

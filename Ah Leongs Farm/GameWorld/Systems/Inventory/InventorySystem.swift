@@ -8,90 +8,63 @@
 import Foundation
 import GameplayKit
 
-class InventorySystem: GKComponentSystem<InventoryComponent> {
-    override init() {
-        super.init(componentClass: InventoryComponent.self)
+class InventorySystem: ISystem {
+    unowned var manager: EntityManager?
+
+    private var items: [ItemComponent] {
+        manager?.getAllComponents(ofType: ItemComponent.self) ?? []
     }
 
-    func createItem(type: ItemType,
-                    quantity: Int) -> GKEntity {
-        let entity = GKEntity()
-        let itemComponent = ItemComponent(itemType: type)
-        itemComponent.quantity = quantity
-        entity.addComponent(itemComponent)
-        return entity
+    required init(for manager: EntityManager) {
+        self.manager = manager
     }
 
-    /// Adds a GKEntity to the inventory if and only if it is an item component.
-    /// - Returns: True if the item is added successfully, false otherwise.
-    @discardableResult
-    func addItem(_ itemToAdd: GKEntity) -> Bool {
-        guard let inventoryComponent = components.first else {
-            return false
-        }
-
-        guard let itemComponent = itemToAdd.component(ofType: ItemComponent.self) else {
-            return false
-        }
-
-        guard itemComponent.quantity > 0 else {
-            return false
-        }
-
-        if !itemComponent.stackable {
-            inventoryComponent.items.insert(itemToAdd)
-            return true
-        }
-
-        for existingItem in inventoryComponent.items {
-            guard let existingItemComponent = existingItem.component(ofType: ItemComponent.self) else {
-                continue
+    // Checks if an item is stackable and an ItemComponent of the type exists,
+    // then increment its quantity.
+    // Else create a new item
+    func addItem(type: ItemType,
+                 quantity: Int) {
+        if type.isStackable {
+            for existingItem in items where existingItem.itemType == type {
+                existingItem.add(quantity)
+                return
             }
-
-            guard existingItemComponent.itemType == itemComponent.itemType else {
-                continue
-            }
-
-            existingItemComponent.add(itemComponent.quantity)
-            return true
         }
 
-        inventoryComponent.items.insert(itemToAdd)
-        return true
+        let itemEntity = Item(type: type, quantity: quantity)
+        manager?.addEntity(itemEntity)
     }
 
-    func removeItem(_ item: GKEntity) {
-        guard let inventoryComponent = components.first else {
+    /// Removes the entity that contains the ItemComponent
+    func removeItem(_ component: ItemComponent) {
+        guard let manager = manager,
+              let itemEntity = component.entity else {
             return
         }
-
-        inventoryComponent.items.remove(item)
+        manager.removeEntity(itemEntity)
     }
 
     /// Removes an item of a specific type, if and only if there is sufficient quantity and it exists.
     /// - Returns: True if the item is removed successfully, false otherwise.
     @discardableResult
     func removeItem(of type: ItemType, amount: Int = 1) -> Bool {
-        guard let inventoryComponent = components.first else {
+        guard let manager = manager else {
             return false
         }
 
-        for existingItem in inventoryComponent.items {
-            guard let existingItemComponent = existingItem.component(ofType: ItemComponent.self) else {
+        for existingItem in items {
+
+            guard existingItem.itemType == type else {
                 continue
             }
 
-            guard existingItemComponent.itemType == type else {
-                continue
-            }
-
-            guard existingItemComponent.hasSufficientQuantity(amount) else {
+            guard existingItem.hasSufficientQuantity(amount) else {
                 return false
             }
 
-            existingItemComponent.remove(amount)
+            existingItem.remove(amount)
 
-            if existingItemComponent.quantity == 0 {
+            if existingItem.quantity == 0 {
                 self.removeItem(existingItem)
             }
 
@@ -101,38 +74,20 @@ class InventorySystem: GKComponentSystem<InventoryComponent> {
         return false
     }
 
-    func hasItem(_ item: GKEntity) -> Bool {
-        guard let inventoryComponent = components.first else {
-            return false
-        }
-
-        return inventoryComponent.items.contains(item)
+    func hasItem(_ item: ItemComponent) -> Bool {
+        items.contains(item)
     }
 
-    func getAllEntities() -> Set<GKEntity> {
-        guard let inventoryComponent = components.first else {
-            return Set()
-        }
-
-        return inventoryComponent.items
+    func getAllComponents() -> [ItemComponent] {
+        items
     }
 
     func getNumberOfItems(of type: ItemType) -> Int {
-        guard let inventoryComponent = components.first else {
-            return 0
-        }
 
         var count = 0
-        for item in inventoryComponent.items {
-            guard let itemComponent = item.component(ofType: ItemComponent.self) else {
-                continue
-            }
-
-            if itemComponent.itemType == type {
-                count += itemComponent.quantity
-            }
+        for item in items where item.itemType == type {
+            count += item.quantity
         }
-
         return count
     }
 }

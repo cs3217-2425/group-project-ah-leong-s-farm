@@ -1,22 +1,14 @@
 import GameplayKit
 
-class GridSystem: GKComponentSystem<GridComponent> {
+class GridSystem: ISystem {
+    unowned var manager: EntityManager?
 
-    var grid: GridComponent? {
-        components.first
+    required init(for manager: EntityManager) {
+        self.manager = manager
     }
 
-    override init() {
-        super.init(componentClass: GridComponent.self)
-    }
-
-    /// Add a grid component to the system. Only up to one grid component is to be managed at all times.
-    override func addComponent(_ component: GridComponent) {
-        guard components.isEmpty else {
-            return
-        }
-
-        super.addComponent(component)
+    private var grid: GridComponent? {
+        manager?.getSingletonComponent(ofType: GridComponent.self)
     }
 
     /// Adds crop component to the entity at the specified row and column
