@@ -13,6 +13,12 @@ class CropSystem: ISystem {
         .potato: 6
     ]
 
+    static let cropToItemMap: [CropType: ItemType] = [
+        .bokChoy: .bokChoyHarvested,
+        .potato: .potatoHarvested,
+        .apple: .appleHarvested
+    ]
+
     static func getTotalGrowthTurns(for type: CropType) -> Int {
         cropsToGrowthMap[type] ?? 0
     }
@@ -61,6 +67,7 @@ class CropSystem: ISystem {
 
     /// Harvests the crop at the specified row and column.
     /// - Returns: True if the crop is successfully harvested, false otherwise.
+    @discardableResult
     func harvestCrop(row: Int, column: Int) -> Bool {
         guard let plotEntity = grid?.getEntity(row: row, column: column) else {
             return false
@@ -79,11 +86,18 @@ class CropSystem: ISystem {
             return false
         }
 
+        guard let cropComponent = crop.component(ofType: CropComponent.self) else {
+            return false
+        }
+
+        guard let itemType = CropSystem.cropToItemMap[cropComponent.cropType] else {
+            return false
+        }
+
         manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
         manager?.addComponent(HarvestedComponent(), to: crop)
+        manager?.addComponent(ItemComponent(itemType: itemType), to: crop)
         cropSlot.crop = nil
-        // TODO: Send event to store in Inventory
-
         return true
     }
 
