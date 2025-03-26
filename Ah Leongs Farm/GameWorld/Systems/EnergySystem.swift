@@ -7,14 +7,19 @@
 
 import GameplayKit
 
-class EnergySystem: GKComponentSystem<EnergyComponent> {
+class EnergySystem: ISystem {
+    unowned var manager: EntityManager?
 
-    override init() {
-        super.init(componentClass: EnergyComponent.self)
+    private var energyComponent: EnergyComponent? {
+        manager?.getSingletonComponent(ofType: EnergyComponent.self)
+    }
+
+    required init(for manager: EntityManager) {
+        self.manager = manager
     }
 
     func useEnergy(amount: Int) -> Bool {
-        guard let energyComponent = components.first else {
+        guard let energyComponent = energyComponent else {
             return false
         }
         guard energyComponent.currentEnergy >= amount else {
@@ -29,31 +34,30 @@ class EnergySystem: GKComponentSystem<EnergyComponent> {
     }
 
     func replenishEnergy() {
-        guard let energyComponent = components.first else {
+        guard let energyComponent = energyComponent else {
             return
         }
         energyComponent.currentEnergy = energyComponent.maxEnergy
     }
 
     func increaseMaxEnergy(by amount: Int) {
-        guard let energyComponent = components.first else {
+        guard let energyComponent = energyComponent else {
             return
         }
         energyComponent.maxEnergy += amount
     }
 
     func getCurrentEnergy() -> Int {
-        guard let turnComponent = components.first else {
+        guard let energyComponent = energyComponent else {
             return 0
         }
-        return turnComponent.currentEnergy
+        return energyComponent.currentEnergy
     }
 
     func getMaxEnergy() -> Int {
-        guard let turnComponent = components.first else {
+        guard let energyComponent = energyComponent else {
             return 0
         }
-        return turnComponent.maxEnergy
+        return energyComponent.maxEnergy
     }
-
 }

@@ -9,12 +9,28 @@ import GameplayKit
 
 class GameWorld {
 
-    private(set) var entities: Set<GKEntity> = []
+    private let entityManager: EntityManager
     private var systems: [any ISystem] = []
     private var eventDispatcher: EventDispatcher?
 
     init() {
+        self.entityManager = EntityManager()
         self.eventDispatcher = EventDispatcher(context: self, queueable: self)
+        setUpSystems()
+    }
+
+    private func setUpSystems() {
+        addSystem(EnergySystem(for: entityManager))
+        addSystem(TurnSystem(for: entityManager))
+        addSystem(WalletSystem(for: entityManager))
+        addSystem(InventorySystem(for: entityManager))
+        addSystem(LevelSystem(for: entityManager))
+        addSystem(CropSystem(for: entityManager))
+        addSystem(GridSystem(for: entityManager))
+
+        let questSystem = QuestSystem(for: entityManager, eventQueueable: self)
+        addSystem(questSystem)
+        // registerEventObserver(questSystem)
     }
 
     func update(deltaTime: TimeInterval) {
@@ -23,25 +39,19 @@ class GameWorld {
     }
 
     func addEntity(_ entity: GKEntity) {
-        entities.insert(entity)
-        for system in systems {
-            system.addComponent(foundIn: entity)
-        }
+        entityManager.addEntity(entity)
     }
 
     func removeEntity(_ entity: GKEntity) {
-        entities.remove(entity)
-        for system in systems {
-            system.removeComponent(foundIn: entity)
-        }
+        entityManager.removeEntity(entity)
+    }
+
+    func getAllEntities() -> [GKEntity] {
+        entityManager.getAllEntities()
     }
 
     func addSystem(_ system: ISystem) {
         systems.append(system)
-
-        for entity in entities {
-            system.addComponent(foundIn: entity)
-        }
     }
 
     func removeSystem(_ system: ISystem) {

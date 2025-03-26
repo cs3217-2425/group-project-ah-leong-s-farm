@@ -15,9 +15,9 @@ class ItemComponent: GKComponent {
         itemType.isStackable
     }
 
-    init(itemType: ItemType) {
+    init(itemType: ItemType, quantity: Int = 1) {
         self.itemType = itemType
-        self.quantity = 1
+        self.quantity = quantity
         super.init()
     }
 
