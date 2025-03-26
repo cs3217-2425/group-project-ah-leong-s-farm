@@ -7,7 +7,6 @@ class GameManager {
 
     init() {
         gameWorld = GameWorld()
-        setUpSystems()
         setUpBaseEntities()
         setUpQuests()
     }
@@ -28,31 +27,15 @@ class GameManager {
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
         gameWorld.addEntity(Wallet())
-        gameWorld.addEntity(Inventory())
         gameWorld.addEntity(Level(level: 1, currentXP: 0))
     }
 
     // MARK: - Setup Methods
 
-    private func setUpSystems() {
-        gameWorld.addSystem(EnergySystem())
-        gameWorld.addSystem(TurnSystem())
-        gameWorld.addSystem(WalletSystem())
-        gameWorld.addSystem(InventorySystem())
-        gameWorld.addSystem(LevelSystem())
-        gameWorld.addSystem(CropSystem())
-        gameWorld.addSystem(GridSystem())
-
-        let questSystem = QuestSystem(eventContext: gameWorld)
-        gameWorld.addSystem(questSystem)
-        gameWorld.registerEventObserver(questSystem)
-    }
-
     private func setUpBaseEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
 
         gameWorld.addEntity(Wallet())
-        gameWorld.addEntity(Inventory())
         gameWorld.addEntity(Level(level: 1, currentXP: 0))
 
         addStartingItems()
@@ -74,8 +57,7 @@ class GameManager {
 
     private func addStartingItems() {
         if let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) {
-            let seedItem = inventorySystem.createItem(type: .bokChoySeed, quantity: 5)
-            inventorySystem.addItem(seedItem)
+            inventorySystem.addItem(type: .bokChoySeed, quantity: 5)
         }
     }
 

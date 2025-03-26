@@ -50,8 +50,7 @@ class ItemRewardHandler: RewardHandler {
             guard let quantity = itemReward.itemTypes[itemType] else {
                 fatalError("Failed to get value for \(itemType)")
             }
-            let newItem = inventorySystem.createItem(type: itemType, quantity: quantity)
-            inventorySystem.addItem(newItem)
+            inventorySystem.addItem(type: itemType, quantity: quantity)
             eventData.addData(type: .itemGrant, value: itemType)
             eventData.addData(type: .itemGrantQuantity, value: quantity)
         }

@@ -36,7 +36,9 @@ extension GameRenderer: IGameObserver {
             return
         }
 
-        let entitiesToRender = gameWorld.entities.filter { entity in
+        let allEntities = gameWorld.getAllEntities()
+
+        let entitiesToRender = allEntities.filter { entity in
             entityNodeMap[ObjectIdentifier(entity)] == nil
         }
 
