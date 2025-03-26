@@ -1,8 +1,9 @@
 import GameplayKit
 
-class CropSystem: GKComponentSystem<CropComponent> {
+class CropSystem: ISystem {
+    unowned var manager: EntityManager?
 
-    override init() {
-        super.init(componentClass: CropComponent.self)
+    required init(for manager: EntityManager) {
+        self.manager = manager
     }
 }

@@ -8,30 +8,38 @@
 import Foundation
 import GameplayKit
 
-class WalletSystem: GKComponentSystem<WalletComponent> {
-    override init() {
-        super.init(componentClass: WalletComponent.self)
+class WalletSystem: ISystem {
+    unowned var manager: EntityManager?
+
+    private var walletComponent: WalletComponent? {
+        manager?.getSingletonComponent(ofType: WalletComponent.self)
+    }
+
+    required init(for manager: EntityManager) {
+        self.manager = manager
     }
 
     func addCurrencyToAll(_ currency: CurrencyType, amount: Double) {
-        for component in components {
-            addCurrencyToWallet(component, of: currency, amount: amount)
+        guard let walletComponent = walletComponent else {
+            return
         }
+        addCurrencyToWallet(walletComponent, of: currency, amount: amount)
     }
 
     func removeCurrencyFromAll(_ currency: CurrencyType, amount: Double) {
-        for component in components {
-            removeCurrencyFromWallet(component, of: currency, amount: amount)
+        guard let walletComponent = walletComponent else {
+            return
         }
+        removeCurrencyFromWallet(walletComponent, of: currency, amount: amount)
     }
 
     func getTotalAmount(of currency: CurrencyType) -> Double {
+        guard let walletComponent = walletComponent else {
+            return 0.0
+        }
         var total: Double = 0.0
-
-        for component in components {
-            if let amount = component.getAmount(of: currency) {
+        if let amount = walletComponent.getAmount(of: currency) {
                 total += amount
-            }
         }
 
         return total
