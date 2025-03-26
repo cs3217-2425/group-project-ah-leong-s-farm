@@ -45,15 +45,30 @@ class GridSystem: ISystem {
     }
 
     /// Harvests the crop at the specified row and column.
-    /// **This method does not remove crop from `CropSystem`.**
-    func harvestCrop(row: Int, column: Int) -> CropComponent? {
-        guard let entity = grid?.getEntity(row: row, column: column),
-              let crop = entity.component(ofType: CropComponent.self) else {
-            return nil
+    /// - Returns: True if the crop is successfully harvested, false otherwise.
+    func harvestCrop(row: Int, column: Int) -> Bool {
+        guard let plotEntity = grid?.getEntity(row: row, column: column) else {
+            return false
         }
 
-        entity.removeComponent(ofType: CropComponent.self)
+        guard let cropSlot = plotEntity.component(ofType: CropSlotComponent.self),
+              let crop = cropSlot.crop else {
+            return false
+        }
 
-        return crop
+        guard let growthComponent = crop.component(ofType: GrowthComponent.self) else {
+            return false
+        }
+
+        guard growthComponent.canHarvest else {
+            return false
+        }
+
+        crop.removeComponent(ofType: GrowthComponent.self)
+        crop.addComponent(HarvestedComponent())
+        cropSlot.crop = nil
+        // TODO: Send event to store in Inventory
+
+        return true
     }
 }
