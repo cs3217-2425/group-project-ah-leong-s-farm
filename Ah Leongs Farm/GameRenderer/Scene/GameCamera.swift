@@ -7,14 +7,13 @@ class GameCamera: SKCameraNode {
 
     private var targetPosition: CGPoint = .zero
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
     }
 
-    init(startingPosition: CGPoint) {
-        targetPosition = startingPosition
+    override init() {
         super.init()
-        position = startingPosition
     }
 
     func setTargetPosition(using touchPosition: CGPoint) {
