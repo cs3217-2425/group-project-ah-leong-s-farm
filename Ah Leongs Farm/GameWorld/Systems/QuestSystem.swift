@@ -2,7 +2,14 @@ import Foundation
 import GameplayKit
 
 class QuestSystem: ISystem {
+
     unowned var manager: EntityManager?
+    private weak var eventQueueable: EventQueueable?
+
+    required init(for manager: EntityManager, eventQueueable: EventQueueable) {
+        self.manager = manager
+        self.eventQueueable = eventQueueable
+    }
 
     required init(for manager: EntityManager) {
         self.manager = manager
@@ -10,6 +17,35 @@ class QuestSystem: ISystem {
 
     private var quests: [QuestComponent] {
         manager?.getAllComponents(ofType: QuestComponent.self) ?? []
+    }
+
+    private func checkCriteria(_ criteria: QuestCriteria, againstEvent eventData: EventData) -> Bool {
+        if criteria.eventType != eventData.eventType {
+            return false
+        }
+        // Check each required data attribute
+        for (dataType, requiredValue) in criteria.requiredData {
+            guard let eventValue = eventData.data[dataType] else {
+                return false
+            }
+            if AnyHashable(eventValue) != AnyHashable(requiredValue) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    private func completeQuest(_ questComponent: QuestComponent) {
+        questComponent.status = .completed
+
+        if let eventQueueable = eventQueueable {
+            let completionEvent = QuestCompletedEvent(
+                reward: questComponent.completionReward
+            )
+
+            eventQueueable.queueEvent(completionEvent)
+        }
     }
 
     // TODO: Redefine quest logic once EventQueueable is done
@@ -108,6 +144,7 @@ class QuestSystem: ISystem {
 //            self.removeComponent(component)
 //        }
 //    }
+
 }
 
 // extension QuestSystem: IEventObserver {

@@ -6,7 +6,7 @@
 //
 
 struct EndTurnEvent: GameEvent {
-    func execute(in context: EventContext) -> EventData? {
+    func execute(in context: EventContext, queueable: EventQueueable) -> EventData? {
         var eventData = EventData(eventType: .endTurn)
         guard let turnSystem = context.getSystem(ofType: TurnSystem.self),
               let energySystem = context.getSystem(ofType: EnergySystem.self),
@@ -20,7 +20,7 @@ struct EndTurnEvent: GameEvent {
         cropSystem.growCrops()
 
         if !shouldContinue {
-            context.queueEvent(GameOverEvent())
+            queueable.queueEvent(GameOverEvent())
         }
         return eventData
     }
