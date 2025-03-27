@@ -9,9 +9,9 @@ import Foundation
 import GameplayKit
 
 class CropSlotComponent: GKComponent {
-    var crop: GKEntity?
+    var crop: Crop?
 
-    init(crop: GKEntity? = nil) {
+    init(crop: Crop? = nil) {
         guard let crop = crop, crop.component(ofType: CropComponent.self) != nil else {
             self.crop = nil
             super.init()

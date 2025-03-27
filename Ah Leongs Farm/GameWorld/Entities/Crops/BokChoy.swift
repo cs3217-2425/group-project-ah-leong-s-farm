@@ -8,7 +8,10 @@
 import Foundation
 import GameplayKit
 
-class BokChoy: GKEntity {
+class BokChoy: GKEntity, Crop {
+    var seedItemType: ItemType = .bokChoySeed
+    var harvestedItemType: ItemType = .bokChoyHarvested
+
     override init() {
         super.init()
         setUpComponents()

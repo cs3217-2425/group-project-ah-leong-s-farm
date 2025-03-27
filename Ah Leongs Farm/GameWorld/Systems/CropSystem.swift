@@ -13,12 +13,6 @@ class CropSystem: ISystem {
         .potato: 6
     ]
 
-    static let cropToItemMap: [CropType: ItemType] = [
-        .bokChoy: .bokChoyHarvested,
-        .potato: .potatoHarvested,
-        .apple: .appleHarvested
-    ]
-
     static func getTotalGrowthTurns(for type: CropType) -> Int {
         cropsToGrowthMap[type] ?? 0
     }
@@ -38,7 +32,7 @@ class CropSystem: ISystem {
     /// - The CropSlotComponent must not have any crops on it.
     /// - The entity to add `crop`, must have a `SeedComponent` and a `CropComponent`.
     @discardableResult
-    func plantCrop(crop: GKEntity, row: Int, column: Int) -> Bool {
+    func plantCrop(crop: Crop, row: Int, column: Int) -> Bool {
         guard let cropComponent = crop.component(ofType: CropComponent.self),
               crop.component(ofType: SeedComponent.self) != nil else {
             return false
@@ -58,9 +52,13 @@ class CropSystem: ISystem {
             return false
         }
 
-        manager?.removeComponent(ofType: SeedComponent.self, from: crop)
+        guard let cropEntity = crop as? GKEntity else {
+            return false
+        }
+
+        manager?.removeComponent(ofType: SeedComponent.self, from: cropEntity)
         manager?.addComponent(GrowthComponent(
-            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: crop)
+            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: cropEntity)
         cropSlot.crop = crop
         return true
     }
@@ -90,13 +88,13 @@ class CropSystem: ISystem {
             return false
         }
 
-        guard let itemType = CropSystem.cropToItemMap[cropComponent.cropType] else {
+        guard let cropEntity = crop as? GKEntity else {
             return false
         }
 
-        manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
-        manager?.addComponent(HarvestedComponent(), to: crop)
-        manager?.addComponent(ItemComponent(itemType: itemType), to: crop)
+        manager?.removeComponent(ofType: GrowthComponent.self, from: cropEntity)
+        manager?.addComponent(HarvestedComponent(), to: cropEntity)
+        manager?.addComponent(ItemComponent(itemType: crop.harvestedItemType), to: cropEntity)
         cropSlot.crop = nil
         return true
     }
