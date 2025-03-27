@@ -18,9 +18,7 @@ class GameRenderer {
 }
 
 extension GameRenderer: IGameObserver {
-    func notify(_ gameWorld: GameWorld) {
-        let allEntities = gameWorld.entities
-
+    func notify(_ gameWorld: GameWorld) {        let allEntities = gameWorld.getAllEntities()
         let entitiesToRender = allEntities.filter { entity in
             entityNodeMap[ObjectIdentifier(entity)] == nil
         }
