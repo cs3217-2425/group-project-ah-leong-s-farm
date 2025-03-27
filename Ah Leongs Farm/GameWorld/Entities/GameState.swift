@@ -21,7 +21,11 @@ class GameState: GKEntity {
     private func setUpComponents(maxTurns: Int, maxEnergy: Int) {
         let turnComponent = TurnComponent(maxTurns: maxTurns)
         let energyComponent = EnergyComponent(maxEnergy: maxEnergy)
+        let levelComponent = LevelComponent()
+        let walletComponent = WalletComponent()
         addComponent(turnComponent)
         addComponent(energyComponent)
+        addComponent(levelComponent)
+        addComponent(walletComponent)
     }
 }

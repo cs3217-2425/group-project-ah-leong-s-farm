@@ -19,17 +19,12 @@ class GameManager {
 
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
-        gameWorld.addEntity(Wallet())
-        gameWorld.addEntity(Level(level: 1, currentXP: 0))
     }
 
     // MARK: - Setup Methods
 
     private func setUpBaseEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
-
-        gameWorld.addEntity(Wallet())
-        gameWorld.addEntity(Level(level: 1, currentXP: 0))
 
         addStartingItems()
 
