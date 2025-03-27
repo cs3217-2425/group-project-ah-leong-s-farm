@@ -7,14 +7,14 @@
 
 import GameplayKit
 
-class TileMapRenderSystem: IRenderSystem {
+class TileMapRenderManager: IRenderManager {
     private static let TileSetName: String = "Farm Tile Set"
     private static let LandTileGroupName: String = "Land"
     private static let TileSize = CGSize(width: 48, height: 48)
 
     func createNode(of entity: EntityType) -> IRenderNode? {
         guard let gridComponent = entity.component(ofType: GridComponent.self),
-              let tileSet = SKTileSet(named: TileMapRenderSystem.TileSetName) else {
+              let tileSet = SKTileSet(named: TileMapRenderManager.TileSetName) else {
             return nil
         }
 
@@ -22,11 +22,16 @@ class TileMapRenderSystem: IRenderSystem {
             tileSet: tileSet,
             rows: gridComponent.numberOfRows,
             columns: gridComponent.numberOfColumns,
-            tileSize: TileMapRenderSystem.TileSize
+            tileSize: TileMapRenderManager.TileSize
         )
 
-        node.fill(with: TileMapRenderSystem.LandTileGroupName)
+        node.fill(with: TileMapRenderManager.LandTileGroupName)
 
         return node
     }
+
+    func updateNode(for node: inout IRenderNode, using entity: EntityType) {
+        // TODO: Implement resizing of tilemap when grid component is resized
+    }
+
 }
