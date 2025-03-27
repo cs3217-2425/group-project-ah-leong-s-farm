@@ -9,8 +9,8 @@ import UIKit
 import SpriteKit
 
 class ViewController: UIViewController {
-    private let gameManager: GameManager
-    private let gameRenderer: GameRenderer
+    let gameManager: GameManager
+    let gameRenderer: GameRenderer
 
     private var gameScene: GameScene?
 
@@ -37,4 +37,8 @@ class ViewController: UIViewController {
         gameScene?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         skView.presentScene(gameScene)
     }
+}
+
+// MARK: IGameProvider
+extension ViewController: IGameProvider {
 }
