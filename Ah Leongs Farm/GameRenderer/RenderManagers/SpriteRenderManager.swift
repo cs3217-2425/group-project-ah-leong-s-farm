@@ -5,30 +5,45 @@
 //  Created by Jerry Leong on 27/3/25.
 //
 
-import SpriteKit
+import GameplayKit
 
 class SpriteRenderManager: IRenderManager {
-    func createNode(of entity: EntityType) -> IRenderNode? {
-        guard let spriteComponent = entity.component(ofType: SpriteComponent.self),
-              let positionComponent = entity.component(ofType: PositionComponent.self) else {
-            return nil
-        }
+    private(set) var entityNodeMap: [ObjectIdentifier: SpriteRenderNode] = [:]
 
-        let spriteRenderNode = SpriteRenderNode(imageNamed: spriteComponent.textureName)
-        let position = CGPoint(x: positionComponent.x, y: positionComponent.y)
-        spriteRenderNode.skNode.position = position
+    private weak var tileMapDelegate: TileMapDelegate?
 
-        return spriteRenderNode
+    init(tileMapDelegate: TileMapDelegate) {
+        self.tileMapDelegate = tileMapDelegate
     }
 
-    func updateNode(for node: inout IRenderNode, using entity: EntityType) {
+    func createNode(of entity: EntityType, in scene: SKScene) {
+        if entityNodeMap[ObjectIdentifier(entity)] != nil {
+            return
+        }
+
         guard let spriteComponent = entity.component(ofType: SpriteComponent.self),
               let positionComponent = entity.component(ofType: PositionComponent.self) else {
             return
         }
 
-        let position = CGPoint(x: positionComponent.x, y: positionComponent.y)
-        node.skNode.position = position
+        let spriteRenderNode = SpriteRenderNode(imageNamed: spriteComponent.textureName)
+        let position = tileMapDelegate?.getPosition(
+            row: Int(positionComponent.x),
+            column: Int(positionComponent.y)
+        ) ?? .zero
+
+        spriteRenderNode.skNode.position = position
+
+        scene.addChild(spriteRenderNode.skNode)
+        entityNodeMap[ObjectIdentifier(entity)] = spriteRenderNode
+    }
+
+    func removeNode(of entityIdentifier: ObjectIdentifier, in scene: SKScene) {
+        guard let node = entityNodeMap[entityIdentifier] else {
+            return
+        }
+
+        node.skNode.removeFromParent()
+        entityNodeMap.removeValue(forKey: entityIdentifier)
     }
 }
-

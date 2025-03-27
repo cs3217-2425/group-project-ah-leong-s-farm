@@ -10,6 +10,7 @@ import GameplayKit
 class Plot: GKEntity {
     private static let DefaultSoilQuality: Float = 0
     private static let DefaultSoilMoisture: Float = 0
+    private static let SpriteTextureName = "dirt"
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -23,5 +24,6 @@ class Plot: GKEntity {
     func setUpComponents(position: CGPoint) {
         addComponent(PositionComponent(x: position.x, y: position.y))
         addComponent(SoilComponent(quality: Plot.DefaultSoilQuality, moisture: Plot.DefaultSoilMoisture))
+        addComponent(SpriteComponent(textureName: Plot.SpriteTextureName))
     }
 }

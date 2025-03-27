@@ -9,7 +9,7 @@ import GameplayKit
 
 class TileMapRenderNode: IRenderNode {
 
-    private let tileMapNode: SKTileMapNode
+    let tileMapNode: SKTileMapNode
 
     var skNode: SKNode {
         tileMapNode
@@ -37,9 +37,17 @@ class TileMapRenderNode: IRenderNode {
         tileMapNode.fill(with: tileGroup)
     }
 
-    /// Get selected row and column from touch position
-    /// Rows and columns are zero-indexed.
-    /// - Parameter touchPosition: Touch position in the scene's coordinate system.
+    func isRowValid(_ row: Int) -> Bool {
+        row >= 0 && row < rows
+    }
+
+    func isColumnValid(_ column: Int) -> Bool {
+        column >= 0 && column < columns
+    }
+}
+
+extension TileMapRenderNode: TileMapDelegate {
+
     func getSelectedRowAndColumn(at touchPosition: CGPoint) -> (Int, Int)? {
         guard let scene = tileMapNode.scene else {
             return nil
@@ -55,14 +63,22 @@ class TileMapRenderNode: IRenderNode {
         let rowZeroIndexed = rowOneIndexed - 1
         let columnZeroIndexed = columnOneIndexed - 1
 
-        let isRowValid = rowZeroIndexed >= 0 && rowZeroIndexed < rows
-        let isColumnValid = columnZeroIndexed >= 0 && columnZeroIndexed < columns
-
-        guard isColumnValid, isRowValid else {
+        guard isColumnValid(columnZeroIndexed), isRowValid(rowZeroIndexed) else {
             return nil
         }
 
         return (rowZeroIndexed, columnZeroIndexed)
+    }
+
+    func getPosition(row: Int, column: Int) -> CGPoint? {
+        guard isRowValid(row), isColumnValid(column) else {
+            return nil
+        }
+
+        let xPosition = CGFloat(column) * tileMapNode.tileSize.width + tileMapNode.tileSize.width / 2
+        let yPosition = CGFloat(row) * tileMapNode.tileSize.height + tileMapNode.tileSize.height / 2
+
+        return CGPoint(x: xPosition, y: yPosition)
     }
 
     private func getTileMapPoint(fromPosition location: CGPoint) -> CGPoint {
