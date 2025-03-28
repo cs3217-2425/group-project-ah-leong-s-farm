@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     let gameRenderer: GameRenderer
 
     private var gameScene: GameScene?
+    private var dayLabel: UILabel?
 
     required init?(coder: NSCoder) {
         gameManager = GameManager()
@@ -93,10 +94,28 @@ class ViewController: UIViewController {
             label.widthAnchor.constraint(equalToConstant: 250),
             label.heightAnchor.constraint(equalToConstant: 40)
         ])
+
+        self.dayLabel = label
+        updateDayLabel()
+    }
+
+    private func updateDayLabel() {
+        guard let turnSystem = gameManager.gameWorld.getSystem(ofType: TurnSystem.self),
+              let label = dayLabel else {
+            return
+        }
+
+        let currentTurn = turnSystem.getCurrentTurn()
+        let maxTurns = turnSystem.getMaxTurns()
+        label.text = "DAY \(currentTurn)/\(maxTurns)"
     }
 
     @objc func nextTurnButtonTapped() {
         gameManager.gameWorld.queueEvent(EndTurnEvent())
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.updateDayLabel()
+        }
     }
 
     @objc func quitButtonTapped() {
