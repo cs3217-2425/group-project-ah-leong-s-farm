@@ -205,7 +205,7 @@ class QuestFactory {
     }
 
     static func createAllQuests() -> [Quest] {
-        return [
+        [
             createFarmStarterQuest(),
             createHarvestQuestBakChoy(),
             createSellQuestBakChoy(),

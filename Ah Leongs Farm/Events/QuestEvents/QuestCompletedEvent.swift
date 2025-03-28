@@ -11,6 +11,6 @@ class QuestCompletedEvent: GameEvent {
     }
 
     func execute(in context: EventContext, queueable: EventQueueable) -> EventData? {
-        return nil
+        nil
     }
 }
