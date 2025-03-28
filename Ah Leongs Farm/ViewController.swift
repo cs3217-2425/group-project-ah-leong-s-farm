@@ -24,6 +24,29 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setUpGameScene()
         createQuitButton()
+        createNextButton()
+        createDayLabel()
+    }
+
+    private func createNextButton() {
+        let nextButton = UIButton(type: .system)
+
+        nextButton.setTitle("Next Day", for: .normal)
+        nextButton.backgroundColor = .systemBlue
+        nextButton.setTitleColor(.white, for: .normal)
+        nextButton.layer.cornerRadius = 10
+        nextButton.translatesAutoresizingMaskIntoConstraints = false
+        nextButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
+
+        view.addSubview(nextButton)
+        NSLayoutConstraint.activate([
+            nextButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -130),
+            nextButton.widthAnchor.constraint(equalToConstant: 140),
+            nextButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
+
+        nextButton.addTarget(self, action: #selector(nextTurnButtonTapped), for: .touchUpInside)
     }
 
     private func createQuitButton() {
@@ -45,6 +68,35 @@ class ViewController: UIViewController {
         ])
 
         quitButton.addTarget(self, action: #selector(quitButtonTapped), for: .touchUpInside)
+    }
+
+    private func createDayLabel() {
+        guard let turnSystem = gameManager.gameWorld.getSystem(ofType: TurnSystem.self) else {
+            return
+        }
+
+        let currentTurn = turnSystem.getCurrentTurn()
+        let maxTurns = turnSystem.getMaxTurns()
+
+        let label = UILabel()
+        label.textColor = .white
+        label.text = "DAY \(currentTurn)/\(maxTurns)"
+        label.textAlignment = .left
+        label.font = UIFont(name: "Press Start 2P", size: 26)
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(label)
+
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            label.widthAnchor.constraint(equalToConstant: 250),
+            label.heightAnchor.constraint(equalToConstant: 40)
+        ])
+    }
+
+    @objc func nextTurnButtonTapped() {
+        gameManager.gameWorld.queueEvent(EndTurnEvent())
     }
 
     @objc func quitButtonTapped() {
