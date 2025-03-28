@@ -119,8 +119,8 @@ class GameManager {
     }
 
     private func setUpPlotEntities(using grid: GridComponent) {
-        for row in 0..<grid.numberOfRows {
-            for column in 0..<grid.numberOfColumns {
+        for row in 0..<grid.numberOfRows where row.isMultiple(of: 2) {
+            for column in 0..<grid.numberOfColumns where column.isMultiple(of: 2) {
                 let plot = Plot(position: CGPoint(x: row, y: column))
                 grid.setEntity(plot, row: row, column: column)
                 gameWorld.addEntity(plot)
