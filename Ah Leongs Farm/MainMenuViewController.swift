@@ -43,4 +43,8 @@ class MainMenuViewController: UIViewController {
             segue.destination.modalPresentationStyle = .fullScreen
         }
     }
+
+    override var prefersStatusBarHidden: Bool {
+        true
+    }
 }
