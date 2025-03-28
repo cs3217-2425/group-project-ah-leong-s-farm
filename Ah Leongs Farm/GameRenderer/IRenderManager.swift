@@ -1,8 +1,7 @@
 import GameplayKit
 
-protocol IRenderManager {
+protocol IRenderManager: AnyObject {
     associatedtype T = IRenderNode
-    typealias EntityType = GKEntity
 
     var entityNodeMap: [ObjectIdentifier: T] { get }
 
@@ -29,13 +28,21 @@ extension IRenderManager {
         }
     }
 
-    func getEntitiesToRender(entities: Set<EntityType>) -> Set<EntityType> {
+    func getRenderNode<S: IRenderNode>(ofType type: S.Type, entityIdentifier: ObjectIdentifier) -> S? {
+        if renderNodeType != type {
+            return nil
+        }
+
+        return entityNodeMap[entityIdentifier] as? S
+    }
+
+    private func getEntitiesToRender(entities: Set<EntityType>) -> Set<EntityType> {
         entities.filter { entity in
             entityNodeMap[ObjectIdentifier(entity)] == nil
         }
     }
 
-    func getEntityIdentifiersToRemove(entities: Set<EntityType>) -> Set<ObjectIdentifier> {
+    private func getEntityIdentifiersToRemove(entities: Set<EntityType>) -> Set<ObjectIdentifier> {
         let entityIdentifiers = entities.map( ObjectIdentifier.init )
 
         return Set(entityNodeMap.keys.filter { entityIdentifier in

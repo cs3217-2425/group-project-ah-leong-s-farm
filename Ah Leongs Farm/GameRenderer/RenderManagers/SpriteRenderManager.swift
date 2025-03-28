@@ -10,10 +10,10 @@ import GameplayKit
 class SpriteRenderManager: IRenderManager {
     private(set) var entityNodeMap: [ObjectIdentifier: SpriteRenderNode] = [:]
 
-    private weak var tileMapDelegate: TileMapDelegate?
+    private weak var uiPositionProvider: UIPositionProvider?
 
-    init(tileMapDelegate: TileMapDelegate) {
-        self.tileMapDelegate = tileMapDelegate
+    init(uiPositionProvider: UIPositionProvider) {
+        self.uiPositionProvider = uiPositionProvider
     }
 
     func createNode(of entity: EntityType, in scene: SKScene) {
@@ -27,7 +27,7 @@ class SpriteRenderManager: IRenderManager {
         }
 
         let spriteRenderNode = SpriteRenderNode(imageNamed: spriteComponent.textureName)
-        let position = tileMapDelegate?.getPosition(
+        let position = uiPositionProvider?.getUIPosition(
             row: Int(positionComponent.x),
             column: Int(positionComponent.y)
         ) ?? .zero
