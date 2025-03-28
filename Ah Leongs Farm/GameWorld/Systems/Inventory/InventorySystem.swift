@@ -30,6 +30,18 @@ class InventorySystem: ISystem {
         }
     }
 
+    func removeItem(_ item: ItemComponent) {
+        guard let itemToRemove = items.first(where: { $0 == item }) else {
+            return
+        }
+
+        guard let entity = itemToRemove.entity else {
+            return
+        }
+
+        manager?.removeComponent(ofType: ItemComponent.self, from: entity)
+    }
+
     func hasItem(_ item: ItemComponent) -> Bool {
         items.contains(item)
     }
