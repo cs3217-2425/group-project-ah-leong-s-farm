@@ -7,6 +7,10 @@
 
 import GameplayKit
 
-protocol RewardComponent: GKComponent {
+protocol RewardComponent {
     func processReward(with queuer: RewardEventQueuer)
+}
+
+extension RewardComponent where Self: GKComponent {
+    
 }
