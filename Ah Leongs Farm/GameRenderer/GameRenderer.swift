@@ -107,4 +107,3 @@ extension GameRenderer: UIPositionProvider {
         return tileMapPoint
     }
 }
-

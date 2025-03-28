@@ -13,7 +13,7 @@ class TileMapRenderManagerTests: XCTestCase {
         let scene = SKScene(size: CGSize(width: 100, height: 100))
         TileMapRenderManager.createNode(of: entity, in: scene)
 
-        XCTAssertTrue(scene.children.count == 1)
+        XCTAssertEqual(scene.children.count, 1)
     }
 
     func testCreateNodeWithoutGridComponent() {
