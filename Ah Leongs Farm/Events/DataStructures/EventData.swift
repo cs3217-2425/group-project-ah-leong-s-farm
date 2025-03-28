@@ -22,8 +22,14 @@ struct SellCropEventData: EventData {
     var quantity: Int
 }
 
-struct RewardGrantEventData: EventData {
-    var xpGrantAmount: Int = 0
+struct XPGrantEventData: EventData {
+    var xpGrantAmount: Float = 0
+}
+
+struct CurrencyGrantEventData: EventData {
     var currencyGrants: [CurrencyType: Double] = [:]
+}
+
+struct ItemGrantEventData: EventData {
     var itemGrants: [ItemType: Int] = [:]
 }
