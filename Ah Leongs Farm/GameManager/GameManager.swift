@@ -2,19 +2,26 @@ import GameplayKit
 import SpriteKit
 
 class GameManager {
-    private let gameWorld: GameWorld
+    let gameWorld: GameWorld
     private var gameObservers: [any IGameObserver] = []
 
-    init(scene: SKScene) {
+    init() {
         gameWorld = GameWorld()
         setUpBaseEntities()
         setUpQuests()
-        setUpGameObservers(scene: scene)
     }
 
     func update(_ currentTime: TimeInterval) {
         gameWorld.update(deltaTime: currentTime)
-        gameObservers.forEach { $0.notify(gameWorld) }
+        gameObservers.forEach { $0.observe() }
+    }
+
+    func addGameObserver(_ observer: any IGameObserver) {
+        gameObservers.append(observer)
+    }
+
+    func removeGameObserver(_ observer: any IGameObserver) {
+        gameObservers.removeAll(where: { $0 === observer })
     }
 
     private func setUpEntities() {
@@ -39,10 +46,6 @@ class GameManager {
         addTutorialQuests()
         addMainStoryQuests()
         addMoreQuests()
-    }
-
-    private func setUpGameObservers(scene: SKScene) {
-        gameObservers.append(GameRenderer(scene: scene))
     }
 
     // MARK: - Entity Creation Helpers
@@ -116,8 +119,8 @@ class GameManager {
     }
 
     private func setUpPlotEntities(using grid: GridComponent) {
-        for row in 0..<grid.numberOfRows {
-            for column in 0..<grid.numberOfColumns {
+        for row in 0..<grid.numberOfRows where row.isMultiple(of: 2) {
+            for column in 0..<grid.numberOfColumns where column.isMultiple(of: 2) {
                 let plot = Plot(position: CGPoint(x: row, y: column))
                 grid.setEntity(plot, row: row, column: column)
                 gameWorld.addEntity(plot)
