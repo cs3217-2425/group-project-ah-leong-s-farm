@@ -5,6 +5,6 @@
 //  Created by Jerry Leong on 18/3/25.
 //
 
-protocol IGameObserver {
-    func notify(_ gameWorld: GameWorld)
+protocol IGameObserver: AnyObject {
+    func observe()
 }
