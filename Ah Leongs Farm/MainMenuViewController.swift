@@ -1,12 +1,4 @@
-//
-//  MainMenuViewController.swift
-//  Ah Leongs Farm
-//
-//  Created by Jerry Leong on 13/3/25.
-//
-
 import UIKit
-import SpriteKit
 
 class MainMenuViewController: UIViewController {
 
