@@ -29,4 +29,10 @@ class BokChoy: GKEntity, Crop {
         let healthComponent = HealthComponent()
         addComponent(healthComponent)
     }
+
+    static func createSeed() -> GKEntity {
+        let bokChoy = BokChoy()
+        bokChoy.addComponent(SeedComponent())
+        return bokChoy
+    }
 }

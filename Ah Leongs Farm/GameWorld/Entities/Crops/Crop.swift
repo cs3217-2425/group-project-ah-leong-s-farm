@@ -17,4 +17,6 @@ protocol Crop {
     func component<ComponentType>(ofType componentClass: ComponentType.Type) -> ComponentType?
         where ComponentType: GKComponent
     func removeComponent<ComponentType>(ofType componentClass: ComponentType.Type) where ComponentType: GKComponent
+
+    static func createSeed() -> GKEntity
 }
