@@ -32,13 +32,8 @@ class QuestFactory {
         amount: Int,
         reward: Reward
     ) -> Quest {
-        let progressCalculator = EventAmountCalculator(dataType: .cropAmount)
 
-        let criteria = QuestCriteria(
-            eventType: .harvestCrop,
-            progressCalculator: progressCalculator,
-            requiredData: [.cropType: cropType]
-        )
+        let criteria = HarvestCropCriteria(cropType: cropType)
 
         let objective = QuestObjective(
             description: "Harvest \(amount) \(cropType)",
@@ -60,13 +55,8 @@ class QuestFactory {
         days: Int,
         reward: Reward
     ) -> Quest {
-        // For survival quests, we use a fixed increment of 1 per turn
-        let progressCalculator = FixedProgressCalculator(amount: 1.0)
 
-        let criteria = QuestCriteria(
-            eventType: .endTurn,
-            progressCalculator: progressCalculator
-        )
+        let criteria = SurviveNumberOfTurnsCriteria()
 
         let objective = QuestObjective(
             description: "Survive for \(days) days",
@@ -89,13 +79,8 @@ class QuestFactory {
         amount: Int,
         reward: Reward
     ) -> Quest {
-        let progressCalculator = EventAmountCalculator(dataType: .cropAmount)
 
-        let criteria = QuestCriteria(
-            eventType: .sellCrop,
-            progressCalculator: progressCalculator,
-            requiredData: [.cropType: cropType]
-        )
+        let criteria = SellCropCriteria(cropType: cropType)
 
         let objective = QuestObjective(
             description: "Sell \(amount) \(cropType) at the market",
@@ -122,11 +107,7 @@ class QuestFactory {
         survivalDays: Int = 3
     ) -> Quest {
         // First objective: Harvest crops
-        let harvestCriteria = QuestCriteria(
-            eventType: .harvestCrop,
-            progressCalculator: EventAmountCalculator(dataType: .cropAmount),
-            requiredData: [.cropType: cropType]
-        )
+        let harvestCriteria = HarvestCropCriteria(cropType: cropType)
 
         let harvestObjective = QuestObjective(
             description: "Harvest \(harvestAmount) \(cropType)",
@@ -135,11 +116,7 @@ class QuestFactory {
         )
 
         // Second objective: Sell crops
-        let sellCriteria = QuestCriteria(
-            eventType: .sellCrop,
-            progressCalculator: EventAmountCalculator(dataType: .cropAmount),
-            requiredData: [.cropType: cropType]
-        )
+        let sellCriteria = SellCropCriteria(cropType: cropType)
 
         let sellObjective = QuestObjective(
             description: "Sell \(sellAmount) \(cropType) at the market",
@@ -148,10 +125,7 @@ class QuestFactory {
         )
 
         // Third objective: Survive days
-        let survivalCriteria = QuestCriteria(
-            eventType: .endTurn,
-            progressCalculator: FixedProgressCalculator(amount: 1.0)
-        )
+        let survivalCriteria = SurviveNumberOfTurnsCriteria()
 
         let survivalObjective = QuestObjective(
             description: "Survive for \(survivalDays) days",

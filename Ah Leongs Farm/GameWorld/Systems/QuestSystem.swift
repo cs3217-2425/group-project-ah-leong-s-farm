@@ -15,25 +15,34 @@ class QuestSystem: ISystem {
         self.manager = manager
     }
 
-    private var quests: [QuestComponent] {
-        manager?.getAllComponents(ofType: QuestComponent.self) ?? []
+    private func updateQuestProgress(_ questComponent: QuestComponent, with eventData: EventData) {
+        var questUpdated = false
+
+        for i in 0..<questComponent.objectives.count {
+            var objective = questComponent.objectives[i]
+            let criteria = objective.criteria
+
+            if objective.isCompleted {
+                continue
+            }
+
+            let increment = criteria.calculateValue(from: eventData)
+
+            objective.progress += increment
+            objective.progress = min(objective.progress, objective.target)
+
+            questComponent.objectives[i] = objective
+            questUpdated = true
+
+        }
+
+        if questUpdated && questComponent.isCompleted && questComponent.status != .completed {
+            // completeQuest(questComponent)
+        }
     }
 
-    private func checkCriteria(_ criteria: QuestCriteria, againstEvent eventData: EventData) -> Bool {
-        if criteria.eventType != eventData.eventType {
-            return false
-        }
-        // Check each required data attribute
-        for (dataType, requiredValue) in criteria.requiredData {
-            guard let eventValue = eventData.data[dataType] else {
-                return false
-            }
-            if AnyHashable(eventValue) != AnyHashable(requiredValue) {
-                return false
-            }
-        }
-
-        return true
+    private var quests: [QuestComponent] {
+        manager?.getAllComponents(ofType: QuestComponent.self) ?? []
     }
 
     private func completeQuest(_ questComponent: QuestComponent) {

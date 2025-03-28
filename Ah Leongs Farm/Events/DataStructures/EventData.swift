@@ -5,24 +5,25 @@
 //  Created by Ma Yuchen on 20/3/25.
 //
 
-struct EventData {
-    let eventType: EventType
-    // Make value hashable for simpler equality checks
-    var data: [EventDataType: any Hashable] = [:]
-
-    mutating func addData(type: EventDataType, value: any Hashable) {
-        data[type] = value
-    }
+protocol EventData {
 }
 
-enum EventDataType {
-    case endTurnCount
-    case cropType
-    case cropAmount
-    case xpGrantAmount
-    case currencyGrant
-    case currencySpend
-    case currencyTransactionAmount
-    case itemGrant
-    case itemGrantQuantity
+struct EndTurnEventData: EventData {
+    var endTurnCount: Int = 1
+}
+
+struct HarvestCropEventData: EventData {
+    var type: CropType
+    var quantity: Int
+}
+
+struct SellCropEventData: EventData {
+    var type: CropType
+    var quantity: Int
+}
+
+struct RewardGrantEventData: EventData {
+    var xpGrantAmount: Int = 0
+    var currencyGrants: [CurrencyType: Double] = [:]
+    var itemGrants: [ItemType: Int] = [:]
 }
