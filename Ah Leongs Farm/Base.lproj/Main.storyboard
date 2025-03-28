@@ -15,17 +15,6 @@
                     <view key="view" contentMode="scaleToFill" id="iKF-gf-iWU">
                         <rect key="frame" x="0.0" y="0.0" width="1376" height="1032"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EtY-OF-jix">
-                                <rect key="frame" x="372" y="661" width="288" height="54"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Start Game" titleAlignment="center"/>
-                                <connections>
-                                    <action selector="startPressed:" destination="pg2-GI-Jdr" eventType="touchUpInside" id="Dd5-hy-krh"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="MrG-99-k20"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
