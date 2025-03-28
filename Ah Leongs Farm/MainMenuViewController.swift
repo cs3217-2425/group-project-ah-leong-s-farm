@@ -16,7 +16,7 @@ class MainMenuViewController: UIViewController {
         let titleLabel = UILabel()
         titleLabel.text = "Ah Leong's Farm"
         titleLabel.textAlignment = .center
-        titleLabel.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        titleLabel.font = UIFont(name: "Press Start 2P", size: 24)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
         let startButton = UIButton(type: .system)
@@ -25,6 +25,7 @@ class MainMenuViewController: UIViewController {
         startButton.setTitleColor(.white, for: .normal)
         startButton.layer.cornerRadius = 10
         startButton.translatesAutoresizingMaskIntoConstraints = false
+        startButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
 
         view.addSubview(titleLabel)
         view.addSubview(startButton)
