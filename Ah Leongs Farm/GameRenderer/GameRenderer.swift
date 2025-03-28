@@ -16,6 +16,12 @@ class GameRenderer {
     }
 
     func setScene(_ scene: GameScene?) {
+        if let previousScene = gameScene {
+            for renderManager in renderManagers {
+                renderManager.removeAllNodes(in: previousScene)
+            }
+        }
+
         gameScene = scene
         gameScene?.setGameSceneUpdateDelegate(self)
 

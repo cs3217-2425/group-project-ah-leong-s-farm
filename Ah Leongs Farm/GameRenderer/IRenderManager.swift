@@ -36,6 +36,12 @@ extension IRenderManager {
         return entityNodeMap[entityIdentifier] as? S
     }
 
+    func removeAllNodes(in scene: SKScene) {
+        for entityIdentifier in entityNodeMap.keys {
+            removeNode(of: entityIdentifier, in: scene)
+        }
+    }
+
     private func getEntitiesToRender(entities: Set<EntityType>) -> Set<EntityType> {
         entities.filter { entity in
             entityNodeMap[ObjectIdentifier(entity)] == nil
