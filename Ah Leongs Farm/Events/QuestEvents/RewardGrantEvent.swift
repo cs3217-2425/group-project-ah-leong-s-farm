@@ -8,18 +8,18 @@
 class RewardGrantEvent: GameEvent {
     private let reward: Reward
 
-        init(reward: Reward) {
-            self.reward = reward
-        }
+    init(reward: Reward) {
+        self.reward = reward
+    }
 
     func execute(in context: EventContext, queueable: EventQueueable) -> EventData? {
-            var eventData = EventData(eventType: .rewardGrant)
+        var eventData = RewardGrantEventData()
 
-            for specificReward in reward.rewards {
-                let strategy = RewardHandlerFactory.getStrategy(for: specificReward.type)
-                strategy.processReward(specificReward, in: context, eventData: &eventData)
-            }
-
-            return eventData
+        for specificReward in reward.rewards {
+            let strategy = RewardHandlerFactory.getStrategy(for: specificReward.type)
+            strategy.processReward(specificReward, in: context, eventData: &eventData)
         }
+
+        return eventData
+    }
 }

@@ -2,34 +2,36 @@ import GameplayKit
 import SpriteKit
 
 class GameManager {
-    private let gameWorld: GameWorld
+    let gameWorld: GameWorld
     private var gameObservers: [any IGameObserver] = []
 
-    init(scene: SKScene) {
+    init() {
         gameWorld = GameWorld()
         setUpBaseEntities()
         setUpQuests()
-        setUpGameObservers(scene: scene)
     }
 
     func update(_ currentTime: TimeInterval) {
         gameWorld.update(deltaTime: currentTime)
-        gameObservers.forEach { $0.notify(gameWorld) }
+        gameObservers.forEach { $0.observe() }
+    }
+
+    func addGameObserver(_ observer: any IGameObserver) {
+        gameObservers.append(observer)
+    }
+
+    func removeGameObserver(_ observer: any IGameObserver) {
+        gameObservers.removeAll(where: { $0 === observer })
     }
 
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
-        gameWorld.addEntity(Wallet())
-        gameWorld.addEntity(Level(level: 1, currentXP: 0))
     }
 
     // MARK: - Setup Methods
 
     private func setUpBaseEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
-
-        gameWorld.addEntity(Wallet())
-        gameWorld.addEntity(Level(level: 1, currentXP: 0))
 
         addStartingItems()
 
@@ -44,10 +46,6 @@ class GameManager {
         addTutorialQuests()
         addMainStoryQuests()
         addMoreQuests()
-    }
-
-    private func setUpGameObservers(scene: SKScene) {
-        gameObservers.append(GameRenderer(scene: scene))
     }
 
     // MARK: - Entity Creation Helpers

@@ -2,13 +2,32 @@ import GameplayKit
 
 typealias EntityType = GKEntity
 
+/// The GameRenderer class is responsible for rendering the game world.
 class GameRenderer {
-    private let scene: SKScene
+    private weak var gameManager: GameManager?
+    private weak var gameScene: GameScene?
+
     private var renderManagers: [any IRenderManager] = []
 
-    init(scene: SKScene) {
-        self.scene = scene
+    init(gameManager: GameManager) {
+        self.gameManager = gameManager
+        self.gameManager?.addGameObserver(self)
         setUpRenderManagers()
+    }
+
+    func setScene(_ scene: GameScene?) {
+        gameScene = scene
+        gameScene?.setGameSceneUpdateDelegate(self)
+
+        guard let gameWorld = gameManager?.gameWorld,
+              let gameScene = gameScene else {
+            return
+        }
+
+        let allEntities = Set(gameWorld.getAllEntities())
+        for renderManager in renderManagers {
+            renderManager.render(entities: allEntities, in: gameScene)
+        }
     }
 
     func identifyEntitiesWithRenderNode<T: IRenderNode>(ofType type: T.Type) -> [ObjectIdentifier] {
@@ -25,8 +44,19 @@ class GameRenderer {
     }
 }
 
+extension GameRenderer: GameSceneUpdateDelegate {
+    func update(_ timeInterval: TimeInterval) {
+        gameManager?.update(timeInterval)
+    }
+}
+
 extension GameRenderer: IGameObserver {
-    func notify(_ gameWorld: GameWorld) {
+    func observe() {
+        guard let gameWorld = gameManager?.gameWorld,
+              let scene = gameScene else {
+            return
+        }
+
         let allEntities = Set(gameWorld.getAllEntities())
         for renderManager in renderManagers {
             renderManager.render(entities: allEntities, in: scene)
@@ -53,7 +83,8 @@ extension GameRenderer: UIPositionProvider {
     }
 
     func getSelectedRowAndColumn(at touchPosition: CGPoint) -> (Int, Int)? {
-        guard let tileMapRenderNode = tileMapRenderNode else {
+        guard let tileMapRenderNode = tileMapRenderNode,
+              let scene = gameScene else {
             return nil
         }
 
