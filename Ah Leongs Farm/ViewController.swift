@@ -23,12 +23,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpGameScene()
-        let quitButton = createQuitButton()
-
-        view.addSubview(quitButton)
+        createQuitButton()
     }
 
-    private func createQuitButton() -> UIButton {
+    private func createQuitButton() {
         let quitButton = UIButton(type: .system)
 
         quitButton.setTitle("Quit", for: .normal)
@@ -47,7 +45,6 @@ class ViewController: UIViewController {
         ])
 
         quitButton.addTarget(self, action: #selector(quitButtonTapped), for: .touchUpInside)
-        return quitButton
     }
 
     @objc func quitButtonTapped() {
