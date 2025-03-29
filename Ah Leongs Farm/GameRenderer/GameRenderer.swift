@@ -15,7 +15,9 @@ class GameRenderer {
     private weak var gameManager: GameManager?
     private weak var gameScene: GameScene?
 
+    private var entityNodeMap: [ObjectIdentifier: any IRenderNode] = [:]
     private var renderManagerMap: [ObjectIdentifier: any IRenderManager] = [:]
+    private var renderPipeline: Queue<any IRenderManager> = Queue()
 
     /// Initializes a new instance of the `GameRenderer` class with the specified game manager.
     ///
@@ -30,10 +32,8 @@ class GameRenderer {
     ///
     /// - Parameter scene: The game scene to be set for rendering.
     func setScene(_ scene: GameScene?) {
-        if let previousScene = gameScene {
-            for renderManager in renderManagerMap.values {
-                renderManager.removeAllNodes(in: previousScene)
-            }
+        if gameScene != nil {
+            removeAllNodes()
         }
 
         gameScene = scene
@@ -45,47 +45,74 @@ class GameRenderer {
         }
 
         let allEntities = Set(gameWorld.getAllEntities())
-        for renderManager in renderManagerMap.values {
-            renderManager.render(entities: allEntities, in: gameScene)
-        }
+        executeRenderPipeline(allEntities: allEntities, in: gameScene)
     }
 
-    /// Identifies entities that have a render node of the specified type.
-    ///
-    /// - Parameter type: The type of the render node.
-    /// - Returns: An array of object identifiers for entities with the specified render node type.
-    func identifyEntitiesWithRenderNode<T: IRenderNode>(ofType type: T.Type) -> [ObjectIdentifier] {
-        guard let renderManager = renderManagerMap[ObjectIdentifier(type)] else {
-            return []
-        }
-
-        return renderManager.entityNodeMap.map { $0.key }
-    }
-
-    /// Retrieves the render node of the specified type for a given entity.
-    ///
-    /// - Parameters:
-    ///   - type: The type of the render node.
-    ///   - entityIdentifier: The identifier of the entity.
-    /// - Returns: The render node of the specified type for the given entity, or `nil` if not found.
-    func getRenderNode<T: IRenderNode>(ofType type: T.Type, entityIdentifier: ObjectIdentifier) -> T? {
-        guard let renderManager = renderManagerMap[ObjectIdentifier(type)] else {
-            return nil
-        }
-
-        return renderManager.getRenderNode(ofType: type, entityIdentifier: entityIdentifier)
+    func getSKNodes<T: SKNode>(ofType type: T.Type) -> [T] {
+        entityNodeMap.filter { _, node in node.managedSKNodeType == type }
+            .compactMap { _, node in node.skNode as? T }
     }
 
     /// Sets up the render managers for the game renderer.
     private func setUpRenderManagers() {
         let renderManagers: [any IRenderManager] = [
             TileMapRenderManager(),
-            SpriteRenderManager(uiPositionProvider: self)
+            PlotSpriteRenderManager(uiPositionProvider: self),
+            GenericSpriteRenderManager(uiPositionProvider: self)
         ]
 
         for renderManager in renderManagers {
+            renderPipeline.enqueue(renderManager)
             renderManagerMap[ObjectIdentifier(renderManager.renderNodeType)] = renderManager
         }
+    }
+
+    private func removeAllNodes() {
+        for (_, renderNode) in entityNodeMap {
+            renderNode.skNode.removeFromParent()
+        }
+
+        entityNodeMap.removeAll()
+    }
+
+    private func executeRenderPipeline(allEntities: Set<EntityType>, in scene: GameScene) {
+        let entitiesToCreateFor = getEntitiesForCreation(allEntities: allEntities)
+        let entityIdentifiersToRemove = getEntitiesForRemoval(allEntities: allEntities)
+
+        for renderManager in renderPipeline.iterable {
+            for entity in entitiesToCreateFor {
+                guard entityNodeMap[ObjectIdentifier(entity)] == nil else {
+                    continue
+                }
+
+                if let renderNode = renderManager.createNode(of: entity) {
+                    entityNodeMap[ObjectIdentifier(entity)] = renderNode
+                    scene.addChild(renderNode.skNode)
+                }
+            }
+        }
+
+        for entityIdentifier in entityIdentifiersToRemove {
+            guard let renderNode = entityNodeMap[entityIdentifier] else {
+                continue
+            }
+
+            renderNode.skNode.removeFromParent()
+            entityNodeMap.removeValue(forKey: entityIdentifier)
+        }
+    }
+
+    private func getEntitiesForCreation(allEntities: Set<EntityType>) -> Set<EntityType> {
+        allEntities.filter { entity in
+            entityNodeMap[ObjectIdentifier(entity)] == nil
+        }
+    }
+
+    private func getEntitiesForRemoval(allEntities: Set<EntityType>) -> Set<ObjectIdentifier> {
+        let allEntityIdentifiers = allEntities.map { ObjectIdentifier($0) }
+        let entityIdentifiersWithRenderNodes = Set(entityNodeMap.keys)
+        let entityIdentifiersForRemoval = entityIdentifiersWithRenderNodes.subtracting(allEntityIdentifiers)
+        return entityIdentifiersForRemoval
     }
 }
 
@@ -103,31 +130,22 @@ extension GameRenderer: IGameObserver {
         }
 
         let allEntities = Set(gameWorld.getAllEntities())
-        for renderManager in renderManagerMap.values {
-            renderManager.render(entities: allEntities, in: scene)
-        }
+
+        executeRenderPipeline(allEntities: allEntities, in: scene)
     }
 }
 
 extension GameRenderer: UIPositionProvider {
 
-    /// From `TileMapRenderManager, we know that there exists up to one `TileMapRenderNode`
-    private var tileMapRenderNode: TileMapRenderNode? {
-        guard let entityWithTileMapRenderNode = identifyEntitiesWithRenderNode(
-            ofType: TileMapRenderNode.self).first else {
-            return nil
-        }
-
-        return getRenderNode(ofType: TileMapRenderNode.self, entityIdentifier: entityWithTileMapRenderNode)
+    private var skTileMapNode: SKTileMapNode? {
+        getSKNodes(ofType: SKTileMapNode.self).first
     }
 
     func getSelectedRowAndColumn(at touchPosition: CGPoint) -> (Int, Int)? {
-        guard let tileMapRenderNode = tileMapRenderNode,
+        guard let skTileMapNode = skTileMapNode,
               let scene = gameScene else {
             return nil
         }
-
-        let skTileMapNode = tileMapRenderNode.tileMapNode
 
         // Convert the touch position to the tile map node's coordinate system
         let locationInTileMap = scene.convert(touchPosition, to: skTileMapNode)
@@ -139,8 +157,8 @@ extension GameRenderer: UIPositionProvider {
         let rowZeroIndexed = rowOneIndexed - 1
         let columnZeroIndexed = columnOneIndexed - 1
 
-        guard tileMapRenderNode.isColumnValid(columnZeroIndexed),
-              tileMapRenderNode.isRowValid(rowZeroIndexed) else {
+        guard skTileMapNode.isColumnValid(columnZeroIndexed),
+              skTileMapNode.isRowValid(rowZeroIndexed) else {
             return nil
         }
 
@@ -148,15 +166,14 @@ extension GameRenderer: UIPositionProvider {
     }
 
     func getUIPosition(row: Int, column: Int) -> CGPoint? {
-        guard let tileMapRenderNode = tileMapRenderNode else {
+        guard let skTileMapNode = skTileMapNode else {
             return nil
         }
 
-        guard tileMapRenderNode.isRowValid(row), tileMapRenderNode.isColumnValid(column) else {
+        guard skTileMapNode.isRowValid(row), skTileMapNode.isColumnValid(column) else {
             return nil
         }
 
-        let skTileMapNode = tileMapRenderNode.tileMapNode
         let tileSize = skTileMapNode.tileSize
 
         // TODO: Investigate why deduction of half the tile size is needed

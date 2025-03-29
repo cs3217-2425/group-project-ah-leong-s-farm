@@ -4,6 +4,24 @@ class GameScene: SKScene {
     private let gameCamera = GameCamera()
     private weak var gameSceneUpdateDelegate: GameSceneUpdateDelegate?
 
+    override var camera: SKCameraNode? {
+        get {
+            gameCamera
+        }
+        set {
+            // ignore
+        }
+    }
+
+    override var isUserInteractionEnabled: Bool {
+        get {
+            true
+        }
+        set {
+            // ignore
+        }
+    }
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -11,10 +29,6 @@ class GameScene: SKScene {
 
     override init(size: CGSize) {
         super.init(size: size)
-
-        // attach gameCamera to self
-        camera = gameCamera
-        addChild(gameCamera)
     }
 
     func setGameSceneUpdateDelegate(_ delegate: GameSceneUpdateDelegate) {

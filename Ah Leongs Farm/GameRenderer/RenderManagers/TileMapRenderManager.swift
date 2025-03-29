@@ -12,17 +12,10 @@ class TileMapRenderManager: IRenderManager {
     private static let LandTileGroupName: String = "Land"
     private static let TileSize = CGSize(width: 48, height: 48)
 
-    private(set) var entityNodeMap: [ObjectIdentifier: TileMapRenderNode] = [:]
-
-    func createNode(of entity: EntityType, in scene: SKScene) {
-        // only one tile map node is allowed to be managed
-        guard entityNodeMap.isEmpty else {
-            return
-        }
-
+    func createNode(of entity: EntityType) -> TileMapRenderNode? {
         guard let gridComponent = entity.component(ofType: GridComponent.self),
               let tileSet = SKTileSet(named: TileMapRenderManager.TileSetName) else {
-            return
+            return nil
         }
 
         let node = TileMapRenderNode(
@@ -33,17 +26,6 @@ class TileMapRenderManager: IRenderManager {
         )
 
         node.fill(with: TileMapRenderManager.LandTileGroupName)
-
-        scene.addChild(node.skNode)
-        entityNodeMap[ObjectIdentifier(entity)] = node
-    }
-
-    func removeNode(of entityIdentifier: ObjectIdentifier, in scene: SKScene) {
-        guard let node = entityNodeMap[entityIdentifier] else {
-            return
-        }
-
-        node.skNode.removeFromParent()
-        entityNodeMap.removeValue(forKey: entityIdentifier)
+        return node
     }
 }
