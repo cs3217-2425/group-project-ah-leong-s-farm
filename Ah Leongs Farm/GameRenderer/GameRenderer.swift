@@ -2,22 +2,36 @@ import GameplayKit
 
 typealias EntityType = GKEntity
 
-/// The GameRenderer class is responsible for rendering the game world.
+/// The `GameRenderer` class is responsible for rendering the game world.
+/// It manages different render managers and coordinates the rendering process
+/// for various entities in the game.
+///
+/// The `GameRenderer` class observes the game state and updates the rendering
+/// accordingly. It also provides methods to identify and retrieve render nodes
+/// associated with specific entities.
+///
+/// **Note:** Each render manager must manage a unique type of render node.
 class GameRenderer {
     private weak var gameManager: GameManager?
     private weak var gameScene: GameScene?
 
-    private var renderManagers: [any IRenderManager] = []
+    private var renderManagerMap: [ObjectIdentifier: any IRenderManager] = [:]
 
+    /// Initializes a new instance of the `GameRenderer` class with the specified game manager.
+    ///
+    /// - Parameter gameManager: The game manager responsible for managing the game state.
     init(gameManager: GameManager) {
         self.gameManager = gameManager
         self.gameManager?.addGameObserver(self)
         setUpRenderManagers()
     }
 
+    /// Sets the game scene for rendering.
+    ///
+    /// - Parameter scene: The game scene to be set for rendering.
     func setScene(_ scene: GameScene?) {
         if let previousScene = gameScene {
-            for renderManager in renderManagers {
+            for renderManager in renderManagerMap.values {
                 renderManager.removeAllNodes(in: previousScene)
             }
         }
@@ -31,22 +45,47 @@ class GameRenderer {
         }
 
         let allEntities = Set(gameWorld.getAllEntities())
-        for renderManager in renderManagers {
+        for renderManager in renderManagerMap.values {
             renderManager.render(entities: allEntities, in: gameScene)
         }
     }
 
+    /// Identifies entities that have a render node of the specified type.
+    ///
+    /// - Parameter type: The type of the render node.
+    /// - Returns: An array of object identifiers for entities with the specified render node type.
     func identifyEntitiesWithRenderNode<T: IRenderNode>(ofType type: T.Type) -> [ObjectIdentifier] {
-        var identifiers: [ObjectIdentifier] = []
-        for renderManager in renderManagers where type == renderManager.renderNodeType {
-            identifiers += renderManager.entityNodeMap.keys
+        guard let renderManager = renderManagerMap[ObjectIdentifier(type)] else {
+            return []
         }
-        return identifiers
+
+        return renderManager.entityNodeMap.map { $0.key }
     }
 
+    /// Retrieves the render node of the specified type for a given entity.
+    ///
+    /// - Parameters:
+    ///   - type: The type of the render node.
+    ///   - entityIdentifier: The identifier of the entity.
+    /// - Returns: The render node of the specified type for the given entity, or `nil` if not found.
+    func getRenderNode<T: IRenderNode>(ofType type: T.Type, entityIdentifier: ObjectIdentifier) -> T? {
+        guard let renderManager = renderManagerMap[ObjectIdentifier(type)] else {
+            return nil
+        }
+
+        return renderManager.getRenderNode(ofType: type, entityIdentifier: entityIdentifier)
+    }
+
+    /// Sets up the render managers for the game renderer.
     private func setUpRenderManagers() {
-        renderManagers.append(TileMapRenderManager())
-        renderManagers.append(SpriteRenderManager(uiPositionProvider: self))
+        let renderManagers: [any IRenderManager] = [
+            TileMapRenderManager(),
+            SpriteRenderManager(uiPositionProvider: self)
+        ]
+
+        for renderManager in renderManagers {
+            renderManagerMap[ObjectIdentifier(renderManager.renderNodeType)] = renderManager
+        }
     }
 }
 
@@ -64,7 +103,7 @@ extension GameRenderer: IGameObserver {
         }
 
         let allEntities = Set(gameWorld.getAllEntities())
-        for renderManager in renderManagers {
+        for renderManager in renderManagerMap.values {
             renderManager.render(entities: allEntities, in: scene)
         }
     }
@@ -79,13 +118,7 @@ extension GameRenderer: UIPositionProvider {
             return nil
         }
 
-        guard let tileMapRenderNode = renderManagers.compactMap({ renderManager in
-            renderManager.getRenderNode(ofType: TileMapRenderNode.self,
-                                        entityIdentifier: entityWithTileMapRenderNode) }).first else {
-            return nil
-        }
-
-        return tileMapRenderNode
+        return getRenderNode(ofType: TileMapRenderNode.self, entityIdentifier: entityWithTileMapRenderNode)
     }
 
     func getSelectedRowAndColumn(at touchPosition: CGPoint) -> (Int, Int)? {
