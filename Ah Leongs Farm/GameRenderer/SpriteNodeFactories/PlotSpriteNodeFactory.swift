@@ -14,9 +14,6 @@ class PlotSpriteNodeFactory: SpriteNodeFactory {
             return nil
         }
 
-        let spriteNode = PlotSpriteNode(imageNamed: textureName)
-
-        return spriteNode
+        return PlotSpriteNode(imageNamed: textureName)
     }
 }
-

@@ -7,30 +7,32 @@
 
 import GameplayKit
 
-class GenericSpriteRenderManager: IRenderManager {
+class SpriteRenderManager: IRenderManager {
     private weak var uiPositionProvider: UIPositionProvider?
+
+    private let spriteNodeFactories: [any SpriteNodeFactory] = [PlotSpriteNodeFactory()]
 
     init(uiPositionProvider: UIPositionProvider) {
         self.uiPositionProvider = uiPositionProvider
     }
 
-    func createNode(of entity: EntityType) -> GenericSpriteRenderNode? {
+    func createNode(of entity: EntityType) -> SpriteNode? {
         guard let spriteComponent = entity.component(ofType: SpriteComponent.self),
               let positionComponent = entity.component(ofType: PositionComponent.self) else {
             return nil
         }
 
-        let skSpriteNode = SKSpriteNode(imageNamed: spriteComponent.textureName)
-
-        let spriteRenderNode = GenericSpriteRenderNode(spriteNode: skSpriteNode)
+        let spriteNode = spriteNodeFactories.compactMap { factory in
+            factory.createNode(for: entity, textureName: spriteComponent.textureName)
+        }.first ?? SpriteNode(imageNamed: spriteComponent.textureName)
 
         let position = uiPositionProvider?.getUIPosition(
             row: Int(positionComponent.x),
             column: Int(positionComponent.y)
         ) ?? .zero
 
-        spriteRenderNode.skNode.position = position
+        spriteNode.position = position
 
-        return spriteRenderNode
+        return spriteNode
     }
 }

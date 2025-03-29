@@ -14,3 +14,8 @@ class SpriteNode: SKSpriteNode, IRenderNode {
     }
 }
 
+final class PlotSpriteNode: SpriteNode {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        handler?.handleInteraction(node: self)
+    }
+}

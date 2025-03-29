@@ -4,10 +4,15 @@ protocol IRenderManager: AnyObject {
     associatedtype T: IRenderNode
 
     func createNode(of entity: EntityType) -> T?
+
+    func transformNode(_ node: T, for entity: EntityType)
 }
 
 extension IRenderManager {
-    var renderNodeType: T.Type {
-        T.self
+    func createNode(of entity: EntityType) -> T? {
+        nil
+    }
+
+    func transformNode(_ node: T, for entity: EntityType) {
     }
 }

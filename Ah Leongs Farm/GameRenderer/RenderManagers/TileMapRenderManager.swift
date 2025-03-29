@@ -12,20 +12,23 @@ class TileMapRenderManager: IRenderManager {
     private static let LandTileGroupName: String = "Land"
     private static let TileSize = CGSize(width: 48, height: 48)
 
-    func createNode(of entity: EntityType) -> TileMapRenderNode? {
+    func createNode(of entity: EntityType) -> SKTileMapNode? {
         guard let gridComponent = entity.component(ofType: GridComponent.self),
               let tileSet = SKTileSet(named: TileMapRenderManager.TileSetName) else {
             return nil
         }
 
-        let node = TileMapRenderNode(
+        let tileMapNode = SKTileMapNode(
             tileSet: tileSet,
-            rows: gridComponent.numberOfRows,
             columns: gridComponent.numberOfColumns,
+            rows: gridComponent.numberOfRows,
             tileSize: TileMapRenderManager.TileSize
         )
 
-        node.fill(with: TileMapRenderManager.LandTileGroupName)
-        return node
+        tileMapNode.fill(with: TileMapRenderManager.LandTileGroupName)
+        tileMapNode.enableAutomapping = false
+        tileMapNode.isUserInteractionEnabled = true
+
+        return tileMapNode
     }
 }

@@ -5,19 +5,16 @@ typealias EntityType = GKEntity
 /// The `GameRenderer` class is responsible for rendering the game world.
 /// It manages different render managers and coordinates the rendering process
 /// for various entities in the game.
-///
-/// The `GameRenderer` class observes the game state and updates the rendering
-/// accordingly. It also provides methods to identify and retrieve render nodes
-/// associated with specific entities.
-///
-/// **Note:** Each render manager must manage a unique type of render node.
 class GameRenderer {
     private weak var gameManager: GameManager?
     private weak var gameScene: GameScene?
 
-    private var entityNodeMap: [ObjectIdentifier: any IRenderNode] = [:]
-    private var renderManagerMap: [ObjectIdentifier: any IRenderManager] = [:]
+    private var entityNodeMap: [ObjectIdentifier: IRenderNode] = [:]
     private var renderPipeline: Queue<any IRenderManager> = Queue()
+
+    var allRenderNodes: [any IRenderNode] {
+        Array(entityNodeMap.values)
+    }
 
     /// Initializes a new instance of the `GameRenderer` class with the specified game manager.
     ///
@@ -25,7 +22,7 @@ class GameRenderer {
     init(gameManager: GameManager) {
         self.gameManager = gameManager
         self.gameManager?.addGameObserver(self)
-        setUpRenderManagers()
+        setUpRenderPipeline()
     }
 
     /// Sets the game scene for rendering.
@@ -48,28 +45,14 @@ class GameRenderer {
         executeRenderPipeline(allEntities: allEntities, in: gameScene)
     }
 
-    func getSKNodes<T: SKNode>(ofType type: T.Type) -> [T] {
-        entityNodeMap.filter { _, node in node.managedSKNodeType == type }
-            .compactMap { _, node in node.skNode as? T }
-    }
-
-    /// Sets up the render managers for the game renderer.
-    private func setUpRenderManagers() {
-        let renderManagers: [any IRenderManager] = [
-            TileMapRenderManager(),
-            PlotSpriteRenderManager(uiPositionProvider: self),
-            GenericSpriteRenderManager(uiPositionProvider: self)
-        ]
-
-        for renderManager in renderManagers {
-            renderPipeline.enqueue(renderManager)
-            renderManagerMap[ObjectIdentifier(renderManager.renderNodeType)] = renderManager
-        }
+    private func setUpRenderPipeline() {
+        renderPipeline.enqueue(TileMapRenderManager())
+        renderPipeline.enqueue(SpriteRenderManager(uiPositionProvider: self))
     }
 
     private func removeAllNodes() {
-        for (_, renderNode) in entityNodeMap {
-            renderNode.skNode.removeFromParent()
+        for node in allRenderNodes {
+            node.removeFromParent()
         }
 
         entityNodeMap.removeAll()
@@ -81,23 +64,19 @@ class GameRenderer {
 
         for renderManager in renderPipeline.iterable {
             for entity in entitiesToCreateFor {
-                guard entityNodeMap[ObjectIdentifier(entity)] == nil else {
-                    continue
-                }
-
-                if let renderNode = renderManager.createNode(of: entity) {
-                    entityNodeMap[ObjectIdentifier(entity)] = renderNode
-                    scene.addChild(renderNode.skNode)
+                if let node = renderManager.createNode(of: entity) {
+                    entityNodeMap[ObjectIdentifier(entity)] = node
+                    scene.addChild(node)
                 }
             }
         }
 
         for entityIdentifier in entityIdentifiersToRemove {
-            guard let renderNode = entityNodeMap[entityIdentifier] else {
+            guard let node = entityNodeMap[entityIdentifier] else {
                 continue
             }
 
-            renderNode.skNode.removeFromParent()
+            node.removeFromParent()
             entityNodeMap.removeValue(forKey: entityIdentifier)
         }
     }
@@ -138,7 +117,7 @@ extension GameRenderer: IGameObserver {
 extension GameRenderer: UIPositionProvider {
 
     private var skTileMapNode: SKTileMapNode? {
-        getSKNodes(ofType: SKTileMapNode.self).first
+        allRenderNodes.compactMap({ $0 as? SKTileMapNode }).first
     }
 
     func getSelectedRowAndColumn(at touchPosition: CGPoint) -> (Int, Int)? {

@@ -37,9 +37,8 @@ class ViewController: UIViewController {
         gameScene?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         skView.presentScene(gameScene)
 
-        let plotRenderNodes: [PlotSpriteNode] = gameRenderer.getSKNodes(ofType: PlotSpriteNode.self)
-        for plotRenderNode in plotRenderNodes {
-            plotRenderNode.interactionDelegate = self
+        for renderNode in gameRenderer.allRenderNodes {
+            renderNode.handler = self
         }
     }
 }
