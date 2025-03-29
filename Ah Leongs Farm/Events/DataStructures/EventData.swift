@@ -27,3 +27,13 @@ struct RewardGrantEventData: EventData {
     var currencyGrants: [CurrencyType: Double] = [:]
     var itemGrants: [ItemType: Int] = [:]
 }
+
+struct BuyItemEventData: EventData {
+    var itemType: ItemType
+    var quantity: Int
+}
+
+struct SellItemEventData: EventData {
+    var itemType: ItemType
+    var quantity: Int
+}
