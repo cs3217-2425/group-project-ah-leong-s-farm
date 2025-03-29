@@ -27,6 +27,7 @@ class ViewController: UIViewController {
         createQuitButton()
         createNextButton()
         createDayLabel()
+        gameManager.addGameObserver(self)
     }
 
     private func createNextButton() {
@@ -112,10 +113,6 @@ class ViewController: UIViewController {
 
     @objc func nextTurnButtonTapped() {
         gameManager.gameWorld.queueEvent(EndTurnEvent())
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.updateDayLabel()
-        }
     }
 
     @objc func quitButtonTapped() {
@@ -146,8 +143,19 @@ class ViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         true
     }
+
+    deinit {
+        gameManager.removeGameObserver(self)
+    }
 }
 
 // MARK: IGameProvider
 extension ViewController: IGameProvider {
+}
+
+// MARK: IGameObserver
+extension ViewController: IGameObserver {
+    func observe() {
+        updateDayLabel()
+    }
 }
