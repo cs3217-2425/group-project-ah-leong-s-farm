@@ -1,7 +1,7 @@
 import GameplayKit
 
 protocol IRenderManager: AnyObject {
-    associatedtype T = IRenderNode
+    associatedtype T: IRenderNode
 
     var entityNodeMap: [ObjectIdentifier: T] { get }
 
