@@ -15,4 +15,12 @@ extension SKTileMapNode {
     func isColumnValid(_ column: Int) -> Bool {
         column >= 0 && column < numberOfColumns
     }
+
+    func fill(with tileGroupName: String) {
+        guard let tileGroup = tileSet.tileGroups.first(where: { $0.name == tileGroupName }) else {
+            return
+        }
+
+        fill(with: tileGroup)
+    }
 }
