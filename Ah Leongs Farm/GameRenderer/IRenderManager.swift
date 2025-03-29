@@ -11,4 +11,3 @@ extension IRenderManager {
         T.self
     }
 }
- 
