@@ -19,7 +19,6 @@ class InventorySystem: ISystem {
         self.manager = manager
     }
 
-    // Creates new entities if and only if it exists in the ItemFactory
     func addItem(type: ItemType, quantity: Int) {
         guard let initialiser = ItemFactory.itemToInitialisers[type] else {
             return
