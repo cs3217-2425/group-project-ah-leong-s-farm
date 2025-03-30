@@ -24,6 +24,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setUpGameScene()
         createQuitButton()
+        createInventoryButton()
     }
 
     private func createQuitButton() {
@@ -79,4 +80,37 @@ class ViewController: UIViewController {
 
 // MARK: IGameProvider
 extension ViewController: IGameProvider {
+}
+
+// MARK: Add Inventory functionalities
+extension ViewController {
+
+    func createInventoryButton() {
+        let inventoryButton = UIButton(type: .system)
+
+        inventoryButton.setTitle("Inventory", for: .normal)
+        inventoryButton.backgroundColor = .systemBlue
+        inventoryButton.setTitleColor(.white, for: .normal)
+        inventoryButton.layer.cornerRadius = 10
+        inventoryButton.translatesAutoresizingMaskIntoConstraints = false
+
+        inventoryButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
+
+        view.addSubview(inventoryButton)
+        NSLayoutConstraint.activate([
+            inventoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            inventoryButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            inventoryButton.widthAnchor.constraint(equalToConstant: 120),
+            inventoryButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
+
+        inventoryButton.addTarget(self, action: #selector(inventoryButtonTapped), for: .touchUpInside)
+    }
+
+    @objc func inventoryButtonTapped() {
+        let inventoryItems = gameManager.getInventoryItemViewModels()
+
+        let inventoryVC = InventoryViewController(inventoryItems: inventoryItems)
+        present(inventoryVC, animated: true)
+    }
 }
