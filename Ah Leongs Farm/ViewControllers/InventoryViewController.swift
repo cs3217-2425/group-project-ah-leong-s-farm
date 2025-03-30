@@ -81,16 +81,12 @@ class InventoryViewController: UIViewController {
         // Semi-transparent background
         view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
 
-        // Setup container view
         setupContainerView()
 
-        // Setup header
         setupHeaderView()
 
-        // Setup collection view
         setupCollectionView()
 
-        // Setup item name label
         setupItemNameLabel()
     }
 
@@ -167,7 +163,7 @@ class InventoryViewController: UIViewController {
             separatorLine.heightAnchor.constraint(equalToConstant: 1)
         ])
     }
-    
+
     // MARK: - Actions
     @objc private func closeButtonTapped() {
         dismiss(animated: true)
