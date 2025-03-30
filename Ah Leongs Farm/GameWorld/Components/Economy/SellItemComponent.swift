@@ -1,5 +1,5 @@
 //
-//  BuyComponent 2.swift
+//  SellComponent.swift
 //  Ah Leongs Farm
 //
 //  Created by proglab on 29/3/25.
@@ -7,6 +7,6 @@
 
 import GameplayKit
 
-class SellItemComponent: GKComponent {
+class SellComponent: GKComponent {
 
 }

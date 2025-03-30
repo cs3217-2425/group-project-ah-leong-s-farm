@@ -33,7 +33,6 @@ class BokChoy: GKEntity, Crop {
     static func createSeed() -> GKEntity {
         let bokChoy = BokChoy()
         bokChoy.addComponent(SeedComponent())
-        bokChoy.addComponent(SellItemComponent())
         return bokChoy
     }
 }

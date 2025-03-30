@@ -26,7 +26,7 @@ class MarketSystem: ISystem {
     }
 
     private var sellableItems: [GKEntity] {
-        manager?.getEntities(withComponentType: SellItemComponent.self) ?? []
+        manager?.getEntities(withComponentType: SellComponent.self) ?? []
     }
 
     func getBuyPrice(for type: ItemType, currency: CurrencyType) -> Double? {
