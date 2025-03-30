@@ -62,12 +62,9 @@ class GameManager {
             // Additional starting items just to test the UI
             inventorySystem.addItem(type: .fertiliser, quantity: 3)
             inventorySystem.addItem(type: .premiumFertiliser, quantity: 6)
-            inventorySystem.addItem(type: .bokChoyHarvested, quantity: 23)
             inventorySystem.addItem(type: .appleSeed, quantity: 7)
             inventorySystem.addItem(type: .potatoSeed, quantity: 52)
             inventorySystem.addItem(type: .bokChoySeed, quantity: 5)
-            inventorySystem.addItem(type: .bokChoyHarvested, quantity: 5)
-            inventorySystem.addItem(type: .appleHarvested, quantity: 5)
         }
     }
 
