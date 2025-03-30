@@ -38,14 +38,13 @@ class GameRenderer {
 }
 
 extension GameRenderer: IGameObserver {
-    func observe(gameWorld: GameWorld) {
+    func observe(entities: Set<GKEntity>) {
         guard let scene = gameScene else {
             return
         }
 
-        let allEntities = Set(gameWorld.getAllEntities())
         for renderManager in renderManagers {
-            renderManager.render(entities: allEntities, in: scene)
+            renderManager.render(entities: entities, in: scene)
         }
     }
 }

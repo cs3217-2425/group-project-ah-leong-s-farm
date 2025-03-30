@@ -4,6 +4,7 @@ import SpriteKit
 class GameManager {
     let gameWorld: GameWorld
     private var gameObservers: [any IGameObserver] = []
+    private var previousTime: TimeInterval = 0
 
     init() {
         gameWorld = GameWorld()
@@ -12,8 +13,12 @@ class GameManager {
     }
 
     func update(_ currentTime: TimeInterval) {
-        gameWorld.update(deltaTime: currentTime)
-        gameObservers.forEach { $0.observe(gameWorld: gameWorld) }
+        let deltaTime = max(currentTime - previousTime, 0) // Ensure deltaTime is not negative
+        let entities = Set(gameWorld.getAllEntities())
+
+        previousTime = currentTime
+        gameWorld.update(deltaTime: deltaTime)
+        gameObservers.forEach { $0.observe(entities: entities) }
     }
 
     func addGameObserver(_ observer: any IGameObserver) {
