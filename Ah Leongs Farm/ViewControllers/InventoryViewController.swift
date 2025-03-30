@@ -177,6 +177,11 @@ class InventoryViewController: UIViewController {
         selectedItemLabel.text = item.name
         selectedItemLabel.isHidden = false
     }
+
+    // Hide status bar
+    override var prefersStatusBarHidden: Bool {
+        true
+    }
 }
 
 // MARK: - UICollectionViewDelegate, UICollectionViewDataSource
@@ -302,4 +307,5 @@ class InventoryItemCell: UICollectionViewCell {
         imageView.image = nil
         quantityLabel.text = nil
     }
+
 }
