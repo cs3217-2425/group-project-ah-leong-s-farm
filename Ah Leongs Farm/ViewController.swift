@@ -38,8 +38,8 @@ class ViewController: UIViewController {
         view.addSubview(gameStatistics)
 
         NSLayoutConstraint.activate([
-            gameStatistics.topAnchor.constraint(equalTo: view.topAnchor),
-            gameStatistics.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+            gameStatistics.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            gameStatistics.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
         ])
 
         self.gameStatisticsView = gameStatistics
@@ -51,9 +51,9 @@ class ViewController: UIViewController {
         view.addSubview(gameControls)
 
         NSLayoutConstraint.activate([
-            gameControls.topAnchor.constraint(equalTo: view.topAnchor),
+            gameControls.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
             gameControls.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            gameControls.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            gameControls.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             gameControls.heightAnchor.constraint(equalToConstant: 80)
         ])
 

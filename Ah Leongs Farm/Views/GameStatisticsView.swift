@@ -36,10 +36,8 @@ class GameStatisticsView: UIView {
 
         addSubview(label)
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            label.widthAnchor.constraint(equalToConstant: 250),
-            label.heightAnchor.constraint(equalToConstant: 40)
+            label.topAnchor.constraint(equalTo: topAnchor),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor)
         ])
 
         self.dayLabel = label
@@ -53,9 +51,8 @@ class GameStatisticsView: UIView {
 
         addSubview(label)
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 60),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            label.heightAnchor.constraint(equalToConstant: 40)
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 50),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor)
         ])
 
         self.currencyLabel = label

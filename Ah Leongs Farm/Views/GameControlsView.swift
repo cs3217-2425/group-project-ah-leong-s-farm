@@ -39,8 +39,8 @@ class GameControlsView: UIView {
 
         addSubview(nextButton)
         NSLayoutConstraint.activate([
-            nextButton.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -130),
+            nextButton.topAnchor.constraint(equalTo: topAnchor),
+            nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -110),
             nextButton.widthAnchor.constraint(equalToConstant: 140),
             nextButton.heightAnchor.constraint(equalToConstant: 40)
         ])
@@ -60,8 +60,8 @@ class GameControlsView: UIView {
 
         addSubview(quitButton)
         NSLayoutConstraint.activate([
-            quitButton.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            quitButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            quitButton.topAnchor.constraint(equalTo: topAnchor),
+            quitButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             quitButton.widthAnchor.constraint(equalToConstant: 100),
             quitButton.heightAnchor.constraint(equalToConstant: 40)
         ])
