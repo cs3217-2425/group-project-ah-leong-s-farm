@@ -4,14 +4,11 @@ typealias EntityType = GKEntity
 
 /// The GameRenderer class is responsible for rendering the game world.
 class GameRenderer {
-    private weak var gameManager: GameManager?
     private weak var gameScene: GameScene?
 
     private var renderManagers: [any IRenderManager] = []
 
-    init(gameManager: GameManager) {
-        self.gameManager = gameManager
-        self.gameManager?.addGameObserver(self)
+    init() {
         setUpRenderManagers()
     }
 
@@ -22,18 +19,8 @@ class GameRenderer {
             }
         }
 
+        // set the new scene
         gameScene = scene
-        gameScene?.setGameSceneUpdateDelegate(self)
-
-        guard let gameWorld = gameManager?.gameWorld,
-              let gameScene = gameScene else {
-            return
-        }
-
-        let allEntities = Set(gameWorld.getAllEntities())
-        for renderManager in renderManagers {
-            renderManager.render(entities: allEntities, in: gameScene)
-        }
     }
 
     func identifyEntitiesWithRenderNode<T: IRenderNode>(ofType type: T.Type) -> [ObjectIdentifier] {
@@ -50,22 +37,14 @@ class GameRenderer {
     }
 }
 
-extension GameRenderer: GameSceneUpdateDelegate {
-    func update(_ timeInterval: TimeInterval) {
-        gameManager?.update(timeInterval)
-    }
-}
-
 extension GameRenderer: IGameObserver {
-    func observe() {
-        guard let gameWorld = gameManager?.gameWorld,
-              let scene = gameScene else {
+    func observe(entities: Set<GKEntity>) {
+        guard let scene = gameScene else {
             return
         }
 
-        let allEntities = Set(gameWorld.getAllEntities())
         for renderManager in renderManagers {
-            renderManager.render(entities: allEntities, in: scene)
+            renderManager.render(entities: entities, in: scene)
         }
     }
 }

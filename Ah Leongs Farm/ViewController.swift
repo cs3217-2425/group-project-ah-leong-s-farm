@@ -16,8 +16,9 @@ class ViewController: UIViewController {
 
     required init?(coder: NSCoder) {
         gameManager = GameManager()
-        gameRenderer = GameRenderer(gameManager: gameManager)
+        gameRenderer = GameRenderer()
         super.init(coder: coder)
+        setUpGameObservers()
     }
 
     override func viewDidLoad() {
@@ -67,9 +68,15 @@ class ViewController: UIViewController {
         }
 
         self.gameScene = GameScene(size: skView.bounds.size)
+        gameScene?.setGameSceneUpdateDelegate(self)
         gameRenderer.setScene(gameScene)
+
         gameScene?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         skView.presentScene(gameScene)
+    }
+
+    private func setUpGameObservers() {
+        gameManager.addGameObserver(gameRenderer)
     }
 
     override var prefersStatusBarHidden: Bool {
@@ -79,4 +86,10 @@ class ViewController: UIViewController {
 
 // MARK: IGameProvider
 extension ViewController: IGameProvider {
+}
+
+extension ViewController: GameSceneUpdateDelegate {
+    func update(_ timeInterval: TimeInterval) {
+        gameManager.update(timeInterval)
+    }
 }
