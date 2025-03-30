@@ -25,8 +25,8 @@ class MarketSystem: ISystem {
         itemStocks
     }
 
-    private var sellableItems: [GKEntity] {
-        manager?.getEntities(withComponentType: SellComponent.self) ?? []
+    private var sellableComponents: [GKComponent] {
+        manager?.getAllComponents(ofType: SellComponent.self) ?? []
     }
 
     func getBuyPrice(for type: ItemType, currency: CurrencyType) -> Double? {
@@ -78,19 +78,21 @@ class MarketSystem: ISystem {
             return false
         }
 
-        let entities = sellableItems.filter { entity in
-            if let itemComponent = entity.component(ofType: ItemComponent.self) {
-                return itemComponent.itemType == type
+        var sellableEntities: [GKEntity] = []
+        for component in sellableComponents {
+            if let sellComponent = component as? SellComponent, sellComponent.itemType == type {
+                if let entity = component.entity {
+                    sellableEntities.append(entity)
+                }
             }
-            return false
         }
 
-        if entities.count < quantity {
+        if sellableEntities.count < quantity {
             print("Not enough stock for \(type).")
             return false
         }
 
-        let entitiesToSell = entities.prefix(quantity)
+        let entitiesToSell = sellableEntities.prefix(quantity)
         for entity in entitiesToSell {
             manager.removeEntity(entity)
         }

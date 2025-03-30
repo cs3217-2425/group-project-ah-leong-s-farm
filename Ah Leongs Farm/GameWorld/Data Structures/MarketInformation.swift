@@ -17,4 +17,10 @@ class MarketInformation {
         .appleSeed: 20,
         .bokChoyHarvested: Int.max
     ]
+
+    static let sellableItems: Set<ItemType> = [
+        .bokChoySeed,
+        .appleSeed,
+        .bokChoyHarvested
+    ]
 }
