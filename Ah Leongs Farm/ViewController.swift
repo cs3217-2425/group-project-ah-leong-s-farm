@@ -15,6 +15,7 @@ class ViewController: UIViewController {
 
     private var gameScene: GameScene?
     private var gameControlsView: GameControlsView?
+    private var gameStatisticsView: GameStatisticsView?
 
     required init?(coder: NSCoder) {
         gameManager = GameManager()
@@ -27,7 +28,21 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setUpGameScene()
         setUpGameControls()
+        setUpGameStatistics()
         gameManager.addGameObserver(self)
+    }
+
+    private func setUpGameStatistics() {
+        let gameStatistics = GameStatisticsView()
+        gameStatistics.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(gameStatistics)
+
+        NSLayoutConstraint.activate([
+            gameStatistics.topAnchor.constraint(equalTo: view.topAnchor),
+            gameStatistics.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+        ])
+
+        self.gameStatisticsView = gameStatistics
     }
 
     private func setUpGameControls() {
@@ -43,17 +58,6 @@ class ViewController: UIViewController {
         ])
 
         self.gameControlsView = gameControls
-        updateDayLabel()
-    }
-
-    private func updateDayLabel() {
-        guard let turnSystem = gameManager.gameWorld.getSystem(ofType: TurnSystem.self) else {
-            return
-        }
-
-        let currentTurn = turnSystem.getCurrentTurn()
-        let maxTurns = turnSystem.getMaxTurns()
-        gameControlsView?.updateDayLabel(currentTurn: currentTurn, maxTurns: maxTurns)
     }
 
     private func setUpGameScene() {
@@ -105,6 +109,16 @@ extension ViewController: GameControlsViewDelegate {
 
 // MARK: IGameObserver
 extension ViewController: IGameObserver {
+    private func updateDayLabel() {
+        guard let turnSystem = gameManager.gameWorld.getSystem(ofType: TurnSystem.self) else {
+            return
+        }
+
+        let currentTurn = turnSystem.getCurrentTurn()
+        let maxTurns = turnSystem.getMaxTurns()
+        gameStatisticsView?.updateDayLabel(currentTurn: currentTurn, maxTurns: maxTurns)
+    }
+
     func observe(entities: Set<GKEntity>) {
         updateDayLabel()
     }
