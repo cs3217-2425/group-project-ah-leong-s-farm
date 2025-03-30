@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     let gameRenderer: GameRenderer
 
     private var gameScene: GameScene?
-    private var dayLabel: UILabel?
+    private var gameControlsView: GameControlsView?
 
     required init?(coder: NSCoder) {
         gameManager = GameManager()
@@ -26,109 +26,34 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpGameScene()
-        createQuitButton()
-        createNextButton()
-        createDayLabel()
+        setUpGameControls()
         gameManager.addGameObserver(self)
     }
 
-    private func createNextButton() {
-        let nextButton = UIButton(type: .system)
+    private func setUpGameControls() {
+        let gameControls = GameControlsView(delegate: self)
+        gameControls.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(gameControls)
 
-        nextButton.setTitle("Next Day", for: .normal)
-        nextButton.backgroundColor = .systemBlue
-        nextButton.setTitleColor(.white, for: .normal)
-        nextButton.layer.cornerRadius = 10
-        nextButton.translatesAutoresizingMaskIntoConstraints = false
-        nextButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
-
-        view.addSubview(nextButton)
         NSLayoutConstraint.activate([
-            nextButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
-            nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -130),
-            nextButton.widthAnchor.constraint(equalToConstant: 140),
-            nextButton.heightAnchor.constraint(equalToConstant: 40)
+            gameControls.topAnchor.constraint(equalTo: view.topAnchor),
+            gameControls.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            gameControls.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            gameControls.heightAnchor.constraint(equalToConstant: 80)
         ])
 
-        nextButton.addTarget(self, action: #selector(nextTurnButtonTapped), for: .touchUpInside)
+        self.gameControlsView = gameControls
+        updateDayLabel()
     }
 
-    private func createQuitButton() {
-        let quitButton = UIButton(type: .system)
-
-        quitButton.setTitle("Quit", for: .normal)
-        quitButton.backgroundColor = .systemRed
-        quitButton.setTitleColor(.white, for: .normal)
-        quitButton.layer.cornerRadius = 10
-        quitButton.translatesAutoresizingMaskIntoConstraints = false
-        quitButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
-
-        view.addSubview(quitButton)
-        NSLayoutConstraint.activate([
-            quitButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
-            quitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            quitButton.widthAnchor.constraint(equalToConstant: 100),
-            quitButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
-
-        quitButton.addTarget(self, action: #selector(quitButtonTapped), for: .touchUpInside)
-    }
-
-    private func createDayLabel() {
+    private func updateDayLabel() {
         guard let turnSystem = gameManager.gameWorld.getSystem(ofType: TurnSystem.self) else {
             return
         }
 
         let currentTurn = turnSystem.getCurrentTurn()
         let maxTurns = turnSystem.getMaxTurns()
-
-        let label = UILabel()
-        label.textColor = .white
-        label.text = "DAY \(currentTurn)/\(maxTurns)"
-        label.textAlignment = .left
-        label.font = UIFont(name: "Press Start 2P", size: 26)
-        label.translatesAutoresizingMaskIntoConstraints = false
-
-        view.addSubview(label)
-
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
-            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            label.widthAnchor.constraint(equalToConstant: 250),
-            label.heightAnchor.constraint(equalToConstant: 40)
-        ])
-
-        self.dayLabel = label
-        updateDayLabel()
-    }
-
-    private func updateDayLabel() {
-        guard let turnSystem = gameManager.gameWorld.getSystem(ofType: TurnSystem.self),
-              let label = dayLabel else {
-            return
-        }
-
-        let currentTurn = turnSystem.getCurrentTurn()
-        let maxTurns = turnSystem.getMaxTurns()
-        label.text = "DAY \(currentTurn)/\(maxTurns)"
-    }
-
-    @objc func nextTurnButtonTapped() {
-        gameManager.gameWorld.queueEvent(EndTurnEvent())
-    }
-
-    @objc func quitButtonTapped() {
-        let alert = UIAlertController(title: "Quit Game?",
-                                      message: "Are you sure you want to return to main menu?",
-                                      preferredStyle: .alert)
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-
-        alert.addAction(UIAlertAction(title: "Quit", style: .destructive, handler: { _ in
-            self.dismiss(animated: true, completion: nil)
-        }))
-
-        present(alert, animated: true, completion: nil)
+        gameControlsView?.updateDayLabel(currentTurn: currentTurn, maxTurns: maxTurns)
     }
 
     private func setUpGameScene() {
@@ -157,8 +82,25 @@ class ViewController: UIViewController {
     }
 }
 
-// MARK: IGameProvider
-extension ViewController: IGameProvider {
+// MARK: GameControlsViewDelegate
+extension ViewController: GameControlsViewDelegate {
+    func nextDayButtonTapped() {
+        gameManager.gameWorld.queueEvent(EndTurnEvent())
+    }
+
+    func quitButtonTapped() {
+        let alert = UIAlertController(title: "Quit Game?",
+                                      message: "Are you sure you want to return to main menu?",
+                                      preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+
+        alert.addAction(UIAlertAction(title: "Quit", style: .destructive, handler: { _ in
+            self.dismiss(animated: true, completion: nil)
+        }))
+
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 // MARK: IGameObserver
