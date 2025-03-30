@@ -10,6 +10,7 @@ import UIKit
 class GameStatisticsView: UIView {
     private var dayLabel: UILabel?
     private var currencyLabel: UILabel?
+    private var energyLabel: UILabel?
 
     init() {
         super.init(frame: .zero)
@@ -25,6 +26,7 @@ class GameStatisticsView: UIView {
         backgroundColor = .clear
         createDayLabel()
         createCurrencyLabel()
+        createEnergyLabel()
     }
 
     private func createDayLabel() {
@@ -46,7 +48,7 @@ class GameStatisticsView: UIView {
     private func createCurrencyLabel() {
         let label = UILabel()
         label.textColor = .white
-        label.font = UIFont(name: "Press Start 2P", size: 16)
+        label.font = UIFont(name: "Press Start 2P", size: 20)
         label.translatesAutoresizingMaskIntoConstraints = false
 
         let imageName = "coin"
@@ -58,19 +60,47 @@ class GameStatisticsView: UIView {
             imageView.heightAnchor.constraint(equalToConstant: 24)
         ])
 
-        let stackView = UIStackView(arrangedSubviews: [label, imageView])
+        let stackView = UIStackView(arrangedSubviews: [imageView, label])
         stackView.axis = .horizontal
-        stackView.spacing = 6
+        stackView.spacing = 8
         stackView.alignment = .center
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
         addSubview(stackView)
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 50),
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor)
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 44)
         ])
 
         self.currencyLabel = label
+    }
+
+    private func createEnergyLabel() {
+        let label = UILabel()
+        label.textColor = .white
+        label.font = UIFont(name: "Press Start 2P", size: 20)
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        let imageName = "energy"
+        let imageView = UIImageView(image: UIImage(named: imageName))
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(equalToConstant: 24),
+            imageView.heightAnchor.constraint(equalToConstant: 24)
+        ])
+
+        let stackView = UIStackView(arrangedSubviews: [imageView, label])
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        addSubview(stackView)
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 76)
+        ])
+
+        self.energyLabel = label
     }
 
     func updateDayLabel(currentTurn: Int, maxTurns: Int) {
@@ -79,5 +109,9 @@ class GameStatisticsView: UIView {
 
     func updateCurrencyLabel(currency: Double) {
         currencyLabel?.text = "\(Int(currency))"
+    }
+
+    func updateEnergyLabel(currentEnergy: Int, maxEnergy: Int) {
+        energyLabel?.text = "\(currentEnergy)/\(maxEnergy)"
     }
 }

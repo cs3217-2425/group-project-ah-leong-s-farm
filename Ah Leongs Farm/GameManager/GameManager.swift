@@ -57,6 +57,22 @@ class GameManager {
         return currencySystem.getTotalAmount(of: .coin)
     }
 
+    func getMaxEnergy() -> Int {
+        guard let energySystem = gameWorld.getSystem(ofType: EnergySystem.self) else {
+            return 0
+        }
+
+        return energySystem.getMaxEnergy()
+    }
+
+    func getCurrentEnergy() -> Int {
+        guard let energySystem = gameWorld.getSystem(ofType: EnergySystem.self) else {
+            return 0
+        }
+
+        return energySystem.getCurrentEnergy()
+    }
+
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }
