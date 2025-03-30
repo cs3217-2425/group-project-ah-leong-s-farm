@@ -5,6 +5,8 @@
 //  Created by proglab on 29/3/25.
 //
 
+import GameplayKit
+
 class MarketSystem: ISystem {
 
     private var itemPrices: [ItemType: Price] = MarketInformation.initialItemPrices
@@ -21,6 +23,10 @@ class MarketSystem: ISystem {
 
     func getItemStocks() -> [ItemType: Int] {
         itemStocks
+    }
+
+    private var sellableItems: [GKEntity] {
+        manager?.getEntities(withComponentType: SellItemComponent.self) ?? []
     }
 
     func getBuyPrice(for type: ItemType, currency: CurrencyType) -> Double? {
@@ -72,13 +78,12 @@ class MarketSystem: ISystem {
             return false
         }
 
-        let entities = manager.getEntities(withComponentType: ItemComponent.self)
-            .filter { entity in
-                if let itemComponent = entity.component(ofType: ItemComponent.self) {
-                    return itemComponent.itemType == type
-                }
-                return false
+        let entities = sellableItems.filter { entity in
+            if let itemComponent = entity.component(ofType: ItemComponent.self) {
+                return itemComponent.itemType == type
             }
+            return false
+        }
 
         if entities.count < quantity {
             print("Not enough stock for \(type).")
