@@ -27,6 +27,6 @@ extension GameManager: InventoryDataProvider {
                 quantity: quantity
             ))
         }
-        return viewModels
+        return viewModels.sorted { $0.name < $1.name }
     }
 }

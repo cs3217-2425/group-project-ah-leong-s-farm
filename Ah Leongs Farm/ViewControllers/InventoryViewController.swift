@@ -8,9 +8,46 @@ import UIKit
 class InventoryViewController: UIViewController {
     // MARK: - Properties
     private var inventoryItems: [InventoryItemViewModel]
-    private var containerView: UIView!
-    private var collectionView: UICollectionView!
-    private var selectedItemLabel: UILabel!
+    private lazy var containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 12
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 10
+        layout.sectionInset = sectionInsets
+
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.showsVerticalScrollIndicator = true
+        collectionView.alwaysBounceVertical = true
+
+        collectionView.register(InventoryItemCell.self, forCellWithReuseIdentifier: "InventoryItemCell")
+
+        return collectionView
+    }()
+
+    private lazy var selectedItemLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
+        label.textAlignment = .center
+        label.textColor = .black
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.layer.cornerRadius = 8
+        label.clipsToBounds = true
+        label.isHidden = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
 
     private let itemsPerRow: CGFloat = 10
     private let sectionInsets = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
@@ -58,10 +95,6 @@ class InventoryViewController: UIViewController {
     }
 
     private func setupContainerView() {
-        containerView = UIView()
-        containerView.backgroundColor = .white
-        containerView.layer.cornerRadius = 12
-        containerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(containerView)
 
         NSLayoutConstraint.activate([
@@ -69,6 +102,28 @@ class InventoryViewController: UIViewController {
             containerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             containerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.85),
             containerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7)
+        ])
+    }
+
+    private func setupCollectionView() {
+        containerView.addSubview(collectionView)
+
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 60),
+            collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -50)
+        ])
+    }
+
+    private func setupItemNameLabel() {
+        containerView.addSubview(selectedItemLabel)
+
+        NSLayoutConstraint.activate([
+            selectedItemLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            selectedItemLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            selectedItemLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10),
+            selectedItemLabel.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
 
@@ -112,58 +167,7 @@ class InventoryViewController: UIViewController {
             separatorLine.heightAnchor.constraint(equalToConstant: 1)
         ])
     }
-
-    private func setupCollectionView() {
-        // Create a flow layout for the grid
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 10
-        layout.minimumInteritemSpacing = 10
-        layout.sectionInset = sectionInsets
-
-        // Create the collection view
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.showsVerticalScrollIndicator = true
-        collectionView.alwaysBounceVertical = true
-
-        // Register the cell
-        collectionView.register(InventoryItemCell.self, forCellWithReuseIdentifier: "InventoryItemCell")
-
-        containerView.addSubview(collectionView)
-
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 60),
-            collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -50)
-        ])
-    }
-
-    private func setupItemNameLabel() {
-        selectedItemLabel = UILabel()
-        selectedItemLabel.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
-        selectedItemLabel.textAlignment = .center
-        selectedItemLabel.textColor = .black
-        selectedItemLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        selectedItemLabel.layer.cornerRadius = 8
-        selectedItemLabel.clipsToBounds = true
-        selectedItemLabel.isHidden = true // Initially hidden
-        selectedItemLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        containerView.addSubview(selectedItemLabel)
-
-        NSLayoutConstraint.activate([
-            selectedItemLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
-            selectedItemLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
-            selectedItemLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10),
-            selectedItemLabel.heightAnchor.constraint(equalToConstant: 40)
-        ])
-    }
-
+    
     // MARK: - Actions
     @objc private func closeButtonTapped() {
         dismiss(animated: true)
