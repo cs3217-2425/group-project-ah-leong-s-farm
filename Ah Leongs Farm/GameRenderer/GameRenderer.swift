@@ -6,7 +6,6 @@ typealias EntityType = GKEntity
 /// It manages different render managers and coordinates the rendering process
 /// for various entities in the game.
 class GameRenderer {
-    private weak var gameManager: GameManager?
     private weak var gameScene: GameScene?
 
     private var entityNodeMap: [ObjectIdentifier: IRenderNode] = [:]
@@ -16,12 +15,7 @@ class GameRenderer {
         Array(entityNodeMap.values)
     }
 
-    /// Initializes a new instance of the `GameRenderer` class with the specified game manager.
-    ///
-    /// - Parameter gameManager: The game manager responsible for managing the game state.
-    init(gameManager: GameManager) {
-        self.gameManager = gameManager
-        self.gameManager?.addGameObserver(self)
+    init() {
         setUpRenderPipeline()
     }
 
@@ -33,16 +27,8 @@ class GameRenderer {
             removeAllNodes()
         }
 
+        // set the new scene
         gameScene = scene
-        gameScene?.setGameSceneUpdateDelegate(self)
-
-        guard let gameWorld = gameManager?.gameWorld,
-              let gameScene = gameScene else {
-            return
-        }
-
-        let allEntities = Set(gameWorld.getAllEntities())
-        executeRenderPipeline(allEntities: allEntities, in: gameScene)
     }
 
     private func setUpRenderPipeline() {
@@ -95,22 +81,13 @@ class GameRenderer {
     }
 }
 
-extension GameRenderer: GameSceneUpdateDelegate {
-    func update(_ timeInterval: TimeInterval) {
-        gameManager?.update(timeInterval)
-    }
-}
-
 extension GameRenderer: IGameObserver {
-    func observe() {
-        guard let gameWorld = gameManager?.gameWorld,
-              let scene = gameScene else {
+    func observe(entities: Set<GKEntity>) {
+        guard let scene = gameScene else {
             return
         }
 
-        let allEntities = Set(gameWorld.getAllEntities())
-
-        executeRenderPipeline(allEntities: allEntities, in: scene)
+        executeRenderPipeline(allEntities: entities, in: scene)
     }
 }
 

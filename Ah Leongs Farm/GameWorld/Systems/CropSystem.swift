@@ -52,13 +52,9 @@ class CropSystem: ISystem {
             return false
         }
 
-        guard let cropEntity = crop as? GKEntity else {
-            return false
-        }
-
-        manager?.removeComponent(ofType: SeedComponent.self, from: cropEntity)
+        manager?.removeComponent(ofType: SeedComponent.self, from: crop)
         manager?.addComponent(GrowthComponent(
-            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: cropEntity)
+            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: crop)
         cropSlot.crop = crop
         return true
     }
@@ -88,13 +84,9 @@ class CropSystem: ISystem {
             return false
         }
 
-        guard let cropEntity = crop as? GKEntity else {
-            return false
-        }
-
-        manager?.removeComponent(ofType: GrowthComponent.self, from: cropEntity)
-        manager?.addComponent(HarvestedComponent(), to: cropEntity)
-        manager?.addComponent(ItemComponent(itemType: crop.harvestedItemType), to: cropEntity)
+        manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
+        manager?.addComponent(HarvestedComponent(), to: crop)
+        manager?.addComponent(ItemComponent(itemType: crop.harvestedItemType), to: crop)
         cropSlot.crop = nil
         return true
     }

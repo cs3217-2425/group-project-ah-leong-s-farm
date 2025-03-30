@@ -4,6 +4,7 @@ import SpriteKit
 class GameManager {
     let gameWorld: GameWorld
     private var gameObservers: [any IGameObserver] = []
+    private var previousTime: TimeInterval = 0
 
     init() {
         gameWorld = GameWorld()
@@ -12,8 +13,12 @@ class GameManager {
     }
 
     func update(_ currentTime: TimeInterval) {
-        gameWorld.update(deltaTime: currentTime)
-        gameObservers.forEach { $0.observe() }
+        let deltaTime = max(currentTime - previousTime, 0) // Ensure deltaTime is not negative
+        let entities = Set(gameWorld.getAllEntities())
+
+        previousTime = currentTime
+        gameWorld.update(deltaTime: deltaTime)
+        gameObservers.forEach { $0.observe(entities: entities) }
     }
 
     func addGameObserver(_ observer: any IGameObserver) {
@@ -43,9 +48,10 @@ class GameManager {
     }
 
     private func setUpQuests() {
-        addTutorialQuests()
-        addMainStoryQuests()
-        addMoreQuests()
+        let quests = QuestFactory.createAllQuests()
+        for quest in quests {
+            gameWorld.addEntity(quest)
+        }
     }
 
     // MARK: - Entity Creation Helpers
@@ -54,68 +60,6 @@ class GameManager {
         if let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) {
             inventorySystem.addItem(type: .bokChoySeed, quantity: 5)
         }
-    }
-
-    // MARK: - Quest Setup Methods
-
-    private func addMainStoryQuests() {
-        // First main quest - Apple collection quest
-        let appleQuest = QuestFactory.createAppleCollectionQuest()
-        gameWorld.addEntity(appleQuest)
-
-        // Farm business quest (more complex, multi-objective)
-        let businessReward = Reward(rewards: [
-            XPSpecificReward(amount: 150),
-            CurrencySpecificReward(currencies: [CurrencyType.coin: 200]),
-            ItemSpecificReward(itemTypes: [ItemType.fertiliser: 2,
-                                           ItemType.potatoSeed: 3])
-        ])
-
-        let farmBusinessQuest = QuestFactory.createFarmBusinessQuest(
-            reward: businessReward,
-            cropType: .apple
-        )
-
-        gameWorld.addEntity(farmBusinessQuest)
-    }
-
-    private func addMoreQuests() {
-
-        // Create a survival quest
-        let survivalQuest = QuestFactory.createFarmStarterQuest()
-        gameWorld.addEntity(survivalQuest)
-
-        let sellQuestReward = Reward(rewards: [
-            XPSpecificReward(amount: 75),
-            CurrencySpecificReward(currencies: [CurrencyType.coin: 100])
-        ])
-
-        // Create a sell quest
-        let sellQuest = QuestFactory.createSellQuest(
-            title: "Market Sales",
-            cropType: .bokChoy,
-            amount: 8,
-            reward: sellQuestReward
-        )
-
-        gameWorld.addEntity(sellQuest)
-    }
-
-    private func addTutorialQuests() {
-        // Tutorial quests - simple quests to teach game mechanics
-
-        let tutorialReward = Reward(rewards: [
-            XPSpecificReward(amount: 25)
-        ])
-
-        let tutorialQuest = QuestFactory.createHarvestQuest(
-            title: "Learning to Harvest",
-            cropType: .bokChoy,
-            amount: 3,
-            reward: tutorialReward
-        )
-
-        gameWorld.addEntity(tutorialQuest)
     }
 
     private func setUpPlotEntities(using grid: GridComponent) {
