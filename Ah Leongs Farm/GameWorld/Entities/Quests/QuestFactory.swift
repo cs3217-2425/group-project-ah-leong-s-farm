@@ -10,27 +10,27 @@ import GameplayKit
 class QuestFactory {
     // MARK: - Basic Quest Creation
 
-    static func createBasicQuest(
+    private static func createBasicQuest(
         title: String,
         objectives: [QuestObjective],
-        reward: Reward
+        rewards: [RewardComponent]
     ) -> Quest {
         let component = QuestComponent(
             title: title,
-            objectives: objectives,
-            reward: reward
+            objectives: objectives
         )
 
-        return Quest(questComponent: component)
+        return Quest(questComponent: component,
+                     rewardComponents: rewards)
     }
 
     // MARK: - Standard Quest Types
 
-    static func createHarvestQuest(
+    private static func createHarvestQuest(
         title: String,
         cropType: CropType,
         amount: Int,
-        reward: Reward
+        rewards: [RewardComponent]
     ) -> Quest {
 
         let criteria = HarvestCropCriteria(cropType: cropType)
@@ -43,17 +43,17 @@ class QuestFactory {
 
         let component = QuestComponent(
             title: title,
-            objectives: [objective],
-            reward: reward
+            objectives: [objective]
         )
 
-        return Quest(questComponent: component)
+        return Quest(questComponent: component,
+                     rewardComponents: rewards)
     }
 
-    static func createSurvivalQuest(
+    private static func createSurvivalQuest(
         title: String,
         days: Int,
-        reward: Reward
+        rewards: [RewardComponent]
     ) -> Quest {
 
         let criteria = SurviveNumberOfTurnsCriteria()
@@ -66,18 +66,18 @@ class QuestFactory {
 
         let component = QuestComponent(
             title: title,
-            objectives: [objective],
-            reward: reward
+            objectives: [objective]
         )
 
-        return Quest(questComponent: component)
+        return Quest(questComponent: component,
+                     rewardComponents: rewards)
     }
 
-    static func createSellQuest(
+    private static func createSellQuest(
         title: String,
         cropType: CropType,
         amount: Int,
-        reward: Reward
+        rewards: [RewardComponent]
     ) -> Quest {
 
         let criteria = SellCropCriteria(cropType: cropType)
@@ -90,17 +90,16 @@ class QuestFactory {
 
         let component = QuestComponent(
             title: title,
-            objectives: [objective],
-            reward: reward
+            objectives: [objective]
         )
 
-        return Quest(questComponent: component)
+        return Quest(questComponent: component,
+                     rewardComponents: rewards)
     }
 
     // MARK: - Multi-Objective Quests
 
-    static func createFarmBusinessQuest(
-        reward: Reward,
+    private static func createFarmBusinessQuest(
         cropType: CropType = .apple,
         harvestAmount: Int = 15,
         sellAmount: Int = 10,
@@ -133,44 +132,86 @@ class QuestFactory {
             target: Float(survivalDays)
         )
 
+        let rewards: [RewardComponent] = [
+            RewardXPComponent(amount: 150),
+            RewardCurrencyComponent(currencies: [.coin: 200]),
+            RewardItemComponent(itemTypes: [.fertiliser: 2,
+                                            .potatoSeed: 3])
+        ]
+
         // Create the quest with all objectives
         let title = "\(cropType.rawValue.capitalized) Business Venture"
 
         let component = QuestComponent(
             title: title,
-            objectives: [harvestObjective, sellObjective, survivalObjective],
-            reward: reward
+            objectives: [harvestObjective, sellObjective, survivalObjective]
         )
 
-        return Quest(questComponent: component)
+        return Quest(questComponent: component,
+                     rewardComponents: rewards)
     }
 
-    // MARK: - Utility Methods
+    // MARK: - Other Quests
 
-    static func createAppleCollectionQuest() -> Quest {
-        let reward = Reward(rewards: [
-            XPSpecificReward(amount: 100),
-            CurrencySpecificReward(currencies: [CurrencyType.coin: 50])
-        ])
+    private static func createAppleCollectionQuest() -> Quest {
+        let rewards: [RewardComponent] = [
+            RewardXPComponent(amount: 100),
+            RewardCurrencyComponent(currencies: [.coin: 50])
+        ]
 
         return createHarvestQuest(
             title: "Apple Collection",
             cropType: .apple,
             amount: 10,
-            reward: reward
+            rewards: rewards
         )
     }
 
-    static func createFarmStarterQuest() -> Quest {
-        let reward = Reward(rewards: [
-            XPSpecificReward(amount: 50),
-            ItemSpecificReward(itemTypes: [ItemType.premiumFertiliser: 1])
-        ])
+    private static func createFarmStarterQuest() -> Quest {
+        let rewards: [RewardComponent] = [
+            RewardXPComponent(amount: 50),
+            RewardItemComponent(itemTypes: [.premiumFertiliser: 1])
+        ]
 
         return createSurvivalQuest(
             title: "Farm Beginnings",
             days: 7,
-            reward: reward
+            rewards: rewards
         )
     }
+
+    private static func createSellQuestBakChoy() -> Quest {
+        let rewards: [RewardComponent] = [
+            RewardXPComponent(amount: 75),
+            RewardCurrencyComponent(currencies: [.coin: 100])
+        ]
+
+        return createSellQuest(title: "Market sales",
+                               cropType: .bokChoy,
+                               amount: 8,
+                               rewards: rewards)
+    }
+
+    private static func createHarvestQuestBakChoy() -> Quest {
+        let rewards: [RewardComponent] = [
+            RewardXPComponent(amount: 25)
+        ]
+
+        return createHarvestQuest(title: "Learning to harvest",
+                                  cropType: .bokChoy,
+                                  amount: 3,
+                                  rewards: rewards)
+
+    }
+
+    static func createAllQuests() -> [Quest] {
+        [
+            createFarmStarterQuest(),
+            createHarvestQuestBakChoy(),
+            createSellQuestBakChoy(),
+            createFarmBusinessQuest(),
+            createAppleCollectionQuest()
+        ]
+    }
+
 }

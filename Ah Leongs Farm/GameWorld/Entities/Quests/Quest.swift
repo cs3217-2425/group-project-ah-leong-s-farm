@@ -1,12 +1,13 @@
 import GameplayKit
 
 class Quest: GKEntity {
-    private(set) var questComponent: QuestComponent
 
-    init(questComponent: QuestComponent) {
-        self.questComponent = questComponent
+    init(questComponent: QuestComponent, rewardComponents: [any RewardComponent]) {
         super.init()
         self.addComponent(questComponent)
+        for rewardComponent in rewardComponents {
+            self.addComponent(rewardComponent)
+        }
     }
 
     @available(*, unavailable)

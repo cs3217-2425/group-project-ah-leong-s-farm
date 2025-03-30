@@ -5,13 +5,11 @@ class QuestComponent: GKComponent {
     let title: String
     var status: QuestStatus
     var objectives: [QuestObjective]
-    let completionReward: Reward
 
-    init(title: String, objectives: [QuestObjective], reward: Reward) {
+    init(title: String, objectives: [QuestObjective]) {
         self.title = title
         self.status = .active
         self.objectives = objectives
-        self.completionReward = reward
         super.init()
     }
 
