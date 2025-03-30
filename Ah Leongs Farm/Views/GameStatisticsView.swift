@@ -49,10 +49,25 @@ class GameStatisticsView: UIView {
         label.font = UIFont(name: "Press Start 2P", size: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
 
-        addSubview(label)
+        let imageName = "coin"
+        let imageView = UIImageView(image: UIImage(named: imageName))
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 50),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor)
+            imageView.widthAnchor.constraint(equalToConstant: 24),
+            imageView.heightAnchor.constraint(equalToConstant: 24)
+        ])
+
+        let stackView = UIStackView(arrangedSubviews: [label, imageView])
+        stackView.axis = .horizontal
+        stackView.spacing = 6
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        addSubview(stackView)
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 50),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor)
         ])
 
         self.currencyLabel = label
@@ -63,6 +78,6 @@ class GameStatisticsView: UIView {
     }
 
     func updateCurrencyLabel(currency: Double) {
-        currencyLabel?.text = "\(Int(currency)) coins"
+        currencyLabel?.text = "\(Int(currency))"
     }
 }
