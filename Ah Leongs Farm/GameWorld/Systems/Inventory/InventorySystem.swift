@@ -25,7 +25,6 @@ class InventorySystem: ISystem {
             return
         }
         for _ in 0..<quantity {
-
             guard let entity = initialiser() else {
                 return
             }

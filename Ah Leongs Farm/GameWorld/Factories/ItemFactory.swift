@@ -12,7 +12,9 @@ class ItemFactory {
     static let itemToInitialisers: [ItemType: () -> GKEntity?] = [
         .bokChoySeed: { createSeed(for: .bokChoy) },
         .appleSeed: { createSeed(for: .apple) },
-        .potatoSeed: { createSeed(for: .potato) }
+        .potatoSeed: { createSeed(for: .potato) },
+        .fertiliser: { Fertiliser() },
+        .premiumFertiliser: { PremiumFertiliser() }
     ]
 
     private static let cropToSeedInitialisers: [CropType: () -> GKEntity] = [
