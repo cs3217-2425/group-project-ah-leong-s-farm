@@ -9,6 +9,7 @@ import UIKit
 
 class GameStatisticsView: UIView {
     private var dayLabel: UILabel?
+    private var currencyLabel: UILabel?
 
     init() {
         super.init(frame: .zero)
@@ -23,6 +24,7 @@ class GameStatisticsView: UIView {
     private func setupView() {
         backgroundColor = .clear
         createDayLabel()
+        createCurrencyLabel()
     }
 
     private func createDayLabel() {
@@ -43,7 +45,27 @@ class GameStatisticsView: UIView {
         self.dayLabel = label
     }
 
+    private func createCurrencyLabel() {
+        let label = UILabel()
+        label.textColor = .white
+        label.font = UIFont(name: "Press Start 2P", size: 16)
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        addSubview(label)
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 60),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            label.heightAnchor.constraint(equalToConstant: 40)
+        ])
+
+        self.currencyLabel = label
+    }
+
     func updateDayLabel(currentTurn: Int, maxTurns: Int) {
         dayLabel?.text = "DAY \(currentTurn)/\(maxTurns)"
+    }
+
+    func updateCurrencyLabel(currency: Double) {
+        currencyLabel?.text = "\(Int(currency)) coins"
     }
 }

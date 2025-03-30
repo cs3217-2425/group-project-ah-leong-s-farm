@@ -49,6 +49,14 @@ class GameManager {
         return turnSystem.getMaxTurns()
     }
 
+    func getAmountOfCurrency(_ type: CurrencyType) -> Double {
+        guard let currencySystem = gameWorld.getSystem(ofType: WalletSystem.self) else {
+            return 0
+        }
+
+        return currencySystem.getTotalAmount(of: .coin)
+    }
+
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }

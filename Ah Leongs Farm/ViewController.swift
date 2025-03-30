@@ -115,8 +115,14 @@ extension ViewController: IGameObserver {
         gameStatisticsView?.updateDayLabel(currentTurn: currentTurn, maxTurns: maxTurns)
     }
 
+    private func updateCurrencyLabel() {
+        let coins = gameManager.getAmountOfCurrency(.coin)
+        gameStatisticsView?.updateCurrencyLabel(currency: coins)
+    }
+
     func observe(entities: Set<GKEntity>) {
         updateDayLabel()
+        updateCurrencyLabel()
     }
 }
 
