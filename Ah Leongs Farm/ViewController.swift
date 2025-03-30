@@ -89,7 +89,7 @@ class ViewController: UIViewController {
 // MARK: GameControlsViewDelegate
 extension ViewController: GameControlsViewDelegate {
     func nextDayButtonTapped() {
-        gameManager.gameWorld.queueEvent(EndTurnEvent())
+        gameManager.nextTurn()
     }
 
     func quitButtonTapped() {
@@ -110,12 +110,8 @@ extension ViewController: GameControlsViewDelegate {
 // MARK: IGameObserver
 extension ViewController: IGameObserver {
     private func updateDayLabel() {
-        guard let turnSystem = gameManager.gameWorld.getSystem(ofType: TurnSystem.self) else {
-            return
-        }
-
-        let currentTurn = turnSystem.getCurrentTurn()
-        let maxTurns = turnSystem.getMaxTurns()
+        let currentTurn = gameManager.getCurrentTurn()
+        let maxTurns = gameManager.getMaxTurns()
         gameStatisticsView?.updateDayLabel(currentTurn: currentTurn, maxTurns: maxTurns)
     }
 

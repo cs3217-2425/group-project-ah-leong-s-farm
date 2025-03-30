@@ -29,6 +29,26 @@ class GameManager {
         gameObservers.removeAll(where: { $0 === observer })
     }
 
+    func nextTurn() {
+        gameWorld.queueEvent(EndTurnEvent())
+    }
+
+    func getCurrentTurn() -> Int {
+        guard let turnSystem = gameWorld.getSystem(ofType: TurnSystem.self) else {
+            return 1
+        }
+
+        return turnSystem.getCurrentTurn()
+    }
+
+    func getMaxTurns() -> Int {
+        guard let turnSystem = gameWorld.getSystem(ofType: TurnSystem.self) else {
+            return 1
+        }
+
+        return turnSystem.getMaxTurns()
+    }
+
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }
