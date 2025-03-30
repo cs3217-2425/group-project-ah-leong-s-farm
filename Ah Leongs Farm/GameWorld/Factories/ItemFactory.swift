@@ -36,4 +36,3 @@ class ItemFactory {
         return entity
     }
 }
-
