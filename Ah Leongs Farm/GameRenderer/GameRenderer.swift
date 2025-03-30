@@ -7,9 +7,14 @@ typealias EntityType = GKEntity
 /// for various entities in the game.
 class GameRenderer {
     private weak var gameScene: GameScene?
-
-    private var entityNodeMap: [ObjectIdentifier: IRenderNode] = [:]
     private var renderPipeline: Queue<any IRenderManager> = Queue()
+
+    private var entityTileMapNodeMap: [ObjectIdentifier: SKTileMapNode] = [:]
+    private var entitySpriteNodeMap: [ObjectIdentifier: SpriteNode] = [:]
+    private var entityNodeMap: [ObjectIdentifier: any IRenderNode] {
+        let maps: [[ObjectIdentifier: any IRenderNode]] = [entityTileMapNodeMap, entitySpriteNodeMap]
+        return maps.reduce(into: [:]) { $0.merge($1) { _, new in new } }
+    }
 
     var allRenderNodes: [any IRenderNode] {
         Array(entityNodeMap.values)
@@ -24,24 +29,52 @@ class GameRenderer {
     /// - Parameter scene: The game scene to be set for rendering.
     func setScene(_ scene: GameScene?) {
         if gameScene != nil {
-            removeAllNodes()
+            removeAllRenderNodes()
         }
 
         // set the new scene
         gameScene = scene
     }
 
+    func setRenderNode(for entityIdentifier: ObjectIdentifier, node: SKTileMapNode) {
+        let shouldAddToScene = entityTileMapNodeMap[entityIdentifier] == nil
+
+        entityTileMapNodeMap[entityIdentifier] = node
+
+        if shouldAddToScene {
+            gameScene?.addChild(node)
+        }
+    }
+
+    func setRenderNode(for entityIdentifier: ObjectIdentifier, node: SpriteNode) {
+        let shouldAddToScene = entitySpriteNodeMap[entityIdentifier] == nil
+
+        entitySpriteNodeMap[entityIdentifier] = node
+
+        if shouldAddToScene {
+            gameScene?.addChild(node)
+        }
+    }
+
+    private func removeRenderNode(for entityIdentifier: ObjectIdentifier) {
+        if let node = entityTileMapNodeMap[entityIdentifier] {
+            node.removeFromParent()
+            entityTileMapNodeMap.removeValue(forKey: entityIdentifier)
+        } else if let node = entitySpriteNodeMap[entityIdentifier] {
+            node.removeFromParent()
+            entitySpriteNodeMap.removeValue(forKey: entityIdentifier)
+        }
+    }
+
+    private func removeAllRenderNodes() {
+        for entityIdentifier in entityNodeMap.keys {
+            removeRenderNode(for: entityIdentifier)
+        }
+    }
+
     private func setUpRenderPipeline() {
         renderPipeline.enqueue(TileMapRenderManager())
         renderPipeline.enqueue(SpriteRenderManager(uiPositionProvider: self))
-    }
-
-    private func removeAllNodes() {
-        for node in allRenderNodes {
-            node.removeFromParent()
-        }
-
-        entityNodeMap.removeAll()
     }
 
     private func executeRenderPipeline(allEntities: Set<EntityType>, in scene: GameScene) {
@@ -50,20 +83,12 @@ class GameRenderer {
 
         for renderManager in renderPipeline.iterable {
             for entity in entitiesToCreateFor {
-                if let node = renderManager.createNode(of: entity) {
-                    entityNodeMap[ObjectIdentifier(entity)] = node
-                    scene.addChild(node)
-                }
+                renderManager.createNode(for: entity, in: self)
             }
         }
 
         for entityIdentifier in entityIdentifiersToRemove {
-            guard let node = entityNodeMap[entityIdentifier] else {
-                continue
-            }
-
-            node.removeFromParent()
-            entityNodeMap.removeValue(forKey: entityIdentifier)
+            removeRenderNode(for: entityIdentifier)
         }
     }
 
@@ -94,31 +119,7 @@ extension GameRenderer: IGameObserver {
 extension GameRenderer: UIPositionProvider {
 
     private var skTileMapNode: SKTileMapNode? {
-        allRenderNodes.compactMap({ $0 as? SKTileMapNode }).first
-    }
-
-    func getSelectedRowAndColumn(at touchPosition: CGPoint) -> (Int, Int)? {
-        guard let skTileMapNode = skTileMapNode,
-              let scene = gameScene else {
-            return nil
-        }
-
-        // Convert the touch position to the tile map node's coordinate system
-        let locationInTileMap = scene.convert(touchPosition, to: skTileMapNode)
-        let tileMapPoint = getTileMapPoint(fromPosition: locationInTileMap, tileMapNode: skTileMapNode)
-
-        let rowOneIndexed = skTileMapNode.tileRowIndex(fromPosition: tileMapPoint)
-        let columnOneIndexed = skTileMapNode.tileColumnIndex(fromPosition: tileMapPoint)
-
-        let rowZeroIndexed = rowOneIndexed - 1
-        let columnZeroIndexed = columnOneIndexed - 1
-
-        guard skTileMapNode.isColumnValid(columnZeroIndexed),
-              skTileMapNode.isRowValid(rowZeroIndexed) else {
-            return nil
-        }
-
-        return (rowZeroIndexed, columnZeroIndexed)
+        entityTileMapNodeMap.values.first
     }
 
     func getUIPosition(row: Int, column: Int) -> CGPoint? {
@@ -139,14 +140,5 @@ extension GameRenderer: UIPositionProvider {
             - skTileMapNode.mapSize.height / 2
 
         return CGPoint(x: xPosition, y: yPosition)
-    }
-
-    private func getTileMapPoint(fromPosition location: CGPoint, tileMapNode: SKTileMapNode) -> CGPoint {
-        let tileMapPoint = CGPoint(
-            x: floor(location.x / tileMapNode.tileSize.width) * tileMapNode.tileSize.width,
-            y: floor(location.y / tileMapNode.tileSize.height) * tileMapNode.tileSize.height
-        )
-
-        return tileMapPoint
     }
 }

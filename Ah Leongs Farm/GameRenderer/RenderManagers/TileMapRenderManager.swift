@@ -12,10 +12,10 @@ class TileMapRenderManager: IRenderManager {
     private static let LandTileGroupName: String = "Land"
     private static let TileSize = CGSize(width: 48, height: 48)
 
-    func createNode(of entity: EntityType) -> SKTileMapNode? {
+    func createNode(for entity: EntityType, in renderer: GameRenderer) {
         guard let gridComponent = entity.component(ofType: GridComponent.self),
               let tileSet = SKTileSet(named: TileMapRenderManager.TileSetName) else {
-            return nil
+            return
         }
 
         let tileMapNode = SKTileMapNode(
@@ -29,6 +29,6 @@ class TileMapRenderManager: IRenderManager {
         tileMapNode.enableAutomapping = false
         tileMapNode.isUserInteractionEnabled = true
 
-        return tileMapNode
+        renderer.setRenderNode(for: ObjectIdentifier(entity), node: tileMapNode)
     }
 }

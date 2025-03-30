@@ -16,10 +16,10 @@ class SpriteRenderManager: IRenderManager {
         self.uiPositionProvider = uiPositionProvider
     }
 
-    func createNode(of entity: EntityType) -> SpriteNode? {
+    func createNode(for entity: EntityType, in renderer: GameRenderer) {
         guard let spriteComponent = entity.component(ofType: SpriteComponent.self),
               let positionComponent = entity.component(ofType: PositionComponent.self) else {
-            return nil
+            return
         }
 
         let spriteNode = spriteNodeFactories.compactMap { factory in
@@ -33,6 +33,6 @@ class SpriteRenderManager: IRenderManager {
 
         spriteNode.position = position
 
-        return spriteNode
+        renderer.setRenderNode(for: ObjectIdentifier(entity), node: spriteNode)
     }
 }

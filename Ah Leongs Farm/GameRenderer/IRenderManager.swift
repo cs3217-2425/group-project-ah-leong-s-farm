@@ -1,18 +1,15 @@
 import GameplayKit
 
 protocol IRenderManager: AnyObject {
-    associatedtype T: IRenderNode
+    func createNode(for entity: EntityType, in renderer: GameRenderer)
 
-    func createNode(of entity: EntityType) -> T?
-
-    func transformNode(_ node: T, for entity: EntityType)
+    func transformNode(_ node: IRenderNode, for entity: EntityType, in renderer: GameRenderer)
 }
 
 extension IRenderManager {
-    func createNode(of entity: EntityType) -> T? {
-        nil
+    func createNode(for entity: EntityType, in renderer: GameRenderer) {
     }
 
-    func transformNode(_ node: T, for entity: EntityType) {
+    func transformNode(_ node: IRenderNode, for entity: EntityType, in renderer: GameRenderer) {
     }
 }
