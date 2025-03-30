@@ -23,6 +23,7 @@ class InventoryViewController: UIViewController {
         modalTransitionStyle = .crossDissolve
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -138,7 +139,7 @@ class InventoryViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 60),
             collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -50) // Leave space for the item name label
+            collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -50)
         ])
     }
 
@@ -181,11 +182,13 @@ class InventoryViewController: UIViewController {
 // MARK: - UICollectionViewDelegate, UICollectionViewDataSource
 extension InventoryViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return inventoryItems.count
+        inventoryItems.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "InventoryItemCell", for: indexPath) as? InventoryItemCell else {
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "InventoryItemCell",
+                                                            for: indexPath) as? InventoryItemCell else {
             fatalError("Unable to dequeue InventoryItemCell")
         }
 
@@ -226,6 +229,7 @@ class InventoryItemCell: UICollectionViewCell {
         setupViews()
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
