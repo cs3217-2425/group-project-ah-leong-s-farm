@@ -6,5 +6,5 @@
 //
 
 protocol IGameObserver: AnyObject {
-    func observe()
+    func observe(gameWorld: GameWorld)
 }

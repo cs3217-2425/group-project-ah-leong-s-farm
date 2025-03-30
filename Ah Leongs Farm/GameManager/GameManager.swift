@@ -13,7 +13,7 @@ class GameManager {
 
     func update(_ currentTime: TimeInterval) {
         gameWorld.update(deltaTime: currentTime)
-        gameObservers.forEach { $0.observe() }
+        gameObservers.forEach { $0.observe(gameWorld: gameWorld) }
     }
 
     func addGameObserver(_ observer: any IGameObserver) {
