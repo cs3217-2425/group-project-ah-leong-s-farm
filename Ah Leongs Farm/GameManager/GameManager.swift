@@ -66,6 +66,8 @@ class GameManager {
             inventorySystem.addItem(type: .appleSeed, quantity: 7)
             inventorySystem.addItem(type: .potatoSeed, quantity: 52)
             inventorySystem.addItem(type: .bokChoySeed, quantity: 5)
+            inventorySystem.addItem(type: .bokChoyHarvested, quantity: 5)
+            inventorySystem.addItem(type: .appleHarvested, quantity: 5)
         }
     }
 
