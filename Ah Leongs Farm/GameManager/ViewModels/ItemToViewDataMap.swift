@@ -12,6 +12,7 @@ struct ItemToViewDataMap {
         .appleSeed: "apple_seed",
         .appleHarvested: "apple_harvested",
         .potatoSeed: "potato_harvested",
+        .potatoHarvested: "potato_harvested",
         .fertiliser: "fertiliser",
         .premiumFertiliser: "premium_fertiliser"
     ]
@@ -21,7 +22,8 @@ struct ItemToViewDataMap {
         .bokChoyHarvested: "Bokchoy",
         .appleSeed: "Apple seed",
         .appleHarvested: "Apple",
-        .potatoSeed: "Potato",
+        .potatoSeed: "Potato seed",
+        .potatoHarvested: "Potato",
         .fertiliser: "Fertiliser",
         .premiumFertiliser: "Premium fertiliser"
     ]

@@ -21,11 +21,14 @@ class InventorySystem: ISystem {
 
     // Creates new entities if and only if it exists in the ItemFactory
     func addItem(type: ItemType, quantity: Int) {
+        guard let initialiser = ItemFactory.itemToInitialisers[type] else {
+            return
+        }
         for _ in 0..<quantity {
-            guard let factoryEntity = ItemFactory.itemToInitialisers[type], let entity = factoryEntity else {
+
+            guard let entity = initialiser() else {
                 return
             }
-
             manager?.addEntity(entity)
         }
     }

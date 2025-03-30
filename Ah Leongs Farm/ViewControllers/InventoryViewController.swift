@@ -2,8 +2,6 @@
 //  InventoryViewController.swift
 //  Ah Leongs Farm
 //
-//  Created by Ma Yuchen on 30/3/25.
-//
 
 import UIKit
 
@@ -11,7 +9,11 @@ class InventoryViewController: UIViewController {
     // MARK: - Properties
     private var inventoryItems: [InventoryItemViewModel]
     private var containerView: UIView!
-    private var scrollView: UIScrollView!
+    private var collectionView: UICollectionView!
+    private var selectedItemLabel: UILabel!
+
+    private let itemsPerRow: CGFloat = 10
+    private let sectionInsets = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
 
     // MARK: - Initialization
     init(inventoryItems: [InventoryItemViewModel]) {
@@ -21,7 +23,6 @@ class InventoryViewController: UIViewController {
         modalTransitionStyle = .crossDissolve
     }
 
-    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -30,6 +31,11 @@ class InventoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+
+        // Add tap gesture to dismiss the item name label
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissItemName))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
     }
 
     // MARK: - UI Setup
@@ -43,8 +49,11 @@ class InventoryViewController: UIViewController {
         // Setup header
         setupHeaderView()
 
-        // Display inventory items
-        setupInventoryList()
+        // Setup collection view
+        setupCollectionView()
+
+        // Setup item name label
+        setupItemNameLabel()
     }
 
     private func setupContainerView() {
@@ -103,128 +112,190 @@ class InventoryViewController: UIViewController {
         ])
     }
 
-    private func setupInventoryList() {
-        // Create scroll view for content
-        scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(scrollView)
+    private func setupCollectionView() {
+        // Create a flow layout for the grid
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 10
+        layout.sectionInset = sectionInsets
 
-        let contentView = UIView()
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(contentView)
+        // Create the collection view
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.showsVerticalScrollIndicator = true
+        collectionView.alwaysBounceVertical = true
+
+        // Register the cell
+        collectionView.register(InventoryItemCell.self, forCellWithReuseIdentifier: "InventoryItemCell")
+
+        containerView.addSubview(collectionView)
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 60),
-            scrollView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-
-            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+            collectionView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 60),
+            collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -50) // Leave space for the item name label
         ])
-
-        if inventoryItems.isEmpty {
-            let emptyLabel = UILabel()
-            emptyLabel.text = "Your inventory is empty"
-            emptyLabel.textAlignment = .center
-            emptyLabel.textColor = .gray
-            emptyLabel.translatesAutoresizingMaskIntoConstraints = false
-            contentView.addSubview(emptyLabel)
-
-            NSLayoutConstraint.activate([
-                emptyLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-                emptyLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -30),
-                emptyLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-                emptyLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-                emptyLabel.heightAnchor.constraint(equalToConstant: 44),
-                contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor)
-            ])
-        } else {
-            var previousView: UIView?
-
-            for (index, item) in inventoryItems.enumerated() {
-                let itemView = createItemView(item: item)
-                contentView.addSubview(itemView)
-
-                NSLayoutConstraint.activate([
-                    itemView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-                    itemView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-                    itemView.heightAnchor.constraint(equalToConstant: 60)
-                ])
-
-                if let previousView = previousView {
-                    itemView.topAnchor.constraint(equalTo: previousView.bottomAnchor, constant: 10).isActive = true
-                } else {
-                    itemView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10).isActive = true
-                }
-
-                // If last item, set bottom constraint
-                if index == inventoryItems.count - 1 {
-                    itemView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20).isActive = true
-                }
-
-                previousView = itemView
-            }
-        }
     }
 
-    private func createItemView(item: InventoryItemViewModel) -> UIView {
-        let itemView = UIView()
-        itemView.backgroundColor = UIColor.systemGray6
-        itemView.layer.cornerRadius = 8
-        itemView.translatesAutoresizingMaskIntoConstraints = false
+    private func setupItemNameLabel() {
+        selectedItemLabel = UILabel()
+        selectedItemLabel.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
+        selectedItemLabel.textAlignment = .center
+        selectedItemLabel.textColor = .black
+        selectedItemLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        selectedItemLabel.layer.cornerRadius = 8
+        selectedItemLabel.clipsToBounds = true
+        selectedItemLabel.isHidden = true // Initially hidden
+        selectedItemLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        // Item image
-        let itemImageView = UIImageView()
-        itemImageView.contentMode = .scaleAspectFit
-        itemImageView.image = UIImage(named: item.imageName) // Assuming asset exists
-        // Fallback icon if image not found
-        if itemImageView.image == nil {
-            itemImageView.backgroundColor = .systemGray4
-            itemImageView.layer.cornerRadius = 8
-            itemImageView.clipsToBounds = true
-        }
-        itemImageView.translatesAutoresizingMaskIntoConstraints = false
-        itemView.addSubview(itemImageView)
-
-        // Item name
-        let nameLabel = UILabel()
-        nameLabel.text = item.name
-        nameLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        itemView.addSubview(nameLabel)
-
-        // Quantity
-        let quantityLabel = UILabel()
-        quantityLabel.text = "x\(item.quantity)"
-        quantityLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-        quantityLabel.textAlignment = .right
-        quantityLabel.translatesAutoresizingMaskIntoConstraints = false
-        itemView.addSubview(quantityLabel)
+        containerView.addSubview(selectedItemLabel)
 
         NSLayoutConstraint.activate([
-            itemImageView.leadingAnchor.constraint(equalTo: itemView.leadingAnchor, constant: 12),
-            itemImageView.centerYAnchor.constraint(equalTo: itemView.centerYAnchor),
-            itemImageView.widthAnchor.constraint(equalToConstant: 40),
-            itemImageView.heightAnchor.constraint(equalToConstant: 40),
-
-            nameLabel.leadingAnchor.constraint(equalTo: itemImageView.trailingAnchor, constant: 16),
-            nameLabel.centerYAnchor.constraint(equalTo: itemView.centerYAnchor),
-            nameLabel.trailingAnchor.constraint(lessThanOrEqualTo: quantityLabel.leadingAnchor, constant: -10),
-
-            quantityLabel.trailingAnchor.constraint(equalTo: itemView.trailingAnchor, constant: -16),
-            quantityLabel.centerYAnchor.constraint(equalTo: itemView.centerYAnchor),
-            quantityLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 50)
+            selectedItemLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            selectedItemLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            selectedItemLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10),
+            selectedItemLabel.heightAnchor.constraint(equalToConstant: 40)
         ])
-
-        return itemView
     }
 
     // MARK: - Actions
     @objc private func closeButtonTapped() {
         dismiss(animated: true)
+    }
+
+    @objc private func dismissItemName() {
+        selectedItemLabel.isHidden = true
+    }
+
+    private func showItemName(for item: InventoryItemViewModel) {
+        selectedItemLabel.text = item.name
+        selectedItemLabel.isHidden = false
+    }
+}
+
+// MARK: - UICollectionViewDelegate, UICollectionViewDataSource
+extension InventoryViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return inventoryItems.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "InventoryItemCell", for: indexPath) as? InventoryItemCell else {
+            fatalError("Unable to dequeue InventoryItemCell")
+        }
+
+        let item = inventoryItems[indexPath.item]
+        cell.configure(with: item)
+
+        return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let item = inventoryItems[indexPath.item]
+        showItemName(for: item)
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+extension InventoryViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        // Calculate cell size to fit the desired number of items per row
+        let paddingSpace = sectionInsets.left + sectionInsets.right + (itemsPerRow - 1) * 10
+        let availableWidth = collectionView.bounds.width - paddingSpace
+        let widthPerItem = availableWidth / itemsPerRow
+
+        return CGSize(width: widthPerItem, height: widthPerItem)
+    }
+}
+
+// MARK: - Custom Cell for Inventory Items
+class InventoryItemCell: UICollectionViewCell {
+    private let imageView = UIImageView()
+    private let quantityLabel = UILabel()
+    private let emptyView = UIView()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupViews() {
+        // Cell background
+        backgroundColor = UIColor.systemGray6
+        layer.cornerRadius = 8
+        clipsToBounds = true
+
+        // Image view
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(imageView)
+
+        // Empty state background
+        emptyView.backgroundColor = .systemGray4
+        emptyView.isHidden = true
+        emptyView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(emptyView)
+
+        // Quantity label
+        quantityLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        quantityLabel.textColor = .white
+        quantityLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
+        quantityLabel.textAlignment = .center
+        quantityLabel.layer.cornerRadius = 8
+        quantityLabel.clipsToBounds = true
+        quantityLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(quantityLabel)
+
+        NSLayoutConstraint.activate([
+            // Image view fills the cell
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
+            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 4),
+            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
+            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+
+            // Empty view same size as image view
+            emptyView.topAnchor.constraint(equalTo: imageView.topAnchor),
+            emptyView.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+            emptyView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
+            emptyView.bottomAnchor.constraint(equalTo: imageView.bottomAnchor),
+
+            // Quantity label at bottom right
+            quantityLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
+            quantityLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+            quantityLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 24),
+            quantityLabel.heightAnchor.constraint(equalToConstant: 24)
+        ])
+    }
+
+    func configure(with viewModel: InventoryItemViewModel) {
+        let image = UIImage(named: viewModel.imageName)
+
+        if let image = image {
+            imageView.image = image
+            emptyView.isHidden = true
+        } else {
+            // If image not found, show placeholder
+            imageView.image = nil
+            emptyView.isHidden = false
+        }
+
+        quantityLabel.text = "x\(viewModel.quantity)"
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageView.image = nil
+        quantityLabel.text = nil
     }
 }

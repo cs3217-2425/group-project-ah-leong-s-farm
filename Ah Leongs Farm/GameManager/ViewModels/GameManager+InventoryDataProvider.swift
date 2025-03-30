@@ -27,7 +27,6 @@ extension GameManager: InventoryDataProvider {
                 quantity: quantity
             ))
         }
-
         return viewModels
     }
 }
