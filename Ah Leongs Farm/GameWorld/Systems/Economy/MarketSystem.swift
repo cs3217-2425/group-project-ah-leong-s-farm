@@ -9,14 +9,7 @@ class MarketSystem: ISystem {
 
     private var itemPrices: [ItemType: Price] = MarketInformation.initialItemPrices
     private var itemStocks: [ItemType: Int] = MarketInformation.initialItemStocks
-
     unowned var manager: EntityManager?
-    private weak var eventQueueable: EventQueueable?
-
-    required init(for manager: EntityManager, eventQueueable: EventQueueable) {
-        self.manager = manager
-        self.eventQueueable = eventQueueable
-    }
 
     required init(for manager: EntityManager) {
         self.manager = manager
