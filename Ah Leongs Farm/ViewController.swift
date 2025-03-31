@@ -10,9 +10,9 @@ import SpriteKit
 import GameplayKit
 
 class ViewController: UIViewController {
-    let gameManager: GameManager = GameManager()
-    let gameRenderer: GameRenderer = GameRenderer()
-    let persistenceManager: PersistenceManager = PersistenceManager()
+    let gameManager = GameManager()
+    let gameRenderer = GameRenderer()
+    let persistenceManager = PersistenceManager()
 
     private var gameScene: GameScene?
     private var gameControlsView: GameControlsView?

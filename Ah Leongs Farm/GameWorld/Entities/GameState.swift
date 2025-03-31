@@ -37,4 +37,3 @@ extension GameState: PersistenceVisitor {
         manager.save(gameState: self)
     }
 }
-

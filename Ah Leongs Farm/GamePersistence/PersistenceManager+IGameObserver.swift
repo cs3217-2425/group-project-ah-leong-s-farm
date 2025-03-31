@@ -14,8 +14,8 @@ extension PersistenceManager: IGameObserver {
                 continue
             }
 
-            accept(visitor: persistenceComponent.persistenceVisitor)
+            let persistenceVisitor = persistenceComponent.persistenceVisitor
+            accept(visitor: persistenceVisitor)
         }
     }
 }
-
