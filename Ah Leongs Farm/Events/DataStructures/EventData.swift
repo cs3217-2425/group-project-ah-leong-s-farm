@@ -33,3 +33,13 @@ struct CurrencyGrantEventData: EventData {
 struct ItemGrantEventData: EventData {
     var itemGrants: [ItemType: Int] = [:]
 }
+
+struct BuyItemEventData: EventData {
+    var itemType: ItemType
+    var quantity: Int
+}
+
+struct SellItemEventData: EventData {
+    var itemType: ItemType
+    var quantity: Int
+}
