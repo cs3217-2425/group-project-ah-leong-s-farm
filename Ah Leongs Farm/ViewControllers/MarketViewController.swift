@@ -121,7 +121,4 @@ struct MarketItem {
 
 extension GameManager {
     static let marketItems: [MarketItem] = []
-    
-    
-    
 }
