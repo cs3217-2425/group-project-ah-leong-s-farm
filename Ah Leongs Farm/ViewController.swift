@@ -107,8 +107,10 @@ extension ViewController: GameControlsViewDelegate {
     }
 
     func marketButtonTapped() {
-        //let marketViewController = MarketViewController(gameManager: gameManager)
-        //present(marketViewController, animated: true, completion: nil)
+        let marketViewController = MarketViewController(gameManager: gameManager)
+        //marketViewController.modalPresentationStyle = .overCurrentContext
+        //marketViewController.modalTransitionStyle = .crossDissolve
+        present(marketViewController, animated: true, completion: nil)
     }
 }
 
