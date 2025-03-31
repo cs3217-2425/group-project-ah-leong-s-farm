@@ -26,5 +26,12 @@ class Plot: GKEntity {
         addComponent(PositionComponent(x: position.x, y: position.y))
         addComponent(SoilComponent(quality: Plot.DefaultSoilQuality, moisture: Plot.DefaultSoilMoisture))
         addComponent(SpriteComponent(textureName: Plot.SpriteTextureName))
+        addComponent(PersistenceComponent(visitor: self))
+    }
+}
+
+extension Plot: PersistenceVisitor {
+    func visitPersistenceManager(manager: PersistenceManager) {
+        manager.save(plot: self)
     }
 }

@@ -23,9 +23,18 @@ class GameState: GKEntity {
         let energyComponent = EnergyComponent(maxEnergy: maxEnergy)
         let levelComponent = LevelComponent()
         let walletComponent = WalletComponent()
+        let persistenceComponent = PersistenceComponent(visitor: self)
         addComponent(turnComponent)
         addComponent(energyComponent)
         addComponent(levelComponent)
         addComponent(walletComponent)
+        addComponent(persistenceComponent)
     }
 }
+
+extension GameState: PersistenceVisitor {
+    func visitPersistenceManager(manager: PersistenceManager) {
+        manager.save(gameState: self)
+    }
+}
+

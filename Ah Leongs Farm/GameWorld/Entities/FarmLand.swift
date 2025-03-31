@@ -19,6 +19,14 @@ class FarmLand: GKEntity {
 
     private func setUpComponents(rows: Int, columns: Int) {
         let gridComponent = GridComponent(rows: rows, columns: columns)
+        let persistenceComponent = PersistenceComponent(visitor: self)
         addComponent(gridComponent)
+        addComponent(persistenceComponent)
+    }
+}
+
+extension FarmLand: PersistenceVisitor {
+    func visitPersistenceManager(manager: PersistenceManager) {
+        manager.save(farmLand: self)
     }
 }

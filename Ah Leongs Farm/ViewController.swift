@@ -10,16 +10,15 @@ import SpriteKit
 import GameplayKit
 
 class ViewController: UIViewController {
-    let gameManager: GameManager
-    let gameRenderer: GameRenderer
+    let gameManager: GameManager = GameManager()
+    let gameRenderer: GameRenderer = GameRenderer()
+    let persistenceManager: PersistenceManager = PersistenceManager()
 
     private var gameScene: GameScene?
     private var gameControlsView: GameControlsView?
     private var gameStatisticsView: GameStatisticsView?
 
     required init?(coder: NSCoder) {
-        gameManager = GameManager()
-        gameRenderer = GameRenderer()
         super.init(coder: coder)
         setUpGameObservers()
     }
@@ -75,6 +74,7 @@ class ViewController: UIViewController {
 
     private func setUpGameObservers() {
         gameManager.addGameObserver(gameRenderer)
+        gameManager.addGameObserver(persistenceManager)
     }
 
     override var prefersStatusBarHidden: Bool {

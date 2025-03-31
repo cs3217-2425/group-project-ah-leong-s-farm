@@ -28,11 +28,20 @@ class BokChoy: GKEntity, Crop {
 
         let healthComponent = HealthComponent()
         addComponent(healthComponent)
+
+        let persistenceComponent = PersistenceComponent(visitor: self)
+        addComponent(persistenceComponent)
     }
 
     static func createSeed() -> GKEntity {
         let bokChoy = BokChoy()
         bokChoy.addComponent(SeedComponent())
         return bokChoy
+    }
+}
+
+extension BokChoy: PersistenceVisitor {
+    func visitPersistenceManager(manager: PersistenceManager) {
+        manager.save(bokChoy: self)
     }
 }
