@@ -25,6 +25,7 @@ class GameControlsView: UIView {
         backgroundColor = .clear
         createQuitButton()
         createNextButton()
+        createMarketButton()
     }
 
     private func createNextButton() {
@@ -69,11 +70,36 @@ class GameControlsView: UIView {
         quitButton.addTarget(self, action: #selector(quitButtonTapped), for: .touchUpInside)
     }
 
+    private func createMarketButton() {
+        let marketButton = UIButton(type: .system)
+
+        marketButton.setTitle("Market", for: .normal)
+        marketButton.backgroundColor = .systemGreen
+        marketButton.setTitleColor(.white, for: .normal)
+        marketButton.layer.cornerRadius = 10
+        marketButton.translatesAutoresizingMaskIntoConstraints = false
+        marketButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
+
+        addSubview(marketButton)
+        NSLayoutConstraint.activate([
+            marketButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            marketButton.bottomAnchor.constraint(equalTo: bottomAnchor),
+            marketButton.widthAnchor.constraint(equalToConstant: 140),
+            marketButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
+
+        marketButton.addTarget(self, action: #selector(marketButtonTapped), for: .touchUpInside)
+    }
+
     @objc private func nextDayButtonTapped() {
         delegate?.nextDayButtonTapped()
     }
 
     @objc private func quitButtonTapped() {
         delegate?.quitButtonTapped()
+    }
+
+    @objc private func marketButtonTapped() {
+        delegate?.marketButtonTapped()
     }
 }

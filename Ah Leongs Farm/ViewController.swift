@@ -54,7 +54,7 @@ class ViewController: UIViewController {
             gameControls.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
             gameControls.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gameControls.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            gameControls.heightAnchor.constraint(equalToConstant: 80)
+            gameControls.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
         ])
 
         self.gameControlsView = gameControls
@@ -104,6 +104,11 @@ extension ViewController: GameControlsViewDelegate {
         }))
 
         present(alert, animated: true, completion: nil)
+    }
+
+    func marketButtonTapped() {
+        //let marketViewController = MarketViewController(gameManager: gameManager)
+        //present(marketViewController, animated: true, completion: nil)
     }
 }
 
