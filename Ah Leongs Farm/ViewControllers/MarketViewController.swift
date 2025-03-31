@@ -18,7 +18,7 @@ class MarketViewController: UIViewController {
     private var gameManager: GameManager
 
     // Main view that contains header, segmented control, and collection view
-    private let marketView = MarketView()
+    private let marketView: MarketView
 
     // Convenience accessors
     private var closeButton: UIButton { marketView.closeButton }
@@ -29,6 +29,7 @@ class MarketViewController: UIViewController {
     // Initializer
     init(gameManager: GameManager) {
         self.gameManager = gameManager
+        self.marketView = MarketView(initialCurrency: Int(gameManager.getAmountOfCurrency(.coin)))
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -111,7 +112,7 @@ extension MarketViewController: UICollectionViewDataSource, UICollectionViewDele
     }
 }
 
-// MARK: - MarketItem Model
+// MARK: - MarketItem Model -> i think later can change this to a view model or sth idk
 struct MarketItem {
     let image: UIImage
     let price: Double

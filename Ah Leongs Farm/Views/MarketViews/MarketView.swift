@@ -8,6 +8,25 @@ import UIKit
 
 class MarketView: UIView {
 
+    private var currency: Int
+
+        // Initialization with currency value
+    init(initialCurrency: Int) {
+        self.currency = initialCurrency
+        super.init(frame: .zero)  // Default to CGRect.zero
+        setupView()
+        updateCurrencyLabel(initialCurrency)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func updateCurrencyLabel(_ newAmount: Int) {
+        currency = newAmount
+        currencyLabel.text = "Coins: \(currency)"
+    }
+
     // Header Elements
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -55,18 +74,6 @@ class MarketView: UIView {
         cv.translatesAutoresizingMaskIntoConstraints = false
         return cv
     }()
-
-    // Initialization
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupView()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupView()
-    }
-
     // Setup subviews and layout
     private func setupView() {
         backgroundColor = .white
