@@ -7,12 +7,15 @@
 
 import UIKit
 import SpriteKit
+import GameplayKit
 
 class ViewController: UIViewController {
     let gameManager: GameManager
     let gameRenderer: GameRenderer
 
     private var gameScene: GameScene?
+    private var gameControlsView: GameControlsView?
+    private var gameStatisticsView: GameStatisticsView?
 
     required init?(coder: NSCoder) {
         gameManager = GameManager()
@@ -24,42 +27,37 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpGameScene()
-        createQuitButton()
+        setUpGameControls()
+        setUpGameStatistics()
+        gameManager.addGameObserver(self)
     }
 
-    private func createQuitButton() {
-        let quitButton = UIButton(type: .system)
+    private func setUpGameStatistics() {
+        let gameStatistics = GameStatisticsView()
+        gameStatistics.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(gameStatistics)
 
-        quitButton.setTitle("Quit", for: .normal)
-        quitButton.backgroundColor = .systemRed
-        quitButton.setTitleColor(.white, for: .normal)
-        quitButton.layer.cornerRadius = 10
-        quitButton.translatesAutoresizingMaskIntoConstraints = false
-        quitButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
-
-        view.addSubview(quitButton)
         NSLayoutConstraint.activate([
-            quitButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
-            quitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            quitButton.widthAnchor.constraint(equalToConstant: 100),
-            quitButton.heightAnchor.constraint(equalToConstant: 40)
+            gameStatistics.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            gameStatistics.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
         ])
 
-        quitButton.addTarget(self, action: #selector(quitButtonTapped), for: .touchUpInside)
+        self.gameStatisticsView = gameStatistics
     }
 
-    @objc func quitButtonTapped() {
-        let alert = UIAlertController(title: "Quit Game?",
-                                      message: "Are you sure you want to return to main menu?",
-                                      preferredStyle: .alert)
+    private func setUpGameControls() {
+        let gameControls = GameControlsView(delegate: self)
+        gameControls.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(gameControls)
 
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        NSLayoutConstraint.activate([
+            gameControls.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            gameControls.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            gameControls.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            gameControls.heightAnchor.constraint(equalToConstant: 80)
+        ])
 
-        alert.addAction(UIAlertAction(title: "Quit", style: .destructive, handler: { _ in
-            self.dismiss(animated: true, completion: nil)
-        }))
-
-        present(alert, animated: true, completion: nil)
+        self.gameControlsView = gameControls
     }
 
     private func setUpGameScene() {
@@ -82,10 +80,57 @@ class ViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         true
     }
+
+    deinit {
+        gameManager.removeGameObserver(self)
+    }
 }
 
-// MARK: IGameProvider
-extension ViewController: IGameProvider {
+// MARK: GameControlsViewDelegate
+extension ViewController: GameControlsViewDelegate {
+    func nextDayButtonTapped() {
+        gameManager.nextTurn()
+    }
+
+    func quitButtonTapped() {
+        let alert = UIAlertController(title: "Quit Game?",
+                                      message: "Are you sure you want to return to main menu?",
+                                      preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+
+        alert.addAction(UIAlertAction(title: "Quit", style: .destructive, handler: { _ in
+            self.dismiss(animated: true, completion: nil)
+        }))
+
+        present(alert, animated: true, completion: nil)
+    }
+}
+
+// MARK: IGameObserver
+extension ViewController: IGameObserver {
+    private func updateDayLabel() {
+        let currentTurn = gameManager.getCurrentTurn()
+        let maxTurns = gameManager.getMaxTurns()
+        gameStatisticsView?.updateDayLabel(currentTurn: currentTurn, maxTurns: maxTurns)
+    }
+
+    private func updateCurrencyLabel() {
+        let coins = gameManager.getAmountOfCurrency(.coin)
+        gameStatisticsView?.updateCurrencyLabel(currency: coins)
+    }
+
+    private func updateEnergyLabel() {
+        let currentEnergy = gameManager.getCurrentEnergy()
+        let maxEnergy = gameManager.getMaxEnergy()
+        gameStatisticsView?.updateEnergyLabel(currentEnergy: currentEnergy, maxEnergy: maxEnergy)
+    }
+
+    func observe(entities: Set<GKEntity>) {
+        updateDayLabel()
+        updateCurrencyLabel()
+        updateEnergyLabel()
+    }
 }
 
 extension ViewController: GameSceneUpdateDelegate {
