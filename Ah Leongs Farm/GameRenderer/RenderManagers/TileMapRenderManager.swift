@@ -8,9 +8,9 @@
 import GameplayKit
 
 class TileMapRenderManager: IRenderManager {
+    static let TileSize = CGSize(width: 48, height: 48)
     private static let TileSetName: String = "Farm Tile Set"
     private static let LandTileGroupName: String = "Land"
-    private static let TileSize = CGSize(width: 48, height: 48)
 
     func createNode(for entity: EntityType, in renderer: GameRenderer) {
         guard let gridComponent = entity.component(ofType: GridComponent.self),

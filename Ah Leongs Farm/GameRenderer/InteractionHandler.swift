@@ -9,4 +9,10 @@ protocol InteractionHandler: AnyObject {
     func handleInteraction(node: IRenderNode)
 
     func handleInteraction(node: PlotSpriteNode)
+
+    func handleInteraction(node: AppleSpriteNode)
+
+    func handleInteraction(node: BokChoySpriteNode)
+
+    func handleInteraction(node: PotatoSpriteNode)
 }
