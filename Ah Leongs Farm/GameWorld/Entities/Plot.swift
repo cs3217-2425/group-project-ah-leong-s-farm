@@ -10,7 +10,6 @@ import GameplayKit
 class Plot: GKEntity {
     private static let DefaultSoilQuality: Float = 0
     private static let DefaultSoilMoisture: Float = 0
-    private static let SpriteTextureName = "dirt"
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -34,4 +33,3 @@ extension Plot: SpriteRenderManagerVisitor {
         manager.createNodeForEntity(plot: self, in: renderer)
     }
 }
-
