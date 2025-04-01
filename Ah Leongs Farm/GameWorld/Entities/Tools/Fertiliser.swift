@@ -9,6 +9,7 @@ import Foundation
 import GameplayKit
 
 class Fertiliser: GKEntity {
+    // TODO: Consider FertiliserComponent once we implement fertiliser logic
     let soilImprovementAmount: Int
 
     init(soilImprovementAmount: Int = 30) {
