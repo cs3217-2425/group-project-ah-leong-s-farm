@@ -27,7 +27,7 @@ class TileMapRenderManager: IRenderManager {
 
         tileMapNode.fill(with: TileMapRenderManager.LandTileGroupName)
         tileMapNode.enableAutomapping = false
-        tileMapNode.isUserInteractionEnabled = true
+        tileMapNode.isUserInteractionEnabled = false
 
         renderer.setRenderNode(for: ObjectIdentifier(entity), node: tileMapNode)
     }
