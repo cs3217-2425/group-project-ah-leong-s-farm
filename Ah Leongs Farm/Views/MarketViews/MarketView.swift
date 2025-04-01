@@ -10,14 +10,14 @@ class MarketView: UIView {
 
     private var currency: Int
 
-        // Initialization with currency value
+    // Initialization with currency value
     init(initialCurrency: Int) {
         self.currency = initialCurrency
-        super.init(frame: .zero)  // Default to CGRect.zero
+        super.init(frame: .zero)
         setupView()
         updateCurrencyLabel(initialCurrency)
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

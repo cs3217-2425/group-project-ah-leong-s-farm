@@ -45,7 +45,7 @@ class MarketSystem: ISystem {
         return price.sellPrice[currency]
     }
 
-    func getStock(for type: ItemType) -> Int? {
+    func getBuyQuantity(for type: ItemType) -> Int? {
         guard let stock = itemStocks[type] else {
             print("Item not found in the market!")
             return nil
@@ -60,7 +60,7 @@ class MarketSystem: ISystem {
             print("Not enough stock for \(type).")
             return false
         }
-        
+
         guard let initialiser = ItemFactory.itemToInitialisers[type],
               let entity = initialiser() else {
             print("Item not found in the item factory.")
@@ -107,5 +107,12 @@ class MarketSystem: ISystem {
 
     func updateBuyandSellPrice() {
         // To be added once buy and sell price algo is decided
+    }
+    
+    func getSellQuantity(for itemType: ItemType) -> Int {
+        return sellableComponents
+            .compactMap { $0 as? SellComponent }
+            .filter { $0.itemType == itemType }
+            .count
     }
 }

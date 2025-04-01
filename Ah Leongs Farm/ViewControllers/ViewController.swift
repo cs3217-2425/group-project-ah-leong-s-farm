@@ -27,9 +27,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpGameScene()
-        createInventoryButton()
         setUpGameControls()
         setUpGameStatistics()
+        createInventoryButton()
         gameManager.addGameObserver(self)
     }
 
@@ -109,9 +109,12 @@ extension ViewController: GameControlsViewDelegate {
 
     func marketButtonTapped() {
         let marketViewController = MarketViewController(gameManager: gameManager)
-        //marketViewController.modalPresentationStyle = .overCurrentContext
-        //marketViewController.modalTransitionStyle = .crossDissolve
-        present(marketViewController, animated: true, completion: nil)
+        marketViewController.modalPresentationStyle = .formSheet
+        marketViewController.preferredContentSize = CGSize(
+            width: view.bounds.width * 0.8,
+            height: view.bounds.height * 0.75
+        )
+        present(marketViewController, animated: true)
     }
 }
 

@@ -2,19 +2,6 @@ import UIKit
 
 class MarketViewController: UIViewController {
 
-    // Data Models
-    let itemsForSale = [
-        MarketItem(image: UIImage(named: "bokchoy")!, price: 50, stock: 10),
-        MarketItem(image: UIImage(named: "bokchoy")!, price: 100, stock: 5),
-        MarketItem(image: UIImage(named: "bokchoy")!, price: 150, stock: 3)
-    ]
-
-    let itemsForSell = [
-        MarketItem(image: UIImage(named: "bokchoy")!, price: 30, stock: 7),
-        MarketItem(image: UIImage(named: "bokchoy")!, price: 60, stock: 8),
-        MarketItem(image: UIImage(named: "bokchoy")!, price: 90, stock: 4)
-    ]
-
     private var gameManager: GameManager
 
     // Main view that contains header, segmented control, and collection view
@@ -58,6 +45,10 @@ class MarketViewController: UIViewController {
 
     // Setup collection view data source, delegate, and register cells
     private func setupCollectionView() {
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.minimumInteritemSpacing = 20
+            layout.minimumLineSpacing = 20
+        }
         collectionView.register(BuyItemCell.self, forCellWithReuseIdentifier: "BuyItemCell")
         collectionView.register(SellItemCell.self, forCellWithReuseIdentifier: "SellItemCell")
         collectionView.dataSource = self
@@ -77,48 +68,60 @@ class MarketViewController: UIViewController {
 
 // MARK: - UICollectionView DataSource & Delegate
 
-extension MarketViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+extension MarketViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        segmentedControl.selectedSegmentIndex == 0 ? itemsForSale.count : itemsForSell.count
+        if segmentedControl.selectedSegmentIndex == 0 {
+            return gameManager.getBuyItemViewModels().count
+        } else {
+            return gameManager.getSellItemViewModels().count
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
         if segmentedControl.selectedSegmentIndex == 0 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BuyItemCell", for: indexPath) as? BuyItemCell else {
                 return UICollectionViewCell()
             }
-            let item = itemsForSale[indexPath.row]
-            cell.configure(with: item)
+            let viewModels = gameManager.getBuyItemViewModels()
+            let viewModel = viewModels[indexPath.row]
+            cell.configure(with: viewModel)
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SellItemCell", for: indexPath) as? SellItemCell else {
                 return UICollectionViewCell()
             }
-            let item = itemsForSell[indexPath.row]
-            cell.configure(with: item)
+            let viewModels = gameManager.getSellItemViewModels()
+            let viewModel = viewModels[indexPath.row]
+            cell.configure(with: viewModel)
             return cell
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if segmentedControl.selectedSegmentIndex == 0 {
-            let item = itemsForSale[indexPath.row]
-            print("Selected item for buy: \(item)")
+            let viewModels = gameManager.getBuyItemViewModels()
+            let viewModel = viewModels[indexPath.row]
+            print("Selected item for buy: \(viewModel.name)")
         } else {
-            let item = itemsForSell[indexPath.row]
-            print("Selected item for sell: \(item)")
+            let viewModels = gameManager.getSellItemViewModels()
+            let viewModel = viewModels[indexPath.row]
+            print("Selected item for sell: \(viewModel.name)")
         }
     }
-}
 
-// MARK: - MarketItem Model -> i think later can change this to a view model or sth idk
-struct MarketItem {
-    let image: UIImage
-    let price: Double
-    let stock: Int
-}
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let itemsPerRow: CGFloat = 5
+        let padding: CGFloat = 20
+        let totalSpacing = (itemsPerRow - 1) * padding
+        let availableWidth = collectionView.frame.width - totalSpacing
+        let cellWidth = availableWidth / itemsPerRow
 
-extension GameManager {
-    static let marketItems: [MarketItem] = []
+        print("Cell width: \(cellWidth), CollectionView width: \(collectionView.frame.width)")
+        return CGSize(width: cellWidth, height: cellWidth) // Ensure square shape
+    }
+
 }
