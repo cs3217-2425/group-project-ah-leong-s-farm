@@ -31,7 +31,7 @@ class Plot: GKEntity {
 
 extension Plot: SpriteRenderManagerVisitor {
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNode(plot: self, in: renderer)
+        manager.createNodeForEntity(plot: self, in: renderer)
     }
 }
 

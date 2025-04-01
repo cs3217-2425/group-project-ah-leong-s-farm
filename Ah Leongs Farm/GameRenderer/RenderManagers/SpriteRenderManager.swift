@@ -27,7 +27,7 @@ class SpriteRenderManager: IRenderManager {
         visitor.visitSpriteRenderManager(manager: self, renderer: renderer)
     }
 
-    func createNode(plot: Plot, in renderer: GameRenderer) {
+    func createNodeForEntity(plot: Plot, in renderer: GameRenderer) {
         guard let positionComponent = plot.component(ofType: PositionComponent.self) else {
             return
         }
