@@ -12,38 +12,23 @@ class TileMapRenderManager: IRenderManager {
     private static let LandTileGroupName: String = "Land"
     private static let TileSize = CGSize(width: 48, height: 48)
 
-    private(set) var entityNodeMap: [ObjectIdentifier: TileMapRenderNode] = [:]
-
-    func createNode(of entity: EntityType, in scene: SKScene) {
-        // only one tile map node is allowed to be managed
-        guard entityNodeMap.isEmpty else {
-            return
-        }
-
+    func createNode(for entity: EntityType, in renderer: GameRenderer) {
         guard let gridComponent = entity.component(ofType: GridComponent.self),
               let tileSet = SKTileSet(named: TileMapRenderManager.TileSetName) else {
             return
         }
 
-        let node = TileMapRenderNode(
+        let tileMapNode = SKTileMapNode(
             tileSet: tileSet,
-            rows: gridComponent.numberOfRows,
             columns: gridComponent.numberOfColumns,
+            rows: gridComponent.numberOfRows,
             tileSize: TileMapRenderManager.TileSize
         )
 
-        node.fill(with: TileMapRenderManager.LandTileGroupName)
+        tileMapNode.fill(with: TileMapRenderManager.LandTileGroupName)
+        tileMapNode.enableAutomapping = false
+        tileMapNode.isUserInteractionEnabled = true
 
-        scene.addChild(node.skNode)
-        entityNodeMap[ObjectIdentifier(entity)] = node
-    }
-
-    func removeNode(of entityIdentifier: ObjectIdentifier, in scene: SKScene) {
-        guard let node = entityNodeMap[entityIdentifier] else {
-            return
-        }
-
-        node.skNode.removeFromParent()
-        entityNodeMap.removeValue(forKey: entityIdentifier)
+        renderer.setRenderNode(for: ObjectIdentifier(entity), node: tileMapNode)
     }
 }

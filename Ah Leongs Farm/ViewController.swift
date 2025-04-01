@@ -136,5 +136,10 @@ extension ViewController: IGameObserver {
 extension ViewController: GameSceneUpdateDelegate {
     func update(_ timeInterval: TimeInterval) {
         gameManager.update(timeInterval)
+
+        // set handler for newly added render nodes
+        for renderNode in gameRenderer.allRenderNodes where renderNode.handler !== self {
+            renderNode.handler = self
+        }
     }
 }
