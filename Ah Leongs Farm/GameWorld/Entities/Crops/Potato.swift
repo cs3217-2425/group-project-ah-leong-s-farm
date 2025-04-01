@@ -1,16 +1,16 @@
 //
-//  BokChoy.swift
+//  Potato.swift
 //  Ah Leongs Farm
 //
-//  Created by Lester Ong on 25/3/25.
+//  Created by Ma Yuchen on 30/3/25.
 //
 
 import Foundation
 import GameplayKit
 
-class BokChoy: GKEntity, Crop {
-    var seedItemType: ItemType = .bokChoySeed
-    var harvestedItemType: ItemType = .bokChoyHarvested
+class Potato: GKEntity, Crop {
+    var seedItemType: ItemType = .potatoSeed
+    var harvestedItemType: ItemType = .potatoHarvested
 
     override init() {
         super.init()
@@ -23,7 +23,7 @@ class BokChoy: GKEntity, Crop {
     }
 
     private func setUpComponents() {
-        let cropComponent = CropComponent(cropType: .bokChoy)
+        let cropComponent = CropComponent(cropType: .potato)
         addComponent(cropComponent)
 
         let healthComponent = HealthComponent()
@@ -31,9 +31,9 @@ class BokChoy: GKEntity, Crop {
     }
 
     static func createSeed() -> GKEntity {
-        let bokChoy = BokChoy()
-        bokChoy.addComponent(SeedComponent())
-        bokChoy.addComponent(ItemComponent(itemType: .bokChoySeed))
-        return bokChoy
+        let potato = Potato()
+        potato.addComponent(SeedComponent())
+        potato.addComponent(ItemComponent(itemType: .potatoSeed))
+        return potato
     }
 }
