@@ -8,7 +8,9 @@
 import GameplayKit
 
 class SpriteRenderManager: IRenderManager {
-    private static let PlotTextureName: String = "dirt"
+    private static let EntityTypeTextureMap: [ObjectIdentifier: String] = [
+        ObjectIdentifier(Plot.self): "dirt"
+    ]
 
     private weak var uiPositionProvider: UIPositionProvider?
 
@@ -16,16 +18,13 @@ class SpriteRenderManager: IRenderManager {
         self.uiPositionProvider = uiPositionProvider
     }
 
-    func accept(visitor: SpriteRenderManagerVisitor, renderer: GameRenderer) {
-        visitor.visitSpriteRenderManager(manager: self, renderer: renderer)
-    }
-
     func createNode(for entity: EntityType, in renderer: GameRenderer) {
         guard let spriteComponent = entity.component(ofType: SpriteComponent.self) else {
             return
         }
 
-        accept(visitor: spriteComponent.spriteRenderManagerVisitor, renderer: renderer)
+        let visitor = spriteComponent.spriteRenderManagerVisitor
+        visitor.visitSpriteRenderManager(manager: self, renderer: renderer)
     }
 
     func createNode(plot: Plot, in renderer: GameRenderer) {
@@ -33,7 +32,11 @@ class SpriteRenderManager: IRenderManager {
             return
         }
 
-        let spriteNode = PlotSpriteNode(imageNamed: Self.PlotTextureName)
+        guard let textureName = getTextureName(for: Plot.self) else {
+            return
+        }
+
+        let spriteNode = PlotSpriteNode(imageNamed: textureName)
 
         let position = uiPositionProvider?.getUIPosition(
             row: Int(positionComponent.x),
@@ -44,4 +47,9 @@ class SpriteRenderManager: IRenderManager {
 
         renderer.setRenderNode(for: ObjectIdentifier(plot), node: spriteNode)
     }
+
+    private func getTextureName(for entityType: EntityType.Type) -> String? {
+        Self.EntityTypeTextureMap[ObjectIdentifier(entityType)]
+    }
+
 }
