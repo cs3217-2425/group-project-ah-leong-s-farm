@@ -3,6 +3,8 @@ import SpriteKit
 class GameScene: SKScene {
     private let gameCamera = GameCamera()
     private weak var gameSceneUpdateDelegate: GameSceneUpdateDelegate?
+    private weak var uiPositionProvider: UIPositionProvider?
+    private weak var interactionHandler: InteractionHandler?
 
     override var camera: SKCameraNode? {
         get {
@@ -35,6 +37,14 @@ class GameScene: SKScene {
         gameSceneUpdateDelegate = delegate
     }
 
+    func setUIPositionProvider(_ provider: UIPositionProvider) {
+        uiPositionProvider = provider
+    }
+
+    func setInteractionHandler(_ handler: InteractionHandler) {
+        interactionHandler = handler
+    }
+
     override func didMove(to view: SKView) {
         gameCamera.position = position
     }
@@ -51,6 +61,10 @@ class GameScene: SKScene {
 
         let touchPosition = touch.location(in: self)
         gameCamera.lastTouchPosition = touchPosition
+
+        if let (row, column) = uiPositionProvider?.getRowAndColumn(fromPosition: touchPosition) {
+            interactionHandler?.handleGridInteraction(row: row, column: column)
+        }
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {

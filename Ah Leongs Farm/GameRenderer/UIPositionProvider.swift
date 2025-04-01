@@ -17,4 +17,6 @@ protocol UIPositionProvider: AnyObject {
     ///   - column: The column index of the tile.
     /// - Returns: A CGPoint representing the position in the UI, or nil if the row or column is invalid.
     func getUIPosition(row: Int, column: Int) -> CGPoint?
+
+    func getRowAndColumn(fromPosition location: CGPoint) -> (row: Int, column: Int)?
 }

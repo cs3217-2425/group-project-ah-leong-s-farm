@@ -68,6 +68,8 @@ class ViewController: UIViewController {
 
         self.gameScene = GameScene(size: skView.bounds.size)
         gameScene?.setGameSceneUpdateDelegate(self)
+        gameScene?.setUIPositionProvider(gameRenderer)
+        gameScene?.setInteractionHandler(self)
         gameRenderer.setScene(gameScene)
 
         gameScene?.anchorPoint = CGPoint(x: 0.5, y: 0.5)

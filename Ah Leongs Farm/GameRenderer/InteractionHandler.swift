@@ -9,4 +9,6 @@ protocol InteractionHandler: AnyObject {
     func handleInteraction(node: IRenderNode)
 
     func handleInteraction(node: PlotSpriteNode)
+
+    func handleGridInteraction(row: Int, column: Int)
 }

@@ -9,11 +9,21 @@ class GameRenderer {
     private weak var gameScene: GameScene?
     private var renderPipeline: Queue<any IRenderManager> = Queue()
 
-    private var entityTileMapNodeMap: [ObjectIdentifier: SKTileMapNode] = [:]
+<<<<<<< Updated upstream
+    private var entityTileMapNodeMap: [ObjectIdentifier: TileMapNode] = [:]
     private var entitySpriteNodeMap: [ObjectIdentifier: SpriteNode] = [:]
     private var entityNodeMap: [ObjectIdentifier: any IRenderNode] {
         let maps: [[ObjectIdentifier: any IRenderNode]] = [entityTileMapNodeMap, entitySpriteNodeMap]
         return maps.reduce(into: [:]) { $0.merge($1) { _, new in new } }
+=======
+    private var entityNodeMap: [ObjectIdentifier: IRenderNode] = [:]
+    private var renderManagers: [any IRenderManager] = []
+
+    init(gameManager: GameManager) {
+        self.gameManager = gameManager
+        setUpRenderSystems()
+        self.gameManager?.addGameObserver(self)
+>>>>>>> Stashed changes
     }
 
     var allRenderNodes: [any IRenderNode] {
@@ -36,8 +46,16 @@ class GameRenderer {
         gameScene = scene
     }
 
-    func setRenderNode(for entityIdentifier: ObjectIdentifier, node: SKTileMapNode) {
+<<<<<<< Updated upstream
+    func setRenderNode(for entityIdentifier: ObjectIdentifier, node: TileMapNode) {
         let shouldAddToScene = entityTileMapNodeMap[entityIdentifier] == nil
+=======
+    private func setUpRenderSystems() {
+        renderManagers.append(TileMapRenderManager())
+        renderManagers.append(SpriteRenderManager())
+    }
+}
+>>>>>>> Stashed changes
 
         entityTileMapNodeMap[entityIdentifier] = node
 
@@ -54,6 +72,18 @@ class GameRenderer {
         if shouldAddToScene {
             gameScene?.addChild(node)
         }
+    }
+
+    func lightUpTile(at row: Int, column: Int) {
+        guard let tileMapNode = tileMapNode else {
+            return
+        }
+
+        tileMapNode.lightUpTile(atRow: row, column: column, color: .white, blendFactor: 0.5)
+    }
+
+    func unlightAllTiles() {
+        tileMapNode?.removeAllLightUpTiles()
     }
 
     private func removeRenderNode(for entityIdentifier: ObjectIdentifier) {
@@ -112,18 +142,19 @@ extension GameRenderer: IGameObserver {
             return
         }
 
+<<<<<<< Updated upstream
         executeRenderPipeline(allEntities: entities, in: scene)
     }
 }
 
 extension GameRenderer: UIPositionProvider {
 
-    private var skTileMapNode: SKTileMapNode? {
+    private var tileMapNode: TileMapNode? {
         entityTileMapNodeMap.values.first
     }
 
     func getUIPosition(row: Int, column: Int) -> CGPoint? {
-        guard let skTileMapNode = skTileMapNode else {
+        guard let skTileMapNode = tileMapNode else {
             return nil
         }
 
@@ -140,5 +171,52 @@ extension GameRenderer: UIPositionProvider {
             - skTileMapNode.mapSize.height / 2
 
         return CGPoint(x: xPosition, y: yPosition)
+    }
+
+    func getRowAndColumn(fromPosition location: CGPoint) -> (row: Int, column: Int)? {
+        guard let skTileMapNode = tileMapNode else {
+            return nil
+        }
+
+        let tileMapPoint = getTileMapPoint(fromPosition: location, tileMapNode: skTileMapNode)
+        let row = skTileMapNode.tileRowIndex(fromPosition: tileMapPoint)
+        let column = skTileMapNode.tileColumnIndex(fromPosition: tileMapPoint)
+        return (row, column)
+    }
+
+    private func getTileMapPoint(fromPosition location: CGPoint, tileMapNode: SKTileMapNode) -> CGPoint {
+        let tileMapPoint = CGPoint(
+            x: floor(location.x / tileMapNode.tileSize.width) * tileMapNode.tileSize.width,
+            y: floor(location.y / tileMapNode.tileSize.height) * tileMapNode.tileSize.height
+        )
+
+        return tileMapPoint
+=======
+        let allEntities = gameWorld.getAllEntities()
+
+        let entitiesToRender = allEntities.filter { entity in
+            entityNodeMap[ObjectIdentifier(entity)] == nil
+        }
+
+        let entitiesToUpdate = allEntities.filter { entity in
+            entityNodeMap[ObjectIdentifier(entity)] != nil
+        }
+
+        for renderManager in renderManagers {
+            for entity in entitiesToRender {
+                if let node = renderManager.createNode(of: entity) {
+                    gameScene?.addChild(node.skNode)
+                    entityNodeMap[ObjectIdentifier(entity)] = node
+                }
+            }
+
+            for entity in entitiesToUpdate {
+                guard var node = entityNodeMap[ObjectIdentifier(entity)] else {
+                    continue
+                }
+                renderManager.updateNode(for: &node, using: entity)
+            }
+        }
+>>>>>>> Stashed changes
     }
 }
