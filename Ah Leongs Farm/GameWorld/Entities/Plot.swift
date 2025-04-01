@@ -10,7 +10,6 @@ import GameplayKit
 class Plot: GKEntity {
     private static let DefaultSoilQuality: Float = 0
     private static let DefaultSoilMoisture: Float = 0
-    private static let SpriteTextureName = "dirt"
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -25,6 +24,12 @@ class Plot: GKEntity {
         addComponent(CropSlotComponent(crop: crop))
         addComponent(PositionComponent(x: position.x, y: position.y))
         addComponent(SoilComponent(quality: Plot.DefaultSoilQuality, moisture: Plot.DefaultSoilMoisture))
-        addComponent(SpriteComponent(textureName: Plot.SpriteTextureName))
+        addComponent(SpriteComponent(visitor: self))
+    }
+}
+
+extension Plot: SpriteRenderManagerVisitor {
+    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.createNodeForEntity(plot: self, in: renderer)
     }
 }

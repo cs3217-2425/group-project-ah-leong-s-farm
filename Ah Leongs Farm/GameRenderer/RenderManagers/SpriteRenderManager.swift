@@ -8,23 +8,35 @@
 import GameplayKit
 
 class SpriteRenderManager: IRenderManager {
-    private weak var uiPositionProvider: UIPositionProvider?
+    private static let EntityTypeTextureMap: [ObjectIdentifier: String] = [
+        ObjectIdentifier(Plot.self): "dirt"
+    ]
 
-    private let spriteNodeFactories: [any SpriteNodeFactory] = [PlotSpriteNodeFactory()]
+    private weak var uiPositionProvider: UIPositionProvider?
 
     init(uiPositionProvider: UIPositionProvider) {
         self.uiPositionProvider = uiPositionProvider
     }
 
     func createNode(for entity: EntityType, in renderer: GameRenderer) {
-        guard let spriteComponent = entity.component(ofType: SpriteComponent.self),
-              let positionComponent = entity.component(ofType: PositionComponent.self) else {
+        guard let spriteComponent = entity.component(ofType: SpriteComponent.self) else {
             return
         }
 
-        let spriteNode = spriteNodeFactories.compactMap { factory in
-            factory.createNode(for: entity, textureName: spriteComponent.textureName)
-        }.first ?? SpriteNode(imageNamed: spriteComponent.textureName)
+        let visitor = spriteComponent.spriteRenderManagerVisitor
+        visitor.visitSpriteRenderManager(manager: self, renderer: renderer)
+    }
+
+    func createNodeForEntity(plot: Plot, in renderer: GameRenderer) {
+        guard let positionComponent = plot.component(ofType: PositionComponent.self) else {
+            return
+        }
+
+        guard let textureName = getTextureName(for: Plot.self) else {
+            return
+        }
+
+        let spriteNode = PlotSpriteNode(imageNamed: textureName)
 
         let position = uiPositionProvider?.getUIPosition(
             row: Int(positionComponent.x),
@@ -33,6 +45,11 @@ class SpriteRenderManager: IRenderManager {
 
         spriteNode.position = position
 
-        renderer.setRenderNode(for: ObjectIdentifier(entity), node: spriteNode)
+        renderer.setRenderNode(for: ObjectIdentifier(plot), node: spriteNode)
     }
+
+    private func getTextureName(for entityType: EntityType.Type) -> String? {
+        Self.EntityTypeTextureMap[ObjectIdentifier(entityType)]
+    }
+
 }
