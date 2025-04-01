@@ -29,6 +29,50 @@ class GameManager {
         gameObservers.removeAll(where: { $0 === observer })
     }
 
+    func nextTurn() {
+        gameWorld.queueEvent(EndTurnEvent())
+    }
+
+    func getCurrentTurn() -> Int {
+        guard let turnSystem = gameWorld.getSystem(ofType: TurnSystem.self) else {
+            return 1
+        }
+
+        return turnSystem.getCurrentTurn()
+    }
+
+    func getMaxTurns() -> Int {
+        guard let turnSystem = gameWorld.getSystem(ofType: TurnSystem.self) else {
+            return 1
+        }
+
+        return turnSystem.getMaxTurns()
+    }
+
+    func getAmountOfCurrency(_ type: CurrencyType) -> Double {
+        guard let currencySystem = gameWorld.getSystem(ofType: WalletSystem.self) else {
+            return 0
+        }
+
+        return currencySystem.getTotalAmount(of: .coin)
+    }
+
+    func getMaxEnergy() -> Int {
+        guard let energySystem = gameWorld.getSystem(ofType: EnergySystem.self) else {
+            return 0
+        }
+
+        return energySystem.getMaxEnergy()
+    }
+
+    func getCurrentEnergy() -> Int {
+        guard let energySystem = gameWorld.getSystem(ofType: EnergySystem.self) else {
+            return 0
+        }
+
+        return energySystem.getCurrentEnergy()
+    }
+
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }

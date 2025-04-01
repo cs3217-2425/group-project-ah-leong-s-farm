@@ -10,13 +10,15 @@ struct EndTurnEvent: GameEvent {
 
         guard let turnSystem = context.getSystem(ofType: TurnSystem.self),
               let energySystem = context.getSystem(ofType: EnergySystem.self),
-              let cropSystem = context.getSystem(ofType: CropSystem.self) else {
+              let cropSystem = context.getSystem(ofType: CropSystem.self),
+              let marketSystem = context.getSystem(ofType: MarketSystem.self) else {
             return nil
         }
 
         let shouldContinue = turnSystem.incrementTurn()
         energySystem.replenishEnergy()
         cropSystem.growCrops()
+        marketSystem.resetItemStocks()
 
         if !shouldContinue {
             queueable.queueEvent(GameOverEvent())

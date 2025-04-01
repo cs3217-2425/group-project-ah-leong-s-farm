@@ -83,6 +83,7 @@ class CropSystem: ISystem {
 
         manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
         manager?.addComponent(HarvestedComponent(), to: crop)
+        manager?.addComponent(SellComponent(itemType: crop.harvestedItemType), to: crop)
         manager?.addComponent(ItemComponent(itemType: crop.harvestedItemType), to: crop)
         cropSlot.crop = nil
         return true
