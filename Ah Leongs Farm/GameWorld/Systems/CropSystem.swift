@@ -53,6 +53,7 @@ class CropSystem: ISystem {
         }
 
         manager?.removeComponent(ofType: SeedComponent.self, from: crop)
+        manager?.removeComponent(ofType: ItemComponent.self, from: crop)
         manager?.addComponent(GrowthComponent(
             totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: crop)
         cropSlot.crop = crop
@@ -77,10 +78,6 @@ class CropSystem: ISystem {
         }
 
         guard growthComponent.canHarvest else {
-            return false
-        }
-
-        guard let cropComponent = crop.component(ofType: CropComponent.self) else {
             return false
         }
 
