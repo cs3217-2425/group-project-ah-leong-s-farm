@@ -12,7 +12,7 @@ class GameStatisticsView: UIView {
     private var currencyLabel: UILabel?
     private var energyLabel: UILabel?
     private var levelLabel: UILabel?
-    private var progressBar: PixelProgressBar?
+    private var progressBar: LevelProgressBar?
 
     init() {
         super.init(frame: .zero)
@@ -122,9 +122,9 @@ class GameStatisticsView: UIView {
     }
 
     private func createXPBar() {
-        let progressBar = PixelProgressBar(frame: CGRect(x: 0, y: 68, width: 300, height: 28))
+        let progressBar = LevelProgressBar(frame: CGRect(x: 0, y: 68, width: 300, height: 32))
         addSubview(progressBar)
-        progressBar.setProgress(0)
+
         self.progressBar = progressBar
     }
 
@@ -145,6 +145,6 @@ class GameStatisticsView: UIView {
     }
 
     func updateXPLabel(currentXP: Float, levelXP: Float) {
-        progressBar?.setProgress(CGFloat(currentXP / levelXP))
+        progressBar?.setProgress(currentProgress: CGFloat(currentXP), maxProgress: CGFloat(levelXP))
     }
 }
