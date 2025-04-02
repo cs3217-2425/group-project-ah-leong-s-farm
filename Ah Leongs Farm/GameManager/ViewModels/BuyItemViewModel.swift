@@ -20,3 +20,8 @@ struct SellItemViewModel {
     let quantity: Int
     let itemType: ItemType
 }
+
+protocol MarketDataProvider {
+    func getBuyItemViewModels() -> [BuyItemViewModel]
+    func getSellItemViewModels() -> [SellItemViewModel]
+}

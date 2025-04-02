@@ -150,7 +150,7 @@ class BuyItemPopupViewController: UIViewController {
         priceStackView.translatesAutoresizingMaskIntoConstraints = false
 
         let coinImageView = UIImageView()
-        coinImageView.image = UIImage(named: "coin")
+        coinImageView.image = UIImage(imageLiteralResourceName: "coin")
         coinImageView.contentMode = .scaleAspectFit
         coinImageView.translatesAutoresizingMaskIntoConstraints = false
         coinImageView.widthAnchor.constraint(equalToConstant: 24).isActive = true

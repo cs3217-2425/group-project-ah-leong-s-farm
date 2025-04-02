@@ -33,7 +33,12 @@ class Apple: GKEntity, Crop {
     static func createSeed() -> GKEntity {
         let apple = Apple()
         apple.addComponent(SeedComponent())
-        apple.addComponent(ItemComponent(itemType: .appleSeed))
+        return apple
+    }
+
+    static func createHarvested() -> GKEntity {
+        let apple = Apple()
+        apple.addComponent(HarvestedComponent())
         return apple
     }
 }

@@ -25,6 +25,13 @@ class MarketSystem: ISystem {
         itemStocks
     }
 
+    func getSellQuantity(for itemType: ItemType) -> Int {
+        sellableComponents
+            .compactMap { $0 as? SellComponent }
+            .filter { $0.itemType == itemType }
+            .count
+    }
+
     private var sellableComponents: [GKComponent] {
         manager?.getAllComponents(ofType: SellComponent.self) ?? []
     }
@@ -61,14 +68,17 @@ class MarketSystem: ISystem {
             return false
         }
 
-        guard let initialiser = ItemFactory.itemToInitialisers[type],
-              let entity = initialiser() else {
-            print("Item not found in the item factory.")
-            return false
+        for _ in 0..<quantity {
+            guard let initialiser = ItemFactory.itemToInitialisers[type],
+                  let entity = initialiser() else {
+                print("Item not found in the item factory.")
+                return false
+            }
+
+            manager?.addEntity(entity)
         }
 
         itemStocks[type] = currentStock - quantity
-        manager?.addEntity(entity)
 
         return true
     }
@@ -105,12 +115,5 @@ class MarketSystem: ISystem {
 
     func updateBuyandSellPrice() {
         // To be added once buy and sell price algo is decided
-    }
-
-    func getSellQuantity(for itemType: ItemType) -> Int {
-        return sellableComponents
-            .compactMap { $0 as? SellComponent }
-            .filter { $0.itemType == itemType }
-            .count
     }
 }

@@ -1,10 +1,9 @@
 //
-//  SellPopupDelegate.swift
+//  SellItemPopupViewController.swift
 //  Ah Leongs Farm
 //
 //  Created by proglab on 2/4/25.
 //
-
 
 import UIKit
 
@@ -12,7 +11,8 @@ class SellItemPopupViewController: UIViewController {
 
     weak var delegate: SellPopupDelegate?
 
-    private let item: SellItemViewModel
+    private var item: SellItemViewModel
+    private var itemQuantity: Int
     private var quantity: Int = 1
     private var totalValue: Int {
         Int(item.sellPrice) * quantity
@@ -29,6 +29,7 @@ class SellItemPopupViewController: UIViewController {
 
     init(item: SellItemViewModel) {
         self.item = item
+        self.itemQuantity = item.quantity
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overCurrentContext
         modalTransitionStyle = .crossDissolve
@@ -50,7 +51,6 @@ class SellItemPopupViewController: UIViewController {
         let popupView = createPopupView()
         view.addSubview(popupView)
 
-        // Add and configure subviews in popupView
         setupTitleLabel(in: popupView)
         setupCloseButton(in: popupView)
         setupItemImageView(in: popupView)
@@ -59,49 +59,40 @@ class SellItemPopupViewController: UIViewController {
         setupSellButton(in: popupView)
 
         NSLayoutConstraint.activate([
-            // Popup View constraints
             popupView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             popupView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             popupView.widthAnchor.constraint(equalToConstant: 280),
             popupView.heightAnchor.constraint(greaterThanOrEqualToConstant: 300),
 
-            // Title Label
             titleLabel.topAnchor.constraint(equalTo: popupView.topAnchor, constant: 20),
             titleLabel.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
 
-            // Close Button
             closeButton.topAnchor.constraint(equalTo: popupView.topAnchor, constant: 10),
             closeButton.trailingAnchor.constraint(equalTo: popupView.trailingAnchor, constant: -10),
 
-            // Item ImageView
             itemImageView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
             itemImageView.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
             itemImageView.widthAnchor.constraint(equalToConstant: 100),
             itemImageView.heightAnchor.constraint(equalToConstant: 100),
 
-            // Price Label below image
             priceLabel.topAnchor.constraint(equalTo: itemImageView.bottomAnchor, constant: 10),
             priceLabel.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
 
-            // Quantity Label below price label
             quantityLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
             quantityLabel.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
             quantityLabel.widthAnchor.constraint(equalToConstant: 40),
             quantityLabel.heightAnchor.constraint(equalToConstant: 40),
 
-            // Minus Button to the left of quantity label
             minusButton.centerYAnchor.constraint(equalTo: quantityLabel.centerYAnchor),
             minusButton.trailingAnchor.constraint(equalTo: quantityLabel.leadingAnchor, constant: -10),
             minusButton.widthAnchor.constraint(equalToConstant: 40),
             minusButton.heightAnchor.constraint(equalToConstant: 40),
 
-            // Plus Button to the right of quantity label
             plusButton.centerYAnchor.constraint(equalTo: quantityLabel.centerYAnchor),
             plusButton.leadingAnchor.constraint(equalTo: quantityLabel.trailingAnchor, constant: 10),
             plusButton.widthAnchor.constraint(equalToConstant: 40),
             plusButton.heightAnchor.constraint(equalToConstant: 40),
 
-            // Sell Button below quantity controls
             sellButton.topAnchor.constraint(equalTo: quantityLabel.bottomAnchor, constant: 20),
             sellButton.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
             sellButton.widthAnchor.constraint(equalToConstant: 140),
@@ -109,7 +100,6 @@ class SellItemPopupViewController: UIViewController {
         ])
     }
 
-    // Create popup container view
     private func createPopupView() -> UIView {
         let popupView = UIView()
         popupView.backgroundColor = .white
@@ -143,7 +133,6 @@ class SellItemPopupViewController: UIViewController {
     }
 
     private func setupPriceLabel(in popupView: UIView) {
-        // Create a stack view with coin image and price label
         let priceStackView = UIStackView()
         priceStackView.axis = .horizontal
         priceStackView.alignment = .center
@@ -151,7 +140,7 @@ class SellItemPopupViewController: UIViewController {
         priceStackView.translatesAutoresizingMaskIntoConstraints = false
 
         let coinImageView = UIImageView()
-        coinImageView.image = UIImage(named: "coin")
+        coinImageView.image = UIImage(imageLiteralResourceName: "coin")
         coinImageView.contentMode = .scaleAspectFit
         coinImageView.translatesAutoresizingMaskIntoConstraints = false
         coinImageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
@@ -168,21 +157,18 @@ class SellItemPopupViewController: UIViewController {
     }
 
     private func setupQuantityControls(in popupView: UIView) {
-        // Minus Button
         minusButton.setTitle("-", for: .normal)
         minusButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 24)
         minusButton.translatesAutoresizingMaskIntoConstraints = false
         minusButton.addTarget(self, action: #selector(decreaseQuantity), for: .touchUpInside)
         popupView.addSubview(minusButton)
 
-        // Quantity Label
         quantityLabel.text = "1"
         quantityLabel.textAlignment = .center
         quantityLabel.font = UIFont.systemFont(ofSize: 20)
         quantityLabel.translatesAutoresizingMaskIntoConstraints = false
         popupView.addSubview(quantityLabel)
 
-        // Plus Button
         plusButton.setTitle("+", for: .normal)
         plusButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 24)
         plusButton.translatesAutoresizingMaskIntoConstraints = false
@@ -210,7 +196,7 @@ class SellItemPopupViewController: UIViewController {
     }
 
     @objc private func increaseQuantity() {
-        if quantity + 1 <= item.quantity {
+        if quantity + 1 <= itemQuantity {
             quantity += 1
             updateUI()
         }
@@ -218,6 +204,7 @@ class SellItemPopupViewController: UIViewController {
 
     @objc private func confirmSale() {
         delegate?.didConfirmSale(item: item.itemType, quantity: quantity)
+        itemQuantity -= quantity
         dismiss(animated: true, completion: nil)
     }
 
@@ -228,8 +215,6 @@ class SellItemPopupViewController: UIViewController {
     private func updateUI() {
         quantityLabel.text = "\(quantity)"
         priceLabel.text = "\(item.sellPrice * Double(quantity))"
-        // Update the sell button title to reflect total value
-        sellButton.setTitle("Sell (\(totalValue) Coins)", for: .normal)
     }
 }
 

@@ -5,16 +5,13 @@ class MarketViewController: UIViewController {
 
     private var gameManager: GameManager
 
-    // Main view that contains header, segmented control, and collection view
     private let marketView: MarketView
 
-    // Convenience accessors
     private var closeButton: UIButton { marketView.closeButton }
     private var currencyLabel: UILabel { marketView.currencyLabel }
     private var segmentedControl: UISegmentedControl { marketView.segmentedControl }
     private var collectionView: UICollectionView { marketView.collectionView }
 
-    // Initializer
     init(gameManager: GameManager) {
         self.gameManager = gameManager
         self.marketView = MarketView(initialCurrency: Int(gameManager.getAmountOfCurrency(.coin)))
@@ -26,9 +23,7 @@ class MarketViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // Lifecycle
     override func loadView() {
-        // Set the main view to be our custom view
         view = marketView
     }
 
@@ -60,8 +55,6 @@ class MarketViewController: UIViewController {
         collectionView.delegate = self
     }
 
-    // MARK: - Actions
-
     @objc private func closeMarket() {
         dismiss(animated: true, completion: nil)
     }
@@ -73,7 +66,7 @@ class MarketViewController: UIViewController {
 
 // MARK: - UICollectionView DataSource & Delegate
 
-extension MarketViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension MarketViewController: UICollectionViewDataSource, UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if segmentedControl.selectedSegmentIndex == 0 {
@@ -83,10 +76,12 @@ extension MarketViewController: UICollectionViewDataSource, UICollectionViewDele
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
         if segmentedControl.selectedSegmentIndex == 0 {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BuyItemCell", for: indexPath) as? BuyItemCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BuyItemCell",
+                                                                for: indexPath) as? BuyItemCell else {
                 return UICollectionViewCell()
             }
             let viewModels = gameManager.getBuyItemViewModels()
@@ -94,9 +89,11 @@ extension MarketViewController: UICollectionViewDataSource, UICollectionViewDele
             cell.configure(with: viewModel)
             return cell
         } else {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SellItemCell", for: indexPath) as? SellItemCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SellItemCell",
+                                                                for: indexPath) as? SellItemCell else {
                 return UICollectionViewCell()
             }
+
             let viewModels = gameManager.getSellItemViewModels()
             let viewModel = viewModels[indexPath.row]
             cell.configure(with: viewModel)
@@ -121,7 +118,9 @@ extension MarketViewController: UICollectionViewDataSource, UICollectionViewDele
 
         }
     }
+}
 
+extension MarketViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -149,6 +148,7 @@ extension MarketViewController: BuyPopupDelegate {
 extension MarketViewController: SellPopupDelegate {
     func didConfirmSale(item: ItemType, quantity: Int) {
         gameManager.sellItem(itemType: item, quantity: quantity)
+        collectionView.reloadData()
         print("Confirm selling: \(item), \(quantity)")
     }
 }
@@ -160,6 +160,6 @@ extension MarketViewController: IGameObserver {
 
     private func updateCurrencyLabel() {
         let coins = gameManager.getAmountOfCurrency(.coin)
-        currencyLabel.text = "Coins: \(coins)"
+        currencyLabel.text = "\(coins)"
     }
 }

@@ -82,9 +82,9 @@ class GameControlsView: UIView {
 
         addSubview(marketButton)
         NSLayoutConstraint.activate([
-            //marketButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            marketButton.bottomAnchor.constraint(equalTo: bottomAnchor),
-            marketButton.widthAnchor.constraint(equalToConstant: 140),
+            marketButton.trailingAnchor.constraint(equalTo: trailingAnchor),
+            marketButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
+            marketButton.widthAnchor.constraint(equalToConstant: 100),
             marketButton.heightAnchor.constraint(equalToConstant: 40)
         ])
 

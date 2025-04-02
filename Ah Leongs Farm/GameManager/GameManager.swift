@@ -128,7 +128,7 @@ extension GameManager {
     func buyItem(itemType: ItemType, quantity: Int, currency: CurrencyType = .coin) {
         gameWorld.queueEvent(BuyItemEvent(itemType: itemType, quantity: quantity, currencyType: currency))
     }
-    
+
     func sellItem(itemType: ItemType, quantity: Int, currency: CurrencyType = .coin) {
         gameWorld.queueEvent(SellItemEvent(itemType: itemType, quantity: quantity, currencyType: currency))
     }
