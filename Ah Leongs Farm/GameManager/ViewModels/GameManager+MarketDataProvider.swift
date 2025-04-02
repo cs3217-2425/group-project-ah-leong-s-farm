@@ -34,7 +34,8 @@ extension GameManager {
                 name: name,
                 imageName: imageName,
                 buyPrice: buyPrice,
-                quantity: marketSystem.getBuyQuantity(for: itemType) ?? 0
+                quantity: marketSystem.getBuyQuantity(for: itemType) ?? 0,
+                itemType: itemType
             )
             viewModels.append(viewModel)
         }
@@ -58,27 +59,28 @@ extension GameManager {
                     print("Sell price missing for \(itemType)")
                     continue
                 }
-            
+
                 // Retrieve the quantity using the MarketSystem helper.
                 let quantity = marketSystem.getSellQuantity(for: itemType)
-                
+
                 // Get the display name and image from the mapping.
                 guard let name = ItemToViewDataMap.itemTypeToDisplayName[itemType],
                       let imageName = ItemToViewDataMap.itemTypeToImage[itemType] else {
                     fatalError("Missing display data for \(itemType)")
                 }
-                
+
                 let viewModel = SellItemViewModel(
                     name: name,
                     imageName: imageName,
                     sellPrice: sellPrice,
-                    quantity: quantity
+                    quantity: quantity,
+                    itemType: itemType
                 )
-                
+
                 viewModels.append(viewModel)
             }
-            
-            // Return the view models sorted alphabetically by name.
-            return viewModels.sorted { $0.name < $1.name }
+
+        // Return the view models sorted by quantity
+        return viewModels.sorted { $0.quantity > $1.quantity }
         }
 }

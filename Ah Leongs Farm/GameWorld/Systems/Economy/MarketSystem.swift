@@ -79,13 +79,11 @@ class MarketSystem: ISystem {
             return false
         }
 
-        var sellableEntities: [GKEntity] = []
-        for component in sellableComponents {
-            if let sellComponent = component as? SellComponent, sellComponent.itemType == type {
-                if let entity = component.entity {
-                    sellableEntities.append(entity)
-                }
+        let sellableEntities = manager.getEntities(withComponentType: SellComponent.self).filter { entity in
+            if let sellComponent = entity.component(ofType: SellComponent.self) {
+                return sellComponent.itemType == type
             }
+            return false
         }
 
         if sellableEntities.count < quantity {
@@ -108,7 +106,7 @@ class MarketSystem: ISystem {
     func updateBuyandSellPrice() {
         // To be added once buy and sell price algo is decided
     }
-    
+
     func getSellQuantity(for itemType: ItemType) -> Int {
         return sellableComponents
             .compactMap { $0 as? SellComponent }

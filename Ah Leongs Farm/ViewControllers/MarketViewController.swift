@@ -1,4 +1,5 @@
 import UIKit
+import GameplayKit
 
 class MarketViewController: UIViewController {
 
@@ -35,15 +36,19 @@ class MarketViewController: UIViewController {
         super.viewDidLoad()
         setupActions()
         setupCollectionView()
+        gameManager.addGameObserver(self)
     }
 
-    // Setup targets and actions
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        gameManager.removeGameObserver(self)
+    }
+
     private func setupActions() {
         closeButton.addTarget(self, action: #selector(closeMarket), for: .touchUpInside)
         segmentedControl.addTarget(self, action: #selector(segmentedControlChanged), for: .valueChanged)
     }
 
-    // Setup collection view data source, delegate, and register cells
     private func setupCollectionView() {
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.minimumInteritemSpacing = 20
@@ -103,11 +108,17 @@ extension MarketViewController: UICollectionViewDataSource, UICollectionViewDele
         if segmentedControl.selectedSegmentIndex == 0 {
             let viewModels = gameManager.getBuyItemViewModels()
             let viewModel = viewModels[indexPath.row]
-            print("Selected item for buy: \(viewModel.name)")
+
+            let popupVC = BuyItemPopupViewController(item: viewModel)
+            popupVC.delegate = self
+            present(popupVC, animated: true, completion: nil)
         } else {
             let viewModels = gameManager.getSellItemViewModels()
             let viewModel = viewModels[indexPath.row]
-            print("Selected item for sell: \(viewModel.name)")
+            let popupVC = SellItemPopupViewController(item: viewModel)
+            popupVC.delegate = self
+            present(popupVC, animated: true, completion: nil)
+
         }
     }
 
@@ -120,8 +131,35 @@ extension MarketViewController: UICollectionViewDataSource, UICollectionViewDele
         let availableWidth = collectionView.frame.width - totalSpacing
         let cellWidth = availableWidth / itemsPerRow
 
-        print("Cell width: \(cellWidth), CollectionView width: \(collectionView.frame.width)")
-        return CGSize(width: cellWidth, height: cellWidth) // Ensure square shape
+        return CGSize(width: cellWidth, height: cellWidth)
     }
 
+    private func handlePurchase(of item: BuyItemViewModel, quantity: Int) {
+
+    }
+}
+
+extension MarketViewController: BuyPopupDelegate {
+    func didConfirmPurchase(item: ItemType, quantity: Int) {
+        gameManager.buyItem(itemType: item, quantity: quantity)
+        print("Confirm purchase: \(item), \(quantity)")
+    }
+}
+
+extension MarketViewController: SellPopupDelegate {
+    func didConfirmSale(item: ItemType, quantity: Int) {
+        gameManager.sellItem(itemType: item, quantity: quantity)
+        print("Confirm selling: \(item), \(quantity)")
+    }
+}
+
+extension MarketViewController: IGameObserver {
+    func observe(entities: Set<GKEntity>) {
+        updateCurrencyLabel()
+    }
+
+    private func updateCurrencyLabel() {
+        let coins = gameManager.getAmountOfCurrency(.coin)
+        currencyLabel.text = "Coins: \(coins)"
+    }
 }

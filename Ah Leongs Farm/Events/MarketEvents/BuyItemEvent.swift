@@ -23,6 +23,7 @@ class BuyItemEvent: GameEvent {
               let price = marketSystem.getBuyPrice(for: itemType, currency: currencyType),
               let stock = marketSystem.getBuyQuantity(for: itemType), stock >= quantity
         else {
+            print("Not enough stock.")
             return nil
         }
 

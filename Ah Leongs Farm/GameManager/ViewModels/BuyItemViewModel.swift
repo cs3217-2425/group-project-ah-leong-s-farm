@@ -10,6 +10,7 @@ struct BuyItemViewModel {
     let imageName: String
     let buyPrice: Double
     let quantity: Int
+    let itemType: ItemType
 }
 
 struct SellItemViewModel {
@@ -17,4 +18,5 @@ struct SellItemViewModel {
     let imageName: String
     let sellPrice: Double
     let quantity: Int
+    let itemType: ItemType
 }

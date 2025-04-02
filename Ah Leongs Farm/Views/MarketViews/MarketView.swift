@@ -32,7 +32,7 @@ class MarketView: UIView {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Market"
-        label.font = UIFont.boldSystemFont(ofSize: 24)
+        label.font = UIFont(name: "Press Start 2P", size: 24)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -86,23 +86,18 @@ class MarketView: UIView {
         addSubview(collectionView)
 
         NSLayoutConstraint.activate([
-            // Header: Title at top-center
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
 
-            // Close button at top-right
             closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 20),
             closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
 
-            // Currency label below title
             currencyLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
             currencyLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
 
-            // Segmented control below currency label
             segmentedControl.topAnchor.constraint(equalTo: currencyLabel.bottomAnchor, constant: 20),
             segmentedControl.centerXAnchor.constraint(equalTo: centerXAnchor),
 
-            // Collection view below segmented control
             collectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
