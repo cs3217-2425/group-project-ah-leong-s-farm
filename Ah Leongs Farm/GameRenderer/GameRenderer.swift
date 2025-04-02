@@ -61,7 +61,8 @@ class GameRenderer {
             return
         }
 
-        tileMapNode.lightUpTile(atRow: row, column: column, color: .white, blendFactor: 0.5)
+        let transparentGreen = #colorLiteral(red: 0, green: 1, blue: 0, alpha: 0.5)
+        tileMapNode.lightUpTile(atRow: row, column: column, color: transparentGreen, blendFactor: 0.5)
     }
 
     func unlightAllTiles() {

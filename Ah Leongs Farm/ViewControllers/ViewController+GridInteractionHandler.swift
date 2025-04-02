@@ -16,6 +16,16 @@ extension ViewController: GridInteractionHandler {
             eventQueue: gameManager.gameWorld
         )
         gameRenderer.lightUpTile(at: row, column: column)
+
+        // Check if there is a currently presented view controller.
+        if let presentedVC = presentedViewController {
+            // Dismiss the currently presented view controller before presenting the new one.
+            presentedVC.dismiss(animated: false) { [weak self] in
+                self?.present(gridActionVC, animated: false)
+            }
+            return
+        }
+
         present(gridActionVC, animated: true)
     }
 }

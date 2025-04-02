@@ -47,6 +47,7 @@ class GameScene: SKScene {
 
     override func didMove(to view: SKView) {
         gameCamera.position = position
+        setUpGestureRecognizers()
     }
 
     override func update(_ currentTime: TimeInterval) {
@@ -61,10 +62,6 @@ class GameScene: SKScene {
 
         let touchPosition = touch.location(in: self)
         gameCamera.lastTouchPosition = touchPosition
-
-        if let (row, column) = uiPositionProvider?.getRowAndColumn(fromPosition: touchPosition) {
-            interactionHandler?.handleGridInteraction(row: row, column: column)
-        }
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -74,5 +71,27 @@ class GameScene: SKScene {
 
         let touchPosition = touch.location(in: self)
         gameCamera.setTargetPosition(using: touchPosition)
+    }
+
+    @objc private func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        guard gestureRecognizer.state == .began else {
+            return
+        }
+
+        let touchPosition = gestureRecognizer.location(in: self.view)
+        let scenePosition = convertPoint(fromView: touchPosition)
+
+        if let (row, column) = uiPositionProvider?.getRowAndColumn(fromPosition: scenePosition) {
+            interactionHandler?.handleGridInteraction(row: row, column: column)
+        }
+    }
+
+    private func setUpGestureRecognizers() {
+        let longPressRecognizer = UILongPressGestureRecognizer(
+            target: self,
+            action: #selector(handleLongPress(_:))
+        )
+
+        view?.addGestureRecognizer(longPressRecognizer)
     }
 }
