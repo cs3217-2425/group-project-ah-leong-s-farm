@@ -11,22 +11,16 @@ class TileMapNode: SKTileMapNode, IRenderNode {
 
     private var lightUpNodes: [SKSpriteNode] = []
 
-    var handler: InteractionHandler? {
-        get {
-            nil
-        }
-        // swiftlint:disable:next unused_setter_value
-        set {
-            // ignore
-        }
-    }
-
     func isRowValid(_ row: Int) -> Bool {
         row >= 0 && row < numberOfRows
     }
 
     func isColumnValid(_ column: Int) -> Bool {
         column >= 0 && column < numberOfColumns
+    }
+
+    func visitTouchHandlerRegistry(registry: any TouchHandlerRegistry) {
+        // ignore
     }
 
     func fill(with tileGroupName: String) {

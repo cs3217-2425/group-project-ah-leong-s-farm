@@ -5,62 +5,128 @@
 //  Created by Jerry Leong on 27/3/25.
 //
 
-<<<<<<< Updated upstream
 import GameplayKit
 
 class SpriteRenderManager: IRenderManager {
-    private weak var uiPositionProvider: UIPositionProvider?
+    private static let EntityTypeTextureMap: [ObjectIdentifier: String] = [
+        ObjectIdentifier(Plot.self): "dirt"
+    ]
 
-    private let spriteNodeFactories: [any SpriteNodeFactory] = [PlotSpriteNodeFactory()]
+    private static let CropTypeSeedTextureMap: [ObjectIdentifier: String] = [
+        ObjectIdentifier(Apple.self): "apple_seed",
+        ObjectIdentifier(BokChoy.self): "bokchoy_seed",
+        ObjectIdentifier(Potato.self): "potato_seed"
+    ]
+
+    private weak var uiPositionProvider: UIPositionProvider?
 
     init(uiPositionProvider: UIPositionProvider) {
         self.uiPositionProvider = uiPositionProvider
     }
 
     func createNode(for entity: EntityType, in renderer: GameRenderer) {
-=======
-import SpriteKit
+        func createNodeForEntity(plot: Plot, in renderer: GameRenderer) {
+            guard let positionComponent = plot.component(ofType: PositionComponent.self) else {
+                return
+            }
 
-class SpriteRenderManager: IRenderManager {
-    func createNode(of entity: EntityType) -> IRenderNode? {
-        guard let spriteComponent = entity.component(ofType: SpriteComponent.self),
-              let positionComponent = entity.component(ofType: PositionComponent.self) else {
-            return nil
+            guard let textureName = Self.EntityTypeTextureMap[ObjectIdentifier(Plot.self)] else {
+                return
+            }
+
+            let spriteNode = PlotSpriteNode(imageNamed: textureName)
+
+            setSpritePosition(spriteNode: spriteNode, using: positionComponent)
+
+            spriteNode.setPlot(plot)
+            setRelativeSize(spriteNode: spriteNode, scaleFactor: 1.0)
+            renderer.setRenderNode(for: ObjectIdentifier(plot), node: spriteNode)
         }
-
-        let spriteRenderNode = SpriteRenderNode(imageNamed: spriteComponent.textureName)
-        let position = CGPoint(x: positionComponent.x, y: positionComponent.y)
-        spriteRenderNode.skNode.position = position
-
-        return spriteRenderNode
     }
 
-    func updateNode(for node: inout IRenderNode, using entity: EntityType) {
->>>>>>> Stashed changes
-        guard let spriteComponent = entity.component(ofType: SpriteComponent.self),
-              let positionComponent = entity.component(ofType: PositionComponent.self) else {
+    func createNodeForEntity(plot: Plot, in renderer: GameRenderer) {
+        guard let positionComponent = plot.component(ofType: PositionComponent.self) else {
             return
         }
 
-<<<<<<< Updated upstream
-        let spriteNode = spriteNodeFactories.compactMap { factory in
-            factory.createNode(for: entity, textureName: spriteComponent.textureName)
-        }.first ?? SpriteNode(imageNamed: spriteComponent.textureName)
+        guard let textureName = Self.EntityTypeTextureMap[ObjectIdentifier(Plot.self)] else {
+            return
+        }
 
+        let spriteNode = PlotSpriteNode(imageNamed: textureName)
+
+        setSpritePosition(spriteNode: spriteNode, using: positionComponent)
+
+        spriteNode.setPlot(plot)
+        setRelativeSize(spriteNode: spriteNode, scaleFactor: 1.0)
+        renderer.setRenderNode(for: ObjectIdentifier(plot), node: spriteNode)
+    }
+
+    func createNodeForEntity(apple: Apple, in renderer: GameRenderer) {
+        guard let positionComponent = apple.component(ofType: PositionComponent.self) else {
+            return
+        }
+
+        guard let textureName = Self.CropTypeSeedTextureMap[ObjectIdentifier(Apple.self)] else {
+            return
+        }
+
+        let spriteNode = AppleSpriteNode(imageNamed: textureName)
+
+        setSpritePosition(spriteNode: spriteNode, using: positionComponent)
+        setRelativeSize(spriteNode: spriteNode, scaleFactor: 0.5)
+        renderer.setRenderNode(for: ObjectIdentifier(apple), node: spriteNode)
+    }
+
+    func createNodeForEntity(bokChoy: BokChoy, in renderer: GameRenderer) {
+        guard let positionComponent = bokChoy.component(ofType: PositionComponent.self) else {
+            return
+        }
+
+        guard let textureName = Self.CropTypeSeedTextureMap[ObjectIdentifier(BokChoy.self)] else {
+            return
+        }
+
+        let spriteNode = BokChoySpriteNode(imageNamed: textureName)
+
+        setSpritePosition(spriteNode: spriteNode, using: positionComponent)
+        setRelativeSize(spriteNode: spriteNode, scaleFactor: 0.5)
+        renderer.setRenderNode(for: ObjectIdentifier(bokChoy), node: spriteNode)
+    }
+
+    func createNodeForEntity(potato: Potato, in renderer: GameRenderer) {
+        guard let positionComponent = potato.component(ofType: PositionComponent.self) else {
+            return
+        }
+
+        guard let textureName = Self.CropTypeSeedTextureMap[ObjectIdentifier(Potato.self)] else {
+            return
+        }
+
+        let spriteNode = PotatoSpriteNode(imageNamed: textureName)
+
+        setSpritePosition(spriteNode: spriteNode, using: positionComponent)
+        setRelativeSize(spriteNode: spriteNode, scaleFactor: 0.5)
+        renderer.setRenderNode(for: ObjectIdentifier(potato), node: spriteNode)
+    }
+
+    private func setSpritePosition(spriteNode: SpriteNode, using component: PositionComponent) {
         let position = uiPositionProvider?.getUIPosition(
-            row: Int(positionComponent.x),
-            column: Int(positionComponent.y)
+            row: Int(component.x),
+            column: Int(component.y)
         ) ?? .zero
 
         spriteNode.position = position
-
-        renderer.setRenderNode(for: ObjectIdentifier(entity), node: spriteNode)
     }
-}
-=======
-        let position = CGPoint(x: positionComponent.x, y: positionComponent.y)
-        node.skNode.position = position
-    }
-}
 
->>>>>>> Stashed changes
+    private func setRelativeSize(spriteNode: SpriteNode, scaleFactor: CGFloat) {
+        assert(scaleFactor > 0, "Scale factor must be positive")
+
+        let tileSize = TileMapRenderManager.TileSize
+        spriteNode.size = CGSize(
+            width: scaleFactor * tileSize.width,
+            height: scaleFactor * tileSize.height
+        )
+    }
+
+}

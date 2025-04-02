@@ -69,7 +69,7 @@ class ViewController: UIViewController {
         self.gameScene = GameScene(size: skView.bounds.size)
         gameScene?.setGameSceneUpdateDelegate(self)
         gameScene?.setUIPositionProvider(gameRenderer)
-        gameScene?.setInteractionHandler(self)
+        gameScene?.setGridInteractionHandler(self)
         gameRenderer.setScene(gameScene)
 
         gameScene?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
@@ -175,8 +175,8 @@ extension ViewController: GameSceneUpdateDelegate {
         gameManager.update(timeInterval)
 
         // set handler for newly added render nodes
-        for renderNode in gameRenderer.allRenderNodes where renderNode.handler !== self {
-            renderNode.handler = self
+        for renderNode in gameRenderer.allRenderNodes {
+            acceptIntoTouchHandlerRegistry(node: renderNode)
         }
     }
 }

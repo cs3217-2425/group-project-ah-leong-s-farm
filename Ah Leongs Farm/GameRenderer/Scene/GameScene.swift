@@ -4,7 +4,7 @@ class GameScene: SKScene {
     private let gameCamera = GameCamera()
     private weak var gameSceneUpdateDelegate: GameSceneUpdateDelegate?
     private weak var uiPositionProvider: UIPositionProvider?
-    private weak var interactionHandler: InteractionHandler?
+    private weak var interactionHandler: GridInteractionHandler?
 
     override var camera: SKCameraNode? {
         get {
@@ -41,7 +41,7 @@ class GameScene: SKScene {
         uiPositionProvider = provider
     }
 
-    func setInteractionHandler(_ handler: InteractionHandler) {
+    func setGridInteractionHandler(_ handler: GridInteractionHandler) {
         interactionHandler = handler
     }
 

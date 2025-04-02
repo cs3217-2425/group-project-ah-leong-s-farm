@@ -13,6 +13,8 @@ struct InventoryItemViewModel {
     let quantity: Int
 }
 
-protocol InventoryDataProvider {
+protocol InventoryDataProvider: AnyObject {
     func getInventoryItemViewModels() -> [InventoryItemViewModel]
+
+    func getSeedItemViewModels() -> [SeedItemViewModel]
 }

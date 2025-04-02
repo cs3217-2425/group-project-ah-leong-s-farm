@@ -7,16 +7,7 @@
 
 import UIKit
 
-extension ViewController: InteractionHandler {
-    func handleInteraction(node: any IRenderNode) {
-        // ignore
-    }
-
-    func handleInteraction(node: PlotSpriteNode) {
-        let plotActionVC = PlotActionViewController(plotNode: node)
-        present(plotActionVC, animated: true)
-    }
-
+extension ViewController: GridInteractionHandler {
     func handleGridInteraction(row: Int, column: Int) {
         let gridActionVC = GridActionViewController(row: row, column: column, renderer: gameRenderer)
         gameRenderer.lightUpTile(at: row, column: column)

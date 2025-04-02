@@ -60,7 +60,7 @@ class MarketSystem: ISystem {
             print("Not enough stock for \(type).")
             return false
         }
-        
+
         guard let initialiser = ItemFactory.itemToInitialisers[type],
               let entity = initialiser() else {
             print("Item not found in the item factory.")

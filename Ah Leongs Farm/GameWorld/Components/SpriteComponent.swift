@@ -8,15 +8,15 @@
 import GameplayKit
 
 class SpriteComponent: GKComponent {
-    var textureName: String
+    let spriteRenderManagerVisitor: SpriteRenderManagerVisitor
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")
     }
 
-    init(textureName: String) {
-        self.textureName = textureName
+    init(visitor: SpriteRenderManagerVisitor) {
+        self.spriteRenderManagerVisitor = visitor
         super.init()
     }
 }
