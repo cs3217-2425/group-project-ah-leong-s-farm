@@ -47,7 +47,7 @@ class SpriteRenderManager: IRenderManager {
         setSpritePosition(spriteNode: spriteNode, using: positionComponent)
 
         spriteNode.setPlot(plot)
-
+        setRelativeSize(spriteNode: spriteNode, scaleFactor: 1.0)
         renderer.setRenderNode(for: ObjectIdentifier(plot), node: spriteNode)
     }
 
@@ -63,7 +63,7 @@ class SpriteRenderManager: IRenderManager {
         let spriteNode = AppleSpriteNode(imageNamed: textureName)
 
         setSpritePosition(spriteNode: spriteNode, using: positionComponent)
-        setAppropriateSize(spriteNode: spriteNode)
+        setRelativeSize(spriteNode: spriteNode, scaleFactor: 0.5)
         renderer.setRenderNode(for: ObjectIdentifier(apple), node: spriteNode)
     }
 
@@ -79,7 +79,7 @@ class SpriteRenderManager: IRenderManager {
         let spriteNode = BokChoySpriteNode(imageNamed: textureName)
 
         setSpritePosition(spriteNode: spriteNode, using: positionComponent)
-        setAppropriateSize(spriteNode: spriteNode)
+        setRelativeSize(spriteNode: spriteNode, scaleFactor: 0.5)
         renderer.setRenderNode(for: ObjectIdentifier(bokChoy), node: spriteNode)
     }
 
@@ -95,7 +95,7 @@ class SpriteRenderManager: IRenderManager {
         let spriteNode = PotatoSpriteNode(imageNamed: textureName)
 
         setSpritePosition(spriteNode: spriteNode, using: positionComponent)
-        setAppropriateSize(spriteNode: spriteNode)
+        setRelativeSize(spriteNode: spriteNode, scaleFactor: 0.5)
         renderer.setRenderNode(for: ObjectIdentifier(potato), node: spriteNode)
     }
 
@@ -108,8 +108,14 @@ class SpriteRenderManager: IRenderManager {
         spriteNode.position = position
     }
 
-    private func setAppropriateSize(spriteNode: SpriteNode) {
-        spriteNode.size = TileMapRenderManager.TileSize
+    private func setRelativeSize(spriteNode: SpriteNode, scaleFactor: CGFloat) {
+        assert(scaleFactor > 0, "Scale factor must be positive")
+
+        let tileSize = TileMapRenderManager.TileSize
+        spriteNode.size = CGSize(
+            width: scaleFactor * tileSize.width,
+            height: scaleFactor * tileSize.height
+        )
     }
 
 }

@@ -8,7 +8,9 @@
 import GameplayKit
 
 class TileMapRenderManager: IRenderManager {
-    static let TileSize = CGSize(width: 48, height: 48)
+    /// hard-coded from `FarmTileSet.sks`
+    static let TileSize = CGSize(width: 80, height: 80)
+
     private static let TileSetName: String = "Farm Tile Set"
     private static let LandTileGroupName: String = "Land"
 
