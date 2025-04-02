@@ -11,6 +11,7 @@ class GameStatisticsView: UIView {
     private var dayLabel: UILabel?
     private var currencyLabel: UILabel?
     private var energyLabel: UILabel?
+    private var levelLabel: UILabel?
 
     init() {
         super.init(frame: .zero)
@@ -27,6 +28,7 @@ class GameStatisticsView: UIView {
         createDayLabel()
         createCurrencyLabel()
         createEnergyLabel()
+        createLevelLabel()
     }
 
     private func createDayLabel() {
@@ -103,6 +105,20 @@ class GameStatisticsView: UIView {
         self.energyLabel = label
     }
 
+    private func createLevelLabel() {
+        let label = UILabel()
+        label.textColor = .white
+        label.font = UIFont(name: "Press Start 2P", size: 20)
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        addSubview(label)
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 44)
+        ])
+
+        self.levelLabel = label
+    }
+
     func updateDayLabel(currentTurn: Int, maxTurns: Int) {
         dayLabel?.text = "DAY \(currentTurn)/\(maxTurns)"
     }
@@ -113,5 +129,9 @@ class GameStatisticsView: UIView {
 
     func updateEnergyLabel(currentEnergy: Int, maxEnergy: Int) {
         energyLabel?.text = "\(currentEnergy)/\(maxEnergy)"
+    }
+
+    func updateLevelLabel(level: Int) {
+        levelLabel?.text = "Level \(level)"
     }
 }

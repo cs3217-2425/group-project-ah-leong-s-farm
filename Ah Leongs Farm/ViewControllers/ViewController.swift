@@ -127,10 +127,16 @@ extension ViewController: IGameObserver {
         gameStatisticsView?.updateEnergyLabel(currentEnergy: currentEnergy, maxEnergy: maxEnergy)
     }
 
+    private func updateLevelLabel() {
+        let currentLevel = gameManager.getCurrentLevel()
+        gameStatisticsView?.updateLevelLabel(level: currentLevel)
+    }
+
     func observe(entities: Set<GKEntity>) {
         updateDayLabel()
         updateCurrencyLabel()
         updateEnergyLabel()
+        updateLevelLabel()
     }
 }
 
