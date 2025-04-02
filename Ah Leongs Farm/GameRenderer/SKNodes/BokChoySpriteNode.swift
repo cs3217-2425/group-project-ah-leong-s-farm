@@ -8,7 +8,21 @@
 import SpriteKit
 
 final class BokChoySpriteNode: SpriteNode {
+    private(set) weak var handler: BokChoySpriteNodeTouchHandler?
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        handler?.handleInteraction(node: self)
+        handler?.handleTouch(node: self)
     }
+
+    func setHandler(_ handler: BokChoySpriteNodeTouchHandler) {
+        self.handler = handler
+    }
+
+    override func visitTouchHandlerRegistry(registry: any TouchHandlerRegistry) {
+        registry.setTouchHandler(for: self)
+    }
+}
+
+protocol BokChoySpriteNodeTouchHandler: AnyObject {
+    func handleTouch(node: BokChoySpriteNode)
 }

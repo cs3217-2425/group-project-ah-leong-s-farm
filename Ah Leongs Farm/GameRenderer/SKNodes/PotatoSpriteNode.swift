@@ -8,7 +8,21 @@
 import SpriteKit
 
 final class PotatoSpriteNode: SpriteNode {
+    private(set) weak var handler: PotatoSpriteNodeTouchHandler?
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        handler?.handleInteraction(node: self)
+        handler?.handleTouch(node: self)
     }
+
+    func setHandler(_ handler: PotatoSpriteNodeTouchHandler) {
+        self.handler = handler
+    }
+
+    override func visitTouchHandlerRegistry(registry: any TouchHandlerRegistry) {
+        registry.setTouchHandler(for: self)
+    }
+}
+
+protocol PotatoSpriteNodeTouchHandler: AnyObject {
+    func handleTouch(node: PotatoSpriteNode)
 }

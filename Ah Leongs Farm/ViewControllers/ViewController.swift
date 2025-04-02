@@ -173,8 +173,8 @@ extension ViewController: GameSceneUpdateDelegate {
         gameManager.update(timeInterval)
 
         // set handler for newly added render nodes
-        for renderNode in gameRenderer.allRenderNodes where renderNode.handler !== self {
-            renderNode.handler = self
+        for renderNode in gameRenderer.allRenderNodes {
+            acceptIntoTouchHandlerRegistry(node: renderNode)
         }
     }
 }
