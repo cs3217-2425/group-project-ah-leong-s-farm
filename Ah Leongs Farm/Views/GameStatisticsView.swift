@@ -12,6 +12,7 @@ class GameStatisticsView: UIView {
     private var currencyLabel: UILabel?
     private var energyLabel: UILabel?
     private var levelLabel: UILabel?
+    private var progressBar: PixelProgressBar?
 
     init() {
         super.init(frame: .zero)
@@ -29,6 +30,7 @@ class GameStatisticsView: UIView {
         createCurrencyLabel()
         createEnergyLabel()
         createLevelLabel()
+        createXPBar()
     }
 
     private func createDayLabel() {
@@ -70,7 +72,7 @@ class GameStatisticsView: UIView {
 
         addSubview(stackView)
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 44)
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 100)
         ])
 
         self.currencyLabel = label
@@ -99,7 +101,7 @@ class GameStatisticsView: UIView {
 
         addSubview(stackView)
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 76)
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 132)
         ])
 
         self.energyLabel = label
@@ -119,6 +121,13 @@ class GameStatisticsView: UIView {
         self.levelLabel = label
     }
 
+    private func createXPBar() {
+        let progressBar = PixelProgressBar(frame: CGRect(x: 0, y: 68, width: 300, height: 28))
+        addSubview(progressBar)
+        progressBar.setProgress(0)
+        self.progressBar = progressBar
+    }
+
     func updateDayLabel(currentTurn: Int, maxTurns: Int) {
         dayLabel?.text = "DAY \(currentTurn)/\(maxTurns)"
     }
@@ -133,5 +142,9 @@ class GameStatisticsView: UIView {
 
     func updateLevelLabel(level: Int) {
         levelLabel?.text = "Level \(level)"
+    }
+
+    func updateXPLabel(currentXP: Float, levelXP: Float) {
+        progressBar?.setProgress(CGFloat(currentXP / levelXP))
     }
 }
