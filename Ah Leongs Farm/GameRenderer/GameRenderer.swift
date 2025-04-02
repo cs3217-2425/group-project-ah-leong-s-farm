@@ -155,13 +155,18 @@ extension GameRenderer: UIPositionProvider {
     }
 
     func getRowAndColumn(fromPosition location: CGPoint) -> (row: Int, column: Int)? {
-        guard let skTileMapNode = tileMapNode else {
+        guard let tileMapNode = tileMapNode else {
             return nil
         }
 
-        let tileMapPoint = getTileMapPoint(fromPosition: location, tileMapNode: skTileMapNode)
-        let row = skTileMapNode.tileRowIndex(fromPosition: tileMapPoint)
-        let column = skTileMapNode.tileColumnIndex(fromPosition: tileMapPoint)
+        let tileMapPoint = getTileMapPoint(fromPosition: location, tileMapNode: tileMapNode)
+        let row = tileMapNode.tileRowIndex(fromPosition: tileMapPoint)
+        let column = tileMapNode.tileColumnIndex(fromPosition: tileMapPoint)
+
+        guard tileMapNode.isRowValid(row), tileMapNode.isColumnValid(column) else {
+            return nil
+        }
+
         return (row, column)
     }
 
