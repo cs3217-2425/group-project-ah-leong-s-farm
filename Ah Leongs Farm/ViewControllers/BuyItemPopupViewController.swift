@@ -58,51 +58,42 @@ class BuyItemPopupViewController: UIViewController {
         setupBuyButton(in: popupView)
 
         NSLayoutConstraint.activate([
-            // Popup View constraints
             popupView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             popupView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             popupView.widthAnchor.constraint(equalToConstant: 280),
             popupView.heightAnchor.constraint(greaterThanOrEqualToConstant: 300),
 
-            // Title Label at the top of popupView
             titleLabel.topAnchor.constraint(equalTo: popupView.topAnchor, constant: 20),
             titleLabel.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
 
-            // Close Button at top-right of popupView
             closeButton.topAnchor.constraint(equalTo: popupView.topAnchor, constant: 10),
             closeButton.trailingAnchor.constraint(equalTo: popupView.trailingAnchor, constant: -10),
 
-            // Item ImageView below the title
             itemImageView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
             itemImageView.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
             itemImageView.widthAnchor.constraint(equalToConstant: 100),
             itemImageView.heightAnchor.constraint(equalToConstant: 100),
 
-            // Price Label below the image
             priceLabel.topAnchor.constraint(equalTo: itemImageView.bottomAnchor, constant: 10),
             priceLabel.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
 
-            // Minus Button below the price label (aligned to left)
             quantityLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
             quantityLabel.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
             quantityLabel.widthAnchor.constraint(equalToConstant: 40),
             quantityLabel.heightAnchor.constraint(equalToConstant: 40),
 
-            // Position the minus button to the left of the quantity label
             minusButton.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
             minusButton.trailingAnchor.constraint(equalTo: quantityLabel.leadingAnchor, constant: -10),
             minusButton.widthAnchor.constraint(equalToConstant: 40),
             minusButton.heightAnchor.constraint(equalToConstant: 40),
             minusButton.centerYAnchor.constraint(equalTo: quantityLabel.centerYAnchor),
 
-            // Position the plus button to the right of the quantity label
             plusButton.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
             plusButton.leadingAnchor.constraint(equalTo: quantityLabel.trailingAnchor, constant: 10),
             plusButton.widthAnchor.constraint(equalToConstant: 40),
             plusButton.heightAnchor.constraint(equalToConstant: 40),
             plusButton.centerYAnchor.constraint(equalTo: quantityLabel.centerYAnchor),
 
-            // Buy Button below quantity controls
             buyButton.topAnchor.constraint(equalTo: minusButton.bottomAnchor, constant: 20),
             buyButton.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
             buyButton.widthAnchor.constraint(equalToConstant: 140),
