@@ -9,7 +9,12 @@ import UIKit
 
 extension ViewController: GridInteractionHandler {
     func handleGridInteraction(row: Int, column: Int) {
-        let gridActionVC = GridActionViewController(row: row, column: column, renderer: gameRenderer)
+        let gridActionVC = GridActionViewController(
+            row: row,
+            column: column,
+            renderer: gameRenderer,
+            eventQueue: gameManager.gameWorld
+        )
         gameRenderer.lightUpTile(at: row, column: column)
         present(gridActionVC, animated: true)
     }

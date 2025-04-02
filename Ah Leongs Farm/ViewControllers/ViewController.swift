@@ -30,7 +30,6 @@ class ViewController: UIViewController {
         createInventoryButton()
         setUpGameControls()
         setUpGameStatistics()
-        gameManager.addGameObserver(self)
     }
 
     private func setUpGameStatistics() {
@@ -78,6 +77,7 @@ class ViewController: UIViewController {
 
     private func setUpGameObservers() {
         gameManager.addGameObserver(gameRenderer)
+        gameManager.addGameObserver(self)
     }
 
     override var prefersStatusBarHidden: Bool {

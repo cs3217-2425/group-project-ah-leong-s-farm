@@ -25,23 +25,12 @@ class SpriteRenderManager: IRenderManager {
     }
 
     func createNode(for entity: EntityType, in renderer: GameRenderer) {
-        func createNodeForEntity(plot: Plot, in renderer: GameRenderer) {
-            guard let positionComponent = plot.component(ofType: PositionComponent.self) else {
-                return
-            }
-
-            guard let textureName = Self.EntityTypeTextureMap[ObjectIdentifier(Plot.self)] else {
-                return
-            }
-
-            let spriteNode = PlotSpriteNode(imageNamed: textureName)
-
-            setSpritePosition(spriteNode: spriteNode, using: positionComponent)
-
-            spriteNode.setPlot(plot)
-            setRelativeSize(spriteNode: spriteNode, scaleFactor: 1.0)
-            renderer.setRenderNode(for: ObjectIdentifier(plot), node: spriteNode)
+        guard let spriteComponent = entity.component(ofType: SpriteComponent.self) else {
+            return
         }
+
+        let visitor = spriteComponent.spriteRenderManagerVisitor
+        visitor.visitSpriteRenderManager(manager: self, renderer: renderer)
     }
 
     func createNodeForEntity(plot: Plot, in renderer: GameRenderer) {

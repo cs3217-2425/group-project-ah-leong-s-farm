@@ -48,3 +48,9 @@ struct PlantCropEventData: EventData {
     var cropType: CropType
     var isSuccessfullyPlanted: Bool
 }
+
+struct AddPlotEventData: EventData {
+    var row: Int
+    var column: Int
+    var isSuccessfullyAdded: Bool
+}

@@ -4,12 +4,14 @@ class GridActionViewController: UIViewController {
     private let row: Int
     private let column: Int
     private weak var gameRenderer: GameRenderer?
+    private weak var eventQueue: (any EventQueueable)?
     private var actionButtons: [UIButton] = []
 
-    init(row: Int, column: Int, renderer: GameRenderer) {
+    init(row: Int, column: Int, renderer: GameRenderer, eventQueue: any EventQueueable) {
         self.row = row
         self.column = column
         self.gameRenderer = renderer
+        self.eventQueue = eventQueue
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overFullScreen
         modalTransitionStyle = .crossDissolve
@@ -79,7 +81,7 @@ class GridActionViewController: UIViewController {
     }
 
     @objc private func addPlotTapped() {
-        print("Adding plot at \(row), \(column)")
+        eventQueue?.queueEvent(AddPlotEvent(row: row, column: column))
         dismiss(animated: true)
     }
 }
