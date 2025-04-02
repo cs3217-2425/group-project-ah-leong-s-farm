@@ -38,7 +38,7 @@ class InventoryViewController: UIViewController {
 
     private lazy var selectedItemLabel: UILabel = {
         let label = UILabel()
-        label.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
+        label.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         label.textAlignment = .center
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
@@ -128,6 +128,7 @@ class InventoryViewController: UIViewController {
         let titleLabel = UILabel()
         titleLabel.text = "Inventory"
         titleLabel.font = UIFont(name: "Press Start 2P", size: 18) ?? UIFont.boldSystemFont(ofSize: 18)
+        titleLabel.textColor = UIColor.black
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(titleLabel)
@@ -241,7 +242,7 @@ class InventoryItemCell: UICollectionViewCell {
 
     private func setupViews() {
         // Cell background
-        backgroundColor = UIColor.systemGray6
+        backgroundColor = #colorLiteral(red: 0.8551856875, green: 0.8551856875, blue: 0.8551856875, alpha: 1)
         layer.cornerRadius = 8
         clipsToBounds = true
 
@@ -251,7 +252,7 @@ class InventoryItemCell: UICollectionViewCell {
         contentView.addSubview(imageView)
 
         // Empty state background
-        emptyView.backgroundColor = .systemGray4
+        emptyView.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
         emptyView.isHidden = true
         emptyView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(emptyView)
@@ -259,7 +260,7 @@ class InventoryItemCell: UICollectionViewCell {
         // Quantity label
         quantityLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         quantityLabel.textColor = .white
-        quantityLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
+        quantityLabel.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         quantityLabel.textAlignment = .center
         quantityLabel.layer.cornerRadius = 8
         quantityLabel.clipsToBounds = true
