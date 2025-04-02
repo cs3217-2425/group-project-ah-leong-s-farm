@@ -13,7 +13,7 @@ class GameStatisticsView: UIView {
     private var energyLabel: UILabel?
     private var levelLabel: UILabel?
     private var progressBar: LevelProgressBar?
-    private let XP_BAR_WIDTH = 300.0
+    private let XP_BAR_WIDTH = 280.0
     private let XP_BAR_HEIGHT = 30.0
 
     init() {
@@ -153,7 +153,7 @@ class GameStatisticsView: UIView {
     }
 
     func updateLevelLabel(level: Int) {
-        levelLabel?.text = "Level \(level)"
+        levelLabel?.text = "LVL.\(level)"
     }
 
     func updateXPLabel(currentXP: Float, levelXP: Float) {
