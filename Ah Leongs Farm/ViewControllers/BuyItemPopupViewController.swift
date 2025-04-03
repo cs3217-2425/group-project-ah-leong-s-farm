@@ -12,22 +12,24 @@ class BuyItemPopupViewController: UIViewController {
     weak var delegate: BuyPopupDelegate?
 
     private let item: BuyItemViewModel
-    private var quantity: Int = 1
+    private var chosenQuantity: Int = 1
+    private let currentCurrency: Int
     private var totalPrice: Int {
-        Int(item.buyPrice) * quantity
+        Int(item.buyPrice) * chosenQuantity
     }
 
     private let titleLabel = UILabel()
     private let itemImageView = UIImageView()
     private let priceLabel = UILabel()
-    private let quantityLabel = UILabel()
+    private let chosenQuantityLabel = UILabel()
     private let plusButton = UIButton(type: .system)
     private let minusButton = UIButton(type: .system)
     private let buyButton = UIButton(type: .system)
     private let closeButton = UIButton(type: .system)
 
-    init(item: BuyItemViewModel) {
+    init(item: BuyItemViewModel, currentCurrency: Int) {
         self.item = item
+        self.currentCurrency = currentCurrency
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overCurrentContext
         modalTransitionStyle = .crossDissolve
@@ -41,6 +43,7 @@ class BuyItemPopupViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        updateUI()
     }
 
     private func setupView() {
@@ -77,22 +80,22 @@ class BuyItemPopupViewController: UIViewController {
             priceLabel.topAnchor.constraint(equalTo: itemImageView.bottomAnchor, constant: 10),
             priceLabel.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
 
-            quantityLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
-            quantityLabel.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
-            quantityLabel.widthAnchor.constraint(equalToConstant: 40),
-            quantityLabel.heightAnchor.constraint(equalToConstant: 40),
+            chosenQuantityLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
+            chosenQuantityLabel.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
+            chosenQuantityLabel.widthAnchor.constraint(equalToConstant: 40),
+            chosenQuantityLabel.heightAnchor.constraint(equalToConstant: 40),
 
             minusButton.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
-            minusButton.trailingAnchor.constraint(equalTo: quantityLabel.leadingAnchor, constant: -10),
+            minusButton.trailingAnchor.constraint(equalTo: chosenQuantityLabel.leadingAnchor, constant: -10),
             minusButton.widthAnchor.constraint(equalToConstant: 40),
             minusButton.heightAnchor.constraint(equalToConstant: 40),
-            minusButton.centerYAnchor.constraint(equalTo: quantityLabel.centerYAnchor),
+            minusButton.centerYAnchor.constraint(equalTo: chosenQuantityLabel.centerYAnchor),
 
             plusButton.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
-            plusButton.leadingAnchor.constraint(equalTo: quantityLabel.trailingAnchor, constant: 10),
+            plusButton.leadingAnchor.constraint(equalTo: chosenQuantityLabel.trailingAnchor, constant: 10),
             plusButton.widthAnchor.constraint(equalToConstant: 40),
             plusButton.heightAnchor.constraint(equalToConstant: 40),
-            plusButton.centerYAnchor.constraint(equalTo: quantityLabel.centerYAnchor),
+            plusButton.centerYAnchor.constraint(equalTo: chosenQuantityLabel.centerYAnchor),
 
             buyButton.topAnchor.constraint(equalTo: minusButton.bottomAnchor, constant: 20),
             buyButton.centerXAnchor.constraint(equalTo: popupView.centerXAnchor),
@@ -167,11 +170,11 @@ class BuyItemPopupViewController: UIViewController {
         popupView.addSubview(minusButton)
 
         // Quantity Label
-        quantityLabel.text = "1"
-        quantityLabel.textAlignment = .center
-        quantityLabel.font = UIFont.systemFont(ofSize: 20)
-        quantityLabel.translatesAutoresizingMaskIntoConstraints = false
-        popupView.addSubview(quantityLabel)
+        chosenQuantityLabel.text = "1"
+        chosenQuantityLabel.textAlignment = .center
+        chosenQuantityLabel.font = UIFont.systemFont(ofSize: 20)
+        chosenQuantityLabel.translatesAutoresizingMaskIntoConstraints = false
+        popupView.addSubview(chosenQuantityLabel)
 
         // Plus Button
         plusButton.setTitle("+", for: .normal)
@@ -182,7 +185,7 @@ class BuyItemPopupViewController: UIViewController {
     }
 
     private func setupBuyButton(in popupView: UIView) {
-        buyButton.setTitle("Buy", for: .normal) // Changed to .normal
+        buyButton.setTitle("Buy", for: .normal)
         buyButton.backgroundColor = .systemGreen
         buyButton.setTitleColor(.white, for: .normal)
         buyButton.layer.cornerRadius = 5
@@ -194,19 +197,21 @@ class BuyItemPopupViewController: UIViewController {
     // MARK: - Button Actions
 
     @objc private func decreaseQuantity() {
-        if quantity > 1 {
-            quantity -= 1
+        if chosenQuantity > 1 {
+            chosenQuantity -= 1
             updateUI()
         }
     }
 
     @objc private func increaseQuantity() {
-        quantity += 1
-        updateUI()
+        if (chosenQuantity + 1) * Int(item.buyPrice) <= currentCurrency {
+            chosenQuantity += 1
+            updateUI()
+        }
     }
 
     @objc private func confirmPurchase() {
-        delegate?.didConfirmPurchase(item: item.itemType, quantity: quantity)
+        delegate?.didConfirmPurchase(item: item.itemType, quantity: chosenQuantity)
         dismiss(animated: true, completion: nil)
     }
 
@@ -215,8 +220,22 @@ class BuyItemPopupViewController: UIViewController {
     }
 
     private func updateUI() {
-        quantityLabel.text = "\(quantity)"
-        priceLabel.text = "\(item.buyPrice * Double(quantity))"
+        chosenQuantityLabel.text = "\(chosenQuantity)"
+        priceLabel.text = "\(item.buyPrice * Double(chosenQuantity))"
+
+        // Disable the plus button if increasing the quantity would exceed available funds
+        if (chosenQuantity + 1) * Int(item.buyPrice) > currentCurrency {
+            plusButton.isEnabled = false
+            plusButton.alpha = 0.5
+        } else if chosenQuantity - 1 < 1 {
+            minusButton.isEnabled = false
+            minusButton.alpha = 0.5
+        } else {
+            plusButton.isEnabled = true
+            plusButton.alpha = 1.0
+            minusButton.isEnabled = true
+            minusButton.alpha = 1.0
+        }
     }
 }
 

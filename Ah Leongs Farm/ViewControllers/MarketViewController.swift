@@ -86,7 +86,7 @@ extension MarketViewController: UICollectionViewDataSource, UICollectionViewDele
             }
             let viewModels = gameManager.getBuyItemViewModels()
             let viewModel = viewModels[indexPath.row]
-            cell.configure(with: viewModel)
+            cell.configure(with: viewModel, currentCurrency: Int(gameManager.getAmountOfCurrency(.coin)))
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SellItemCell",
@@ -106,7 +106,8 @@ extension MarketViewController: UICollectionViewDataSource, UICollectionViewDele
             let viewModels = gameManager.getBuyItemViewModels()
             let viewModel = viewModels[indexPath.row]
 
-            let popupVC = BuyItemPopupViewController(item: viewModel)
+            let popupVC = BuyItemPopupViewController(item: viewModel,
+                                                     currentCurrency: Int(gameManager.getAmountOfCurrency(.coin)))
             popupVC.delegate = self
             present(popupVC, animated: true, completion: nil)
         } else {
@@ -141,6 +142,7 @@ extension MarketViewController: UICollectionViewDelegateFlowLayout {
 extension MarketViewController: BuyPopupDelegate {
     func didConfirmPurchase(item: ItemType, quantity: Int) {
         gameManager.buyItem(itemType: item, quantity: quantity)
+        collectionView.reloadData()
         print("Confirm purchase: \(item), \(quantity)")
     }
 }

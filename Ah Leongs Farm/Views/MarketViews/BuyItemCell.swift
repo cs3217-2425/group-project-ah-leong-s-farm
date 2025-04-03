@@ -73,8 +73,16 @@ class BuyItemCell: UICollectionViewCell {
             ])
         }
 
-    func configure(with viewModel: BuyItemViewModel) {
+    func configure(with viewModel: BuyItemViewModel, currentCurrency: Int) {
         itemImageView.image = UIImage(named: viewModel.imageName)
         priceLabel.text = "\(viewModel.buyPrice)"
+
+        if currentCurrency < Int(viewModel.buyPrice) {
+            contentView.alpha = 0.5
+            isUserInteractionEnabled = false
+        } else {
+            contentView.alpha = 1.0
+            isUserInteractionEnabled = true
+        }
     }
 }
