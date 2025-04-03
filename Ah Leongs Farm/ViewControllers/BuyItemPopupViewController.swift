@@ -150,7 +150,7 @@ class BuyItemPopupViewController: UIViewController {
         coinImageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
         coinImageView.heightAnchor.constraint(equalToConstant: 24).isActive = true
 
-        priceLabel.text = "\(item.buyPrice)"
+        priceLabel.text = "\(Int(item.buyPrice))"
         priceLabel.font = UIFont.systemFont(ofSize: 18)
         priceLabel.textAlignment = .left
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -221,7 +221,7 @@ class BuyItemPopupViewController: UIViewController {
 
     private func updateUI() {
         chosenQuantityLabel.text = "\(chosenQuantity)"
-        priceLabel.text = "\(item.buyPrice * Double(chosenQuantity))"
+        priceLabel.text = "\(Int(item.buyPrice * Double(chosenQuantity)))"
 
         plusButton.isEnabled = (chosenQuantity + 1) * Int(item.buyPrice) <= currentCurrency
         plusButton.alpha = plusButton.isEnabled ? 1.0 : 0.5

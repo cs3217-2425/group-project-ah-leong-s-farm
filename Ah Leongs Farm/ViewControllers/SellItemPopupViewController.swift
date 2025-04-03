@@ -154,7 +154,7 @@ class SellItemPopupViewController: UIViewController {
         coinImageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
         coinImageView.heightAnchor.constraint(equalToConstant: 24).isActive = true
 
-        priceLabel.text = "\(item.sellPrice)"
+        priceLabel.text = "\(Int(item.sellPrice))"
         priceLabel.font = UIFont.systemFont(ofSize: 18)
         priceLabel.textAlignment = .left
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -209,7 +209,7 @@ class SellItemPopupViewController: UIViewController {
     // MARK: - Button Actions
 
     @objc private func decreaseQuantity() {
-        if chosenQuantity > 1 {  // ✅ Fix: Ensure it correctly stops at 1
+        if chosenQuantity > 1 {
             chosenQuantity -= 1
         }
         updateUI()
@@ -234,7 +234,7 @@ class SellItemPopupViewController: UIViewController {
 
     private func updateUI() {
         chosenQuantityLabel.text = "\(chosenQuantity)"
-        priceLabel.text = "\(item.sellPrice * Double(chosenQuantity))"
+        priceLabel.text = "\(Int(item.sellPrice * Double(chosenQuantity)))"
 
         plusButton.isEnabled = chosenQuantity < itemQuantity
         plusButton.alpha = plusButton.isEnabled ? 1.0 : 0.5

@@ -25,12 +25,14 @@ class MarketView: UIView {
     func setCurrencyLabel(_ newAmount: Int) {
         currency = newAmount
         currencyLabel.text = "\(currency)"
+        currencyLabel.textColor = UIColor.black
     }
 
     let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Market"
         label.font = UIFont(name: "Press Start 2P", size: 24)
+        label.textColor = UIColor.black
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -65,6 +67,7 @@ class MarketView: UIView {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 18)
         label.textAlignment = .center
+        label.textColor = UIColor.black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -82,6 +85,8 @@ class MarketView: UIView {
         let control = UISegmentedControl(items: ["Buy", "Sell"])
         control.selectedSegmentIndex = 0
         control.translatesAutoresizingMaskIntoConstraints = false
+        control.setTitleTextAttributes([.foregroundColor: UIColor.black], for: .normal)
+        control.setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected)
         return control
     }()
 
@@ -94,6 +99,7 @@ class MarketView: UIView {
 
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         return cv
     }()
 

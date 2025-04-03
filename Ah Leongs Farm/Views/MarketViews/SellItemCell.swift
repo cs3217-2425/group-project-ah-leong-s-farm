@@ -32,7 +32,7 @@ class SellItemCell: UICollectionViewCell {
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
 
-        contentView.backgroundColor = UIColor.systemGray6
+        contentView.backgroundColor = #colorLiteral(red: 0.8551856875, green: 0.8551856875, blue: 0.8551856875, alpha: 1)
         contentView.layer.cornerRadius = 8
         contentView.layer.masksToBounds = true
 
@@ -47,6 +47,7 @@ class SellItemCell: UICollectionViewCell {
         coinImageView.heightAnchor.constraint(equalToConstant: 16).isActive = true
 
         priceLabel.font = UIFont.systemFont(ofSize: 14)
+        priceLabel.textColor = UIColor.black
         priceLabel.textAlignment = .left
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
 
@@ -60,7 +61,7 @@ class SellItemCell: UICollectionViewCell {
 
         quantityLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         quantityLabel.textColor = .white
-        quantityLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
+        quantityLabel.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         quantityLabel.textAlignment = .center
         quantityLabel.layer.cornerRadius = 8
         quantityLabel.clipsToBounds = true
@@ -85,7 +86,7 @@ class SellItemCell: UICollectionViewCell {
 
     func configure(with viewModel: SellItemViewModel) {
         itemImageView.image = UIImage(named: viewModel.imageName)
-        priceLabel.text = "\(viewModel.sellPrice)"
+        priceLabel.text = "\(Int(viewModel.sellPrice))"
         quantityLabel.text = "x\(viewModel.quantity)"
 
         // Disable interaction if that item has 0 quantity

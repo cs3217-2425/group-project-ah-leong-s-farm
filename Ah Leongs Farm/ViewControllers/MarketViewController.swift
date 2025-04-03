@@ -162,6 +162,6 @@ extension MarketViewController: IGameObserver {
 
     private func updateCurrencyLabel() {
         let coins = gameManager.getAmountOfCurrency(.coin)
-        currencyLabel.text = "\(coins)"
+        currencyLabel.text = "\(Int(coins))"
     }
 }
