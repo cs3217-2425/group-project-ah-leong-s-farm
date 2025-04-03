@@ -11,6 +11,7 @@ class SellItemCell: UICollectionViewCell {
     private let priceStackView = UIStackView()
     private let coinImageView = UIImageView()
     private let priceLabel = UILabel()
+    private let quantityLabel = UILabel()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -57,6 +58,15 @@ class SellItemCell: UICollectionViewCell {
         priceStackView.addArrangedSubview(priceLabel)
         contentView.addSubview(priceStackView)
 
+        quantityLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        quantityLabel.textColor = .white
+        quantityLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
+        quantityLabel.textAlignment = .center
+        quantityLabel.layer.cornerRadius = 8
+        quantityLabel.clipsToBounds = true
+        quantityLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(quantityLabel)
+
         NSLayoutConstraint.activate([
             itemImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             itemImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
@@ -64,13 +74,19 @@ class SellItemCell: UICollectionViewCell {
             itemImageView.heightAnchor.constraint(equalTo: itemImageView.widthAnchor),
 
             priceStackView.topAnchor.constraint(equalTo: itemImageView.bottomAnchor, constant: 5),
-            priceStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)
+            priceStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+
+            quantityLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
+            quantityLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+            quantityLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 24),
+            quantityLabel.heightAnchor.constraint(equalToConstant: 24)
         ])
     }
 
     func configure(with viewModel: SellItemViewModel) {
         itemImageView.image = UIImage(named: viewModel.imageName)
         priceLabel.text = "\(viewModel.sellPrice)"
+        quantityLabel.text = "x\(viewModel.quantity)"
 
         // Disable interaction if that item has 0 quantity
         if viewModel.quantity == 0 {
