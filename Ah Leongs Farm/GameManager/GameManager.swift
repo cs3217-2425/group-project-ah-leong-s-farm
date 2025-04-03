@@ -104,6 +104,10 @@ class GameManager {
         return levelSystem.getXPForCurrentLevel()
     }
 
+    func registerEventObserver(_ observer: IEventObserver) {
+        gameWorld.registerEventObserver(observer)
+    }
+
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }

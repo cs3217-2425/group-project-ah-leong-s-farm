@@ -86,11 +86,12 @@ class QuestSystem: ISystem {
             return
         }
 
-        eventQueueable.queueEvent(QuestCompletedEvent())
+        eventQueueable.queueEvent(QuestCompletedEvent(questTitle: questComponent.title))
         let rewardComponents = getAllRewardComponents(questEntity: questEntity)
         for rewardComponent in rewardComponents {
             rewardComponent.processReward(with: self)
         }
+        ensureTargetActiveQuestCount()
     }
 }
 

@@ -11,7 +11,7 @@ class QuestFactory {
 
     // MARK: QuestObjective helper functions
     private static func createPlantCropObjective(type: CropType,
-                                                plantAmount: Int) -> QuestObjective {
+                                                 plantAmount: Int) -> QuestObjective {
         let plantCropCriteria = PlantCropCriteria(cropType: type)
         return QuestObjective(
             description: "Plant \(plantAmount) \(type)s",
@@ -46,7 +46,6 @@ class QuestFactory {
                                   criteria: survivalCriteria,
                                   target: Float(days))
     }
-
 
     // MARK: - Multi-Objective Quests
 

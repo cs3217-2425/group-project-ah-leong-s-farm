@@ -31,6 +31,7 @@ class ViewController: UIViewController {
         createQuestButton()
         setUpGameControls()
         setUpGameStatistics()
+        setupQuestNotificationSystem()
         gameManager.addGameObserver(self)
     }
 
@@ -227,5 +228,21 @@ extension ViewController {
                                           completedQuests: completedQuests,
                                           inactiveQuests: inactiveQuests)
         present(questVC, animated: true)
+    }
+}
+
+// MARK: Add Notification functionalities
+extension ViewController {
+    func setupQuestNotificationSystem() {
+        let notificationManager = NotificationStackManager(
+            containerView: self.view,
+            topOffset: 100 // Position below the game controls
+        )
+
+        let notificationController = QuestCompletionNotificationController(
+            notificationManager: notificationManager
+        )
+
+        gameManager.registerEventObserver(notificationController)
     }
 }

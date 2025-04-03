@@ -18,9 +18,6 @@ extension GameManager: QuestDataProvider {
         let sortedQuests = filteredQuests.sorted(by: {
             $0.order < $1.order
         })
-        for q in sortedQuests {
-            print(q.title)
-        }
         return sortedQuests.map { questComponent in
             QuestViewModel(
                 title: questComponent.title,

@@ -11,6 +11,7 @@ class QuestViewController: UIViewController {
     // MARK: - Properties
     private var allQuests: [QuestViewModel] = []
     private var firstActiveQuestIndex: Int = 0
+    private var initialScrollSet = false // Track whether initial scroll has been set
 
     private lazy var containerView: UIView = {
         let view = UIView()
@@ -51,6 +52,9 @@ class QuestViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overCurrentContext
         modalTransitionStyle = .crossDissolve
+
+        // Set this to prevent view from appearing before we're ready
+        definesPresentationContext = true
     }
 
     @available(*, unavailable)
@@ -64,17 +68,29 @@ class QuestViewController: UIViewController {
         setupView()
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        collectionView.collectionViewLayout.invalidateLayout()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Hide the view until we're ready to show it in the correct scroll position
+        containerView.alpha = 0
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
 
-        // Scroll to center the first active quest if available
-        if !allQuests.isEmpty && firstActiveQuestIndex < allQuests.count {
+        // Force layout of collection view to ensure correct metrics
+        collectionView.layoutIfNeeded()
+
+        // Set initial scroll position only once
+        if !initialScrollSet && !allQuests.isEmpty && firstActiveQuestIndex < allQuests.count {
+            // Position the collection view before showing
             scrollToQuestCentered(at: firstActiveQuestIndex, animated: false)
+            initialScrollSet = true
+
+            // Show the view with a fade in animation
+            UIView.animate(withDuration: 0.2) {
+                self.containerView.alpha = 1
+            }
         }
     }
 
@@ -170,7 +186,7 @@ class QuestViewController: UIViewController {
         // Calculate position that will center the target cell
         let collectionViewWidth = collectionView.bounds.width
         let contentOffset = CGPoint(
-            x: (cellWidth + cellSpacing) * CGFloat(index) - (collectionViewWidth - cellWidth) / 2,
+            x: (cellWidth + cellSpacing) * CGFloat(index) - collectionView.contentInset.left,
             y: 0
         )
 
@@ -185,7 +201,9 @@ class QuestViewController: UIViewController {
 
     private func calculateCellWidth() -> CGFloat {
         // Calculate cell width to show 3 cells
-        let availableWidth = collectionView.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right
+        let availableWidth = collectionView.bounds.width -
+                             collectionView.contentInset.left -
+                             collectionView.contentInset.right
         let cellWidth = (availableWidth - 20) / 3 // 3 cells with spacing
         return cellWidth
     }
@@ -242,179 +260,5 @@ extension QuestViewController: UIGestureRecognizerDelegate {
         // Don't dismiss if touch is inside the container
         let location = touch.location(in: view)
         return !containerView.frame.contains(location)
-    }
-}
-
-// MARK: - QuestCollectionViewCell
-class QuestCollectionViewCell: UICollectionViewCell {
-    private let scrollView = UIScrollView()
-    private let contentStackView = UIStackView()
-    private let titleLabel = UILabel()
-    private let statusBadge = UILabel()
-    private var objectiveViews: [ObjectiveView] = []
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setupViews() {
-        backgroundColor = .clear
-
-        // Add a card-like background
-        let cardView = UIView()
-        cardView.backgroundColor = #colorLiteral(red: 0.9568627451, green: 0.9568627451, blue: 0.9568627451, alpha: 1)
-        cardView.layer.cornerRadius = 12
-        cardView.layer.borderWidth = 2
-        cardView.layer.borderColor = UIColor.darkGray.cgColor
-        cardView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(cardView)
-
-        // Setup scroll view for vertical scrolling of objectives
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.showsVerticalScrollIndicator = true
-        cardView.addSubview(scrollView)
-
-        // Status badge
-        statusBadge.font = UIFont.boldSystemFont(ofSize: 12)
-        statusBadge.textColor = .white
-        statusBadge.layer.cornerRadius = 8
-        statusBadge.clipsToBounds = true
-        statusBadge.textAlignment = .center
-        statusBadge.translatesAutoresizingMaskIntoConstraints = false
-        cardView.addSubview(statusBadge)
-
-        // Title label setup
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
-        titleLabel.textColor = .black
-        titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 0
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(titleLabel)
-
-        // Content stack view for objectives
-        contentStackView.axis = .vertical
-        contentStackView.spacing = 10
-        contentStackView.distribution = .fillProportionally
-        contentStackView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(contentStackView)
-
-        NSLayoutConstraint.activate([
-            cardView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            cardView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 4),
-            cardView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
-            cardView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
-
-            statusBadge.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 8),
-            statusBadge.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -8),
-            statusBadge.widthAnchor.constraint(equalToConstant: 70),
-            statusBadge.heightAnchor.constraint(equalToConstant: 20),
-
-            scrollView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 8),
-            scrollView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 8),
-            scrollView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -8),
-            scrollView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -8),
-
-            titleLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 24), // Below status badge
-            titleLabel.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 8),
-            titleLabel.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -8),
-
-            contentStackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
-            contentStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 8),
-            contentStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -8),
-            contentStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -12),
-            contentStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -16)
-        ])
-    }
-
-    func configure(with quest: QuestViewModel) {
-        titleLabel.text = quest.title
-        let statusToUI: [QuestStatus: (text: String, color: UIColor)] = [
-            .active: (text: "Active", color: UIColor.systemBlue),
-            .inactive: (text: "Inactive", color: UIColor.lightGray),
-            .completed: (text: "Completed", color: UIColor.systemGreen)
-        ]
-        statusBadge.text = statusToUI[quest.status]?.text
-        statusBadge.backgroundColor = statusToUI[quest.status]?.color
-
-        // Clear existing objective views
-        objectiveViews.forEach { $0.removeFromSuperview() }
-        contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        objectiveViews.removeAll()
-
-        // Add objectives
-        for objective in quest.objectives {
-            let objectiveView = ObjectiveView()
-            objectiveView.configure(with: objective)
-            contentStackView.addArrangedSubview(objectiveView)
-            objectiveViews.append(objectiveView)
-        }
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        titleLabel.text = nil
-        statusBadge.text = nil
-        objectiveViews.forEach { $0.removeFromSuperview() }
-        contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        objectiveViews.removeAll()
-    }
-}
-
-// MARK: - ObjectiveView for displaying quest objectives with progress
-class ObjectiveView: UIView {
-    private let descriptionLabel = UILabel()
-    private let progressBar = ProgressBar()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setupViews() {
-        // Description label
-        descriptionLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        descriptionLabel.textColor = .darkGray
-        descriptionLabel.numberOfLines = 0
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(descriptionLabel)
-
-        // Progress bar
-        progressBar.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(progressBar)
-
-        NSLayoutConstraint.activate([
-            descriptionLabel.topAnchor.constraint(equalTo: topAnchor, constant: 4),
-            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-
-            progressBar.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 6),
-            progressBar.leadingAnchor.constraint(equalTo: leadingAnchor),
-            progressBar.trailingAnchor.constraint(equalTo: trailingAnchor),
-            progressBar.heightAnchor.constraint(equalToConstant: 24),
-            progressBar.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4)
-        ])
-    }
-
-    func configure(with objective: QuestObjectiveViewModel) {
-        descriptionLabel.text = objective.description
-
-        // Calculate current and max progress values
-        let currentProgress = CGFloat(objective.progress)
-        let maxProgress = CGFloat(objective.target)
-
-        progressBar.setProgress(currentProgress: currentProgress,
-                                maxProgress: maxProgress,
-                                label: "")
     }
 }
