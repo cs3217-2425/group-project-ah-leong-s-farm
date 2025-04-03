@@ -96,4 +96,30 @@ class CropSystem: ISystem {
             crop.currentGrowthTurn += 1
         }
     }
+
+    /// Retrieves all seed entities of the specified crop type.
+    ///
+    /// - Parameter type: The type of crop to filter seed entities by.
+    /// - Returns: An array of `Crop` entities that match the specified crop type.
+    func getAllSeedEntities(for type: CropType) -> [Crop] {
+        guard let manager = manager else {
+            return []
+        }
+
+        let seedEntities = manager.getEntities(withComponentTypes: [SeedComponent.self, CropComponent.self])
+
+        let filteredCrops = seedEntities.compactMap { entity -> Crop? in
+            guard let cropComponent = entity.component(ofType: CropComponent.self),
+                  cropComponent.cropType == type,
+                  let crop = entity as? Crop
+            else {
+                return nil
+            }
+
+            return crop
+        }
+
+        return filteredCrops
+
+    }
 }
