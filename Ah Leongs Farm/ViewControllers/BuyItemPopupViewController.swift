@@ -198,16 +198,16 @@ class BuyItemPopupViewController: UIViewController {
 
     @objc private func decreaseQuantity() {
         if chosenQuantity > 1 {
-            chosenQuantity -= 1
-            updateUI()
+                chosenQuantity -= 1
         }
+        updateUI()
     }
 
     @objc private func increaseQuantity() {
         if (chosenQuantity + 1) * Int(item.buyPrice) <= currentCurrency {
             chosenQuantity += 1
-            updateUI()
         }
+        updateUI()
     }
 
     @objc private func confirmPurchase() {
@@ -223,19 +223,11 @@ class BuyItemPopupViewController: UIViewController {
         chosenQuantityLabel.text = "\(chosenQuantity)"
         priceLabel.text = "\(item.buyPrice * Double(chosenQuantity))"
 
-        // Disable the plus button if increasing the quantity would exceed available funds
-        if (chosenQuantity + 1) * Int(item.buyPrice) > currentCurrency {
-            plusButton.isEnabled = false
-            plusButton.alpha = 0.5
-        } else if chosenQuantity - 1 < 1 {
-            minusButton.isEnabled = false
-            minusButton.alpha = 0.5
-        } else {
-            plusButton.isEnabled = true
-            plusButton.alpha = 1.0
-            minusButton.isEnabled = true
-            minusButton.alpha = 1.0
-        }
+        plusButton.isEnabled = (chosenQuantity + 1) * Int(item.buyPrice) <= currentCurrency
+        plusButton.alpha = plusButton.isEnabled ? 1.0 : 0.5
+
+        minusButton.isEnabled = chosenQuantity > 1
+        minusButton.alpha = minusButton.isEnabled ? 1.0 : 0.5
     }
 }
 

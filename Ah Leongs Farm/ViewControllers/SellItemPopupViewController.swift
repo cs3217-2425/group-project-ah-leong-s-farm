@@ -209,17 +209,17 @@ class SellItemPopupViewController: UIViewController {
     // MARK: - Button Actions
 
     @objc private func decreaseQuantity() {
-        if chosenQuantity > 1 {
+        if chosenQuantity > 1 {  // ✅ Fix: Ensure it correctly stops at 1
             chosenQuantity -= 1
-            updateUI()
         }
+        updateUI()
     }
 
     @objc private func increaseQuantity() {
-        if chosenQuantity + 1 <= itemQuantity {
+        if chosenQuantity < itemQuantity {
             chosenQuantity += 1
-            updateUI()
         }
+        updateUI()
     }
 
     @objc private func confirmSale() {
@@ -236,18 +236,11 @@ class SellItemPopupViewController: UIViewController {
         chosenQuantityLabel.text = "\(chosenQuantity)"
         priceLabel.text = "\(item.sellPrice * Double(chosenQuantity))"
 
-        if chosenQuantity + 1 > itemQuantity {
-            plusButton.isEnabled = false
-            plusButton.alpha = 0.5
-        } else if chosenQuantity - 1 < 1 {
-            minusButton.isEnabled = false
-            minusButton.alpha = 0.5
-        } else {
-            plusButton.isEnabled = true
-            plusButton.alpha = 1.0
-            minusButton.isEnabled = true
-            minusButton.alpha = 1.0
-        }
+        plusButton.isEnabled = chosenQuantity < itemQuantity
+        plusButton.alpha = plusButton.isEnabled ? 1.0 : 0.5
+
+        minusButton.isEnabled = chosenQuantity > 1
+        minusButton.alpha = minusButton.isEnabled ? 1.0 : 0.5
     }
 }
 
