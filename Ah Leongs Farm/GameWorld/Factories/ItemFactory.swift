@@ -11,20 +11,23 @@ import GameplayKit
 class ItemFactory {
     static let itemToInitialisers: [ItemType: () -> GKEntity?] = [
         .bokChoySeed: {
-            createSeed(for: .bokChoy).flatMap { setupComponents($0, type: .bokChoySeed) }
-            },
+            createSeed(for: .bokChoy)
+                .setupSellComponent()
+        },
         .appleSeed: {
-            createSeed(for: .apple).flatMap { setupComponents($0, type: .appleSeed) }
-            },
+            createSeed(for: .apple)
+                .setupSellComponent()
+        },
         .potatoSeed: {
-            createSeed(for: .potato).flatMap { setupComponents($0, type: .potatoSeed) }
-             },
+            createSeed(for: .potato)
+                .setupSellComponent()
+        },
         .fertiliser: {
-            setupComponents(Fertiliser(), type: .fertiliser)
-            },
+            Fertiliser().setupSellComponent()
+        },
         .premiumFertiliser: {
-            setupComponents(PremiumFertiliser(), type: .premiumFertiliser)
-            }
+            PremiumFertiliser().setupSellComponent()
+        }
     ]
 
     private static let cropToSeedInitialisers: [CropType: () -> GKEntity] = [
@@ -33,22 +36,10 @@ class ItemFactory {
         .potato: { Potato.createSeed() }
     ]
 
-    private static func createSeed(for crop: CropType) -> GKEntity? {
-        cropToSeedInitialisers[crop]?()
-    }
-
-    private static func addItemComponent(_ entity: GKEntity, type: ItemType) -> GKEntity {
-        entity.addComponent(ItemComponent(itemType: type))
-        return entity
-    }
-
-    private static func setupComponents(_ entity: GKEntity, type: ItemType) -> GKEntity {
-        entity.addComponent(ItemComponent(itemType: type))
-
-        // Add SellComponent if the market can sell that item
-        if MarketInformation.sellableItems.contains(type) {
-            entity.addComponent(SellComponent(itemType: type))
+    private static func createSeed(for crop: CropType) -> GKEntity {
+        guard let seedInitialiser = cropToSeedInitialisers[crop] else {
+            fatalError("Seed initialiser for \(crop) not defined!")
         }
-        return entity
+        return seedInitialiser()
     }
 }
