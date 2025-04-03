@@ -18,15 +18,15 @@ struct PlantCropCriteria: QuestCriteria {
 
     func calculateValue(from eventData: EventData) -> Float {
 
-        guard let harvestData = eventData as? PlantCropEventData else {
+        guard let plantData = eventData as? PlantCropEventData else {
             return 0
         }
 
-        guard harvestData.type == cropType else {
+        guard plantData.cropType == cropType else {
             return 0
         }
 
-        return Float(harvestData.quantity)
+        return Float(1)
     }
 }
 

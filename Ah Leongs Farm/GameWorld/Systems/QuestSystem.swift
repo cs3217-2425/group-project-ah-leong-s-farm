@@ -73,7 +73,7 @@ class QuestSystem: ISystem {
             questUpdated = true
 
         }
-        
+
         if questUpdated && questComponent.isCompleted && questComponent.status != .completed {
             questComponent.status = .completed
             completeQuest(questComponent)

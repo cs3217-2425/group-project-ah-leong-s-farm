@@ -40,9 +40,11 @@ class QuestViewController: UIViewController {
     }()
 
     // MARK: - Initialization
-    init(activeQuests: [QuestViewModel], completedQuests: [QuestViewModel]) {
+    init(activeQuests: [QuestViewModel],
+         completedQuests: [QuestViewModel],
+         inactiveQuests: [QuestViewModel]) {
 
-        self.allQuests = completedQuests + activeQuests
+        self.allQuests = completedQuests + activeQuests + inactiveQuests
         // Find the index of the first active quest
         self.firstActiveQuestIndex = completedQuests.count
 
@@ -218,8 +220,7 @@ extension QuestViewController: UICollectionViewDelegate, UICollectionViewDataSou
         }
 
         let quest = allQuests[indexPath.item]
-        let isActiveQuest = indexPath.item >= firstActiveQuestIndex
-        cell.configure(with: quest, isActiveQuest: isActiveQuest)
+        cell.configure(with: quest)
 
         return cell
     }
@@ -331,20 +332,15 @@ class QuestCollectionViewCell: UICollectionViewCell {
         ])
     }
 
-    func configure(with quest: QuestViewModel, isActiveQuest: Bool) {
+    func configure(with quest: QuestViewModel) {
         titleLabel.text = quest.title
-
-        // Set status badge
-        if quest.isCompleted {
-            statusBadge.text = "Completed"
-            statusBadge.backgroundColor = UIColor.systemGreen
-        } else if isActiveQuest {
-            statusBadge.text = "Active"
-            statusBadge.backgroundColor = UIColor.systemBlue
-        } else {
-            statusBadge.text = "Inactive"
-            statusBadge.backgroundColor = UIColor.lightGray
-        }
+        let statusToUI: [QuestStatus: (text: String, color: UIColor)] = [
+            .active: (text: "Active", color: UIColor.systemBlue),
+            .inactive: (text: "Inactive", color: UIColor.lightGray),
+            .completed: (text: "Completed", color: UIColor.systemGreen)
+        ]
+        statusBadge.text = statusToUI[quest.status]?.text
+        statusBadge.backgroundColor = statusToUI[quest.status]?.color
 
         // Clear existing objective views
         objectiveViews.forEach { $0.removeFromSuperview() }
@@ -373,7 +369,7 @@ class QuestCollectionViewCell: UICollectionViewCell {
 // MARK: - ObjectiveView for displaying quest objectives with progress
 class ObjectiveView: UIView {
     private let descriptionLabel = UILabel()
-    private let progressBar = LevelProgressBar()
+    private let progressBar = ProgressBar()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -417,6 +413,8 @@ class ObjectiveView: UIView {
         let currentProgress = CGFloat(objective.progress)
         let maxProgress = CGFloat(objective.target)
 
-        progressBar.setProgress(currentProgress: currentProgress, maxProgress: maxProgress)
+        progressBar.setProgress(currentProgress: currentProgress,
+                                maxProgress: maxProgress,
+                                label: "")
     }
 }

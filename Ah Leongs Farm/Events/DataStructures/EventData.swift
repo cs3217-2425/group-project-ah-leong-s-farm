@@ -12,11 +12,6 @@ struct EndTurnEventData: EventData {
     var endTurnCount: Int = 1
 }
 
-struct PlantCropEventData: EventData {
-    var type: CropType
-    var quantity: Int
-}
-
 struct HarvestCropEventData: EventData {
     var type: CropType
     var quantity: Int

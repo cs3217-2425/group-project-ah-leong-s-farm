@@ -221,8 +221,11 @@ extension ViewController {
     @objc func questButtonTapped() {
         let activeQuests = gameManager.getActiveQuestViewModels()
         let completedQuests = gameManager.getCompletedQuestViewModels()
+        let inactiveQuests = gameManager.getInactiveQuestViewModels()
 
-        let questVC = QuestViewController(activeQuests: activeQuests, completedQuests: completedQuests)
+        let questVC = QuestViewController(activeQuests: activeQuests,
+                                          completedQuests: completedQuests,
+                                          inactiveQuests: inactiveQuests)
         present(questVC, animated: true)
     }
 }

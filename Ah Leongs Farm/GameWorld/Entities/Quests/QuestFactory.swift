@@ -206,8 +206,8 @@ class QuestFactory {
 
     }
 
-    private static func createDummyQuest(order: Int = Int.max,
-                                         days: Int) -> Quest {
+    private static func createDummyQuest(days: Int,
+                                         order: Int = Int.max) -> Quest {
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 50),
             RewardItemComponent(itemTypes: [.premiumFertiliser: 1])
@@ -228,11 +228,17 @@ class QuestFactory {
     static func createAllQuests() -> [Quest] {
         [
             createFarmStarterQuest(order: 1),
-            createBakChoyHarvestQuest(order: 2),
-            createSellQuestBakChoy(order: 3),
-            createFarmBusinessQuest(order: 4),
-            createAppleHarvestQuest(order: 5),
-            createReallyLongQuest(order: 6)
+            createDummyQuest(days: 5, order: 2),
+            createDummyQuest(days: 4, order: 3),
+            createDummyQuest(days: 3, order: 4),
+            createDummyQuest(days: 10, order: 5),
+            createDummyQuest(days: 11, order: 6),
+            createBakChoyHarvestQuest(order: 7),
+            createSellQuestBakChoy(order: 8),
+            createFarmBusinessQuest(order: 9),
+            createAppleHarvestQuest(order: 10),
+            createReallyLongQuest(order: 11),
+            createDummyQuest(days: 3, order: 12)
         ]
     }
 
