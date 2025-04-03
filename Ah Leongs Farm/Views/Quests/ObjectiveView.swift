@@ -21,14 +21,12 @@ class ObjectiveView: UIView {
     }
 
     private func setupViews() {
-        // Description label
         descriptionLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         descriptionLabel.textColor = .darkGray
         descriptionLabel.numberOfLines = 0
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(descriptionLabel)
 
-        // Progress bar
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         addSubview(progressBar)
 
@@ -48,7 +46,6 @@ class ObjectiveView: UIView {
     func configure(with objective: QuestObjectiveViewModel) {
         descriptionLabel.text = objective.description
 
-        // Calculate current and max progress values
         let currentProgress = CGFloat(objective.progress)
         let maxProgress = CGFloat(objective.target)
 

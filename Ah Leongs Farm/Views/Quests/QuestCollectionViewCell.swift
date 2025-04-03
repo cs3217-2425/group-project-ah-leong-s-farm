@@ -122,12 +122,10 @@ class QuestCollectionViewCell: UICollectionViewCell {
         statusBadge.text = statusToUI[quest.status]?.text
         statusBadge.backgroundColor = statusToUI[quest.status]?.color
 
-        // Clear existing objective views
         objectiveViews.forEach { $0.removeFromSuperview() }
         contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         objectiveViews.removeAll()
 
-        // Add objectives
         for objective in quest.objectives {
             let objectiveView = ObjectiveView()
             objectiveView.configure(with: objective)

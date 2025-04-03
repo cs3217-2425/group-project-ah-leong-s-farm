@@ -78,16 +78,13 @@ class QuestViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        // Force layout of collection view to ensure correct metrics
         collectionView.layoutIfNeeded()
 
         // Set initial scroll position only once
         if !initialScrollSet && !allQuests.isEmpty && firstActiveQuestIndex < allQuests.count {
-            // Position the collection view before showing
             scrollToQuestCentered(at: firstActiveQuestIndex, animated: false)
             initialScrollSet = true
 
-            // Show the view with a fade in animation
             UIView.animate(withDuration: 0.2) {
                 self.containerView.alpha = 1
             }
@@ -96,14 +93,12 @@ class QuestViewController: UIViewController {
 
     // MARK: - UI Setup
     private func setupView() {
-        // Semi-transparent background
         view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
 
         setupContainerView()
         setupHeaderView()
         setupCollectionView()
 
-        // Add tap gesture to dismiss
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backgroundTapped))
         tapGesture.delegate = self
         view.addGestureRecognizer(tapGesture)
@@ -121,7 +116,6 @@ class QuestViewController: UIViewController {
     }
 
     private func setupHeaderView() {
-        // Title label
         let titleLabel = UILabel()
         titleLabel.text = "Quests"
         titleLabel.font = UIFont(name: "Press Start 2P", size: 18) ?? UIFont.boldSystemFont(ofSize: 18)
@@ -130,7 +124,6 @@ class QuestViewController: UIViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(titleLabel)
 
-        // Close button
         let closeButton = UIButton(type: .system)
         closeButton.setTitle("X", for: .normal)
         closeButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
@@ -138,7 +131,6 @@ class QuestViewController: UIViewController {
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(closeButton)
 
-        // Separator line
         let separatorLine = UIView()
         separatorLine.backgroundColor = .lightGray
         separatorLine.translatesAutoresizingMaskIntoConstraints = false
@@ -183,14 +175,12 @@ class QuestViewController: UIViewController {
         let cellWidth = calculateCellWidth()
         let cellSpacing = layout.minimumLineSpacing
 
-        // Calculate position that will center the target cell
         let collectionViewWidth = collectionView.bounds.width
         let contentOffset = CGPoint(
             x: (cellWidth + cellSpacing) * CGFloat(index) - collectionView.contentInset.left,
             y: 0
         )
 
-        // Ensure offset is within content bounds
         let safeOffset = CGPoint(
             x: max(0, min(contentOffset.x, collectionView.contentSize.width - collectionViewWidth)),
             y: 0
@@ -204,7 +194,7 @@ class QuestViewController: UIViewController {
         let availableWidth = collectionView.bounds.width -
                              collectionView.contentInset.left -
                              collectionView.contentInset.right
-        let cellWidth = (availableWidth - 20) / 3 // 3 cells with spacing
+        let cellWidth = (availableWidth - 20) / 3
         return cellWidth
     }
 
@@ -220,7 +210,6 @@ class QuestViewController: UIViewController {
         }
     }
 
-    // Hide status bar
     override var prefersStatusBarHidden: Bool { true }
 }
 
@@ -257,7 +246,6 @@ extension QuestViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - UIGestureRecognizerDelegate
 extension QuestViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        // Don't dismiss if touch is inside the container
         let location = touch.location(in: view)
         return !containerView.frame.contains(location)
     }
