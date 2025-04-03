@@ -162,6 +162,8 @@ class QuestCollectionViewCell: UICollectionViewCell {
             contentStackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             contentStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 8),
             contentStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -8),
+            contentStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -16),
+
 
             // Rewards view constraints
             rewardsView.topAnchor.constraint(equalTo: contentStackView.bottomAnchor, constant: 16),

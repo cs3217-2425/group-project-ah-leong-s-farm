@@ -22,11 +22,11 @@ protocol RewardViewModel {
 struct RewardXPViewModel: RewardViewModel {
     var xpAmount: Float
     func getDisplayText() -> String {
-        return "\(Int(xpAmount)) XP"
+        "\(Int(xpAmount)) XP"
     }
 
     func getIconName() -> String {
-        return "xp"
+        "xp"
     }
 }
 
@@ -34,11 +34,11 @@ struct RewardCurrencyViewModel: RewardViewModel {
     let currencyType: CurrencyType
     let amount: Double
     func getDisplayText() -> String {
-        return "\(Int(amount)) \(currencyType)"
+        "\(Int(amount)) \(currencyType)"
     }
 
     func getIconName() -> String {
-        return "coin"
+        "coin"
     }
 }
 
