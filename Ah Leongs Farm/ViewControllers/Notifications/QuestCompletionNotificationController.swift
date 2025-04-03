@@ -5,7 +5,7 @@
 //  Created by Ma Yuchen on 4/4/25.
 //
 
-class QuestCompletionNotificationController: QuestCompletionListener {
+class QuestCompletionNotificationController {
 
     private let notificationManager: NotificationManager
 
