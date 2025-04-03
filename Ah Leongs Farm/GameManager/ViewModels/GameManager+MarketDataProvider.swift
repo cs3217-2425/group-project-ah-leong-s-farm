@@ -37,7 +37,7 @@ extension GameManager: MarketDataProvider {
             viewModels.append(viewModel)
         }
 
-        return viewModels.sorted { $0.quantity > $1.quantity }
+        return viewModels.sorted { $0.name < $1.name }
     }
 
     func getSellItemViewModels() -> [SellItemViewModel] {
