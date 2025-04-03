@@ -7,15 +7,8 @@
 
 import SpriteKit
 
-// MARK: - IRenderNode
 extension SKTileMapNode: IRenderNode {
-    var handler: InteractionHandler? {
-        get {
-            nil
-        }
-        // swiftlint:disable:next unused_setter_value
-        set {
-            // ignore
-        }
+    func visitTouchHandlerRegistry(registry: any TouchHandlerRegistry) {
+        // ignore
     }
 }

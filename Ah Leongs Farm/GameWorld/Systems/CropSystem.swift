@@ -54,8 +54,10 @@ class CropSystem: ISystem {
 
         manager?.removeComponent(ofType: SeedComponent.self, from: crop)
         manager?.removeComponent(ofType: ItemComponent.self, from: crop)
+        manager?.removeComponent(ofType: SellComponent.self, from: crop)
         manager?.addComponent(GrowthComponent(
             totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: crop)
+        manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
         cropSlot.crop = crop
         return true
     }
@@ -82,6 +84,7 @@ class CropSystem: ISystem {
         }
 
         manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
+        manager?.removeComponent(ofType: PositionComponent.self, from: crop)
         manager?.addComponent(HarvestedComponent(), to: crop)
         manager?.addComponent(SellComponent(itemType: crop.harvestedItemType), to: crop)
         manager?.addComponent(ItemComponent(itemType: crop.harvestedItemType), to: crop)
@@ -93,5 +96,31 @@ class CropSystem: ISystem {
         for crop in growingCrops {
             crop.currentGrowthTurn += 1
         }
+    }
+
+    /// Retrieves all seed entities of the specified crop type.
+    ///
+    /// - Parameter type: The type of crop to filter seed entities by.
+    /// - Returns: An array of `Crop` entities that match the specified crop type.
+    func getAllSeedEntities(for type: CropType) -> [Crop] {
+        guard let manager = manager else {
+            return []
+        }
+
+        let seedEntities = manager.getEntities(withComponentTypes: [SeedComponent.self, CropComponent.self])
+
+        let filteredCrops = seedEntities.compactMap { entity -> Crop? in
+            guard let cropComponent = entity.component(ofType: CropComponent.self),
+                  cropComponent.cropType == type,
+                  let crop = entity as? Crop
+            else {
+                return nil
+            }
+
+            return crop
+        }
+
+        return filteredCrops
+
     }
 }

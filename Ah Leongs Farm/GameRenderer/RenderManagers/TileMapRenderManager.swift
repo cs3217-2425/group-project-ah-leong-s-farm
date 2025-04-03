@@ -8,9 +8,11 @@
 import GameplayKit
 
 class TileMapRenderManager: IRenderManager {
+    /// hard-coded from `FarmTileSet.sks`
+    static let TileSize = CGSize(width: 80, height: 80)
+
     private static let TileSetName: String = "Farm Tile Set"
     private static let LandTileGroupName: String = "Land"
-    private static let TileSize = CGSize(width: 48, height: 48)
 
     func createNode(for entity: EntityType, in renderer: GameRenderer) {
         guard let gridComponent = entity.component(ofType: GridComponent.self),
@@ -27,7 +29,7 @@ class TileMapRenderManager: IRenderManager {
 
         tileMapNode.fill(with: TileMapRenderManager.LandTileGroupName)
         tileMapNode.enableAutomapping = false
-        tileMapNode.isUserInteractionEnabled = true
+        tileMapNode.isUserInteractionEnabled = false
 
         renderer.setRenderNode(for: ObjectIdentifier(entity), node: tileMapNode)
     }
