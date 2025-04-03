@@ -78,7 +78,7 @@ class MarketSystem: ISystem {
             manager?.addEntity(entity)
         }
         itemStocks[type] = currentStock - quantity
-        
+
         return true
     }
 
