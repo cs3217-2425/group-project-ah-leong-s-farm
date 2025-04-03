@@ -119,6 +119,7 @@ class SellItemPopupViewController: UIViewController {
     private func setupTitleLabel(in popupView: UIView) {
         titleLabel.text = "Sell \(item.name)"
         titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        titleLabel.textColor = UIColor.black
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         popupView.addSubview(titleLabel)
@@ -156,6 +157,7 @@ class SellItemPopupViewController: UIViewController {
 
         priceLabel.text = "\(Int(item.sellPrice))"
         priceLabel.font = UIFont.systemFont(ofSize: 18)
+        priceLabel.textColor = UIColor.black
         priceLabel.textAlignment = .left
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
 
@@ -167,7 +169,7 @@ class SellItemPopupViewController: UIViewController {
     private func setupItemQuantityLabel(in popupView: UIView) {
         itemQuantityLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         itemQuantityLabel.textColor = .white
-        itemQuantityLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
+        itemQuantityLabel.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         itemQuantityLabel.textAlignment = .center
         itemQuantityLabel.layer.cornerRadius = 8
         itemQuantityLabel.clipsToBounds = true
@@ -185,6 +187,7 @@ class SellItemPopupViewController: UIViewController {
 
         chosenQuantityLabel.text = "1"
         chosenQuantityLabel.textAlignment = .center
+        chosenQuantityLabel.textColor = UIColor.black
         chosenQuantityLabel.font = UIFont.systemFont(ofSize: 20)
         chosenQuantityLabel.translatesAutoresizingMaskIntoConstraints = false
         popupView.addSubview(chosenQuantityLabel)

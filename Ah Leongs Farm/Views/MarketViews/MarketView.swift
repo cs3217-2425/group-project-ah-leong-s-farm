@@ -87,6 +87,8 @@ class MarketView: UIView {
         control.translatesAutoresizingMaskIntoConstraints = false
         control.setTitleTextAttributes([.foregroundColor: UIColor.black], for: .normal)
         control.setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected)
+        control.backgroundColor = #colorLiteral(red: 0.8274509804, green: 0.8274509804, blue: 0.8274509804, alpha: 1)
+        control.selectedSegmentTintColor = #colorLiteral(red: 0.8274509804, green: 0.8274509804, blue: 0.8274509804, alpha: 1)
         return control
     }()
 

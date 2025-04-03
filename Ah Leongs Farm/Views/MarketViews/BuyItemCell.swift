@@ -32,27 +32,24 @@ class BuyItemCell: UICollectionViewCell {
                 contentView.bottomAnchor.constraint(equalTo: bottomAnchor)
             ])
 
-            contentView.backgroundColor = UIColor.systemGray6
+            contentView.backgroundColor = #colorLiteral(red: 0.8551856875, green: 0.8551856875, blue: 0.8551856875, alpha: 1)
             contentView.layer.cornerRadius = 8
             contentView.layer.masksToBounds = true
 
-            // Item Image View
             itemImageView.contentMode = .scaleAspectFit
             itemImageView.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview(itemImageView)
 
-            // Coin Image View
             coinImageView.image = UIImage(imageLiteralResourceName: "coin")
             coinImageView.contentMode = .scaleAspectFit
             coinImageView.translatesAutoresizingMaskIntoConstraints = false
             coinImageView.widthAnchor.constraint(equalToConstant: 16).isActive = true
             coinImageView.heightAnchor.constraint(equalToConstant: 16).isActive = true
 
-            // Price Label
             priceLabel.font = UIFont.systemFont(ofSize: 14)
+            priceLabel.textColor = UIColor.black
             priceLabel.textAlignment = .left
 
-            // Price Stack View
             priceStackView.axis = .horizontal
             priceStackView.alignment = .center
             priceStackView.spacing = 4
