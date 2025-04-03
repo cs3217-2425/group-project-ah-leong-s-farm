@@ -73,7 +73,7 @@ class GameManager {
         return energySystem.getCurrentEnergy()
     }
 
-    func ensureTargetActiveQuestCount(target: Int = 2) {
+    func ensureTargetActiveQuestCount(target: Int = 6) {
         guard let questSystem = gameWorld.getSystem(ofType: QuestSystem.self) else {
             return
         }

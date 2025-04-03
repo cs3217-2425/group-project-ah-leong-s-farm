@@ -28,6 +28,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setUpGameScene()
         createInventoryButton()
+        createQuestButton()
         setUpGameControls()
         setUpGameStatistics()
         gameManager.addGameObserver(self)
@@ -151,7 +152,7 @@ extension ViewController {
         view.addSubview(inventoryButton)
         NSLayoutConstraint.activate([
             inventoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            inventoryButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            inventoryButton.trailingAnchor.constraint(equalTo: view.centerXAnchor, constant: -20),
             inventoryButton.widthAnchor.constraint(equalToConstant: 120),
             inventoryButton.heightAnchor.constraint(equalToConstant: 40)
         ])
@@ -176,5 +177,39 @@ extension ViewController: GameSceneUpdateDelegate {
         for renderNode in gameRenderer.allRenderNodes where renderNode.handler !== self {
             renderNode.handler = self
         }
+    }
+}
+
+// MARK: Add quest functionalities
+extension ViewController {
+
+    func createQuestButton() {
+        let questButton = UIButton(type: .system)
+
+        questButton.setTitle("Quests", for: .normal)
+        questButton.backgroundColor = .systemGreen
+        questButton.setTitleColor(.white, for: .normal)
+        questButton.layer.cornerRadius = 10
+        questButton.translatesAutoresizingMaskIntoConstraints = false
+
+        questButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
+
+        view.addSubview(questButton)
+        NSLayoutConstraint.activate([
+            questButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            questButton.leadingAnchor.constraint(equalTo: view.centerXAnchor, constant: 20),
+            questButton.widthAnchor.constraint(equalToConstant: 120),
+            questButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
+
+        questButton.addTarget(self, action: #selector(questButtonTapped), for: .touchUpInside)
+    }
+
+    @objc func questButtonTapped() {
+        let activeQuests = gameManager.getActiveQuestViewModels()
+        let completedQuests = gameManager.getCompletedQuestViewModels()
+
+        let questVC = QuestViewController(activeQuests: activeQuests, completedQuests: completedQuests)
+        present(questVC, animated: true)
     }
 }

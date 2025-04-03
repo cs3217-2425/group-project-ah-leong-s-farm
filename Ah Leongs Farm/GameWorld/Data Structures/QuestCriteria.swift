@@ -10,6 +10,27 @@ protocol QuestCriteria {
 }
 
 /*
+ Calculates the quest progress based on planted crop quantity,
+ ensuring the event data matches the required crop type.
+ */
+struct PlantCropCriteria: QuestCriteria {
+    let cropType: CropType
+
+    func calculateValue(from eventData: EventData) -> Float {
+
+        guard let harvestData = eventData as? PlantCropEventData else {
+            return 0
+        }
+
+        guard harvestData.type == cropType else {
+            return 0
+        }
+
+        return Float(harvestData.quantity)
+    }
+}
+
+/*
  Calculates the quest progress based on harvested crop quantity,
  ensuring the event data matches the required crop type.
  */
