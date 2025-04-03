@@ -7,12 +7,15 @@
 
 import UIKit
 class QuestCollectionViewCell: UICollectionViewCell {
+    // MARK: - Properties
     private let scrollView = UIScrollView()
     private let contentStackView = UIStackView()
     private let titleLabel = UILabel()
     private let statusBadge = UILabel()
     private var objectiveViews: [ObjectiveView] = []
+    private let rewardsView = RewardsView()
 
+    // MARK: - Initialization
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -23,6 +26,52 @@ class QuestCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Configuration
+    func configure(with quest: QuestViewModel) {
+        titleLabel.text = quest.title
+
+        // Configure status badge
+        let statusToUI: [QuestStatus: (text: String, color: UIColor)] = [
+            .active: (text: "Active", color: UIColor.systemBlue),
+            .inactive: (text: "Inactive", color: UIColor.lightGray),
+            .completed: (text: "Completed", color: UIColor.systemGreen)
+        ]
+        statusBadge.text = statusToUI[quest.status]?.text
+        statusBadge.backgroundColor = statusToUI[quest.status]?.color
+
+        // Configure objectives
+        configureObjectives(with: quest.objectives)
+
+        // Configure rewards
+        rewardsView.configure(with: quest.rewards)
+    }
+
+    private func configureObjectives(with objectives: [QuestObjectiveViewModel]) {
+        // Clear existing objective views
+        objectiveViews.forEach { $0.removeFromSuperview() }
+        contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        objectiveViews.removeAll()
+
+        // Add new objectives
+        for objective in objectives {
+            let objectiveView = ObjectiveView()
+            objectiveView.configure(with: objective)
+            contentStackView.addArrangedSubview(objectiveView)
+            objectiveViews.append(objectiveView)
+        }
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        titleLabel.text = nil
+        statusBadge.text = nil
+        objectiveViews.forEach { $0.removeFromSuperview() }
+        contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        objectiveViews.removeAll()
+        rewardsView.reset()
+    }
+
+    // MARK: - UI Setup
     private func setupViews() {
         backgroundColor = .clear
 
@@ -31,6 +80,7 @@ class QuestCollectionViewCell: UICollectionViewCell {
         setupStatusBadge(in: cardView)
         setupTitleLabel()
         setupContentStackView()
+        setupRewardsView()
         setupConstraints(cardView: cardView)
     }
 
@@ -78,6 +128,11 @@ class QuestCollectionViewCell: UICollectionViewCell {
         scrollView.addSubview(contentStackView)
     }
 
+    private func setupRewardsView() {
+        rewardsView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(rewardsView)
+    }
+
     private func setupConstraints(cardView: UIView) {
         NSLayoutConstraint.activate([
             // Card view constraints
@@ -107,39 +162,12 @@ class QuestCollectionViewCell: UICollectionViewCell {
             contentStackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             contentStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 8),
             contentStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -8),
-            contentStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -12),
-            contentStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -16)
+
+            // Rewards view constraints
+            rewardsView.topAnchor.constraint(equalTo: contentStackView.bottomAnchor, constant: 16),
+            rewardsView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 8),
+            rewardsView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -8),
+            rewardsView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -12)
         ])
-    }
-
-    func configure(with quest: QuestViewModel) {
-        titleLabel.text = quest.title
-        let statusToUI: [QuestStatus: (text: String, color: UIColor)] = [
-            .active: (text: "Active", color: UIColor.systemBlue),
-            .inactive: (text: "Inactive", color: UIColor.lightGray),
-            .completed: (text: "Completed", color: UIColor.systemGreen)
-        ]
-        statusBadge.text = statusToUI[quest.status]?.text
-        statusBadge.backgroundColor = statusToUI[quest.status]?.color
-
-        objectiveViews.forEach { $0.removeFromSuperview() }
-        contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        objectiveViews.removeAll()
-
-        for objective in quest.objectives {
-            let objectiveView = ObjectiveView()
-            objectiveView.configure(with: objective)
-            contentStackView.addArrangedSubview(objectiveView)
-            objectiveViews.append(objectiveView)
-        }
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        titleLabel.text = nil
-        statusBadge.text = nil
-        objectiveViews.forEach { $0.removeFromSuperview() }
-        contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        objectiveViews.removeAll()
     }
 }

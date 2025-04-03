@@ -14,11 +14,60 @@ struct QuestObjectiveViewModel {
     let isCompleted: Bool
 }
 
+protocol RewardViewModel {
+    func getDisplayText() -> String
+    func getIconName() -> String
+}
+
+struct RewardXPViewModel: RewardViewModel {
+    var xpAmount: Float
+    func getDisplayText() -> String {
+        return "\(Int(xpAmount)) XP"
+    }
+
+    func getIconName() -> String {
+        return "xp"
+    }
+}
+
+struct RewardCurrencyViewModel: RewardViewModel {
+    let currencyType: CurrencyType
+    let amount: Double
+    func getDisplayText() -> String {
+        return "\(Int(amount)) \(currencyType)"
+    }
+
+    func getIconName() -> String {
+        return "coin"
+    }
+}
+
+struct RewardItemViewModel: RewardViewModel {
+    let itemType: ItemType
+    let quantity: Int
+
+    func getDisplayText() -> String {
+        guard let name = ItemToViewDataMap.itemTypeToDisplayName[itemType] else {
+            return "\(quantity) items"
+        }
+        return "\(quantity) × \(name)"
+    }
+
+    func getIconName() -> String {
+        if let imageName = ItemToViewDataMap.itemTypeToImage[itemType] {
+            return imageName
+        } else {
+            return "item"
+        }
+    }
+}
+
 struct QuestViewModel {
     let title: String
     let status: QuestStatus
     let objectives: [QuestObjectiveViewModel]
     let isCompleted: Bool
+    let rewards: [RewardViewModel]
 }
 
 protocol QuestDataProvider {

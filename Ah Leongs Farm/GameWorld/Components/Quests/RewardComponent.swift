@@ -9,4 +9,5 @@ import GameplayKit
 
 protocol RewardComponent where Self: GKComponent {
     func processReward(with queuer: RewardEventQueuer)
+    func accept(visitor: RewardDataRetrievalVisitor) -> [RewardViewModel]
 }

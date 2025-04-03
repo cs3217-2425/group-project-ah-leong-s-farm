@@ -104,7 +104,7 @@ extension QuestSystem: IEventObserver {
 }
 
 extension QuestSystem: RewardEventQueuer {
-    private func getAllRewardComponents(questEntity: Quest) -> [any RewardComponent] {
+    func getAllRewardComponents(questEntity: Quest) -> [any RewardComponent] {
         let components = questEntity.components
         return components.compactMap { component in
             component as? any RewardComponent

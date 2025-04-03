@@ -209,7 +209,10 @@ class QuestFactory {
                                          order: Int = Int.max) -> Quest {
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 50),
-            RewardItemComponent(itemTypes: [.premiumFertiliser: 1])
+            RewardItemComponent(itemTypes: [.premiumFertiliser: 1]),
+            RewardCurrencyComponent(currencies: [
+                .coin: 100
+            ])
         ]
 
         let survivalObjective = createSurvivalObjective(days: days)
