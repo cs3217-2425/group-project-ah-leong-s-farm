@@ -73,6 +73,30 @@ class GameManager {
         return energySystem.getCurrentEnergy()
     }
 
+    func getCurrentLevel() -> Int {
+        guard let levelSystem = gameWorld.getSystem(ofType: LevelSystem.self) else {
+            return 1
+        }
+
+        return levelSystem.getCurrentLevel()
+    }
+
+    func getCurrentXP() -> Float {
+        guard let levelSystem = gameWorld.getSystem(ofType: LevelSystem.self) else {
+            return 0
+        }
+
+        return levelSystem.getCurrentXP()
+    }
+
+    func getXPForCurrentLevel() -> Float {
+        guard let levelSystem = gameWorld.getSystem(ofType: LevelSystem.self) else {
+            return 0
+        }
+
+        return levelSystem.getXPForCurrentLevel()
+    }
+
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }

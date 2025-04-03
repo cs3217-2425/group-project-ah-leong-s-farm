@@ -11,6 +11,10 @@ class GameStatisticsView: UIView {
     private var dayLabel: UILabel?
     private var currencyLabel: UILabel?
     private var energyLabel: UILabel?
+    private var levelLabel: UILabel?
+    private var progressBar: LevelProgressBar?
+    private let XP_BAR_WIDTH = 280.0
+    private let XP_BAR_HEIGHT = 30.0
 
     init() {
         super.init(frame: .zero)
@@ -24,28 +28,49 @@ class GameStatisticsView: UIView {
 
     private func setupView() {
         backgroundColor = .clear
-        createDayLabel()
-        createCurrencyLabel()
-        createEnergyLabel()
+        let dayLabel = createDayLabel()
+        let currencyLabel = createCurrencyLabel()
+        let energyLabel = createEnergyLabel()
+        let levelLabel = createLevelLabel()
+        let xpBar = createXPBar()
+
+        let levelView = UIStackView(arrangedSubviews: [levelLabel, xpBar])
+        levelView.spacing = 8
+        levelView.alignment = .center
+        levelView.translatesAutoresizingMaskIntoConstraints = false
+
+        let usableItemsView = UIStackView(arrangedSubviews: [currencyLabel, energyLabel])
+        usableItemsView.axis = .vertical
+        usableItemsView.spacing = 8
+        usableItemsView.alignment = .leading
+        usableItemsView.translatesAutoresizingMaskIntoConstraints = false
+
+        let stackView = UIStackView(arrangedSubviews: [dayLabel, levelView, usableItemsView])
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.alignment = .leading
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            xpBar.widthAnchor.constraint(equalToConstant: XP_BAR_WIDTH),
+            xpBar.heightAnchor.constraint(equalToConstant: XP_BAR_HEIGHT)
+        ])
+
+        addSubview(stackView)
     }
 
-    private func createDayLabel() {
+    private func createDayLabel() -> UIView {
         let label = UILabel()
         label.textColor = .white
         label.textAlignment = .left
-        label.font = UIFont(name: "Press Start 2P", size: 26)
+        label.font = UIFont(name: "Press Start 2P", size: 32)
         label.translatesAutoresizingMaskIntoConstraints = false
-
-        addSubview(label)
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor)
-        ])
-
         self.dayLabel = label
+
+        return label
     }
 
-    private func createCurrencyLabel() {
+    private func createCurrencyLabel() -> UIView {
         let label = UILabel()
         label.textColor = .white
         label.font = UIFont(name: "Press Start 2P", size: 20)
@@ -66,15 +91,12 @@ class GameStatisticsView: UIView {
         stackView.alignment = .center
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        addSubview(stackView)
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 44)
-        ])
-
         self.currencyLabel = label
+
+        return stackView
     }
 
-    private func createEnergyLabel() {
+    private func createEnergyLabel() -> UIView {
         let label = UILabel()
         label.textColor = .white
         label.font = UIFont(name: "Press Start 2P", size: 20)
@@ -95,12 +117,27 @@ class GameStatisticsView: UIView {
         stackView.alignment = .center
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        addSubview(stackView)
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 76)
-        ])
-
         self.energyLabel = label
+
+        return stackView
+    }
+
+    private func createLevelLabel() -> UIView {
+        let label = UILabel()
+        label.textColor = .white
+        label.font = UIFont(name: "Press Start 2P", size: 16)
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        self.levelLabel = label
+
+        return label
+    }
+
+    private func createXPBar() -> UIView {
+        let progressBar = LevelProgressBar(frame: CGRect(x: 0, y: 0, width: XP_BAR_WIDTH, height: XP_BAR_HEIGHT))
+        self.progressBar = progressBar
+
+        return progressBar
     }
 
     func updateDayLabel(currentTurn: Int, maxTurns: Int) {
@@ -113,5 +150,13 @@ class GameStatisticsView: UIView {
 
     func updateEnergyLabel(currentEnergy: Int, maxEnergy: Int) {
         energyLabel?.text = "\(currentEnergy)/\(maxEnergy)"
+    }
+
+    func updateLevelLabel(level: Int) {
+        levelLabel?.text = "LVL.\(level)"
+    }
+
+    func updateXPLabel(currentXP: Float, levelXP: Float) {
+        progressBar?.setProgress(currentProgress: CGFloat(currentXP), maxProgress: CGFloat(levelXP))
     }
 }
