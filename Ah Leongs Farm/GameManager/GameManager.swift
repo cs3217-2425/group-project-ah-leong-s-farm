@@ -73,6 +73,13 @@ class GameManager {
         return energySystem.getCurrentEnergy()
     }
 
+    func ensureTargetActiveQuestCount(target: Int = 2) {
+        guard let questSystem = gameWorld.getSystem(ofType: QuestSystem.self) else {
+            return
+        }
+        questSystem.ensureTargetActiveQuestCount(target: target)
+    }
+
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }
@@ -96,6 +103,7 @@ class GameManager {
         for quest in quests {
             gameWorld.addEntity(quest)
         }
+        ensureTargetActiveQuestCount()
     }
 
     // MARK: - Entity Creation Helpers

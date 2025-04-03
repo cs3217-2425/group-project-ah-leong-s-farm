@@ -5,11 +5,15 @@ class QuestComponent: GKComponent {
     let title: String
     var status: QuestStatus
     var objectives: [QuestObjective]
+    let order: Int  // Lower number = earlier in sequence
 
-    init(title: String, objectives: [QuestObjective]) {
+    init(title: String,
+         objectives: [QuestObjective],
+         order: Int = Int.max) {
         self.title = title
-        self.status = .active
+        self.status = .inactive
         self.objectives = objectives
+        self.order = order
         super.init()
     }
 

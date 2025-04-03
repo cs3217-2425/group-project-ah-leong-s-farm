@@ -36,9 +36,20 @@ class QuestSystem: ISystem {
             return
         }
 
-        // Change the first inactive quest to active
-        if let firstInactiveQuest = quests.first(where: { $0.status == .inactive }) {
-            firstInactiveQuest.status = .active
+        let sortedInactiveQuests = quests
+            .filter { $0.status == .inactive }
+            .sorted { $0.order < $1.order }
+
+        if let nextQuest = sortedInactiveQuests.first {
+            nextQuest.status = .active
+        }
+    }
+
+    func ensureTargetActiveQuestCount(target: Int = 2) {
+        let activeQuestsCount = quests.filter { $0.status == .active }.count
+
+        for _ in 0..<(target - activeQuestsCount) {
+            moveToNextQuest()
         }
     }
 
