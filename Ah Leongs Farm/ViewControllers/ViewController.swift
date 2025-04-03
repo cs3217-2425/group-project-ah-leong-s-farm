@@ -128,10 +128,23 @@ extension ViewController: IGameObserver {
         gameStatisticsView?.updateEnergyLabel(currentEnergy: currentEnergy, maxEnergy: maxEnergy)
     }
 
+    private func updateLevelLabel() {
+        let currentLevel = gameManager.getCurrentLevel()
+        gameStatisticsView?.updateLevelLabel(level: currentLevel)
+    }
+
+    private func updateXPLabel() {
+        let currentXP = gameManager.getCurrentXP()
+        let currentLevelXP = gameManager.getXPForCurrentLevel()
+        gameStatisticsView?.updateXPLabel(currentXP: currentXP, levelXP: currentLevelXP)
+    }
+
     func observe(entities: Set<GKEntity>) {
         updateDayLabel()
         updateCurrencyLabel()
         updateEnergyLabel()
+        updateLevelLabel()
+        updateXPLabel()
     }
 }
 
@@ -174,8 +187,8 @@ extension ViewController: GameSceneUpdateDelegate {
         gameManager.update(timeInterval)
 
         // set handler for newly added render nodes
-        for renderNode in gameRenderer.allRenderNodes where renderNode.handler !== self {
-            renderNode.handler = self
+        for renderNode in gameRenderer.allRenderNodes {
+            acceptIntoTouchHandlerRegistry(node: renderNode)
         }
     }
 }

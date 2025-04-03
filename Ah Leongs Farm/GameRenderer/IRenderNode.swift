@@ -8,5 +8,5 @@
 import SpriteKit
 
 protocol IRenderNode where Self: SKNode {
-    var handler: InteractionHandler? { get set }
+    func visitTouchHandlerRegistry(registry: TouchHandlerRegistry)
 }
