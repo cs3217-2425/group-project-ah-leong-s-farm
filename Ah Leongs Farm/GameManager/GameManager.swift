@@ -89,12 +89,12 @@ class GameManager {
         return levelSystem.getCurrentXP()
     }
 
-    func getXPForNextLevel() -> Float {
+    func getXPForCurrentLevel() -> Float {
         guard let levelSystem = gameWorld.getSystem(ofType: LevelSystem.self) else {
             return 0
         }
 
-        return levelSystem.getXPForNextLevel()
+        return levelSystem.getXPForCurrentLevel()
     }
 
     private func setUpEntities() {

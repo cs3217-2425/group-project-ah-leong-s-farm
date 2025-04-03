@@ -134,8 +134,8 @@ extension ViewController: IGameObserver {
 
     private func updateXPLabel() {
         let currentXP = gameManager.getCurrentXP()
-        let nextLevelXP = gameManager.getXPForNextLevel()
-        gameStatisticsView?.updateXPLabel(currentXP: currentXP, levelXP: nextLevelXP)
+        let currentLevelXP = gameManager.getXPForCurrentLevel()
+        gameStatisticsView?.updateXPLabel(currentXP: currentXP, levelXP: currentLevelXP)
     }
 
     func observe(entities: Set<GKEntity>) {
