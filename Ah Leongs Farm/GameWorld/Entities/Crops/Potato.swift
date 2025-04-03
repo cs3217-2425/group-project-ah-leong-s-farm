@@ -28,6 +28,9 @@ class Potato: GKEntity, Crop {
 
         let healthComponent = HealthComponent()
         addComponent(healthComponent)
+
+        let spriteComponent = SpriteComponent(visitor: self)
+        addComponent(spriteComponent)
     }
 
     static func createSeed() -> GKEntity {
@@ -35,5 +38,11 @@ class Potato: GKEntity, Crop {
         potato.addComponent(SeedComponent())
         potato.addComponent(ItemComponent(itemType: .potatoSeed))
         return potato
+    }
+}
+
+extension Potato: SpriteRenderManagerVisitor {
+    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.createNodeForEntity(potato: self, in: renderer)
     }
 }

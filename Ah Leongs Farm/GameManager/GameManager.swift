@@ -84,7 +84,7 @@ class GameManager {
 
         addStartingItems()
 
-        let farmLand = FarmLand(rows: 20, columns: 20)
+        let farmLand = FarmLand(rows: 10, columns: 10)
         gameWorld.addEntity(farmLand)
         if let gridComponent = farmLand.component(ofType: GridComponent.self) {
             setUpPlotEntities(using: gridComponent)
