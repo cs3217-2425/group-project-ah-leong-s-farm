@@ -20,16 +20,7 @@ struct PlantCropEvent: GameEvent {
             return nil
         }
 
-        guard let inventorySystem = context.getSystem(ofType: InventorySystem.self) else {
-            return nil
-        }
-
-        guard let inventoryComponent = inventorySystem.getAllComponents()
-            .first(where: { seedToCrop[$0.itemType] == cropType }) else {
-            return nil
-        }
-
-        guard let crop = inventoryComponent.entity as? Crop else {
+        guard let crop = cropSystem.getAllSeedEntities(for: cropType).first else {
             return nil
         }
 
