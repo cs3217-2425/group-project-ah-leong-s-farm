@@ -46,7 +46,7 @@ extension GameManager: QuestDataProvider, RewardDataRetrievalVisitor {
     }
 
     internal func retrieveData(component: RewardXPComponent) -> [RewardViewModel] {
-        return [RewardXPViewModel(xpAmount: component.amount)]
+        [RewardXPViewModel(xpAmount: component.amount)]
     }
 
     internal func retrieveData(component: RewardCurrencyComponent) -> [RewardViewModel] {
