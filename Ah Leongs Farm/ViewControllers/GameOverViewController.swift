@@ -16,6 +16,25 @@ class GameOverViewController: UIViewController {
         return view
     }()
 
+    private var titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Press Start 2P", size: 32)
+        label.textColor = UIColor.black
+        label.textAlignment = .center
+        label.text = "Game Over"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private var scoreLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Press Start 2P", size: 20)
+        label.textColor = UIColor.black
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
@@ -49,19 +68,23 @@ class GameOverViewController: UIViewController {
     }
 
     private func setUpContent() {
-        let titleLabel = UILabel()
-        titleLabel.text = "Game Over"
-        titleLabel.font = UIFont(name: "Press Start 2P", size: 32)
-        titleLabel.textColor = UIColor.black
-        titleLabel.textAlignment = .center
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(titleLabel)
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, scoreLabel])
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        containerView.addSubview(stackView)
 
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 50)
+            stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            stackView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
         ])
+    }
+
+    private func setScore(_ score: Int) {
+        scoreLabel.text = "Score: \(score)"
     }
 }
 
@@ -70,6 +93,6 @@ extension GameOverViewController: IEventObserver {
         guard let eventData = eventData as? GameOverEventData else {
             return
         }
-        print(eventData)
+        setScore(eventData.score)
     }
 }
