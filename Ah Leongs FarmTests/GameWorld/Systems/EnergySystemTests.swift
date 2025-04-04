@@ -11,104 +11,73 @@ import GameplayKit
 
 final class EnergySystemTests: XCTestCase {
 
-    private var energySystem: EnergySystem?
-    private var gameEntity: GKEntity?
-    private var energyComponent: EnergyComponent?
+    var energySystem: EnergySystem?
+    var manager: EntityManager?
 
     override func setUp() {
         super.setUp()
-        energySystem = EnergySystem()
-        gameEntity = GKEntity()
-        energyComponent = EnergyComponent(maxEnergy: 10)
-
-        guard let gameEntity = gameEntity, let energyComponent = energyComponent else {
-            XCTFail("Failed to create entity or component")
-            return
-        }
-
-        gameEntity.addComponent(energyComponent)
-        energySystem?.addComponent(foundIn: gameEntity)
+        manager = EntityManager()
+        energySystem = EnergySystem(for: manager!)
+        manager?.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }
 
     override func tearDown() {
         energySystem = nil
-        gameEntity = nil
-        energyComponent = nil
         super.tearDown()
     }
 
-    private func validateSetup() -> (EnergySystem, GKEntity, EnergyComponent)? {
-        guard let energySystem = energySystem,
-              let gameEntity = gameEntity,
-              let energyComponent = energyComponent else {
+    private func validateSetup() -> (EnergySystem)? {
+        guard let energySystem = energySystem else {
             XCTFail("Test setup failed: Missing system, entity, or component")
             return nil
         }
-        return (energySystem, gameEntity, energyComponent)
+        return (energySystem)
     }
 
     private func createEmptySystem() -> EnergySystem {
-        EnergySystem()
+        manager = EntityManager()
+        return EnergySystem(for: manager!)
     }
 
     func testInitialization() {
-        let system = EnergySystem()
+        let system = EnergySystem(for: EntityManager())
         XCTAssertNotNil(system)
-        XCTAssertEqual(system.components.count, 0)
-    }
-
-    func testAddComponent() {
-        let system = createEmptySystem()
-        let entity = GKEntity()
-        let component = EnergyComponent(maxEnergy: 5)
-        entity.addComponent(component)
-
-        system.addComponent(foundIn: entity)
-
-        XCTAssertEqual(system.components.count, 1)
-        XCTAssertTrue(system.components.contains(component))
-    }
-
-    func testRemoveComponent() {
-        guard let setup = validateSetup() else {
-            return
-        }
-        let (energySystem, gameEntity, _) = setup
-
-        energySystem.removeComponent(foundIn: gameEntity)
-
-        XCTAssertEqual(energySystem.components.count, 0)
     }
 
     func testUseEnergy_WithSufficientEnergy_ShouldSucceed() {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
 
         let success = energySystem.useEnergy(amount: 5)
 
         XCTAssertTrue(success)
-        XCTAssertEqual(energyComponent.currentEnergy, 5)
+        XCTAssertEqual(energySystem.getCurrentEnergy(), 5)
     }
 
     func testUseEnergy_WithExactlyAvailableEnergy_ShouldSucceed() {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
 
         let success = energySystem.useEnergy(amount: 10)
 
         XCTAssertTrue(success)
-        XCTAssertEqual(energyComponent.currentEnergy, 0)
+        XCTAssertEqual(energySystem.getCurrentEnergy(), 0)
     }
 
     func testUseEnergy_WithInsufficientEnergy_ShouldFail() {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
+        
+        guard let energyComponent = manager?.getSingletonComponent(ofType: EnergyComponent.self) else {
+            XCTFail("EnergyComponent not found")
+            return
+        }
 
         energyComponent.currentEnergy = 5
 
@@ -122,26 +91,27 @@ final class EnergySystemTests: XCTestCase {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
 
         let success = energySystem.useEnergy(amount: 0)
 
         XCTAssertTrue(success)
-        XCTAssertEqual(energyComponent.currentEnergy, 10)
+        XCTAssertEqual(energySystem.getCurrentEnergy(), 10)
     }
 
     func testUseEnergy_WithNegativeAmount_ShouldFailSafely() {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
 
         let success = energySystem.useEnergy(amount: -5)
 
         XCTAssertFalse(success)
-        XCTAssertEqual(energyComponent.currentEnergy, 10)
+        XCTAssertEqual(energySystem.getCurrentEnergy(), 10)
     }
 
+    
     func testUseEnergy_WithNoComponents_ShouldReturnFalse() {
         let emptySystem = createEmptySystem()
 
@@ -154,7 +124,12 @@ final class EnergySystemTests: XCTestCase {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
+
+        guard let energyComponent = manager?.getSingletonComponent(ofType: EnergyComponent.self) else {
+            XCTFail("EnergyComponent not found")
+            return
+        }
 
         energyComponent.currentEnergy = 3
 
@@ -167,7 +142,12 @@ final class EnergySystemTests: XCTestCase {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
+
+        guard let energyComponent = manager?.getSingletonComponent(ofType: EnergyComponent.self) else {
+            XCTFail("EnergyComponent not found")
+            return
+        }
 
         energyComponent.currentEnergy = 0
 
@@ -180,11 +160,11 @@ final class EnergySystemTests: XCTestCase {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
 
         energySystem.replenishEnergy()
 
-        XCTAssertEqual(energyComponent.currentEnergy, 10)
+        XCTAssertEqual(energySystem.getCurrentEnergy(), 10)
     }
 
     func testReplenishEnergy_WithNoComponents_ShouldHandleSafely() {
@@ -197,34 +177,34 @@ final class EnergySystemTests: XCTestCase {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
 
         energySystem.increaseMaxEnergy(by: 5)
 
-        XCTAssertEqual(energyComponent.maxEnergy, 15)
-        XCTAssertEqual(energyComponent.currentEnergy, 10)
+        XCTAssertEqual(energySystem.getMaxEnergy(), 15)
+        XCTAssertEqual(energySystem.getCurrentEnergy(), 10)
     }
 
     func testIncreaseMaxEnergy_WithZeroAmount_ShouldNotChange() {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
 
         energySystem.increaseMaxEnergy(by: 0)
 
-        XCTAssertEqual(energyComponent.maxEnergy, 10)
+        XCTAssertEqual(energySystem.getMaxEnergy(), 10)
     }
 
     func testIncreaseMaxEnergy_WithNegativeAmount_ShouldHandleSafely() {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
 
         energySystem.increaseMaxEnergy(by: -5)
 
-        XCTAssertEqual(energyComponent.maxEnergy, 5)
+        XCTAssertEqual(energySystem.getMaxEnergy(), 5)
     }
 
     func testIncreaseMaxEnergy_WithNoComponents_ShouldHandleSafely() {
@@ -237,7 +217,12 @@ final class EnergySystemTests: XCTestCase {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
+
+        guard let energyComponent = manager?.getSingletonComponent(ofType: EnergyComponent.self) else {
+            XCTFail("EnergyComponent not found")
+            return
+        }
 
         energyComponent.currentEnergy = 7
 
@@ -258,7 +243,7 @@ final class EnergySystemTests: XCTestCase {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, _) = setup
+        let (energySystem) = setup
 
         let maxEnergy = energySystem.getMaxEnergy()
 
@@ -273,31 +258,16 @@ final class EnergySystemTests: XCTestCase {
         XCTAssertEqual(maxEnergy, 0)
     }
 
-    func testMultipleComponentsSupport() {
-        guard let setup = validateSetup() else {
-            return
-        }
-        let (energySystem, _, _) = setup
-
-        let secondEntity = GKEntity()
-        let secondComponent = EnergyComponent(maxEnergy: 20)
-        secondEntity.addComponent(secondComponent)
-        energySystem.addComponent(foundIn: secondEntity)
-
-        XCTAssertEqual(energySystem.components.count, 2)
-
-        let currentEnergy = energySystem.getCurrentEnergy()
-        let maxEnergy = energySystem.getMaxEnergy()
-
-        XCTAssertEqual(currentEnergy, 10)
-        XCTAssertEqual(maxEnergy, 10)
-    }
-
     func testSequentialOperations() {
         guard let setup = validateSetup() else {
             return
         }
-        let (energySystem, _, energyComponent) = setup
+        let (energySystem) = setup
+        
+        guard let energyComponent = manager?.getSingletonComponent(ofType: EnergyComponent.self) else {
+            XCTFail("EnergyComponent not found")
+            return
+        }
 
         XCTAssertEqual(energyComponent.currentEnergy, 10)
         XCTAssertEqual(energyComponent.maxEnergy, 10)

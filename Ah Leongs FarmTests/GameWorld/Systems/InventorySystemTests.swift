@@ -10,193 +10,69 @@ import GameplayKit
 @testable import Ah_Leongs_Farm
 
 final class InventorySystemTests: XCTestCase {
-    var inventorySystem = InventorySystem()
-    var inventoryComponent = InventoryComponent()
+    var inventorySystem: InventorySystem!
+    var manager: EntityManager!
 
     override func setUpWithError() throws {
-        inventorySystem = InventorySystem()
-        inventoryComponent = InventoryComponent()
-        inventorySystem.addComponent(inventoryComponent)
+        manager = EntityManager()
+        inventorySystem = InventorySystem(for: manager)
+    }
+
+    override func tearDownWithError() throws {
+        inventorySystem = nil
+        manager = nil
     }
 
     func testInit_createsInventorySystem() {
-        let inventorySystem = InventorySystem()
+        let inventorySystem = InventorySystem(for: manager)
 
         XCTAssertNotNil(inventorySystem)
     }
 
-    func testAddItem_noInventoryComponent_returnsFalse() {
-        let inventorySystem = InventorySystem()
-        let isItemAdded = inventorySystem.addItem(GKEntity())
-
-        XCTAssertFalse(isItemAdded)
+    func testAddItem_createsCorrectQuantity() {
+        inventorySystem.addItem(type: .bokChoySeed, quantity: 2)
+        XCTAssertEqual(inventorySystem.getNumberOfItems(of: .bokChoySeed), 2)
     }
 
-    func testAddItem_entityWithNoItemComponent_returnsFalse() {
-        let entity = GKEntity()
-        let isItemAdded = inventorySystem.addItem(entity)
-
-        XCTAssertFalse(isItemAdded)
-        XCTAssertEqual(inventoryComponent.items.count, 0)
+    func testRemoveItem_removesCorrectItem() {
+        inventorySystem.addItem(type: .bokChoySeed, quantity: 1)
+        guard let item = inventorySystem.getAllComponents().first else {
+            XCTFail("Failed to retrieve item")
+            return
+        }
+        inventorySystem.removeItem(item)
+        XCTAssertFalse(inventorySystem.hasItem(item))
     }
 
-    func testAddItem_nonStackableEntityWithItemComponent_returnsTrue() {
-        let entity1 = GKEntity()
-        entity1.addComponent(ItemComponent(itemType: .premiumFertiliser))
-
-        let entity2 = GKEntity()
-        entity2.addComponent(ItemComponent(itemType: .premiumFertiliser))
-
-        let isItemAdded1 = inventorySystem.addItem(entity1)
-        let isItemAdded2 = inventorySystem.addItem(entity2)
-
-        XCTAssertTrue(isItemAdded1)
-        XCTAssertTrue(isItemAdded2)
-        XCTAssertEqual(inventoryComponent.items.count, 2)
-    }
-
-    func testAddItem_stackableEntityWithItemComponent_returnsTrue() {
-        let entity1 = GKEntity()
-        entity1.addComponent(ItemComponent(itemType: .bokChoySeed))
-
-        let entity2 = GKEntity()
-        entity2.addComponent(ItemComponent(itemType: .bokChoySeed))
-
-        let isItemAdded1 = inventorySystem.addItem(entity1)
-        let isItemAdded2 = inventorySystem.addItem(entity2)
-
-        XCTAssertTrue(isItemAdded1)
-        XCTAssertTrue(isItemAdded2)
-        XCTAssertEqual(inventoryComponent.items.count, 1)
-    }
-
-    func testRemoveItem_existingEntity_removesEntity() {
-        let entity = GKEntity()
-        entity.addComponent(ItemComponent(itemType: .bokChoySeed))
-
-        inventorySystem.addItem(entity)
-        inventorySystem.removeItem(entity)
-
-        XCTAssertEqual(inventoryComponent.items.count, 0)
-    }
-
-    func testRemoveItem_nonExistingEntity_removesEntity() {
-        let entity1 = GKEntity()
-        entity1.addComponent(ItemComponent(itemType: .bokChoySeed))
-
-        let entity2 = GKEntity()
-        entity2.addComponent(ItemComponent(itemType: .bokChoyHarvested))
-
-        inventorySystem.addItem(entity1)
-        inventorySystem.removeItem(entity2)
-
-        XCTAssertEqual(inventoryComponent.items.count, 1)
-    }
-
-    func testRemoveItem_existingTypeRemovesAll_removesEntity() {
-        let entity = GKEntity()
-        entity.addComponent(ItemComponent(itemType: .bokChoySeed))
-
-        inventorySystem.addItem(entity)
-        let isRemoved = inventorySystem.removeItem(of: .bokChoySeed)
-
-        XCTAssertTrue(isRemoved)
-        XCTAssertEqual(inventoryComponent.items.count, 0)
-    }
-
-    func testRemoveItem_nonExistingType_doesNotRemoveEntity() {
-        let entity = GKEntity()
-        entity.addComponent(ItemComponent(itemType: .bokChoySeed))
-
-        inventorySystem.addItem(entity)
-        let isRemoved = inventorySystem.removeItem(of: .bokChoyHarvested)
-
-        XCTAssertFalse(isRemoved)
-        XCTAssertEqual(inventoryComponent.items.count, 1)
-    }
-
-    func testRemoveItem_existingTypeRemovesSome_doesNotRemoveEntity() {
-        let entity1 = GKEntity()
-        entity1.addComponent(ItemComponent(itemType: .bokChoySeed))
-
-        let entity2 = GKEntity()
-        entity2.addComponent(ItemComponent(itemType: .bokChoySeed))
-
-        inventorySystem.addItem(entity1)
-        inventorySystem.addItem(entity2)
-        let isRemoved = inventorySystem.removeItem(of: .bokChoySeed)
-
-        XCTAssertTrue(isRemoved)
-        XCTAssertEqual(inventoryComponent.items.count, 1)
+    func testHasItem_returnsCorrectValue() {
+        inventorySystem.addItem(type: .premiumFertiliser, quantity: 1)
+        XCTAssertTrue(inventorySystem.hasItem(of: .premiumFertiliser))
+        XCTAssertFalse(inventorySystem.hasItem(of: .bokChoySeed))
     }
 
     func testHasItem_existingItem_returnsTrue() {
-        let entity = GKEntity()
-        entity.addComponent(ItemComponent(itemType: .bokChoySeed))
-
-        inventorySystem.addItem(entity)
-        let hasItem = inventorySystem.hasItem(entity)
-
-        XCTAssertTrue(hasItem)
+        inventorySystem.addItem(type: .premiumFertiliser, quantity: 1)
+        XCTAssertTrue(inventorySystem.hasItem(of: .premiumFertiliser))
     }
 
     func testHasItem_nonExistingItem_returnsFalse() {
-        let entity = GKEntity()
-        entity.addComponent(ItemComponent(itemType: .bokChoySeed))
-
-        let hasItem = inventorySystem.hasItem(entity)
-
-        XCTAssertFalse(hasItem)
+        inventorySystem.addItem(type: .bokChoySeed, quantity: 1)
+        XCTAssertFalse(inventorySystem.hasItem(of: .premiumFertiliser))
     }
 
-    func testGetAllEntities_noEntities_returnsEmptyArray() {
-        let allEntities = inventorySystem.getAllEntities()
+    func testGetAllComponents_noComponents_returnsEmptyArray() {
+        let allComponents = inventorySystem.getAllComponents()
 
-        XCTAssertEqual(allEntities, [])
+        XCTAssertEqual(allComponents, [])
     }
 
-    func testGetAllEntities_hasEntities_returnsEntitiesSet() {
-        let entity1 = GKEntity()
-        entity1.addComponent(ItemComponent(itemType: .premiumFertiliser))
-
-        let entity2 = GKEntity()
-        entity2.addComponent(ItemComponent(itemType: .premiumFertiliser))
-
-        inventorySystem.addItem(entity1)
-        inventorySystem.addItem(entity2)
-        let allEntities = inventorySystem.getAllEntities()
-
-        XCTAssertEqual(allEntities.count, 2)
-        XCTAssertTrue(allEntities.contains(entity1))
-        XCTAssertTrue(allEntities.contains(entity2))
-    }
-
-    func testGetNumberOfItems_twoStackableItem_returnsCorrectNumber() {
-        let entity1 = GKEntity()
-        entity1.addComponent(ItemComponent(itemType: .bokChoySeed))
-
-        let entity2 = GKEntity()
-        entity2.addComponent(ItemComponent(itemType: .bokChoySeed))
-
-        inventorySystem.addItem(entity1)
-        inventorySystem.addItem(entity2)
-        let numOfItems = inventorySystem.getNumberOfItems(of: .bokChoySeed)
-
-        XCTAssertEqual(numOfItems, 2)
-    }
-
-    func testGetNumberOfItems_twoUnstackableItem_returnsCorrectNumber() {
-        let entity1 = GKEntity()
-        entity1.addComponent(ItemComponent(itemType: .premiumFertiliser))
-
-        let entity2 = GKEntity()
-        entity2.addComponent(ItemComponent(itemType: .premiumFertiliser))
-
-        inventorySystem.addItem(entity1)
-        inventorySystem.addItem(entity2)
-        let numOfItems = inventorySystem.getNumberOfItems(of: .premiumFertiliser)
-
-        XCTAssertEqual(numOfItems, 2)
+    func testGetItemsByQuantity_returnsCorrectMapping() {
+        inventorySystem.addItem(type: .bokChoySeed, quantity: 2)
+        inventorySystem.addItem(type: .premiumFertiliser, quantity: 1)
+        
+        let itemsByQuantity = inventorySystem.getItemsByQuantity()
+        XCTAssertEqual(itemsByQuantity[.bokChoySeed], 2)
+        XCTAssertEqual(itemsByQuantity[.premiumFertiliser], 1)
     }
 
     func testGetNumberOfItems_noItems_returnsZero() {

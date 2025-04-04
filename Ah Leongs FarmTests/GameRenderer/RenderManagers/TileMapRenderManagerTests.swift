@@ -5,24 +5,24 @@ import GameplayKit
 class TileMapRenderManagerTests: XCTestCase {
 
     func testCreateNode() {
-        let TileMapRenderManager = TileMapRenderManager()
+        let tileMapRenderManager = TileMapRenderManager()
         let entity = GKEntity()
         let gridComponent = GridComponent(rows: 3, columns: 3)
         entity.addComponent(gridComponent)
 
-        let scene = SKScene(size: CGSize(width: 100, height: 100))
-        TileMapRenderManager.createNode(of: entity, in: scene)
+        let renderer = GameRenderer()
+        tileMapRenderManager.createNode(for: entity, in: renderer)
 
-        XCTAssertEqual(scene.children.count, 1)
+        XCTAssertEqual(renderer.allRenderNodes.count, 1)
     }
 
     func testCreateNodeWithoutGridComponent() {
-        let TileMapRenderManager = TileMapRenderManager()
+        let tileMapRenderManager = TileMapRenderManager()
         let entity = GKEntity()
 
-        let scene = SKScene(size: CGSize(width: 100, height: 100))
-        TileMapRenderManager.createNode(of: entity, in: scene)
+        let renderer = GameRenderer()
+        tileMapRenderManager.createNode(for: entity, in: renderer)
 
-        XCTAssertTrue(scene.children.isEmpty)
+        XCTAssertTrue(renderer.allRenderNodes.isEmpty)
     }
 }
