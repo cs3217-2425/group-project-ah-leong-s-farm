@@ -12,6 +12,10 @@ struct EndTurnEventData: EventData {
     var endTurnCount: Int = 1
 }
 
+struct GameOverEventData: EventData {
+    var score: Int
+}
+
 struct HarvestCropEventData: EventData {
     var type: CropType
     var quantity: Int

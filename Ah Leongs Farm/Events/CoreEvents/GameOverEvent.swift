@@ -25,7 +25,7 @@ struct GameOverEvent: GameEvent {
         print("Final coins: \(finalCoins)")
         print("Final score: \(finalScore)")
 
-        return nil
+        return GameOverEventData(score: finalScore)
     }
 
     private func calculateScore(turns: Int, coins: Double) -> Int {

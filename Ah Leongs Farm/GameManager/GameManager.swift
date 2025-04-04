@@ -29,6 +29,10 @@ class GameManager {
         gameObservers.removeAll(where: { $0 === observer })
     }
 
+    func registerEventObserver(_ observer: any IEventObserver) {
+        gameWorld.registerEventObserver(observer)
+    }
+
     func nextTurn() {
         gameWorld.queueEvent(EndTurnEvent())
     }

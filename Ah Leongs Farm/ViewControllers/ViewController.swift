@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     private var gameScene: GameScene?
     private var gameControlsView: GameControlsView?
     private var gameStatisticsView: GameStatisticsView?
+    private var gameOverViewController = GameOverViewController()
 
     required init?(coder: NSCoder) {
         gameManager = GameManager()
@@ -31,6 +32,7 @@ class ViewController: UIViewController {
         setUpGameControls()
         setUpGameStatistics()
         gameManager.addGameObserver(self)
+        gameManager.registerEventObserver(gameOverViewController)
     }
 
     private func setUpGameStatistics() {
@@ -91,6 +93,9 @@ class ViewController: UIViewController {
 extension ViewController: GameControlsViewDelegate {
     func nextDayButtonTapped() {
         gameManager.nextTurn()
+
+        // TODO: Logic for presenting the gameOverController
+        // present(gameOverViewController, animated: true)
     }
 
     func quitButtonTapped() {
