@@ -32,4 +32,32 @@ class GridSystem: ISystem {
 
         return true
     }
+
+    /// Removes plot and crop, if any, from the grid at the specified row and column.
+    /// - Parameters:
+    /// - row: The row to remove the plot from.
+    /// - column: The column to remove the plot from.
+    /// - Returns: True if the plot was removed, false otherwise.
+    func razePlot(row: Int, column: Int) -> Bool {
+        guard let gridComponent = gridComponent,
+              let plot = gridComponent.getEntity(row: row, column: column) as? Plot
+        else {
+            return false
+        }
+
+        gridComponent.setEntity(nil, row: row, column: column)
+        manager?.removeEntity(plot)
+
+        // Remove the crop from the entity manager if it exists
+        if let cropSlotComponent = plot.component(ofType: CropSlotComponent.self),
+           let crop = cropSlotComponent.crop {
+            manager?.removeEntity(crop)
+        }
+
+        return true
+    }
+
+    func getPlot(row: Int, column: Int) -> Plot? {
+        gridComponent?.getEntity(row: row, column: column) as? Plot
+    }
 }

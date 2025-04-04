@@ -1,15 +1,13 @@
 import UIKit
 
 class GridActionViewController: UIViewController {
-    private let row: Int
-    private let column: Int
+    private let gridViewModel: GridViewModel
     private weak var gameRenderer: GameRenderer?
     private weak var eventQueue: (any EventQueueable)?
     private var actionButtons: [UIButton] = []
 
-    init(row: Int, column: Int, renderer: GameRenderer, eventQueue: any EventQueueable) {
-        self.row = row
-        self.column = column
+    init(gridViewModel: GridViewModel, renderer: GameRenderer, eventQueue: any EventQueueable) {
+        self.gridViewModel = gridViewModel
         self.gameRenderer = renderer
         self.eventQueue = eventQueue
         super.init(nibName: nil, bundle: nil)
@@ -26,6 +24,7 @@ class GridActionViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         setupActionButtons()
+        setupSelectedPlotLabel()
         addDismissTapGesture()
     }
 
@@ -35,9 +34,7 @@ class GridActionViewController: UIViewController {
     }
 
     private func setupActionButtons() {
-        let actions = [
-            ("Add Plot", #selector(addPlotTapped))
-        ]
+        let doesPlotExist = gridViewModel.doesPlotExist
 
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -45,16 +42,26 @@ class GridActionViewController: UIViewController {
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        for (title, action) in actions {
-            let button = UIButton(type: .system)
-            button.setTitle(title, for: .normal)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-            button.backgroundColor = .systemGreen
-            button.setTitleColor(.white, for: .normal)
-            button.layer.cornerRadius = 10
-            button.addTarget(self, action: action, for: .touchUpInside)
-            stackView.addArrangedSubview(button)
-            actionButtons.append(button)
+        if doesPlotExist {
+            let razeButton = UIButton(type: .system)
+            razeButton.setTitle("Raze Plot", for: .normal)
+            razeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+            razeButton.backgroundColor = .systemRed
+            razeButton.setTitleColor(.white, for: .normal)
+            razeButton.layer.cornerRadius = 10
+            razeButton.addTarget(self, action: #selector(razePlotTapped), for: .touchUpInside)
+            stackView.addArrangedSubview(razeButton)
+            actionButtons.append(razeButton)
+        } else {
+            let addButton = UIButton(type: .system)
+            addButton.setTitle("Add Plot", for: .normal)
+            addButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+            addButton.backgroundColor = .systemGreen
+            addButton.setTitleColor(.white, for: .normal)
+            addButton.layer.cornerRadius = 10
+            addButton.addTarget(self, action: #selector(addPlotTapped), for: .touchUpInside)
+            stackView.addArrangedSubview(addButton)
+            actionButtons.append(addButton)
         }
 
         view.addSubview(stackView)
@@ -64,6 +71,23 @@ class GridActionViewController: UIViewController {
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             stackView.heightAnchor.constraint(equalToConstant: 50)
+        ])
+    }
+
+    private func setupSelectedPlotLabel() {
+        let selectedPlotLabel = UILabel()
+        selectedPlotLabel.text = "Selected: Row \(gridViewModel.row), Column \(gridViewModel.column)"
+        selectedPlotLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        selectedPlotLabel.textAlignment = .center
+        selectedPlotLabel.translatesAutoresizingMaskIntoConstraints = false
+        selectedPlotLabel.textColor = .white
+
+        view.addSubview(selectedPlotLabel)
+
+        NSLayoutConstraint.activate([
+            selectedPlotLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            selectedPlotLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            selectedPlotLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
     }
 
@@ -81,7 +105,16 @@ class GridActionViewController: UIViewController {
     }
 
     @objc private func addPlotTapped() {
+        let row = gridViewModel.row
+        let column = gridViewModel.column
         eventQueue?.queueEvent(AddPlotEvent(row: row, column: column))
+        dismiss(animated: true)
+    }
+
+    @objc private func razePlotTapped() {
+        let row = gridViewModel.row
+        let column = gridViewModel.column
+        eventQueue?.queueEvent(RazePlotEvent(row: row, column: column))
         dismiss(animated: true)
     }
 }

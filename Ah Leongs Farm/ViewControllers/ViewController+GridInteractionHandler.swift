@@ -9,12 +9,13 @@ import UIKit
 
 extension ViewController: GridInteractionHandler {
     func handleGridInteraction(row: Int, column: Int) {
+        let gridViewModel = gameManager.getGridViewModel(row: row, column: column)
         let gridActionVC = GridActionViewController(
-            row: row,
-            column: column,
+            gridViewModel: gridViewModel,
             renderer: gameRenderer,
             eventQueue: gameManager.gameWorld
         )
+
         gameRenderer.lightUpTile(at: row, column: column)
 
         // Check if there is a currently presented view controller.

@@ -58,3 +58,9 @@ struct AddPlotEventData: EventData {
 struct QuestCompletedEventData: EventData {
     let questTitle: String
 }
+
+struct RazePlotEventData: EventData {
+    var row: Int
+    var column: Int
+    var isSuccessfullyRazed: Bool
+}
