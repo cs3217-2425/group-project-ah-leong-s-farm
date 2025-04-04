@@ -21,7 +21,10 @@ struct SellItemViewModel {
     let itemType: ItemType
 }
 
-protocol MarketDataProvider {
+protocol MarketDataHandler {
     func getBuyItemViewModels() -> [BuyItemViewModel]
     func getSellItemViewModels() -> [SellItemViewModel]
+    func buyItem(itemType: ItemType, quantity: Int, currency: CurrencyType)
+    func sellItem(itemType: ItemType, quantity: Int, currency: CurrencyType)
+    func getAmountOfCurrencyForMarket(_ currency: CurrencyType) -> Double
 }

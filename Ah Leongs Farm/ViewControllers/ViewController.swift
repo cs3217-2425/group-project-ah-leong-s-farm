@@ -108,7 +108,8 @@ extension ViewController: GameControlsViewDelegate {
     }
 
     func marketButtonTapped() {
-        let marketViewController = MarketViewController(gameManager: gameManager)
+        let marketViewController = MarketViewController(marketDataHandler: gameManager)
+        gameManager.addGameObserver(marketViewController)
         marketViewController.modalPresentationStyle = .formSheet
         marketViewController.preferredContentSize = CGSize(
             width: view.bounds.width * 0.8,

@@ -1,11 +1,11 @@
 //
-//  GameManager+MarketDataProvider.swift
+//  GameManager+MarketDataHandler.swift
 //  Ah Leongs Farm
 //
 //  Created by proglab on 1/4/25.
 //
 
-extension GameManager: MarketDataProvider {
+extension GameManager: MarketDataHandler {
     func getBuyItemViewModels() -> [BuyItemViewModel] {
 
         guard let marketSystem = gameWorld.getSystem(ofType: MarketSystem.self) else {
@@ -73,5 +73,21 @@ extension GameManager: MarketDataProvider {
         }
 
         return viewModels.sorted { $0.quantity > $1.quantity }
+    }
+
+    func buyItem(itemType: ItemType, quantity: Int, currency: CurrencyType = .coin) {
+        gameWorld.queueEvent(BuyItemEvent(itemType: itemType, quantity: quantity, currencyType: currency))
+    }
+
+    func sellItem(itemType: ItemType, quantity: Int, currency: CurrencyType = .coin) {
+        gameWorld.queueEvent(SellItemEvent(itemType: itemType, quantity: quantity, currencyType: currency))
+    }
+
+    func getAmountOfCurrencyForMarket(_ currency: CurrencyType) -> Double {
+        guard let currencySystem = gameWorld.getSystem(ofType: WalletSystem.self) else {
+            return 0
+        }
+
+        return currencySystem.getTotalAmount(of: .coin)
     }
 }

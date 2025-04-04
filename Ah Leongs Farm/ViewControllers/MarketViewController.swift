@@ -3,7 +3,7 @@ import GameplayKit
 
 class MarketViewController: UIViewController {
 
-    private var gameManager: GameManager
+    private var marketDataHandler: MarketDataHandler
 
     private let marketView: MarketView
 
@@ -12,9 +12,9 @@ class MarketViewController: UIViewController {
     private var segmentedControl: UISegmentedControl { marketView.segmentedControl }
     private var collectionView: UICollectionView { marketView.collectionView }
 
-    init(gameManager: GameManager) {
-        self.gameManager = gameManager
-        self.marketView = MarketView(initialCurrency: Int(gameManager.getAmountOfCurrency(.coin)))
+    init(marketDataHandler: MarketDataHandler) {
+        self.marketDataHandler = marketDataHandler
+        self.marketView = MarketView(initialCurrency: Int(marketDataHandler.getAmountOfCurrencyForMarket(.coin)))
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -31,12 +31,6 @@ class MarketViewController: UIViewController {
         super.viewDidLoad()
         setupActions()
         setupCollectionView()
-        gameManager.addGameObserver(self)
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        gameManager.removeGameObserver(self)
     }
 
     private func setupActions() {
@@ -70,9 +64,9 @@ extension MarketViewController: UICollectionViewDataSource, UICollectionViewDele
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if segmentedControl.selectedSegmentIndex == 0 {
-            return gameManager.getBuyItemViewModels().count
+            return marketDataHandler.getBuyItemViewModels().count
         } else {
-            return gameManager.getSellItemViewModels().count
+            return marketDataHandler.getSellItemViewModels().count
         }
     }
 
@@ -84,9 +78,9 @@ extension MarketViewController: UICollectionViewDataSource, UICollectionViewDele
                                                                 for: indexPath) as? BuyItemCell else {
                 return UICollectionViewCell()
             }
-            let viewModels = gameManager.getBuyItemViewModels()
+            let viewModels = marketDataHandler.getBuyItemViewModels()
             let viewModel = viewModels[indexPath.row]
-            cell.configure(with: viewModel, currentCurrency: Int(gameManager.getAmountOfCurrency(.coin)))
+            cell.configure(with: viewModel, currentCurrency: Int(marketDataHandler.getAmountOfCurrencyForMarket(.coin)))
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SellItemCell",
@@ -94,7 +88,7 @@ extension MarketViewController: UICollectionViewDataSource, UICollectionViewDele
                 return UICollectionViewCell()
             }
 
-            let viewModels = gameManager.getSellItemViewModels()
+            let viewModels = marketDataHandler.getSellItemViewModels()
             let viewModel = viewModels[indexPath.row]
             cell.configure(with: viewModel)
             return cell
@@ -103,15 +97,16 @@ extension MarketViewController: UICollectionViewDataSource, UICollectionViewDele
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if segmentedControl.selectedSegmentIndex == 0 {
-            let viewModels = gameManager.getBuyItemViewModels()
+            let viewModels = marketDataHandler.getBuyItemViewModels()
             let viewModel = viewModels[indexPath.row]
 
             let popupVC = BuyItemPopupViewController(item: viewModel,
-                                                     currentCurrency: Int(gameManager.getAmountOfCurrency(.coin)))
+                                                     currentCurrency: Int(marketDataHandler
+                                                        .getAmountOfCurrencyForMarket(.coin)))
             popupVC.delegate = self
             present(popupVC, animated: true, completion: nil)
         } else {
-            let viewModels = gameManager.getSellItemViewModels()
+            let viewModels = marketDataHandler.getSellItemViewModels()
             let viewModel = viewModels[indexPath.row]
             let popupVC = SellItemPopupViewController(item: viewModel)
             popupVC.delegate = self
@@ -141,7 +136,7 @@ extension MarketViewController: UICollectionViewDelegateFlowLayout {
 
 extension MarketViewController: BuyPopupDelegate {
     func didConfirmPurchase(item: ItemType, quantity: Int) {
-        gameManager.buyItem(itemType: item, quantity: quantity)
+        marketDataHandler.buyItem(itemType: item, quantity: quantity, currency: .coin)
         collectionView.reloadData()
         print("Confirm purchase: \(item), \(quantity)")
     }
@@ -149,7 +144,7 @@ extension MarketViewController: BuyPopupDelegate {
 
 extension MarketViewController: SellPopupDelegate {
     func didConfirmSale(item: ItemType, quantity: Int) {
-        gameManager.sellItem(itemType: item, quantity: quantity)
+        marketDataHandler.sellItem(itemType: item, quantity: quantity, currency: .coin)
         collectionView.reloadData()
         print("Confirm selling: \(item), \(quantity)")
     }
@@ -161,7 +156,7 @@ extension MarketViewController: IGameObserver {
     }
 
     private func updateCurrencyLabel() {
-        let coins = gameManager.getAmountOfCurrency(.coin)
+        let coins = marketDataHandler.getAmountOfCurrencyForMarket(.coin)
         currencyLabel.text = "\(Int(coins))"
     }
 }
