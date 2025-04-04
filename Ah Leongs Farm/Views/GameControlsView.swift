@@ -26,6 +26,8 @@ class GameControlsView: UIView {
         createQuitButton()
         createNextButton()
         createMarketButton()
+        createInventoryButton()
+        createQuestButton()
     }
 
     private func createNextButton() {
@@ -89,6 +91,58 @@ class GameControlsView: UIView {
         ])
 
         marketButton.addTarget(self, action: #selector(marketButtonTapped), for: .touchUpInside)
+    }
+
+    func createInventoryButton() {
+        let inventoryButton = UIButton(type: .system)
+
+        inventoryButton.setTitle("Inventory", for: .normal)
+        inventoryButton.backgroundColor = .systemBlue
+        inventoryButton.setTitleColor(.white, for: .normal)
+        inventoryButton.layer.cornerRadius = 10
+        inventoryButton.translatesAutoresizingMaskIntoConstraints = false
+
+        inventoryButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
+
+        addSubview(inventoryButton)
+        NSLayoutConstraint.activate([
+            inventoryButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
+            inventoryButton.trailingAnchor.constraint(equalTo: centerXAnchor, constant: -20),
+            inventoryButton.widthAnchor.constraint(equalToConstant: 120),
+            inventoryButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
+
+        inventoryButton.addTarget(self, action: #selector(inventoryButtonTapped), for: .touchUpInside)
+    }
+
+    func createQuestButton() {
+        let questButton = UIButton(type: .system)
+
+        questButton.setTitle("Quests", for: .normal)
+        questButton.backgroundColor = .systemGreen
+        questButton.setTitleColor(.white, for: .normal)
+        questButton.layer.cornerRadius = 10
+        questButton.translatesAutoresizingMaskIntoConstraints = false
+
+        questButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
+
+        addSubview(questButton)
+        NSLayoutConstraint.activate([
+            questButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
+            questButton.leadingAnchor.constraint(equalTo: centerXAnchor, constant: 20),
+            questButton.widthAnchor.constraint(equalToConstant: 120),
+            questButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
+
+        questButton.addTarget(self, action: #selector(questButtonTapped), for: .touchUpInside)
+    }
+
+    @objc private func inventoryButtonTapped() {
+        delegate?.inventoryButtonTapped()
+    }
+
+    @objc private func questButtonTapped() {
+        delegate?.questButtonTapped()
     }
 
     @objc private func nextDayButtonTapped() {

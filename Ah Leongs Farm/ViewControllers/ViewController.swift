@@ -27,8 +27,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpGameScene()
-        createInventoryButton()
-        createQuestButton()
         setUpGameControls()
         setUpGameStatistics()
         setupQuestNotificationSystem()
@@ -119,6 +117,25 @@ extension ViewController: GameControlsViewDelegate {
         )
         present(marketViewController, animated: true)
     }
+
+    @objc func inventoryButtonTapped() {
+        let inventoryItems = gameManager.getInventoryItemViewModels()
+
+        let inventoryVC = InventoryViewController(inventoryItems: inventoryItems)
+        present(inventoryVC, animated: true)
+
+    }
+
+    @objc func questButtonTapped() {
+        let activeQuests = gameManager.getActiveQuestViewModels()
+        let completedQuests = gameManager.getCompletedQuestViewModels()
+        let inactiveQuests = gameManager.getInactiveQuestViewModels()
+
+        let questVC = QuestViewController(activeQuests: activeQuests,
+                                          completedQuests: completedQuests,
+                                          inactiveQuests: inactiveQuests)
+        present(questVC, animated: true)
+    }
 }
 
 // MARK: IGameObserver
@@ -160,40 +177,6 @@ extension ViewController: IGameObserver {
     }
 }
 
-// MARK: Add Inventory functionalities
-extension ViewController {
-
-    func createInventoryButton() {
-        let inventoryButton = UIButton(type: .system)
-
-        inventoryButton.setTitle("Inventory", for: .normal)
-        inventoryButton.backgroundColor = .systemBlue
-        inventoryButton.setTitleColor(.white, for: .normal)
-        inventoryButton.layer.cornerRadius = 10
-        inventoryButton.translatesAutoresizingMaskIntoConstraints = false
-
-        inventoryButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
-
-        view.addSubview(inventoryButton)
-        NSLayoutConstraint.activate([
-            inventoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            inventoryButton.trailingAnchor.constraint(equalTo: view.centerXAnchor, constant: -20),
-            inventoryButton.widthAnchor.constraint(equalToConstant: 120),
-            inventoryButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
-
-        inventoryButton.addTarget(self, action: #selector(inventoryButtonTapped), for: .touchUpInside)
-    }
-
-    @objc func inventoryButtonTapped() {
-        let inventoryItems = gameManager.getInventoryItemViewModels()
-
-        let inventoryVC = InventoryViewController(inventoryItems: inventoryItems)
-        present(inventoryVC, animated: true)
-
-    }
-}
-
 extension ViewController: GameSceneUpdateDelegate {
     func update(_ timeInterval: TimeInterval) {
         gameManager.update(timeInterval)
@@ -202,43 +185,6 @@ extension ViewController: GameSceneUpdateDelegate {
         for renderNode in gameRenderer.allRenderNodes {
             acceptIntoTouchHandlerRegistry(node: renderNode)
         }
-    }
-}
-
-// MARK: Add quest functionalities
-extension ViewController {
-
-    func createQuestButton() {
-        let questButton = UIButton(type: .system)
-
-        questButton.setTitle("Quests", for: .normal)
-        questButton.backgroundColor = .systemGreen
-        questButton.setTitleColor(.white, for: .normal)
-        questButton.layer.cornerRadius = 10
-        questButton.translatesAutoresizingMaskIntoConstraints = false
-
-        questButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
-
-        view.addSubview(questButton)
-        NSLayoutConstraint.activate([
-            questButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            questButton.leadingAnchor.constraint(equalTo: view.centerXAnchor, constant: 20),
-            questButton.widthAnchor.constraint(equalToConstant: 120),
-            questButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
-
-        questButton.addTarget(self, action: #selector(questButtonTapped), for: .touchUpInside)
-    }
-
-    @objc func questButtonTapped() {
-        let activeQuests = gameManager.getActiveQuestViewModels()
-        let completedQuests = gameManager.getCompletedQuestViewModels()
-        let inactiveQuests = gameManager.getInactiveQuestViewModels()
-
-        let questVC = QuestViewController(activeQuests: activeQuests,
-                                          completedQuests: completedQuests,
-                                          inactiveQuests: inactiveQuests)
-        present(questVC, animated: true)
     }
 }
 

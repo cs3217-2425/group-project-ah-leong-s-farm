@@ -9,4 +9,6 @@ protocol GameControlsViewDelegate: AnyObject {
     func nextDayButtonTapped()
     func quitButtonTapped()
     func marketButtonTapped()
+    func inventoryButtonTapped()
+    func questButtonTapped()
 }
