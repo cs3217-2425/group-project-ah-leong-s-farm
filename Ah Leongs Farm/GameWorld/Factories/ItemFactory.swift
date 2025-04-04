@@ -19,6 +19,15 @@ class ItemFactory {
         .potatoSeed: {
             createSeed(for: .potato).flatMap { setupComponents($0, type: .potatoSeed) }
              },
+        .appleHarvested: {
+            createHarvested(for: .apple).flatMap { setupComponents($0, type: .appleHarvested) }
+            },
+        .bokChoyHarvested: {
+            createHarvested(for: .bokChoy).flatMap { setupComponents($0, type: .bokChoyHarvested) }
+            },
+        .potatoHarvested: {
+            createHarvested(for: .potato).flatMap { setupComponents($0, type: .potatoHarvested) }
+            },
         .fertiliser: {
             setupComponents(Fertiliser(), type: .fertiliser)
             },
@@ -33,8 +42,18 @@ class ItemFactory {
         .potato: { Potato.createSeed() }
     ]
 
+    private static let cropToHarvestedInitialisers: [CropType: () -> GKEntity] = [
+        .bokChoy: { BokChoy.createHarvested() },
+        .apple: { Apple.createHarvested() },
+        .potato: { Potato.createHarvested() }
+    ]
+
     private static func createSeed(for crop: CropType) -> GKEntity? {
         cropToSeedInitialisers[crop]?()
+    }
+
+    private static func createHarvested(for crop: CropType) -> GKEntity? {
+        cropToHarvestedInitialisers[crop]?()
     }
 
     private static func addItemComponent(_ entity: GKEntity, type: ItemType) -> GKEntity {

@@ -26,8 +26,13 @@ class EntityManager {
         entities.remove(entity)
 
         let entityID = ObjectIdentifier(entity)
-        for (_, var componentsDict) in componentsByType {
-            componentsDict.removeValue(forKey: entityID)
+
+        for (key, _) in componentsByType {
+            componentsByType[key]?.removeValue(forKey: entityID)
+
+            if componentsByType[key]?.isEmpty == true {
+                componentsByType.removeValue(forKey: key)
+            }
         }
     }
 

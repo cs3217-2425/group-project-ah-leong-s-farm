@@ -36,7 +36,12 @@ class Potato: GKEntity, Crop {
     static func createSeed() -> GKEntity {
         let potato = Potato()
         potato.addComponent(SeedComponent())
-        potato.addComponent(ItemComponent(itemType: .potatoSeed))
+        return potato
+    }
+
+    static func createHarvested() -> GKEntity {
+        let potato = Potato()
+        potato.addComponent(HarvestedComponent())
         return potato
     }
 }
