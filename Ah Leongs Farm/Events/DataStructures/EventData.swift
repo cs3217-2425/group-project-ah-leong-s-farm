@@ -43,3 +43,8 @@ struct SellItemEventData: EventData {
     var itemType: ItemType
     var quantity: Int
 }
+
+struct PlantCropEventData: EventData {
+    var cropType: CropType
+    var isSuccessfullyPlanted: Bool
+}

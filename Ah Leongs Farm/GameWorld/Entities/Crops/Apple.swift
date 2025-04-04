@@ -28,11 +28,26 @@ class Apple: GKEntity, Crop {
 
         let healthComponent = HealthComponent()
         addComponent(healthComponent)
+
+        let spriteComponent = SpriteComponent(visitor: self)
+        addComponent(spriteComponent)
     }
 
     static func createSeed() -> GKEntity {
         let apple = Apple()
         apple.addComponent(SeedComponent())
         return apple
+    }
+
+    static func createHarvested() -> GKEntity {
+        let apple = Apple()
+        apple.addComponent(HarvestedComponent())
+        return apple
+    }
+}
+
+extension Apple: SpriteRenderManagerVisitor {
+    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.createNodeForEntity(apple: self, in: renderer)
     }
 }

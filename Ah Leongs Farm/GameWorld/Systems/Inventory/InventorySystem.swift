@@ -57,6 +57,7 @@ class InventorySystem: ISystem {
 
     func getItemsByQuantity() -> [ItemType: Int] {
         let itemComponents = getAllComponents()
+
         var typeToQuantity: [ItemType: Int] = [:]
         for itemComponent in itemComponents {
             typeToQuantity[itemComponent.itemType] = typeToQuantity[itemComponent.itemType, default: 0] + 1

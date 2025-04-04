@@ -29,4 +29,30 @@ extension GameManager: InventoryDataProvider {
         }
         return viewModels.sorted { $0.name < $1.name }
     }
+
+    func getSeedItemViewModels() -> [SeedItemViewModel] {
+        guard let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) else {
+            return []
+        }
+
+        let itemsByQuantity = inventorySystem.getItemsByQuantity()
+        var viewModels: [SeedItemViewModel] = []
+
+        for (itemType, quantity) in itemsByQuantity {
+            guard let name = ItemToViewDataMap.itemTypeToDisplayName[itemType],
+                  let imageName = ItemToViewDataMap.itemTypeToImage[itemType] else {
+                fatalError("Name or image not stored in ItemToViewDataMap for \(itemType)")
+            }
+
+            if let viewModel = SeedItemViewModel(
+                itemType: itemType,
+                name: name,
+                imageName: imageName,
+                quantity: quantity
+            ) {
+                viewModels.append(viewModel)
+            }
+        }
+        return viewModels.sorted { $0.name < $1.name }
+    }
 }

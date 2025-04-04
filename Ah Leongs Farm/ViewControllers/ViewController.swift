@@ -27,9 +27,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpGameScene()
-        createInventoryButton()
         setUpGameControls()
         setUpGameStatistics()
+        createInventoryButton()
         gameManager.addGameObserver(self)
     }
 
@@ -55,7 +55,7 @@ class ViewController: UIViewController {
             gameControls.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
             gameControls.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gameControls.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            gameControls.heightAnchor.constraint(equalToConstant: 80)
+            gameControls.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
         ])
 
         self.gameControlsView = gameControls
@@ -106,6 +106,17 @@ extension ViewController: GameControlsViewDelegate {
 
         present(alert, animated: true, completion: nil)
     }
+
+    func marketButtonTapped() {
+        let marketViewController = MarketViewController(marketDataHandler: gameManager)
+        gameManager.addGameObserver(marketViewController)
+        marketViewController.modalPresentationStyle = .formSheet
+        marketViewController.preferredContentSize = CGSize(
+            width: view.bounds.width * 0.8,
+            height: view.bounds.height * 0.75
+        )
+        present(marketViewController, animated: true)
+    }
 }
 
 // MARK: IGameObserver
@@ -127,10 +138,23 @@ extension ViewController: IGameObserver {
         gameStatisticsView?.updateEnergyLabel(currentEnergy: currentEnergy, maxEnergy: maxEnergy)
     }
 
+    private func updateLevelLabel() {
+        let currentLevel = gameManager.getCurrentLevel()
+        gameStatisticsView?.updateLevelLabel(level: currentLevel)
+    }
+
+    private func updateXPLabel() {
+        let currentXP = gameManager.getCurrentXP()
+        let currentLevelXP = gameManager.getXPForCurrentLevel()
+        gameStatisticsView?.updateXPLabel(currentXP: currentXP, levelXP: currentLevelXP)
+    }
+
     func observe(entities: Set<GKEntity>) {
         updateDayLabel()
         updateCurrencyLabel()
         updateEnergyLabel()
+        updateLevelLabel()
+        updateXPLabel()
     }
 }
 
@@ -173,8 +197,8 @@ extension ViewController: GameSceneUpdateDelegate {
         gameManager.update(timeInterval)
 
         // set handler for newly added render nodes
-        for renderNode in gameRenderer.allRenderNodes where renderNode.handler !== self {
-            renderNode.handler = self
+        for renderNode in gameRenderer.allRenderNodes {
+            acceptIntoTouchHandlerRegistry(node: renderNode)
         }
     }
 }

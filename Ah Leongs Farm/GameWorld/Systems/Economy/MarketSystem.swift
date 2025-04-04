@@ -25,6 +25,13 @@ class MarketSystem: ISystem {
         itemStocks
     }
 
+    func getSellQuantity(for itemType: ItemType) -> Int {
+        sellableComponents
+            .compactMap { $0 as? SellComponent }
+            .filter { $0.itemType == itemType }
+            .count
+    }
+
     private var sellableComponents: [GKComponent] {
         manager?.getAllComponents(ofType: SellComponent.self) ?? []
     }
@@ -45,7 +52,7 @@ class MarketSystem: ISystem {
         return price.sellPrice[currency]
     }
 
-    func getStock(for type: ItemType) -> Int? {
+    func getBuyQuantity(for type: ItemType) -> Int? {
         guard let stock = itemStocks[type] else {
             print("Item not found in the market!")
             return nil
@@ -60,15 +67,17 @@ class MarketSystem: ISystem {
             print("Not enough stock for \(type).")
             return false
         }
-        
-        guard let initialiser = ItemFactory.itemToInitialisers[type],
-              let entity = initialiser() else {
-            print("Item not found in the item factory.")
-            return false
-        }
 
+        for _ in 0..<quantity {
+            guard let initialiser = ItemFactory.itemToInitialisers[type],
+                  let entity = initialiser() else {
+                print("Item not found in the item factory.")
+                return false
+            }
+
+            manager?.addEntity(entity)
+        }
         itemStocks[type] = currentStock - quantity
-        manager?.addEntity(entity)
 
         return true
     }
@@ -79,13 +88,11 @@ class MarketSystem: ISystem {
             return false
         }
 
-        var sellableEntities: [GKEntity] = []
-        for component in sellableComponents {
-            if let sellComponent = component as? SellComponent, sellComponent.itemType == type {
-                if let entity = component.entity {
-                    sellableEntities.append(entity)
-                }
+        let sellableEntities = manager.getEntities(withComponentType: SellComponent.self).filter { entity in
+            if let sellComponent = entity.component(ofType: SellComponent.self) {
+                return sellComponent.itemType == type
             }
+            return false
         }
 
         if sellableEntities.count < quantity {

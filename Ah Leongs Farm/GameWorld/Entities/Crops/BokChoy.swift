@@ -28,11 +28,26 @@ class BokChoy: GKEntity, Crop {
 
         let healthComponent = HealthComponent()
         addComponent(healthComponent)
+
+        let spriteComponent = SpriteComponent(visitor: self)
+        addComponent(spriteComponent)
     }
 
     static func createSeed() -> GKEntity {
         let bokChoy = BokChoy()
         bokChoy.addComponent(SeedComponent())
         return bokChoy
+    }
+
+    static func createHarvested() -> GKEntity {
+        let bokChoy = BokChoy()
+        bokChoy.addComponent(HarvestedComponent())
+        return bokChoy
+    }
+}
+
+extension BokChoy: SpriteRenderManagerVisitor {
+    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.createNodeForEntity(bokChoy: self, in: renderer)
     }
 }

@@ -19,6 +19,15 @@ class ItemFactory {
         .potatoSeed: {
             setupComponents(createSeed(for: .potato), type: .potatoSeed)
              },
+        .appleHarvested: {
+            setupComponents(createHarvested(for: .apple), type: .appleHarvested)
+            },
+        .bokChoyHarvested: {
+            setupComponents(createHarvested(for: .bokChoy), type: .bokChoyHarvested)
+            },
+        .potatoHarvested: {
+            setupComponents(createHarvested(for: .potato), type: .potatoHarvested)
+            },
         .fertiliser: {
             setupComponents(Fertiliser(), type: .fertiliser)
             },
@@ -38,6 +47,18 @@ class ItemFactory {
             fatalError("Seed initialiser for \(crop) not defined!")
         }
         return seedInitialiser()
+    }
+    private static let cropToHarvestedInitialisers: [CropType: () -> GKEntity] = [
+        .bokChoy: { BokChoy.createHarvested() },
+        .apple: { Apple.createHarvested() },
+        .potato: { Potato.createHarvested() }
+    ]
+
+    private static func createHarvested(for crop: CropType) -> GKEntity {
+        guard let harvestedInitialiser = cropToHarvestedInitialisers[crop] else {
+            fatalError("Harvested initialiser for \(crop) not defined!")
+        }
+        return harvestedInitialiser()
     }
 
     private static func setupComponents(_ entity: GKEntity, type: ItemType) -> GKEntity {
