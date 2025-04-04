@@ -38,6 +38,14 @@ class LevelSystem: ISystem {
         levelComponent?.currentXP ?? 0
     }
 
+    func getXPForCurrentLevel() -> Float {
+        guard let component = levelComponent else {
+            return 1
+        }
+
+        return component.thresholdXP
+    }
+
     func getXPForNextLevel() -> Float {
         levelComponent.map { LevelComponent.calculateXPThreshold(for: $0.level + 1) } ?? 0
     }

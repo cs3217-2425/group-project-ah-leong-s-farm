@@ -54,3 +54,7 @@ struct AddPlotEventData: EventData {
     var column: Int
     var isSuccessfullyAdded: Bool
 }
+
+struct QuestCompletedEventData: EventData {
+    let questTitle: String
+}

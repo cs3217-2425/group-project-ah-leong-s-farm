@@ -73,6 +73,41 @@ class GameManager {
         return energySystem.getCurrentEnergy()
     }
 
+    func ensureTargetActiveQuestCount(target: Int = 3) {
+        guard let questSystem = gameWorld.getSystem(ofType: QuestSystem.self) else {
+            return
+        }
+        questSystem.ensureTargetActiveQuestCount(target: target)
+    }
+
+    func getCurrentLevel() -> Int {
+        guard let levelSystem = gameWorld.getSystem(ofType: LevelSystem.self) else {
+            return 1
+        }
+
+        return levelSystem.getCurrentLevel()
+    }
+
+    func getCurrentXP() -> Float {
+        guard let levelSystem = gameWorld.getSystem(ofType: LevelSystem.self) else {
+            return 0
+        }
+
+        return levelSystem.getCurrentXP()
+    }
+
+    func getXPForCurrentLevel() -> Float {
+        guard let levelSystem = gameWorld.getSystem(ofType: LevelSystem.self) else {
+            return 0
+        }
+
+        return levelSystem.getXPForCurrentLevel()
+    }
+
+    func registerEventObserver(_ observer: IEventObserver) {
+        gameWorld.registerEventObserver(observer)
+    }
+
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }
@@ -93,6 +128,7 @@ class GameManager {
         for quest in quests {
             gameWorld.addEntity(quest)
         }
+        ensureTargetActiveQuestCount()
     }
 
     // MARK: - Entity Creation Helpers
