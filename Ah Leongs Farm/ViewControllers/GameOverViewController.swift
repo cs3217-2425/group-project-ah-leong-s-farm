@@ -35,6 +35,15 @@ class GameOverViewController: UIViewController {
         return label
     }()
 
+    private var coinLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Press Start 2P", size: 20)
+        label.textColor = UIColor.black
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
@@ -68,12 +77,17 @@ class GameOverViewController: UIViewController {
     }
 
     private func setUpContent() {
-        let stackView = UIStackView(arrangedSubviews: [titleLabel, scoreLabel])
+        let gameStats = UIStackView(arrangedSubviews: [scoreLabel, coinLabel])
+        gameStats.axis = .vertical
+        gameStats.spacing = 12
+        gameStats.alignment = .center
+        gameStats.translatesAutoresizingMaskIntoConstraints = false
+
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, gameStats])
         stackView.axis = .vertical
-        stackView.spacing = 16
+        stackView.spacing = 24
         stackView.alignment = .center
         stackView.translatesAutoresizingMaskIntoConstraints = false
-
         containerView.addSubview(stackView)
 
         NSLayoutConstraint.activate([
@@ -86,6 +100,10 @@ class GameOverViewController: UIViewController {
     private func setScore(_ score: Int) {
         scoreLabel.text = "Score: \(score)"
     }
+
+    private func setCoins(_ coins: Double) {
+        coinLabel.text = "Coins: \(coins)"
+    }
 }
 
 extension GameOverViewController: IEventObserver {
@@ -94,5 +112,6 @@ extension GameOverViewController: IEventObserver {
             return
         }
         setScore(eventData.score)
+        setCoins(eventData.coins)
     }
 }

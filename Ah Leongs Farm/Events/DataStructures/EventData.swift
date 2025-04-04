@@ -14,6 +14,7 @@ struct EndTurnEventData: EventData {
 
 struct GameOverEventData: EventData {
     var score: Int
+    var coins: Double
 }
 
 struct HarvestCropEventData: EventData {
