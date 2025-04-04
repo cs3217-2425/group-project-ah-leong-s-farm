@@ -153,6 +153,10 @@ class GameOverViewController: UIViewController {
     private func setCoins(_ coins: Double) {
         coinLabel.text = "Coins: \(coins)"
     }
+
+    override var prefersStatusBarHidden: Bool {
+        true
+    }
 }
 
 extension GameOverViewController: IEventObserver {
