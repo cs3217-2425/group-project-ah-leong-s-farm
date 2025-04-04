@@ -11,13 +11,13 @@ import GameplayKit
 class ItemFactory {
     static let itemToInitialisers: [ItemType: () -> GKEntity?] = [
         .bokChoySeed: {
-            createSeed(for: .bokChoy).flatMap { setupComponents($0, type: .bokChoySeed) }
+            setupComponents(createSeed(for: .bokChoy), type: .bokChoySeed)
             },
         .appleSeed: {
-            createSeed(for: .apple).flatMap { setupComponents($0, type: .appleSeed) }
+            setupComponents(createSeed(for: .apple), type: .appleSeed)
             },
         .potatoSeed: {
-            createSeed(for: .potato).flatMap { setupComponents($0, type: .potatoSeed) }
+            setupComponents(createSeed(for: .potato), type: .potatoSeed)
              },
         .fertiliser: {
             setupComponents(Fertiliser(), type: .fertiliser)
@@ -33,13 +33,11 @@ class ItemFactory {
         .potato: { Potato.createSeed() }
     ]
 
-    private static func createSeed(for crop: CropType) -> GKEntity? {
-        cropToSeedInitialisers[crop]?()
-    }
-
-    private static func addItemComponent(_ entity: GKEntity, type: ItemType) -> GKEntity {
-        entity.addComponent(ItemComponent(itemType: type))
-        return entity
+    private static func createSeed(for crop: CropType) -> GKEntity {
+        guard let seedInitialiser = cropToSeedInitialisers[crop] else {
+            fatalError("Seed initialiser for \(crop) not defined!")
+        }
+        return seedInitialiser()
     }
 
     private static func setupComponents(_ entity: GKEntity, type: ItemType) -> GKEntity {

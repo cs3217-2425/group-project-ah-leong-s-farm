@@ -15,12 +15,6 @@ class Fertiliser: GKEntity {
     init(soilImprovementAmount: Int = 30) {
         self.soilImprovementAmount = soilImprovementAmount
         super.init()
-        setUpComponents()
-    }
-
-    func setUpComponents() {
-        let itemComponent = ItemComponent(itemType: .fertiliser)
-        addComponent(itemComponent)
     }
 
     @available(*, unavailable)
@@ -37,10 +31,5 @@ class PremiumFertiliser: Fertiliser {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")
-    }
-
-    override func setUpComponents() {
-        let itemComponent = ItemComponent(itemType: .premiumFertiliser)
-        addComponent(itemComponent)
     }
 }
