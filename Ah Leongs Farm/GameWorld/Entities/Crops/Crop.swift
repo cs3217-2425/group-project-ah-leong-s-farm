@@ -13,4 +13,5 @@ protocol Crop where Self: GKEntity {
     var harvestedItemType: ItemType { get }
     var components: [GKComponent] { get }
     static func createSeed() -> GKEntity
+    static func createHarvested() -> GKEntity
 }

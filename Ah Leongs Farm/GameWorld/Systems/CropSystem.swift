@@ -54,6 +54,7 @@ class CropSystem: ISystem {
 
         manager?.removeComponent(ofType: SeedComponent.self, from: crop)
         manager?.removeComponent(ofType: ItemComponent.self, from: crop)
+        manager?.removeComponent(ofType: SellComponent.self, from: crop)
         manager?.addComponent(GrowthComponent(
             totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: crop)
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
