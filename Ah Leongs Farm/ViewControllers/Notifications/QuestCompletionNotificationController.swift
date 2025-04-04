@@ -23,10 +23,8 @@ class QuestCompletionNotificationController {
 
 extension QuestCompletionNotificationController: IEventObserver {
     func onEvent(_ eventData: EventData) {
-        if eventData is QuestCompletedEventData {
-            if let questCompletedData = eventData as? QuestCompletedEventData {
-                onQuestCompleted(questCompletedData.questTitle)
-            }
+        if let questCompletedData = eventData as? QuestCompletedEventData {
+            onQuestCompleted(questCompletedData.questTitle)
         }
     }
 }
