@@ -44,6 +44,18 @@ class GameOverViewController: UIViewController {
         return label
     }()
 
+    private var mainMenuButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Main Menu", for: .normal)
+        button.backgroundColor = .systemBlue
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel?.font = UIFont(name: "Press Start 2P", size: 14)
+
+        return button
+    }()
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
@@ -71,8 +83,8 @@ class GameOverViewController: UIViewController {
         NSLayoutConstraint.activate([
             containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             containerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            containerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
-            containerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5)
+            containerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.4),
+            containerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4)
         ])
     }
 
@@ -82,10 +94,11 @@ class GameOverViewController: UIViewController {
         gameStats.spacing = 12
         gameStats.alignment = .center
         gameStats.translatesAutoresizingMaskIntoConstraints = false
+        mainMenuButton.addTarget(self, action: #selector(mainMenuButtonTapped), for: .touchUpInside)
 
-        let stackView = UIStackView(arrangedSubviews: [titleLabel, gameStats])
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, gameStats, mainMenuButton])
         stackView.axis = .vertical
-        stackView.spacing = 24
+        stackView.spacing = 36
         stackView.alignment = .center
         stackView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(stackView)
@@ -93,8 +106,16 @@ class GameOverViewController: UIViewController {
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            stackView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+            stackView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            mainMenuButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
+            mainMenuButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
+            mainMenuButton.heightAnchor.constraint(equalToConstant: 40)
         ])
+    }
+
+    @objc private func mainMenuButtonTapped() {
+        dismiss(animated: true)
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     private func setScore(_ score: Int) {
