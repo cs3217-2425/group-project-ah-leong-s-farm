@@ -95,7 +95,7 @@ extension ViewController: GameControlsViewDelegate {
         let currentTurn = gameManager.getCurrentTurn()
         let maxTurn = gameManager.getMaxTurns()
 
-        if currentTurn >= maxTurn {
+        if currentTurn == maxTurn {
             present(gameOverViewController, animated: true)
         }
 
