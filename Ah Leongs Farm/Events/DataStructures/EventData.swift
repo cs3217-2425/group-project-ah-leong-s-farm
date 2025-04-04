@@ -48,3 +48,7 @@ struct PlantCropEventData: EventData {
     var cropType: CropType
     var isSuccessfullyPlanted: Bool
 }
+
+struct QuestCompletedEventData: EventData {
+    let questTitle: String
+}

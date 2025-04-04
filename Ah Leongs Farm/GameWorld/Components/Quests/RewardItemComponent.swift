@@ -25,3 +25,9 @@ class RewardItemComponent: GKComponent, RewardComponent {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+extension RewardItemComponent {
+    func accept(visitor: RewardDataRetrievalVisitor) -> [RewardViewModel] {
+        visitor.retrieveData(component: self)
+    }
+}
