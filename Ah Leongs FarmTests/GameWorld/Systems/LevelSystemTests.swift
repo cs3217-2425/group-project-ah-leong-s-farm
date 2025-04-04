@@ -26,7 +26,7 @@ class LevelSystemTests: XCTestCase {
         manager = nil
         super.tearDown()
     }
-    
+
     func testInitialLevel() {
         XCTAssertEqual(levelSystem.getCurrentLevel(), 1, "Initial level should be 1")
         XCTAssertEqual(levelSystem.getCurrentXP(), 0, "Initial XP should be 0")

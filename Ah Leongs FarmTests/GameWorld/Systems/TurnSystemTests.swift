@@ -62,7 +62,7 @@ final class TurnSystemTests: XCTestCase {
             return
         }
         let (turnSystem) = setup
-        
+
         guard let turnComponent = manager?.getSingletonComponent(ofType: TurnComponent.self) else {
             XCTFail("TurnComponent not found")
             return
@@ -81,7 +81,7 @@ final class TurnSystemTests: XCTestCase {
             return
         }
         let (turnSystem) = setup
-        
+
         guard let turnComponent = manager?.getSingletonComponent(ofType: TurnComponent.self) else {
             XCTFail("TurnComponent not found")
             return
@@ -114,7 +114,7 @@ final class TurnSystemTests: XCTestCase {
             return
         }
         let (turnSystem) = setup
-        
+
         guard let turnComponent = manager?.getSingletonComponent(ofType: TurnComponent.self) else {
             XCTFail("TurnComponent not found")
             return

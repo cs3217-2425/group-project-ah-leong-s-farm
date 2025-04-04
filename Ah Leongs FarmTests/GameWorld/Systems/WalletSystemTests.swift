@@ -9,23 +9,23 @@ import XCTest
 @testable import Ah_Leongs_Farm
 
 final class WalletSystemTests: XCTestCase {
-    
+
     var walletSystem: WalletSystem?
     var manager: EntityManager?
-    
+
     override func setUp() {
         super.setUp()
         manager = EntityManager()
         walletSystem = WalletSystem(for: manager!)
         manager?.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }
-    
+
     override func tearDown() {
         walletSystem = nil
         manager = nil
         super.tearDown()
     }
-    
+
     private func validateSetup() -> WalletSystem? {
         guard let system = walletSystem else {
             XCTFail("Test setup failed: Missing walletSystem")
@@ -33,7 +33,7 @@ final class WalletSystemTests: XCTestCase {
         }
         return system
     }
-    
+
     func testInit_createsWalletSystem() {
         let system = WalletSystem(for: EntityManager())
         XCTAssertNotNil(system)
@@ -52,7 +52,7 @@ final class WalletSystemTests: XCTestCase {
 
     func testAddCurrencyToAll_zeroValue_addsNothingToAllWallets() {
         walletSystem?.addCurrencyToAll(.coin, amount: 0)
-        
+
         guard let component = manager?.getSingletonComponent(ofType: WalletComponent.self) else {
             XCTFail("WalletComponent not found")
             return

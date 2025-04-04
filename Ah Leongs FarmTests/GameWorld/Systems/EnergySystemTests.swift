@@ -73,7 +73,7 @@ final class EnergySystemTests: XCTestCase {
             return
         }
         let (energySystem) = setup
-        
+
         guard let energyComponent = manager?.getSingletonComponent(ofType: EnergyComponent.self) else {
             XCTFail("EnergyComponent not found")
             return
@@ -111,7 +111,6 @@ final class EnergySystemTests: XCTestCase {
         XCTAssertEqual(energySystem.getCurrentEnergy(), 10)
     }
 
-    
     func testUseEnergy_WithNoComponents_ShouldReturnFalse() {
         let emptySystem = createEmptySystem()
 
@@ -263,7 +262,7 @@ final class EnergySystemTests: XCTestCase {
             return
         }
         let (energySystem) = setup
-        
+
         guard let energyComponent = manager?.getSingletonComponent(ofType: EnergyComponent.self) else {
             XCTFail("EnergyComponent not found")
             return

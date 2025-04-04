@@ -69,7 +69,7 @@ final class InventorySystemTests: XCTestCase {
     func testGetItemsByQuantity_returnsCorrectMapping() {
         inventorySystem.addItem(type: .bokChoySeed, quantity: 2)
         inventorySystem.addItem(type: .premiumFertiliser, quantity: 1)
-        
+
         let itemsByQuantity = inventorySystem.getItemsByQuantity()
         XCTAssertEqual(itemsByQuantity[.bokChoySeed], 2)
         XCTAssertEqual(itemsByQuantity[.premiumFertiliser], 1)

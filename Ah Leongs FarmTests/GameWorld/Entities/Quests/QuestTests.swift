@@ -14,9 +14,9 @@ final class QuestTests: XCTestCase {
     func testQuestInitialization() {
             let questComponent = QuestComponent(title: "Test Quest", objectives: [], order: 1)
             let rewardComponent = MockRewardComponent()
-            
+
             let quest = Quest(questComponent: questComponent, rewardComponents: [rewardComponent])
-            
+
             XCTAssertNotNil(quest.component(ofType: QuestComponent.self))
             XCTAssertNotNil(quest.component(ofType: MockRewardComponent.self))
     }
@@ -27,6 +27,6 @@ class MockRewardComponent: GKComponent, RewardComponent {
     }
 
     func accept(visitor: any Ah_Leongs_Farm.RewardDataRetrievalVisitor) -> [any Ah_Leongs_Farm.RewardViewModel] {
-        return []
+        []
     }
 }
