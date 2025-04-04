@@ -31,7 +31,7 @@ class GameWorld {
 
         let questSystem = QuestSystem(for: entityManager, eventQueueable: self)
         addSystem(questSystem)
-        // registerEventObserver(questSystem)
+        registerEventObserver(questSystem)
     }
 
     func update(deltaTime: TimeInterval) {

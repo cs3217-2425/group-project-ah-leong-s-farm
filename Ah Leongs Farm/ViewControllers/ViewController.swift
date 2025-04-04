@@ -28,9 +28,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpGameScene()
-        createInventoryButton()
         setUpGameControls()
         setUpGameStatistics()
+        setupQuestNotificationSystem()
         gameManager.addGameObserver(self)
         gameManager.registerEventObserver(gameOverViewController)
     }
@@ -57,7 +57,7 @@ class ViewController: UIViewController {
             gameControls.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
             gameControls.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gameControls.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            gameControls.heightAnchor.constraint(equalToConstant: 80)
+            gameControls.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
         ])
 
         self.gameControlsView = gameControls
@@ -115,6 +115,36 @@ extension ViewController: GameControlsViewDelegate {
 
         present(alert, animated: true, completion: nil)
     }
+
+    func marketButtonTapped() {
+        let marketViewController = MarketViewController(marketDataHandler: gameManager)
+        gameManager.addGameObserver(marketViewController)
+        marketViewController.modalPresentationStyle = .formSheet
+        marketViewController.preferredContentSize = CGSize(
+            width: view.bounds.width * 0.8,
+            height: view.bounds.height * 0.75
+        )
+        present(marketViewController, animated: true)
+    }
+
+    @objc func inventoryButtonTapped() {
+        let inventoryItems = gameManager.getInventoryItemViewModels()
+
+        let inventoryVC = InventoryViewController(inventoryItems: inventoryItems)
+        present(inventoryVC, animated: true)
+
+    }
+
+    @objc func questButtonTapped() {
+        let activeQuests = gameManager.getActiveQuestViewModels()
+        let completedQuests = gameManager.getCompletedQuestViewModels()
+        let inactiveQuests = gameManager.getInactiveQuestViewModels()
+
+        let questVC = QuestViewController(activeQuests: activeQuests,
+                                          completedQuests: completedQuests,
+                                          inactiveQuests: inactiveQuests)
+        present(questVC, animated: true)
+    }
 }
 
 // MARK: IGameObserver
@@ -156,40 +186,6 @@ extension ViewController: IGameObserver {
     }
 }
 
-// MARK: Add Inventory functionalities
-extension ViewController {
-
-    func createInventoryButton() {
-        let inventoryButton = UIButton(type: .system)
-
-        inventoryButton.setTitle("Inventory", for: .normal)
-        inventoryButton.backgroundColor = .systemBlue
-        inventoryButton.setTitleColor(.white, for: .normal)
-        inventoryButton.layer.cornerRadius = 10
-        inventoryButton.translatesAutoresizingMaskIntoConstraints = false
-
-        inventoryButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
-
-        view.addSubview(inventoryButton)
-        NSLayoutConstraint.activate([
-            inventoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            inventoryButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            inventoryButton.widthAnchor.constraint(equalToConstant: 120),
-            inventoryButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
-
-        inventoryButton.addTarget(self, action: #selector(inventoryButtonTapped), for: .touchUpInside)
-    }
-
-    @objc func inventoryButtonTapped() {
-        let inventoryItems = gameManager.getInventoryItemViewModels()
-
-        let inventoryVC = InventoryViewController(inventoryItems: inventoryItems)
-        present(inventoryVC, animated: true)
-
-    }
-}
-
 extension ViewController: GameSceneUpdateDelegate {
     func update(_ timeInterval: TimeInterval) {
         gameManager.update(timeInterval)
@@ -198,5 +194,21 @@ extension ViewController: GameSceneUpdateDelegate {
         for renderNode in gameRenderer.allRenderNodes {
             acceptIntoTouchHandlerRegistry(node: renderNode)
         }
+    }
+}
+
+// MARK: Add Notification functionalities
+extension ViewController {
+    func setupQuestNotificationSystem() {
+        let notificationManager = NotificationStackManager(
+            containerView: self.view,
+            topOffset: 100 // Position below the game controls
+        )
+
+        let notificationController = QuestCompletionNotificationController(
+            notificationManager: notificationManager
+        )
+
+        gameManager.registerEventObserver(notificationController)
     }
 }

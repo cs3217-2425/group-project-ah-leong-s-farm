@@ -8,93 +8,43 @@
 import GameplayKit
 
 class QuestFactory {
-    // MARK: - Basic Quest Creation
 
-    private static func createBasicQuest(
-        title: String,
-        objectives: [QuestObjective],
-        rewards: [RewardComponent]
-    ) -> Quest {
-        let component = QuestComponent(
-            title: title,
-            objectives: objectives
+    // MARK: QuestObjective helper functions
+    private static func createPlantCropObjective(type: CropType,
+                                                 plantAmount: Int) -> QuestObjective {
+        let plantCropCriteria = PlantCropCriteria(cropType: type)
+        return QuestObjective(
+            description: "Plant \(plantAmount) \(type)s",
+            criteria: plantCropCriteria,
+            target: Float(plantAmount)
         )
-
-        return Quest(questComponent: component,
-                     rewardComponents: rewards)
     }
 
-    // MARK: - Standard Quest Types
-
-    private static func createHarvestQuest(
-        title: String,
-        cropType: CropType,
-        amount: Int,
-        rewards: [RewardComponent]
-    ) -> Quest {
-
-        let criteria = HarvestCropCriteria(cropType: cropType)
-
-        let objective = QuestObjective(
-            description: "Harvest \(amount) \(cropType)",
-            criteria: criteria,
-            target: Float(amount)
+    private static func createHarvestCropObjective(type: CropType,
+                                                   harvestAmount: Int) -> QuestObjective {
+        let harvestCropCriteria = HarvestCropCriteria(cropType: type)
+        return QuestObjective(
+            description: "Harvest \(harvestAmount) \(type)s",
+            criteria: harvestCropCriteria,
+            target: Float(harvestAmount)
         )
-
-        let component = QuestComponent(
-            title: title,
-            objectives: [objective]
-        )
-
-        return Quest(questComponent: component,
-                     rewardComponents: rewards)
     }
 
-    private static func createSurvivalQuest(
-        title: String,
-        days: Int,
-        rewards: [RewardComponent]
-    ) -> Quest {
-
-        let criteria = SurviveNumberOfTurnsCriteria()
-
-        let objective = QuestObjective(
-            description: "Survive for \(days) days",
-            criteria: criteria,
-            target: Float(days)
+    private static func createSellCropObjective(type: CropType,
+                                                sellAmount: Int) -> QuestObjective {
+        let sellCropCriteria = SellCropCriteria(cropType: type)
+        return QuestObjective(
+            description: "Harvest \(sellAmount) \(type)s",
+            criteria: sellCropCriteria,
+            target: Float(sellAmount)
         )
-
-        let component = QuestComponent(
-            title: title,
-            objectives: [objective]
-        )
-
-        return Quest(questComponent: component,
-                     rewardComponents: rewards)
     }
 
-    private static func createSellQuest(
-        title: String,
-        cropType: CropType,
-        amount: Int,
-        rewards: [RewardComponent]
-    ) -> Quest {
-
-        let criteria = SellCropCriteria(cropType: cropType)
-
-        let objective = QuestObjective(
-            description: "Sell \(amount) \(cropType) at the market",
-            criteria: criteria,
-            target: Float(amount)
-        )
-
-        let component = QuestComponent(
-            title: title,
-            objectives: [objective]
-        )
-
-        return Quest(questComponent: component,
-                     rewardComponents: rewards)
+    private static func createSurvivalObjective(days: Int) -> QuestObjective {
+        let survivalCriteria = SurviveNumberOfTurnsCriteria()
+            return QuestObjective(description: "Survive for \(days) days",
+                                  criteria: survivalCriteria,
+                                  target: Float(days))
     }
 
     // MARK: - Multi-Objective Quests
@@ -103,34 +53,19 @@ class QuestFactory {
         cropType: CropType = .apple,
         harvestAmount: Int = 15,
         sellAmount: Int = 10,
-        survivalDays: Int = 3
+        survivalDays: Int = 3,
+        order: Int = Int.max
     ) -> Quest {
         // First objective: Harvest crops
-        let harvestCriteria = HarvestCropCriteria(cropType: cropType)
-
-        let harvestObjective = QuestObjective(
-            description: "Harvest \(harvestAmount) \(cropType)",
-            criteria: harvestCriteria,
-            target: Float(harvestAmount)
-        )
+        let harvestObjective = createHarvestCropObjective(type: cropType,
+                                                          harvestAmount: harvestAmount)
 
         // Second objective: Sell crops
-        let sellCriteria = SellCropCriteria(cropType: cropType)
-
-        let sellObjective = QuestObjective(
-            description: "Sell \(sellAmount) \(cropType) at the market",
-            criteria: sellCriteria,
-            target: Float(sellAmount)
-        )
+        let sellObjective = createSellCropObjective(type: cropType,
+                                                    sellAmount: sellAmount)
 
         // Third objective: Survive days
-        let survivalCriteria = SurviveNumberOfTurnsCriteria()
-
-        let survivalObjective = QuestObjective(
-            description: "Survive for \(survivalDays) days",
-            criteria: survivalCriteria,
-            target: Float(survivalDays)
-        )
+        let survivalObjective = createSurvivalObjective(days: survivalDays)
 
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 150),
@@ -144,7 +79,8 @@ class QuestFactory {
 
         let component = QuestComponent(
             title: title,
-            objectives: [harvestObjective, sellObjective, survivalObjective]
+            objectives: [harvestObjective, sellObjective, survivalObjective],
+            order: order
         )
 
         return Quest(questComponent: component,
@@ -153,64 +89,158 @@ class QuestFactory {
 
     // MARK: - Other Quests
 
-    private static func createAppleCollectionQuest() -> Quest {
+    private static func createAppleHarvestQuest(order: Int = Int.max) -> Quest {
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 100),
             RewardCurrencyComponent(currencies: [.coin: 50])
         ]
 
-        return createHarvestQuest(
-            title: "Apple Collection",
-            cropType: .apple,
-            amount: 10,
-            rewards: rewards
-        )
+        let harvestObjective = createHarvestCropObjective(type: .apple,
+                                                          harvestAmount: 10)
+
+        let title = "Apple Collection"
+
+        let component = QuestComponent(title: title,
+                                       objectives: [harvestObjective],
+                                       order: order)
+
+        return Quest(questComponent: component,
+                     rewardComponents: rewards)
     }
 
-    private static func createFarmStarterQuest() -> Quest {
+    private static func createFarmStarterQuest(order: Int = Int.max) -> Quest {
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 50),
             RewardItemComponent(itemTypes: [.premiumFertiliser: 1])
         ]
 
-        return createSurvivalQuest(
-            title: "Farm Beginnings",
-            days: 7,
-            rewards: rewards
-        )
+        let survivalObjective = createSurvivalObjective(days: 7)
+
+        let title = "Farm Beginnings"
+
+        let component = QuestComponent(title: title,
+                                       objectives: [survivalObjective],
+                                       order: order)
+
+        return Quest(questComponent: component,
+                     rewardComponents: rewards)
     }
 
-    private static func createSellQuestBakChoy() -> Quest {
+    private static func createSellQuestBakChoy(order: Int = Int.max) -> Quest {
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 75),
             RewardCurrencyComponent(currencies: [.coin: 100])
         ]
 
-        return createSellQuest(title: "Market sales",
-                               cropType: .bokChoy,
-                               amount: 8,
-                               rewards: rewards)
+        let sellObjective = createSellCropObjective(type: .bokChoy,
+                                                    sellAmount: 8)
+
+        let title = "Market sales"
+
+        let component = QuestComponent(title: title,
+                                       objectives: [sellObjective],
+                                       order: order)
+
+        return Quest(questComponent: component,
+                     rewardComponents: rewards)
     }
 
-    private static func createHarvestQuestBakChoy() -> Quest {
+    private static func createReallyLongQuest(order: Int = Int.max) -> Quest {
+        let rewards: [RewardComponent] = [
+            RewardXPComponent(amount: 150),
+            RewardCurrencyComponent(currencies: [.coin: 200]),
+            RewardItemComponent(itemTypes: [.fertiliser: 2,
+                                            .potatoSeed: 3])
+        ]
+
+        let plantAppleObjective = createPlantCropObjective(type: .apple, plantAmount: 5)
+        let plantBokChoyObjective = createPlantCropObjective(type: .bokChoy, plantAmount: 5)
+        let plantPotatoObjective = createPlantCropObjective(type: .potato, plantAmount: 5)
+
+        let harvestAppleObjective = createHarvestCropObjective(type: .apple, harvestAmount: 10)
+        let harvestPotatoObjective = createHarvestCropObjective(type: .potato, harvestAmount: 10)
+        let harvestBokChoyObjective = createHarvestCropObjective(type: .bokChoy, harvestAmount: 15)
+
+        let sellAppleObjective = createSellCropObjective(type: .apple, sellAmount: 10)
+        let sellPotatoObjective = createSellCropObjective(type: .potato, sellAmount: 10)
+        let sellBokChoyObjective = createSellCropObjective(type: .bokChoy, sellAmount: 15)
+
+        let survivalObjective = createSurvivalObjective(days: 5)
+
+        let title = "Realllllly looooong quest"
+        let component = QuestComponent(title: title,
+                                       objectives: [
+                                        plantAppleObjective,
+                                        plantBokChoyObjective,
+                                        plantPotatoObjective,
+                                        harvestAppleObjective,
+                                        harvestPotatoObjective,
+                                        harvestBokChoyObjective,
+                                        sellAppleObjective,
+                                        sellPotatoObjective,
+                                        sellBokChoyObjective,
+                                        survivalObjective
+                                       ],
+                                       order: order)
+        return Quest(questComponent: component,
+                     rewardComponents: rewards)
+    }
+
+    private static func createBakChoyHarvestQuest(order: Int = Int.max) -> Quest {
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 25)
         ]
 
-        return createHarvestQuest(title: "Learning to harvest",
-                                  cropType: .bokChoy,
-                                  amount: 3,
-                                  rewards: rewards)
+        let harvestObjective = createHarvestCropObjective(type: .bokChoy,
+                                                          harvestAmount: 3)
 
+        let title = "Learning to harvest"
+
+        let component = QuestComponent(title: title,
+                                       objectives: [harvestObjective],
+                                       order: order)
+
+        return Quest(questComponent: component,
+                     rewardComponents: rewards)
+
+    }
+
+    private static func createDummyQuest(days: Int,
+                                         order: Int = Int.max) -> Quest {
+        let rewards: [RewardComponent] = [
+            RewardXPComponent(amount: 50),
+            RewardItemComponent(itemTypes: [.premiumFertiliser: 1]),
+            RewardCurrencyComponent(currencies: [
+                .coin: 100
+            ])
+        ]
+
+        let survivalObjective = createSurvivalObjective(days: days)
+
+        let title = "Dummy quest \(UUID())"
+
+        let component = QuestComponent(title: title,
+                                       objectives: [survivalObjective],
+                                       order: order)
+
+        return Quest(questComponent: component,
+                     rewardComponents: rewards)
     }
 
     static func createAllQuests() -> [Quest] {
         [
-            createFarmStarterQuest(),
-            createHarvestQuestBakChoy(),
-            createSellQuestBakChoy(),
-            createFarmBusinessQuest(),
-            createAppleCollectionQuest()
+            createFarmStarterQuest(order: 1),
+            createDummyQuest(days: 5, order: 2),
+            createDummyQuest(days: 4, order: 3),
+            createDummyQuest(days: 3, order: 4),
+            createDummyQuest(days: 10, order: 5),
+            createDummyQuest(days: 11, order: 6),
+            createBakChoyHarvestQuest(order: 7),
+            createSellQuestBakChoy(order: 8),
+            createFarmBusinessQuest(order: 9),
+            createAppleHarvestQuest(order: 10),
+            createReallyLongQuest(order: 11),
+            createDummyQuest(days: 3, order: 12)
         ]
     }
 

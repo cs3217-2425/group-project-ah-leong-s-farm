@@ -1,5 +1,5 @@
 //
-//  LevelProgressBar.swift
+//  ProgressBar.swift
 //  Ah Leongs Farm
 //
 //  Created by Lester Ong on 2/4/25.
@@ -7,11 +7,12 @@
 
 import UIKit
 
-class LevelProgressBar: UIView {
+class ProgressBar: UIView {
     private let progressView = UIView()
     private let progressLabel = UILabel()
     private var currentProgress: CGFloat = 0
     private var maxProgress: CGFloat = 1
+    private var label: String = ""
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -39,7 +40,9 @@ class LevelProgressBar: UIView {
         addSubview(progressLabel)
     }
 
-    func setProgress(currentProgress: CGFloat, maxProgress: CGFloat) {
+    func setProgress(currentProgress: CGFloat,
+                     maxProgress: CGFloat,
+                     label: String) {
         guard maxProgress > 0 else {
             return
         }
@@ -50,7 +53,7 @@ class LevelProgressBar: UIView {
         let clampedValue = min(max(value, 0), 1)
 
         let newWidth = bounds.width * clampedValue
-        progressLabel.text = "\(currentProgress)/\(maxProgress) XP"
+        progressLabel.text = "\(currentProgress)/\(maxProgress) \(label)"
 
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear, animations: {
             self.progressView.frame = CGRect(x: 0, y: 0, width: newWidth, height: self.bounds.height)
@@ -59,7 +62,9 @@ class LevelProgressBar: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        setProgress(currentProgress: currentProgress, maxProgress: maxProgress)
+        setProgress(currentProgress: currentProgress,
+                    maxProgress: maxProgress,
+                    label: label)
         progressLabel.frame = bounds
     }
 }
