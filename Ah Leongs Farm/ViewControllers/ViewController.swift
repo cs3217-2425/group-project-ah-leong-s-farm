@@ -92,10 +92,14 @@ class ViewController: UIViewController {
 // MARK: GameControlsViewDelegate
 extension ViewController: GameControlsViewDelegate {
     func nextDayButtonTapped() {
-        gameManager.nextTurn()
+        let currentTurn = gameManager.getCurrentTurn()
+        let maxTurn = gameManager.getMaxTurns()
 
-        // TODO: Logic for presenting the gameOverController
-        // present(gameOverViewController, animated: true)
+        if currentTurn >= maxTurn {
+            present(gameOverViewController, animated: true)
+        }
+
+        gameManager.nextTurn()
     }
 
     func quitButtonTapped() {
