@@ -14,18 +14,10 @@ struct GameOverEvent: GameEvent {
         }
 
         let finalTurn = turnSystem.getCurrentTurn()
-        let maxTurns = turnSystem.getMaxTurns()
         let finalCoins = walletSystem.getTotalAmount(of: .coin)
-
         let finalScore = calculateScore(turns: finalTurn, coins: finalCoins)
 
-        // Placeholder print statements
-        print("Game Over!")
-        print("Final turn: \(finalTurn)/\(maxTurns)")
-        print("Final coins: \(finalCoins)")
-        print("Final score: \(finalScore)")
-
-        return nil
+        return GameOverEventData(score: finalScore, coins: finalCoins)
     }
 
     private func calculateScore(turns: Int, coins: Double) -> Int {

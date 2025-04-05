@@ -11,106 +11,81 @@ import GameplayKit
 
 final class TurnSystemTests: XCTestCase {
 
-    private var turnSystem: TurnSystem?
-    private var gameEntity: GKEntity?
-    private var turnComponent: TurnComponent?
+    var turnSystem: TurnSystem?
+    var manager: EntityManager?
 
     override func setUp() {
         super.setUp()
-        turnSystem = TurnSystem()
-        gameEntity = GKEntity()
-        turnComponent = TurnComponent(maxTurns: 10)
-
-        guard let gameEntity = gameEntity, let turnComponent = turnComponent else {
-            XCTFail("Failed to create entity or component")
-            return
-        }
-
-        gameEntity.addComponent(turnComponent)
-        turnSystem?.addComponent(foundIn: gameEntity)
+        manager = EntityManager()
+        turnSystem = TurnSystem(for: manager!)
+        manager?.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }
 
     override func tearDown() {
         turnSystem = nil
-        gameEntity = nil
-        turnComponent = nil
+        manager = nil
         super.tearDown()
     }
 
-    private func validateSetup() -> (TurnSystem, GKEntity, TurnComponent)? {
-        guard let turnSystem = turnSystem,
-              let gameEntity = gameEntity,
-              let turnComponent = turnComponent else {
+    private func validateSetup() -> TurnSystem? {
+        guard let system = turnSystem else {
             XCTFail("Test setup failed: Missing system, entity, or component")
             return nil
         }
-        return (turnSystem, gameEntity, turnComponent)
+        return system
     }
 
     private func createEmptySystem() -> TurnSystem {
-        TurnSystem()
+        manager = EntityManager()
+        return TurnSystem(for: manager!)
     }
 
     func testInitialization() {
-        let system = TurnSystem()
+        let system = TurnSystem(for: EntityManager())
         XCTAssertNotNil(system)
-        XCTAssertEqual(system.components.count, 0)
-    }
-
-    func testAddComponent() {
-        let system = createEmptySystem()
-        let entity = GKEntity()
-        let component = TurnComponent(maxTurns: 5)
-        entity.addComponent(component)
-
-        system.addComponent(foundIn: entity)
-
-        XCTAssertEqual(system.components.count, 1)
-        XCTAssertTrue(system.components.contains(component))
-    }
-
-    func testRemoveComponent() {
-        guard let setup = validateSetup() else {
-            return
-        }
-        let (turnSystem, gameEntity, _) = setup
-
-        turnSystem.removeComponent(foundIn: gameEntity)
-
-        XCTAssertEqual(turnSystem.components.count, 0)
     }
 
     func testIncrementTurn_WhenBelowMaxTurns_ShouldIncrementAndReturnTrue() {
         guard let setup = validateSetup() else {
             return
         }
-        let (turnSystem, _, turnComponent) = setup
+        let (turnSystem) = setup
 
         let shouldContinue = turnSystem.incrementTurn()
 
         XCTAssertTrue(shouldContinue)
-        XCTAssertEqual(turnComponent.currentTurn, 2)
+        XCTAssertEqual(turnSystem.getCurrentTurn(), 2)
     }
 
     func testIncrementTurn_WhenAtMaxTurns_ShouldIncrementAndReturnFalse() {
         guard let setup = validateSetup() else {
             return
         }
-        let (turnSystem, _, turnComponent) = setup
+        let (turnSystem) = setup
 
-        turnComponent.currentTurn = 10
+        guard let turnComponent = manager?.getSingletonComponent(ofType: TurnComponent.self) else {
+            XCTFail("TurnComponent not found")
+            return
+        }
+
+        turnComponent.currentTurn = 30
 
         let shouldContinue = turnSystem.incrementTurn()
 
         XCTAssertFalse(shouldContinue)
-        XCTAssertEqual(turnComponent.currentTurn, 11)
+        XCTAssertEqual(turnComponent.currentTurn, 31)
     }
 
     func testIncrementTurn_WhenMultipleTimes_ShouldTrackCorrectly() {
         guard let setup = validateSetup() else {
             return
         }
-        let (turnSystem, _, turnComponent) = setup
+        let (turnSystem) = setup
+
+        guard let turnComponent = manager?.getSingletonComponent(ofType: TurnComponent.self) else {
+            XCTFail("TurnComponent not found")
+            return
+        }
 
         XCTAssertTrue(turnSystem.incrementTurn())
         XCTAssertEqual(turnComponent.currentTurn, 2)
@@ -122,7 +97,7 @@ final class TurnSystemTests: XCTestCase {
         XCTAssertTrue(turnSystem.incrementTurn())
         XCTAssertEqual(turnComponent.currentTurn, 10)
 
-        XCTAssertFalse(turnSystem.incrementTurn())
+        XCTAssertTrue(turnSystem.incrementTurn())
         XCTAssertEqual(turnComponent.currentTurn, 11)
     }
 
@@ -138,7 +113,12 @@ final class TurnSystemTests: XCTestCase {
         guard let setup = validateSetup() else {
             return
         }
-        let (turnSystem, _, turnComponent) = setup
+        let (turnSystem) = setup
+
+        guard let turnComponent = manager?.getSingletonComponent(ofType: TurnComponent.self) else {
+            XCTFail("TurnComponent not found")
+            return
+        }
 
         turnComponent.currentTurn = 5
 
@@ -159,11 +139,11 @@ final class TurnSystemTests: XCTestCase {
         guard let setup = validateSetup() else {
             return
         }
-        let (turnSystem, _, _) = setup
+        let (turnSystem) = setup
 
         let maxTurns = turnSystem.getMaxTurns()
 
-        XCTAssertEqual(maxTurns, 10)
+        XCTAssertEqual(maxTurns, 30)
     }
 
     func testGetMaxTurns_WithNoComponents_ShouldReturnOne() {
@@ -178,7 +158,12 @@ final class TurnSystemTests: XCTestCase {
         guard let setup = validateSetup() else {
             return
         }
-        let (turnSystem, _, turnComponent) = setup
+        let (turnSystem) = setup
+
+        guard let turnComponent = manager?.getSingletonComponent(ofType: TurnComponent.self) else {
+            XCTFail("TurnComponent not found")
+            return
+        }
 
         turnComponent.currentTurn = 5
 
@@ -191,7 +176,12 @@ final class TurnSystemTests: XCTestCase {
         guard let setup = validateSetup() else {
             return
         }
-        let (turnSystem, _, turnComponent) = setup
+        let (turnSystem) = setup
+
+        guard let turnComponent = manager?.getSingletonComponent(ofType: TurnComponent.self) else {
+            XCTFail("TurnComponent not found")
+            return
+        }
 
         turnComponent.currentTurn = 10
 
@@ -204,9 +194,14 @@ final class TurnSystemTests: XCTestCase {
         guard let setup = validateSetup() else {
             return
         }
-        let (turnSystem, _, turnComponent) = setup
+        let (turnSystem) = setup
 
-        turnComponent.currentTurn = 11
+        guard let turnComponent = manager?.getSingletonComponent(ofType: TurnComponent.self) else {
+            XCTFail("TurnComponent not found")
+            return
+        }
+
+        turnComponent.currentTurn = 31
 
         let isGameOver = turnSystem.isGameOver()
 
@@ -219,25 +214,5 @@ final class TurnSystemTests: XCTestCase {
         let isGameOver = emptySystem.isGameOver()
 
         XCTAssertTrue(isGameOver)
-    }
-
-    func testMultipleComponentsSupport() {
-        guard let setup = validateSetup() else {
-            return
-        }
-        let (turnSystem, _, _) = setup
-
-        let secondEntity = GKEntity()
-        let secondComponent = TurnComponent(maxTurns: 20)
-        secondEntity.addComponent(secondComponent)
-        turnSystem.addComponent(foundIn: secondEntity)
-
-        XCTAssertEqual(turnSystem.components.count, 2)
-
-        let currentTurn = turnSystem.getCurrentTurn()
-        let maxTurns = turnSystem.getMaxTurns()
-
-        XCTAssertEqual(currentTurn, 1)
-        XCTAssertEqual(maxTurns, 10)
     }
 }

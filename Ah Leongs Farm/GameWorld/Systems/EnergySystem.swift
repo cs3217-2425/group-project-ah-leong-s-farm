@@ -18,6 +18,7 @@ class EnergySystem: ISystem {
         self.manager = manager
     }
 
+    @discardableResult
     func useEnergy(amount: Int) -> Bool {
         guard let energyComponent = energyComponent else {
             return false

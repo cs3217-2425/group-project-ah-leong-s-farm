@@ -9,7 +9,7 @@ class GameRenderer {
     private weak var gameScene: GameScene?
     private var renderPipeline: Queue<any IRenderManager> = Queue()
 
-    private var entityTileMapNodeMap: [ObjectIdentifier: SKTileMapNode] = [:]
+    private var entityTileMapNodeMap: [ObjectIdentifier: TileMapNode] = [:]
     private var entitySpriteNodeMap: [ObjectIdentifier: SpriteNode] = [:]
     private var entityNodeMap: [ObjectIdentifier: any IRenderNode] {
         let maps: [[ObjectIdentifier: any IRenderNode]] = [entityTileMapNodeMap, entitySpriteNodeMap]
@@ -36,7 +36,7 @@ class GameRenderer {
         gameScene = scene
     }
 
-    func setRenderNode(for entityIdentifier: ObjectIdentifier, node: SKTileMapNode) {
+    func setRenderNode(for entityIdentifier: ObjectIdentifier, node: TileMapNode) {
         let shouldAddToScene = entityTileMapNodeMap[entityIdentifier] == nil
 
         entityTileMapNodeMap[entityIdentifier] = node
@@ -54,6 +54,19 @@ class GameRenderer {
         if shouldAddToScene {
             gameScene?.addChild(node)
         }
+    }
+
+    func lightUpTile(at row: Int, column: Int) {
+        guard let tileMapNode = tileMapNode else {
+            return
+        }
+
+        let transparentGreen = #colorLiteral(red: 0, green: 1, blue: 0, alpha: 0.5)
+        tileMapNode.lightUpTile(atRow: row, column: column, color: transparentGreen, blendFactor: 0.5)
+    }
+
+    func unlightAllTiles() {
+        tileMapNode?.removeAllLightUpTiles()
     }
 
     private func removeRenderNode(for entityIdentifier: ObjectIdentifier) {
@@ -128,12 +141,12 @@ extension GameRenderer: IGameObserver {
 
 extension GameRenderer: UIPositionProvider {
 
-    private var skTileMapNode: SKTileMapNode? {
+    private var tileMapNode: TileMapNode? {
         entityTileMapNodeMap.values.first
     }
 
     func getUIPosition(row: Int, column: Int) -> CGPoint? {
-        guard let skTileMapNode = skTileMapNode else {
+        guard let skTileMapNode = tileMapNode else {
             return nil
         }
 
@@ -153,7 +166,7 @@ extension GameRenderer: UIPositionProvider {
     }
 
     func getRowAndColumn(fromPosition location: CGPoint) -> (row: Int, column: Int)? {
-        guard let tileMapNode = skTileMapNode else {
+        guard let tileMapNode = tileMapNode else {
             return nil
         }
 

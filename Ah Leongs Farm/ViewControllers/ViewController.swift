@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     private var gameScene: GameScene?
     private var gameControlsView: GameControlsView?
     private var gameStatisticsView: GameStatisticsView?
+    private var gameOverViewController = GameOverViewController()
 
     required init?(coder: NSCoder) {
         gameManager = GameManager()
@@ -31,6 +32,7 @@ class ViewController: UIViewController {
         setUpGameStatistics()
         setupQuestNotificationSystem()
         gameManager.addGameObserver(self)
+        gameManager.registerEventObserver(gameOverViewController)
     }
 
     private func setUpGameStatistics() {
@@ -68,6 +70,8 @@ class ViewController: UIViewController {
 
         self.gameScene = GameScene(size: skView.bounds.size)
         gameScene?.setGameSceneUpdateDelegate(self)
+        gameScene?.setUIPositionProvider(gameRenderer)
+        gameScene?.setGridInteractionHandler(self)
         gameRenderer.setScene(gameScene)
 
         gameScene?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
@@ -76,6 +80,7 @@ class ViewController: UIViewController {
 
     private func setUpGameObservers() {
         gameManager.addGameObserver(gameRenderer)
+        gameManager.addGameObserver(self)
     }
 
     override var prefersStatusBarHidden: Bool {
@@ -90,6 +95,13 @@ class ViewController: UIViewController {
 // MARK: GameControlsViewDelegate
 extension ViewController: GameControlsViewDelegate {
     func nextDayButtonTapped() {
+        let currentTurn = gameManager.getCurrentTurn()
+        let maxTurn = gameManager.getMaxTurns()
+
+        if currentTurn == maxTurn {
+            present(gameOverViewController, animated: true)
+        }
+
         gameManager.nextTurn()
     }
 
