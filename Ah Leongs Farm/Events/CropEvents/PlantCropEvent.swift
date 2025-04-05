@@ -34,6 +34,10 @@ struct PlantCropEvent: GameEvent {
             return nil
         }
 
+        guard energySystem.getCurrentEnergy() > ENERGY_USAGE else {
+            return nil
+        }
+
         let row = Int(position.x)
         let column = Int(position.y)
 
