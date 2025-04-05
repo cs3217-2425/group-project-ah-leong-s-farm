@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     private var gameScene: GameScene?
     private var gameControlsView: GameControlsView?
     private var gameStatisticsView: GameStatisticsView?
+    private var gameOverViewController = GameOverViewController()
 
     required init?(coder: NSCoder) {
         gameManager = GameManager()
@@ -30,6 +31,8 @@ class ViewController: UIViewController {
         setUpGameControls()
         setUpGameStatistics()
         setupQuestNotificationSystem()
+        gameManager.addGameObserver(self)
+        gameManager.registerEventObserver(gameOverViewController)
     }
 
     private func setUpGameStatistics() {
@@ -92,6 +95,13 @@ class ViewController: UIViewController {
 // MARK: GameControlsViewDelegate
 extension ViewController: GameControlsViewDelegate {
     func nextDayButtonTapped() {
+        let currentTurn = gameManager.getCurrentTurn()
+        let maxTurn = gameManager.getMaxTurns()
+
+        if currentTurn == maxTurn {
+            present(gameOverViewController, animated: true)
+        }
+
         gameManager.nextTurn()
     }
 
