@@ -20,7 +20,7 @@ class TileMapRenderManager: IRenderManager {
             return
         }
 
-        let tileMapNode = SKTileMapNode(
+        let tileMapNode = TileMapNode(
             tileSet: tileSet,
             columns: gridComponent.numberOfColumns,
             rows: gridComponent.numberOfRows,
