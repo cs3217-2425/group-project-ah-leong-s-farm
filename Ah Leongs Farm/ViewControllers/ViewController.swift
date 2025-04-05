@@ -70,6 +70,8 @@ class ViewController: UIViewController {
 
         self.gameScene = GameScene(size: skView.bounds.size)
         gameScene?.setGameSceneUpdateDelegate(self)
+        gameScene?.setUIPositionProvider(gameRenderer)
+        gameScene?.setGridInteractionHandler(self)
         gameRenderer.setScene(gameScene)
 
         gameScene?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
@@ -78,6 +80,7 @@ class ViewController: UIViewController {
 
     private func setUpGameObservers() {
         gameManager.addGameObserver(gameRenderer)
+        gameManager.addGameObserver(self)
     }
 
     override var prefersStatusBarHidden: Bool {

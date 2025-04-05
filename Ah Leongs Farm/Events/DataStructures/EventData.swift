@@ -54,6 +54,18 @@ struct PlantCropEventData: EventData {
     var isSuccessfullyPlanted: Bool
 }
 
+struct AddPlotEventData: EventData {
+    var row: Int
+    var column: Int
+    var isSuccessfullyAdded: Bool
+}
+
 struct QuestCompletedEventData: EventData {
     let questTitle: String
+}
+
+struct RazePlotEventData: EventData {
+    var row: Int
+    var column: Int
+    var isSuccessfullyRazed: Bool
 }

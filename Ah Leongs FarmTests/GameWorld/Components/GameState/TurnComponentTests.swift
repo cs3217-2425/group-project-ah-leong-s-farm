@@ -51,13 +51,11 @@ final class TurnComponentTests: XCTestCase {
     }
 
     func testNegativeMaxTurns() {
-        // When initializing with negative value, should use minimum value of 1
         let negativeComponent = TurnComponent(maxTurns: -5)
         XCTAssertEqual(negativeComponent.maxTurns, 1)
     }
 
     func testZeroMaxTurns() {
-        // When initializing with zero, should use minimum value of 1
         let zeroComponent = TurnComponent(maxTurns: 0)
         XCTAssertEqual(zeroComponent.maxTurns, 1)
     }
@@ -74,7 +72,6 @@ final class TurnComponentTests: XCTestCase {
         component.maxTurns = 0
         XCTAssertEqual(component.maxTurns, 1)
 
-        // Setting to negative should use minimum value of 1
         component.maxTurns = -3
         XCTAssertEqual(component.maxTurns, 1)
     }
@@ -88,11 +85,9 @@ final class TurnComponentTests: XCTestCase {
         component.currentTurn = 5
         XCTAssertEqual(component.currentTurn, 5)
 
-        // Setting to zero should use minimum value of 1
         component.currentTurn = 0
         XCTAssertEqual(component.currentTurn, 1)
 
-        // Setting to negative should use minimum value of 1
         component.currentTurn = -2
         XCTAssertEqual(component.currentTurn, 1)
 
