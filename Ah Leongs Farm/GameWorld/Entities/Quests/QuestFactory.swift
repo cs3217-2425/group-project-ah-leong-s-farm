@@ -34,7 +34,7 @@ class QuestFactory {
                                                 sellAmount: Int) -> QuestObjective {
         let sellCropCriteria = SellCropCriteria(cropType: type)
         return QuestObjective(
-            description: "Harvest \(sellAmount) \(type)s",
+            description: "Sell \(sellAmount) \(type)s",
             criteria: sellCropCriteria,
             target: Float(sellAmount)
         )
@@ -230,17 +230,17 @@ class QuestFactory {
     static func createAllQuests() -> [Quest] {
         [
             createFarmStarterQuest(order: 1),
-            createDummyQuest(days: 5, order: 2),
-            createDummyQuest(days: 4, order: 3),
-            createDummyQuest(days: 3, order: 4),
-            createDummyQuest(days: 10, order: 5),
-            createDummyQuest(days: 11, order: 6),
+//            createDummyQuest(days: 5, order: 2),
+//            createDummyQuest(days: 4, order: 3),
+//            createDummyQuest(days: 3, order: 4),
+//            createDummyQuest(days: 10, order: 5),
+//            createDummyQuest(days: 11, order: 6),
             createBakChoyHarvestQuest(order: 7),
             createSellQuestBakChoy(order: 8),
             createFarmBusinessQuest(order: 9),
             createAppleHarvestQuest(order: 10),
             createReallyLongQuest(order: 11),
-            createDummyQuest(days: 3, order: 12)
+//            createDummyQuest(days: 3, order: 12)
         ]
     }
 
