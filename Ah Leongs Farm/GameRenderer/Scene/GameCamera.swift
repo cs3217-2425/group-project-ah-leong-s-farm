@@ -16,14 +16,14 @@ class GameCamera: SKCameraNode {
     // MARK: - Camera zoom
 
     /// zoom settings
-    var cameraMaxScale: CGFloat = 100
-    var cameraMinScale: CGFloat = 0.01
-    var cameraScaleInertia: CGFloat = 0.75
+    private var cameraMaxScale: CGFloat = 100
+    private var cameraMinScale: CGFloat = 0.01
+    private var cameraScaleInertia: CGFloat = 0.75
 
     /// zoom state
-    var cameraScaleVelocity: CGFloat = 0
-    var cameraScaleBeforePinch: CGFloat = 1
-    var cameraPositionBeforePinch = CGPoint.zero
+    private var cameraScaleVelocity: CGFloat = 0
+    private var cameraScaleBeforePinch: CGFloat = 1
+    private var cameraPositionBeforePinch = CGPoint.zero
 
     func scaleCamera(in scene: SKScene, gesture: UIPinchGestureRecognizer) {
         guard let view = scene.view else {
@@ -76,11 +76,11 @@ class GameCamera: SKCameraNode {
     // MARK: - Camera pan
 
     /// pan settings
-    var cameraPositionInertia: CGFloat = 0.95
+    private var cameraPositionInertia: CGFloat = 0.95
 
     /// pan state
-    var cameraPositionVelocity: (x: CGFloat, y: CGFloat) = (0, 0)
-    var cameraPositionBeforePan = CGPoint.zero
+    private var cameraPositionVelocity: (x: CGFloat, y: CGFloat) = (0, 0)
+    private var cameraPositionBeforePan = CGPoint.zero
 
     func panCamera(in scene: SKScene, gesture: UIPanGestureRecognizer) {
         let view = scene.view
@@ -137,13 +137,13 @@ class GameCamera: SKCameraNode {
     // MARK: - Camera rotation
 
     /// rotation settings
-    var cameraRotationInertia: CGFloat = 0.85
+    private var cameraRotationInertia: CGFloat = 0.85
 
     /// rotation state
-    var cameraRotationVelocity: CGFloat = 0
-    var cameraRotationWhenGestureStarts: CGFloat = 0
-    var cumulativeRotation: CGFloat = 0
-    var rotationPivot = CGPoint.zero
+    private var cameraRotationVelocity: CGFloat = 0
+    private var cameraRotationWhenGestureStarts: CGFloat = 0
+    private var cumulativeRotation: CGFloat = 0
+    private var rotationPivot = CGPoint.zero
 
     func rotateCamera(in scene: SKScene, gesture: UIRotationGestureRecognizer) {
         guard let view = scene.view else {
