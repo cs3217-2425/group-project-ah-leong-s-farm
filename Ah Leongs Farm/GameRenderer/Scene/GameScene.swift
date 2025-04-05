@@ -27,8 +27,9 @@ class GameScene: SKScene {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override init(size: CGSize) {
-        super.init(size: size)
+    init(view: SKView) {
+        super.init(size: view.bounds.size)
+        setupGestureRecognizers(in: view)
     }
 
     func setGameSceneUpdateDelegate(_ delegate: GameSceneUpdateDelegate) {
@@ -41,24 +42,56 @@ class GameScene: SKScene {
 
     override func update(_ currentTime: TimeInterval) {
         gameSceneUpdateDelegate?.update(currentTime)
-        gameCamera.move()
     }
 
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else {
-            return
-        }
+    private func setupGestureRecognizers(in view: SKView) {
+        let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
+        let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
+        let rotationRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)))
 
-        let touchPosition = touch.location(in: self)
-        gameCamera.lastTouchPosition = touchPosition
+        pinchRecognizer.delegate = self
+        panRecognizer.delegate = self
+        rotationRecognizer.delegate = self
+
+        /// this prevents the recognizer from cancelling basic touch events once a gesture is recognized
+        /// In UIKit, this property is set to true by default
+        pinchRecognizer.cancelsTouchesInView = false
+        panRecognizer.cancelsTouchesInView = false
+        rotationRecognizer.cancelsTouchesInView = false
+
+        panRecognizer.maximumNumberOfTouches = 2
+
+        view.addGestureRecognizer(pinchRecognizer)
+        view.addGestureRecognizer(panRecognizer)
+        view.addGestureRecognizer(rotationRecognizer)
     }
 
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else {
-            return
-        }
+    @objc private func handlePinchGesture(_ gesture: UIPinchGestureRecognizer) {
+        gameCamera.scaleCamera(in: self, gesture: gesture)
+    }
 
-        let touchPosition = touch.location(in: self)
-        gameCamera.setTargetPosition(using: touchPosition)
+    @objc private func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
+        gameCamera.panCamera(in: self, gesture: gesture)
+    }
+
+    @objc private func handleRotationGesture(_ gesture: UIRotationGestureRecognizer) {
+        gameCamera.rotateCamera(in: self, gesture: gesture)
+    }
+}
+
+extension GameScene: UIGestureRecognizerDelegate {
+    /// allow multiple gesture recognizers to recognize gestures at the same time
+    /// for this function to work, the protocol `UIGestureRecognizerDelegate` must be added to this class
+    /// and a delegate must be set on the recognizer that needs to work with others
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                           shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        true
+    }
+
+    /// Use this function to determine if the gesture recognizer should handle the touch
+    /// For example, return false if the touch is within a certain area that should only respond to direct touch events
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                           shouldReceive touch: UITouch) -> Bool {
+        true
     }
 }
