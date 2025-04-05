@@ -34,7 +34,7 @@ struct PlantCropEvent: GameEvent {
             return nil
         }
 
-        guard energySystem.getCurrentEnergy() > ENERGY_USAGE else {
+        guard energySystem.getCurrentEnergy() >= ENERGY_USAGE else {
             return nil
         }
 
