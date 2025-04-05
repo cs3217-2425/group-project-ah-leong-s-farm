@@ -9,105 +9,48 @@ import XCTest
 import GameplayKit
 @testable import Ah_Leongs_Farm
 
-class QuestComponentTests: XCTestCase {
+final class QuestComponentTests: XCTestCase {
 
-    func testInitialization() {
-        let reward = Reward(rewards: [])
-        let objective = QuestObjective(
-            description: "Plant 20 Crops",
-            criteria: QuestCriteria(
-                eventType: .plantCrop,
-                progressCalculator: FixedProgressCalculator(amount: 1)
-            ),
-            target: 20
-        )
+    struct MockQuestCriteria: QuestCriteria {
+        let value: Float
 
-        let quest = QuestComponent(title: "Crop Planting", objectives: [objective], reward: reward)
+        func calculateValue(from eventData: EventData) -> Float {
+            value
+        }
+    }
 
-        XCTAssertEqual(quest.title, "Crop Planting")
-        XCTAssertEqual(quest.status, .active)
+    func testQuestComponent_initialState() {
+        let objective = QuestObjective(description: "Plant 5 crops",
+                                       criteria: MockQuestCriteria(value: 5.0), target: 10.0)
+        let quest = QuestComponent(title: "Farming Quest", objectives: [objective], order: 1)
+
+        XCTAssertEqual(quest.title, "Farming Quest")
+        XCTAssertEqual(quest.status, .inactive)
         XCTAssertEqual(quest.objectives.count, 1)
         XCTAssertFalse(quest.isCompleted)
     }
 
-    func testQuestCompletion_allObjectivesCompleted() {
-        let reward = Reward(rewards: [])
+    func testQuestComponent_isCompleted_false() {
+        var objective = QuestObjective(description: "Plant 5 crops",
+                                       criteria: MockQuestCriteria(value: 5.0),
+                                       target: 10.0)
+        objective.progress += 5.0
 
-        var objective1 = QuestObjective(
-            description: "Plant 20 Crops",
-            criteria: QuestCriteria(
-                eventType: .plantCrop,
-                progressCalculator: FixedProgressCalculator(amount: 1)
-            ),
-            target: 20
-        )
-
-        var objective2 = QuestObjective(
-            description: "Survive 5 Days",
-            criteria: QuestCriteria(
-                eventType: .endTurn,
-                progressCalculator: FixedProgressCalculator(amount: 1)
-            ),
-            target: 5
-        )
-
-        objective1.progress = 20
-        objective2.progress = 5
-
-        let quest = QuestComponent(title: "Survival Training", objectives: [objective1, objective2], reward: reward)
-
-        XCTAssertTrue(quest.isCompleted, "Quest should be completed when all objectives are completed")
-    }
-
-    func testQuestCompletion_oneObjectiveIncomplete() {
-        let reward = Reward(rewards: [])
-
-        var objective1 = QuestObjective(
-            description: "Plant 20 Crops",
-            criteria: QuestCriteria(
-                eventType: .plantCrop,
-                progressCalculator: FixedProgressCalculator(amount: 1)
-            ),
-            target: 20
-        )
-
-        var objective2 = QuestObjective(
-            description: "Survive 5 Days",
-            criteria: QuestCriteria(
-                eventType: .endTurn,
-                progressCalculator: FixedProgressCalculator(amount: 1)
-            ),
-            target: 5
-        )
-
-        objective1.progress = 20
-        objective2.progress = 4
-
-        let quest = QuestComponent(title: "Survival Training", objectives: [objective1, objective2], reward: reward)
-
+        let quest = QuestComponent(title: "Farming Quest", objectives: [objective], order: 1)
         XCTAssertFalse(quest.isCompleted)
     }
 
-    func testQuestCompletion_withEventAmountCalculator() {
-        let eventType = EventType.harvestCrop
-        let eventDataType = EventDataType.cropType
-        let eventCalculator = EventAmountCalculator(dataType: eventDataType)
+    func testQuestComponent_isCompleted_true() {
+        var objective1 = QuestObjective(description: "Plant 5 crops",
+                                        criteria: MockQuestCriteria(value: 5.0), target: 5.0)
+        var objective2 = QuestObjective(description: "Harvest 3 crops",
+                                        criteria: MockQuestCriteria(value: 3.0),
+                                        target: 3.0)
 
-        var eventData = EventData(eventType: eventType)
-        eventData.addData(type: eventDataType, value: 20)
+        objective1.progress = 5.0
+        objective2.progress = 3.0
 
-        let questCriteria = QuestCriteria(eventType: eventType, progressCalculator: eventCalculator)
-        let objective = QuestObjective(description: "Harvest 20 Crops",
-                                       criteria: questCriteria,
-                                       target: 20.0)
-
-        let quest = QuestComponent(title: "Crop Collection",
-                                   objectives: [objective],
-                                   reward: Reward(rewards: []))
-
-        let progressGained = eventCalculator.calculateProgress(from: eventData)
-        quest.objectives[0].progress += progressGained
-
+        let quest = QuestComponent(title: "Farming Quest", objectives: [objective1, objective2], order: 1)
         XCTAssertTrue(quest.isCompleted)
     }
 }
