@@ -3,6 +3,8 @@ import SpriteKit
 class GameScene: SKScene {
     private let gameCamera = GameCamera()
     private weak var gameSceneUpdateDelegate: GameSceneUpdateDelegate?
+    private weak var uiPositionProvider: UIPositionProvider?
+    private weak var interactionHandler: GridInteractionHandler?
 
     override var camera: SKCameraNode? {
         get {
@@ -36,8 +38,17 @@ class GameScene: SKScene {
         gameSceneUpdateDelegate = delegate
     }
 
+    func setUIPositionProvider(_ provider: UIPositionProvider) {
+        uiPositionProvider = provider
+    }
+
+    func setGridInteractionHandler(_ handler: GridInteractionHandler) {
+        interactionHandler = handler
+    }
+
     override func didMove(to view: SKView) {
         gameCamera.position = position
+        setUpGestureRecognizers()
     }
 
     override func update(_ currentTime: TimeInterval) {
@@ -93,5 +104,27 @@ extension GameScene: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
                            shouldReceive touch: UITouch) -> Bool {
         true
+    }
+
+    @objc private func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        guard gestureRecognizer.state == .began else {
+            return
+        }
+
+        let touchPosition = gestureRecognizer.location(in: self.view)
+        let scenePosition = convertPoint(fromView: touchPosition)
+
+        if let (row, column) = uiPositionProvider?.getRowAndColumn(fromPosition: scenePosition) {
+            interactionHandler?.handleGridInteraction(row: row, column: column)
+        }
+    }
+
+    private func setUpGestureRecognizers() {
+        let longPressRecognizer = UILongPressGestureRecognizer(
+            target: self,
+            action: #selector(handleLongPress(_:))
+        )
+
+        view?.addGestureRecognizer(longPressRecognizer)
     }
 }

@@ -12,18 +12,18 @@ import GameplayKit
 
 class LevelSystemTests: XCTestCase {
     var levelSystem: LevelSystem!
-    var levelComponent: LevelComponent!
+    var manager: EntityManager!
 
     override func setUp() {
         super.setUp()
-        levelSystem = LevelSystem()
-        levelComponent = LevelComponent(level: 1, currentXP: 0)
-        levelSystem.addComponent(levelComponent)
+        manager = EntityManager()
+        levelSystem = LevelSystem(for: manager)
+        manager.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }
 
     override func tearDown() {
         levelSystem = nil
-        levelComponent = nil
+        manager = nil
         super.tearDown()
     }
 
