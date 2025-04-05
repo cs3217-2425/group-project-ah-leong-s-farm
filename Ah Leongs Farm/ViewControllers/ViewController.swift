@@ -68,7 +68,7 @@ class ViewController: UIViewController {
             return
         }
 
-        self.gameScene = GameScene(size: skView.bounds.size)
+        self.gameScene = GameScene(view: skView)
         gameScene?.setGameSceneUpdateDelegate(self)
         gameScene?.setUIPositionProvider(gameRenderer)
         gameScene?.setGridInteractionHandler(self)
