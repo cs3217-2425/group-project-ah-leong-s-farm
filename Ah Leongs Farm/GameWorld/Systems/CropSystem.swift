@@ -92,6 +92,28 @@ class CropSystem: ISystem {
         return crop
     }
 
+    /// Removes the crop from the specified row and column.
+    /// - Returns: `true` if crop is removed, `false` otherwise.
+    func removeCrop(row: Int, column: Int) -> Bool {
+        guard let manager = manager else {
+            return false
+        }
+
+        guard let plotEntity = grid?.getEntity(row: row, column: column) else {
+            return false
+        }
+
+        guard let cropSlot = plotEntity.component(ofType: CropSlotComponent.self),
+              let crop = cropSlot.crop else {
+            return false
+        }
+
+        manager.removeEntity(crop)
+        cropSlot.crop = nil
+
+        return true
+    }
+
     func growCrops() {
         for crop in growingCrops {
             crop.currentGrowthTurn += 1

@@ -71,3 +71,9 @@ struct RazePlotEventData: EventData {
     var column: Int
     var isSuccessfullyRazed: Bool
 }
+
+struct RemoveCropEventData: EventData {
+    var row: Int
+    var column: Int
+    var isSuccessfullyRemoved: Bool
+}

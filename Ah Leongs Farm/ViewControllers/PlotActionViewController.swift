@@ -37,8 +37,13 @@ class PlotActionViewController: UIViewController {
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        if plotViewModel.hasCrop {
+        if let crop = plotViewModel.crop {
             setupHarvestCropButton(in: stackView)
+
+            // show remove crop button only when crop is not ready to be harvested
+            if !crop.canHarvest {
+                setupRemoveCropButton(in: stackView)
+            }
         } else {
             setupAddCropButton(in: stackView)
         }
@@ -78,6 +83,18 @@ class PlotActionViewController: UIViewController {
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(addCropTapped), for: .touchUpInside)
+        stackView.addArrangedSubview(button)
+        actionButtons.append(button)
+    }
+
+    private func setupRemoveCropButton(in stackView: UIStackView) {
+        let button = UIButton(type: .system)
+        button.setTitle("Remove Crop", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        button.backgroundColor = .systemRed
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(removeCropTapped), for: .touchUpInside)
         stackView.addArrangedSubview(button)
         actionButtons.append(button)
     }
@@ -134,6 +151,11 @@ class PlotActionViewController: UIViewController {
         dismiss(animated: true)
     }
 
+    @objc private func removeCropTapped() {
+        handleRemoveCrop()
+        dismiss(animated: true)
+    }
+
     private func shouldDismiss(location: CGPoint) -> Bool {
         // Ignore taps on action buttons
         for button in actionButtons {
@@ -162,6 +184,11 @@ class PlotActionViewController: UIViewController {
 
     private func handleHarvestCrop() {
         let event = HarvestCropEvent(row: plotViewModel.row, column: plotViewModel.column)
+        eventQueue?.queueEvent(event)
+    }
+
+    private func handleRemoveCrop() {
+        let event = RemoveCropEvent(row: plotViewModel.row, column: plotViewModel.column)
         eventQueue?.queueEvent(event)
     }
 }
