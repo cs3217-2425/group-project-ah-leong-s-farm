@@ -8,15 +8,12 @@
 import Foundation
 
 struct PlantCropEvent: GameEvent {
+    let row: Int
+    let column: Int
     let cropType: CropType
-    let plot: Plot
 
     func execute(in context: any EventContext, queueable: any EventQueueable) -> (any EventData)? {
         guard let cropSystem = context.getSystem(ofType: CropSystem.self) else {
-            return nil
-        }
-
-        guard let position = plot.component(ofType: PositionComponent.self) else {
             return nil
         }
 
@@ -24,11 +21,13 @@ struct PlantCropEvent: GameEvent {
             return nil
         }
 
-        let row = Int(position.x)
-        let column = Int(position.y)
-
         let isSuccessfullyPlanted = cropSystem.plantCrop(crop: crop, row: row, column: column)
 
-        return PlantCropEventData(cropType: cropType, isSuccessfullyPlanted: isSuccessfullyPlanted)
+        return PlantCropEventData(
+            row: row,
+            column: column,
+            cropType: cropType,
+            isSuccessfullyPlanted: isSuccessfullyPlanted
+        )
     }
 }

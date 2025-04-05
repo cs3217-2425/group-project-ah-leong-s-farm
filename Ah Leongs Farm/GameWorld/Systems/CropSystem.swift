@@ -63,24 +63,24 @@ class CropSystem: ISystem {
     }
 
     /// Harvests the crop at the specified row and column.
-    /// - Returns: True if the crop is successfully harvested, false otherwise.
+    /// - Returns: Harvested crop if any, `nil` otherwise.
     @discardableResult
-    func harvestCrop(row: Int, column: Int) -> Bool {
+    func harvestCrop(row: Int, column: Int) -> Crop? {
         guard let plotEntity = grid?.getEntity(row: row, column: column) else {
-            return false
+            return nil
         }
 
         guard let cropSlot = plotEntity.component(ofType: CropSlotComponent.self),
               let crop = cropSlot.crop else {
-            return false
+            return nil
         }
 
         guard let growthComponent = crop.component(ofType: GrowthComponent.self) else {
-            return false
+            return nil
         }
 
         guard growthComponent.canHarvest else {
-            return false
+            return nil
         }
 
         manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
@@ -89,7 +89,7 @@ class CropSystem: ISystem {
         manager?.addComponent(SellComponent(itemType: crop.harvestedItemType), to: crop)
         manager?.addComponent(ItemComponent(itemType: crop.harvestedItemType), to: crop)
         cropSlot.crop = nil
-        return true
+        return crop
     }
 
     func growCrops() {
@@ -121,6 +121,6 @@ class CropSystem: ISystem {
         }
 
         return filteredCrops
-
     }
+
 }

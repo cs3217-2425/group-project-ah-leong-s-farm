@@ -101,7 +101,17 @@ class GameRenderer {
     private func getEntitiesForRemoval(allEntities: Set<EntityType>) -> Set<ObjectIdentifier> {
         let allEntityIdentifiers = allEntities.map { ObjectIdentifier($0) }
         let entityIdentifiersWithRenderNodes = Set(entityNodeMap.keys)
-        let entityIdentifiersForRemoval = entityIdentifiersWithRenderNodes.subtracting(allEntityIdentifiers)
+
+        let entityIdentifiersWithPositionComponentRemoved = Set(
+            allEntities.filter { entitySpriteNodeMap.keys.contains(ObjectIdentifier($0)) }
+                .filter { $0.component(ofType: PositionComponent.self) == nil }
+                .map { ObjectIdentifier($0) }
+        )
+
+        let entityIdentifiersForRemoval = entityIdentifiersWithRenderNodes
+            .subtracting(allEntityIdentifiers)
+            .union(entityIdentifiersWithPositionComponentRemoved)
+
         return entityIdentifiersForRemoval
     }
 }
@@ -140,5 +150,30 @@ extension GameRenderer: UIPositionProvider {
             - skTileMapNode.mapSize.height / 2
 
         return CGPoint(x: xPosition, y: yPosition)
+    }
+
+    func getRowAndColumn(fromPosition location: CGPoint) -> (row: Int, column: Int)? {
+        guard let tileMapNode = skTileMapNode else {
+            return nil
+        }
+
+        let tileMapPoint = getTileMapPoint(fromPosition: location, tileMapNode: tileMapNode)
+        let row = tileMapNode.tileRowIndex(fromPosition: tileMapPoint)
+        let column = tileMapNode.tileColumnIndex(fromPosition: tileMapPoint)
+
+        guard tileMapNode.isRowValid(row), tileMapNode.isColumnValid(column) else {
+            return nil
+        }
+
+        return (row, column)
+    }
+
+    private func getTileMapPoint(fromPosition location: CGPoint, tileMapNode: SKTileMapNode) -> CGPoint {
+        let tileMapPoint = CGPoint(
+            x: floor(location.x / tileMapNode.tileSize.width) * tileMapNode.tileSize.width,
+            y: floor(location.y / tileMapNode.tileSize.height) * tileMapNode.tileSize.height
+        )
+
+        return tileMapPoint
     }
 }

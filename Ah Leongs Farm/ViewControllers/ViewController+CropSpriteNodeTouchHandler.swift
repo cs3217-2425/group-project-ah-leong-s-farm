@@ -1,12 +1,12 @@
 //
-//  ViewController+PlotSpriteNodeTouchHandler.swift
+//  ViewController+CropSpriteNodeTouchHandler.swift
 //  Ah Leongs Farm
 //
-//  Created by Jerry Leong on 2/4/25.
+//  Created by Jerry Leong on 4/4/25.
 //
 
-extension ViewController: PlotSpriteNodeTouchHandler {
-    func handleTouch(node: PlotSpriteNode) {
+extension ViewController: CropSpriteNodeTouchHandler {
+    func handleTouch(node: CropSpriteNode) {
         guard let (row, column) = gameRenderer.getRowAndColumn(fromPosition: node.position) else {
             return
         }

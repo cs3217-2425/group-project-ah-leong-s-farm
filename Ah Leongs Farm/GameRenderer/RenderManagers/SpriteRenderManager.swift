@@ -46,57 +46,44 @@ class SpriteRenderManager: IRenderManager {
 
         setSpritePosition(spriteNode: spriteNode, using: positionComponent)
 
-        spriteNode.setPlot(plot)
         setRelativeSize(spriteNode: spriteNode, scaleFactor: 1.0)
         renderer.setRenderNode(for: ObjectIdentifier(plot), node: spriteNode)
     }
 
     func createNodeForEntity(apple: Apple, in renderer: GameRenderer) {
-        guard let positionComponent = apple.component(ofType: PositionComponent.self) else {
-            return
-        }
-
         guard let textureName = Self.CropTypeSeedTextureMap[ObjectIdentifier(Apple.self)] else {
             return
         }
 
-        let spriteNode = AppleSpriteNode(imageNamed: textureName)
-
-        setSpritePosition(spriteNode: spriteNode, using: positionComponent)
-        setRelativeSize(spriteNode: spriteNode, scaleFactor: 0.5)
-        renderer.setRenderNode(for: ObjectIdentifier(apple), node: spriteNode)
+        createCropNode(for: apple, in: renderer, textureName: textureName)
     }
 
     func createNodeForEntity(bokChoy: BokChoy, in renderer: GameRenderer) {
-        guard let positionComponent = bokChoy.component(ofType: PositionComponent.self) else {
-            return
-        }
-
         guard let textureName = Self.CropTypeSeedTextureMap[ObjectIdentifier(BokChoy.self)] else {
             return
         }
 
-        let spriteNode = BokChoySpriteNode(imageNamed: textureName)
-
-        setSpritePosition(spriteNode: spriteNode, using: positionComponent)
-        setRelativeSize(spriteNode: spriteNode, scaleFactor: 0.5)
-        renderer.setRenderNode(for: ObjectIdentifier(bokChoy), node: spriteNode)
+        createCropNode(for: bokChoy, in: renderer, textureName: textureName)
     }
 
     func createNodeForEntity(potato: Potato, in renderer: GameRenderer) {
-        guard let positionComponent = potato.component(ofType: PositionComponent.self) else {
-            return
-        }
-
         guard let textureName = Self.CropTypeSeedTextureMap[ObjectIdentifier(Potato.self)] else {
             return
         }
 
-        let spriteNode = PotatoSpriteNode(imageNamed: textureName)
+        createCropNode(for: potato, in: renderer, textureName: textureName)
+    }
+
+    private func createCropNode(for crop: Crop, in renderer: GameRenderer, textureName: String) {
+        guard let positionComponent = crop.component(ofType: PositionComponent.self) else {
+            return
+        }
+
+        let spriteNode = CropSpriteNode(imageNamed: textureName)
 
         setSpritePosition(spriteNode: spriteNode, using: positionComponent)
-        setRelativeSize(spriteNode: spriteNode, scaleFactor: 0.5)
-        renderer.setRenderNode(for: ObjectIdentifier(potato), node: spriteNode)
+        setRelativeSize(spriteNode: spriteNode, scaleFactor: 1.0)
+        renderer.setRenderNode(for: ObjectIdentifier(crop), node: spriteNode)
     }
 
     private func setSpritePosition(spriteNode: SpriteNode, using component: PositionComponent) {

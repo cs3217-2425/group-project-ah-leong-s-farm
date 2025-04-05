@@ -1,20 +1,20 @@
 //
-//  AppleSpriteNode.swift
+//  CropSpriteNode.swift
 //  Ah Leongs Farm
 //
-//  Created by Jerry Leong on 2/4/25.
+//  Created by Jerry Leong on 4/4/25.
 //
 
 import SpriteKit
 
-final class AppleSpriteNode: SpriteNode {
-    private(set) weak var handler: AppleSpriteNodeTouchHandler?
+class CropSpriteNode: SpriteNode {
+    private(set) weak var handler: CropSpriteNodeTouchHandler?
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         handler?.handleTouch(node: self)
     }
 
-    func setHandler(_ handler: AppleSpriteNodeTouchHandler) {
+    func setHandler(_ handler: CropSpriteNodeTouchHandler) {
         self.handler = handler
     }
 
@@ -23,6 +23,6 @@ final class AppleSpriteNode: SpriteNode {
     }
 }
 
-protocol AppleSpriteNodeTouchHandler: AnyObject {
-    func handleTouch(node: AppleSpriteNode)
+protocol CropSpriteNodeTouchHandler: AnyObject {
+    func handleTouch(node: CropSpriteNode)
 }
