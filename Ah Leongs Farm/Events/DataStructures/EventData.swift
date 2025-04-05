@@ -50,6 +50,8 @@ struct SellItemEventData: EventData {
 }
 
 struct PlantCropEventData: EventData {
+    var row: Int
+    var column: Int
     var cropType: CropType
     var isSuccessfullyPlanted: Bool
 }

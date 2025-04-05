@@ -11,6 +11,14 @@ class GridSystem: ISystem {
         self.manager = manager
     }
 
+    func getPlot(row: Int, column: Int) -> Plot? {
+        guard let gridComponent = gridComponent else {
+            return nil
+        }
+
+        return gridComponent.getEntity(row: row, column: column) as? Plot
+    }
+
     /// Adds a plot to the grid at the specified row and column.
     /// - Parameters:
     ///  - row: The row to add the plot to.
@@ -55,9 +63,5 @@ class GridSystem: ISystem {
         }
 
         return true
-    }
-
-    func getPlot(row: Int, column: Int) -> Plot? {
-        gridComponent?.getEntity(row: row, column: column) as? Plot
     }
 }

@@ -114,7 +114,17 @@ class GameRenderer {
     private func getEntitiesForRemoval(allEntities: Set<EntityType>) -> Set<ObjectIdentifier> {
         let allEntityIdentifiers = allEntities.map { ObjectIdentifier($0) }
         let entityIdentifiersWithRenderNodes = Set(entityNodeMap.keys)
-        let entityIdentifiersForRemoval = entityIdentifiersWithRenderNodes.subtracting(allEntityIdentifiers)
+
+        let entityIdentifiersWithPositionComponentRemoved = Set(
+            allEntities.filter { entitySpriteNodeMap.keys.contains(ObjectIdentifier($0)) }
+                .filter { $0.component(ofType: PositionComponent.self) == nil }
+                .map { ObjectIdentifier($0) }
+        )
+
+        let entityIdentifiersForRemoval = entityIdentifiersWithRenderNodes
+            .subtracting(allEntityIdentifiers)
+            .union(entityIdentifiersWithPositionComponentRemoved)
+
         return entityIdentifiersForRemoval
     }
 }

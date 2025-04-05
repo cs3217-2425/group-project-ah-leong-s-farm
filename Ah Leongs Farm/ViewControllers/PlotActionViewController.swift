@@ -1,14 +1,14 @@
 import UIKit
 
 class PlotActionViewController: UIViewController {
+    private let plotViewModel: PlotViewModel
     private weak var eventQueue: EventQueueable?
-    private weak var plot: Plot?
     private weak var inventoryDataProvider: InventoryDataProvider?
     private var actionButtons: [UIButton] = []
     private var collectionView: UICollectionView?
 
-    init(plotNode: PlotSpriteNode, eventQueue: EventQueueable, provider: InventoryDataProvider) {
-        self.plot = plotNode.plot
+    init(plotViewModel: PlotViewModel, eventQueue: EventQueueable, provider: InventoryDataProvider) {
+        self.plotViewModel = plotViewModel
         self.eventQueue = eventQueue
         self.inventoryDataProvider = provider
 
@@ -31,27 +31,16 @@ class PlotActionViewController: UIViewController {
     }
 
     private func setupActionButtons() {
-        let actions = [
-            ("🌱 Add Crop", #selector(addCropTapped)),
-            ("🌾 Harvest Crop", #selector(harvestCropTapped))
-        ]
-
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 16
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        for (title, action) in actions {
-            let button = UIButton(type: .system)
-            button.setTitle(title, for: .normal)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-            button.backgroundColor = .systemGreen
-            button.setTitleColor(.white, for: .normal)
-            button.layer.cornerRadius = 10
-            button.addTarget(self, action: action, for: .touchUpInside)
-            stackView.addArrangedSubview(button)
-            actionButtons.append(button)
+        if plotViewModel.hasCrop {
+            setupHarvestCropButton(in: stackView)
+        } else {
+            setupAddCropButton(in: stackView)
         }
 
         view.addSubview(stackView)
@@ -62,6 +51,35 @@ class PlotActionViewController: UIViewController {
             stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             stackView.heightAnchor.constraint(equalToConstant: 50)
         ])
+    }
+
+    private func setupHarvestCropButton(in stackView: UIStackView) {
+        let button = UIButton(type: .system)
+        button.setTitle("Harvest Crop", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        button.backgroundColor = .systemGreen
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(harvestCropTapped), for: .touchUpInside)
+        stackView.addArrangedSubview(button)
+        actionButtons.append(button)
+
+        if let crop = plotViewModel.crop, !crop.canHarvest {
+            button.isEnabled = false
+            button.backgroundColor = .systemGray
+        }
+    }
+
+    private func setupAddCropButton(in stackView: UIStackView) {
+        let button = UIButton(type: .system)
+        button.setTitle("Add Crop", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        button.backgroundColor = .systemGreen
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(addCropTapped), for: .touchUpInside)
+        stackView.addArrangedSubview(button)
+        actionButtons.append(button)
     }
 
     private func setupCollectionView() {
@@ -112,17 +130,20 @@ class PlotActionViewController: UIViewController {
     }
 
     @objc private func harvestCropTapped() {
-        print("🌾 Harvesting crop from plot")
+        handleHarvestCrop()
         dismiss(animated: true)
     }
 
     private func shouldDismiss(location: CGPoint) -> Bool {
-        guard let tappedView = view.hitTest(location, with: nil) else {
-            return false
+        // Ignore taps on action buttons
+        for button in actionButtons {
+            let locationInButton = view.convert(location, to: button)
+            if button.point(inside: locationInButton, with: nil) {
+                return false
+            }
         }
 
-        // Ignore taps on action buttons
-        if actionButtons.contains(where: { $0 === tappedView }) {
+        guard let tappedView = view.hitTest(location, with: nil) else {
             return false
         }
 
@@ -137,6 +158,11 @@ class PlotActionViewController: UIViewController {
         }
 
         return true
+    }
+
+    private func handleHarvestCrop() {
+        let event = HarvestCropEvent(row: plotViewModel.row, column: plotViewModel.column)
+        eventQueue?.queueEvent(event)
     }
 }
 
@@ -163,17 +189,17 @@ extension PlotActionViewController: UICollectionViewDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedSeed = seedItems[indexPath.item]
 
-        handleSeedPlanting(for: selectedSeed)
+        handlePlantCrop(for: selectedSeed)
 
         dismiss(animated: true)
     }
 
-    private func handleSeedPlanting(for seed: SeedItemViewModel) {
-        guard let plot = plot else {
-            return
-        }
-
-        let event = PlantCropEvent(cropType: seed.cropType, plot: plot)
+    private func handlePlantCrop(for seed: SeedItemViewModel) {
+        let event = PlantCropEvent(
+            row: plotViewModel.row,
+            column: plotViewModel.column,
+            cropType: seed.cropType
+        )
         eventQueue?.queueEvent(event)
     }
 }

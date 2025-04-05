@@ -8,17 +8,16 @@
 import Foundation
 
 struct PlantCropEvent: GameEvent {
+    let row: Int
+    let column: Int
+
     private let ENERGY_USAGE = 1
     private let XP_AMOUNT: Float = 10.0
+
     let cropType: CropType
-    let plot: Plot
 
     func execute(in context: any EventContext, queueable: any EventQueueable) -> (any EventData)? {
         guard let cropSystem = context.getSystem(ofType: CropSystem.self) else {
-            return nil
-        }
-
-        guard let position = plot.component(ofType: PositionComponent.self) else {
             return nil
         }
 
@@ -37,10 +36,6 @@ struct PlantCropEvent: GameEvent {
         guard energySystem.getCurrentEnergy() >= ENERGY_USAGE else {
             return nil
         }
-
-        let row = Int(position.x)
-        let column = Int(position.y)
-
         let isSuccessfullyPlanted = cropSystem.plantCrop(crop: crop, row: row, column: column)
 
         if isSuccessfullyPlanted {
@@ -48,6 +43,11 @@ struct PlantCropEvent: GameEvent {
             levelSystem.addXP(XP_AMOUNT)
         }
 
-        return PlantCropEventData(cropType: cropType, isSuccessfullyPlanted: isSuccessfullyPlanted)
+        return PlantCropEventData(
+            row: row,
+            column: column,
+            cropType: cropType,
+            isSuccessfullyPlanted: isSuccessfullyPlanted
+        )
     }
 }
