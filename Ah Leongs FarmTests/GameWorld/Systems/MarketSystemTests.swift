@@ -60,7 +60,7 @@ class MarketSystemTests: XCTestCase {
 
     func testBuyItemSuccess() {
         let result = marketSystem.buyItem(type: .bokChoySeed, quantity: 1)
-        
+
         XCTAssertTrue(result)
         XCTAssertEqual(manager.getEntities(withComponentType: ItemComponent.self).count, 1)
         XCTAssertEqual(manager.getEntities(withComponentType: SellComponent.self).count, 1)

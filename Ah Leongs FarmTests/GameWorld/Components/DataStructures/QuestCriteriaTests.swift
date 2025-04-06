@@ -2,7 +2,7 @@ import XCTest
 @testable import Ah_Leongs_Farm
 
 final class QuestCriteriaTests: XCTestCase {
-    
+
     func testPlantCropCriteria_correctCropType() {
         let criteria = PlantCropCriteria(cropType: .apple)
         let eventData = PlantCropEventData(row: 0, column: 2, cropType: .apple, isSuccessfullyPlanted: true)

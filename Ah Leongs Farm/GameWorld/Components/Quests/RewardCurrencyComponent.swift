@@ -28,6 +28,6 @@ class RewardCurrencyComponent: GKComponent, RewardComponent {
 
 extension RewardCurrencyComponent {
     func accept(visitor: RewardDataRetrievalVisitor) -> [RewardViewModel] {
-        return visitor.retrieveData(component: self)
+        visitor.retrieveData(component: self)
     }
 }
