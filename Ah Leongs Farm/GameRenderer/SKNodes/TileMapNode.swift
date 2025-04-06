@@ -9,7 +9,7 @@ import SpriteKit
 
 class TileMapNode: SKTileMapNode, IRenderNode {
 
-    private var lightUpNodes: [SKSpriteNode] = []
+    private(set) var lightUpNodes: [SKSpriteNode] = []
 
     func isRowValid(_ row: Int) -> Bool {
         row >= 0 && row < numberOfRows
