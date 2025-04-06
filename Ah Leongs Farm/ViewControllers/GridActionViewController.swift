@@ -3,13 +3,13 @@ import UIKit
 class GridActionViewController: UIViewController {
     private let gridViewModel: GridViewModel
     private weak var gameRenderer: GameRenderer?
-    private weak var eventQueue: (any EventQueueable)?
+    private weak var gridDataProvider: GridDataProvider?
     private var actionButtons: [UIButton] = []
 
-    init(gridViewModel: GridViewModel, renderer: GameRenderer, eventQueue: any EventQueueable) {
+    init(gridViewModel: GridViewModel, renderer: GameRenderer, gridDataProvider: GridDataProvider) {
         self.gridViewModel = gridViewModel
         self.gameRenderer = renderer
-        self.eventQueue = eventQueue
+        self.gridDataProvider = gridDataProvider
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overFullScreen
         modalTransitionStyle = .crossDissolve
@@ -105,16 +105,12 @@ class GridActionViewController: UIViewController {
     }
 
     @objc private func addPlotTapped() {
-        let row = gridViewModel.row
-        let column = gridViewModel.column
-        eventQueue?.queueEvent(AddPlotEvent(row: row, column: column))
+        gridDataProvider?.addPlot(row: gridViewModel.row, column: gridViewModel.column)
         dismiss(animated: true)
     }
 
     @objc private func razePlotTapped() {
-        let row = gridViewModel.row
-        let column = gridViewModel.column
-        eventQueue?.queueEvent(RazePlotEvent(row: row, column: column))
+        gridDataProvider?.razePlot(row: gridViewModel.row, column: gridViewModel.column)
         dismiss(animated: true)
     }
 }

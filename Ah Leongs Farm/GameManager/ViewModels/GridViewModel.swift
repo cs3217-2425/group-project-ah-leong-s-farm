@@ -13,4 +13,8 @@ struct GridViewModel {
 
 protocol GridDataProvider: AnyObject {
     func getGridViewModel(row: Int, column: Int) -> GridViewModel
+
+    func addPlot(row: Int, column: Int)
+
+    func razePlot(row: Int, column: Int)
 }

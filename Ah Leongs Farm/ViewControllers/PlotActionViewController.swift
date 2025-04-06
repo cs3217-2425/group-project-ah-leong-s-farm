@@ -2,15 +2,16 @@ import UIKit
 
 class PlotActionViewController: UIViewController {
     private let plotViewModel: PlotViewModel
-    private weak var eventQueue: EventQueueable?
     private weak var inventoryDataProvider: InventoryDataProvider?
+    private weak var plotDataProvider: PlotDataProvider?
     private var actionButtons: [UIButton] = []
     private var collectionView: UICollectionView?
 
-    init(plotViewModel: PlotViewModel, eventQueue: EventQueueable, provider: InventoryDataProvider) {
+    init(plotViewModel: PlotViewModel, inventoryDataProvider: InventoryDataProvider,
+         plotDataProvider: PlotDataProvider) {
         self.plotViewModel = plotViewModel
-        self.eventQueue = eventQueue
-        self.inventoryDataProvider = provider
+        self.inventoryDataProvider = inventoryDataProvider
+        self.plotDataProvider = plotDataProvider
 
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overFullScreen
@@ -147,12 +148,12 @@ class PlotActionViewController: UIViewController {
     }
 
     @objc private func harvestCropTapped() {
-        handleHarvestCrop()
+        plotDataProvider?.harvestCrop(row: plotViewModel.row, column: plotViewModel.column)
         dismiss(animated: true)
     }
 
     @objc private func removeCropTapped() {
-        handleRemoveCrop()
+        plotDataProvider?.removeCrop(row: plotViewModel.row, column: plotViewModel.column)
         dismiss(animated: true)
     }
 
@@ -181,16 +182,6 @@ class PlotActionViewController: UIViewController {
 
         return true
     }
-
-    private func handleHarvestCrop() {
-        let event = HarvestCropEvent(row: plotViewModel.row, column: plotViewModel.column)
-        eventQueue?.queueEvent(event)
-    }
-
-    private func handleRemoveCrop() {
-        let event = RemoveCropEvent(row: plotViewModel.row, column: plotViewModel.column)
-        eventQueue?.queueEvent(event)
-    }
 }
 
 extension PlotActionViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -216,17 +207,12 @@ extension PlotActionViewController: UICollectionViewDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedSeed = seedItems[indexPath.item]
 
-        handlePlantCrop(for: selectedSeed)
-
-        dismiss(animated: true)
-    }
-
-    private func handlePlantCrop(for seed: SeedItemViewModel) {
-        let event = PlantCropEvent(
+        plotDataProvider?.plantCrop(
             row: plotViewModel.row,
             column: plotViewModel.column,
-            cropType: seed.cropType
+            cropType: selectedSeed.cropType
         )
-        eventQueue?.queueEvent(event)
+
+        dismiss(animated: true)
     }
 }

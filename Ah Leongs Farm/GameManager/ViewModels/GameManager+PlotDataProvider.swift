@@ -24,4 +24,18 @@ extension GameManager: PlotDataProvider {
         return PlotViewModel(row: row, column: column, crop: cropViewModel)
     }
 
+    func plantCrop(row: Int, column: Int, cropType: CropType) {
+        let event = PlantCropEvent(row: row, column: column, cropType: cropType)
+        gameWorld.queueEvent(event)
+    }
+
+    func harvestCrop(row: Int, column: Int) {
+        let event = HarvestCropEvent(row: row, column: column)
+        gameWorld.queueEvent(event)
+    }
+
+    func removeCrop(row: Int, column: Int) {
+        let event = RemoveCropEvent(row: row, column: column)
+        gameWorld.queueEvent(event)
+    }
 }

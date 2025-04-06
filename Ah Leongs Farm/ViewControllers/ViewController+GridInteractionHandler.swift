@@ -13,7 +13,7 @@ extension ViewController: GridInteractionHandler {
         let gridActionVC = GridActionViewController(
             gridViewModel: gridViewModel,
             renderer: gameRenderer,
-            eventQueue: gameManager.gameWorld
+            gridDataProvider: gameManager
         )
 
         gameRenderer.lightUpTile(at: row, column: column)
