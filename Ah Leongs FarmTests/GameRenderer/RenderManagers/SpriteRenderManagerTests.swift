@@ -46,7 +46,7 @@ class SpriteRenderManagerTests: XCTestCase {
         mockUIPositionProvider.column = column
 
         spriteRenderManager.createNode(for: apple, in: mockRenderer)
-        
+
         XCTAssertTrue(mockRenderer.didSetRenderNode)
         XCTAssertEqual(mockRenderer.renderNodeIdentifier, ObjectIdentifier(apple))
         XCTAssertNotNil(mockRenderer.renderNode)
