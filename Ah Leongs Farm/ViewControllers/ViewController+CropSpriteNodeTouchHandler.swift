@@ -17,9 +17,10 @@ extension ViewController: CropSpriteNodeTouchHandler {
 
         let plotActionVC = PlotActionViewController(
             plotViewModel: plotViewModel,
-            eventQueue: gameManager.gameWorld,
-            provider: gameManager
+            inventoryDataProvider: gameManager,
+            plotDataProvider: gameManager
         )
+
         present(plotActionVC, animated: true)
     }
 }

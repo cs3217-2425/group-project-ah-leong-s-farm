@@ -15,4 +15,14 @@ extension GameManager: GridDataProvider {
 
         return GridViewModel(row: row, column: column, doesPlotExist: doesPlotExist)
     }
+
+    func addPlot(row: Int, column: Int) {
+        let event = AddPlotEvent(row: row, column: column)
+        gameWorld.queueEvent(event)
+    }
+
+    func razePlot(row: Int, column: Int) {
+        let event = RazePlotEvent(row: row, column: column)
+        gameWorld.queueEvent(event)
+    }
 }
