@@ -5,13 +5,13 @@ final class QuestCriteriaTests: XCTestCase {
     
     func testPlantCropCriteria_correctCropType() {
         let criteria = PlantCropCriteria(cropType: .apple)
-        let eventData = PlantCropEventData(cropType: .apple, isSuccessfullyPlanted: true)
+        let eventData = PlantCropEventData(row: 0, column: 2, cropType: .apple, isSuccessfullyPlanted: true)
         XCTAssertEqual(criteria.calculateValue(from: eventData), 1.0)
     }
 
     func testPlantCropCriteria_incorrectCropType() {
         let criteria = PlantCropCriteria(cropType: .apple)
-        let eventData = PlantCropEventData(cropType: .potato, isSuccessfullyPlanted: true)
+        let eventData = PlantCropEventData(row: 3, column: 0, cropType: .potato, isSuccessfullyPlanted: true)
         XCTAssertEqual(criteria.calculateValue(from: eventData), 0.0)
     }
 

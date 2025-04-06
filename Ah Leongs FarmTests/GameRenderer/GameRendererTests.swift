@@ -5,14 +5,14 @@ import GameplayKit
 class GameRendererTests: XCTestCase {
 
     func testInit() {
-        let gameScene = GameScene(size: CGSize(width: 100, height: 100))
+        let gameScene = GameScene(view: SKView())
         let gameRenderer = GameRenderer()
         gameRenderer.setScene(gameScene)
         XCTAssertNotNil(gameRenderer)
     }
 
     func testNotifyAddsNodesToScene() {
-        let gameScene = GameScene(size: CGSize(width: 100, height: 100))
+        let gameScene = GameScene(view: SKView())
         let gameRenderer = GameRenderer()
         gameRenderer.setScene(gameScene)
 
@@ -27,7 +27,7 @@ class GameRendererTests: XCTestCase {
     }
 
     func testNotifyDoesNotAddDuplicateNodes() {
-        let gameScene = GameScene(size: CGSize(width: 100, height: 100))
+        let gameScene = GameScene(view: SKView())
         let gameRenderer = GameRenderer()
         gameRenderer.setScene(gameScene)
 
