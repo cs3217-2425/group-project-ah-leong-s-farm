@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import GameplayKit
 
 class WalletSystem: ISystem {
     unowned var manager: EntityManager?

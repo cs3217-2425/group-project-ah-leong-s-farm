@@ -5,27 +5,24 @@
 //  Created by Ma Yuchen on 25/3/25.
 //
 
-import GameplayKit
-
 /// EntityManager is responsible for managing all entities and their components.
 /// It provides an interface for systems to query entities with specific components.
 class EntityManager {
-    private typealias EntityID = ObjectIdentifier
-    private(set) var entities: Set<GKEntity> = []
-    private var componentsByType: [String: [EntityID: GKComponent]] = [:]
+    private var entities: [EntityID: any Entity] = [:]
+    private var componentsByType: [String: [EntityID: Component]] = [:]
 
-    func addEntity(_ entity: GKEntity) {
-        entities.insert(entity)
+    func addEntity(_ entity: any Entity) {
+        let entityID = entity.id
+        entities[entityID] = entity
 
-        for component in entity.components {
+        for component in entity.allComponents {
             registerComponent(component, for: entity)
         }
     }
 
-    func removeEntity(_ entity: GKEntity) {
-        entities.remove(entity)
-
-        let entityID = ObjectIdentifier(entity)
+    func removeEntity(_ entity: any Entity) {
+        let entityID = entity.id
+        entities.removeValue(forKey: entityID)
 
         for (key, _) in componentsByType {
             componentsByType[key]?.removeValue(forKey: entityID)
@@ -36,19 +33,19 @@ class EntityManager {
         }
     }
 
-    func addComponent(_ component: GKComponent, to entity: GKEntity) {
+    func addComponent(_ component: Component, to entity: any Entity) {
         entity.addComponent(component)
         registerComponent(component, for: entity)
     }
 
-    func removeComponent<T: GKComponent>(ofType type: T.Type, from entity: GKEntity) {
+    func removeComponent<T: Component>(ofType type: T.Type, from entity: any Entity) {
         if let component = entity.component(ofType: type) {
             unregisterComponent(component, for: entity)
         }
         entity.removeComponent(ofType: type)
     }
 
-    func getAllComponents<T: GKComponent>(ofType type: T.Type) -> [T] {
+    func getAllComponents<T: Component>(ofType type: T.Type) -> [T] {
         let componentTypeName = String(describing: type)
         guard let componentsDict = componentsByType[componentTypeName] else {
             return []
@@ -57,7 +54,7 @@ class EntityManager {
         return componentsDict.values.compactMap { $0 as? T }
     }
 
-    func getSingletonComponent<T: GKComponent>(ofType type: T.Type) -> T? {
+    func getSingletonComponent<T: Component>(ofType type: T.Type) -> T? {
         let componentTypeName = String(describing: type)
         guard let componentsDict = componentsByType[componentTypeName] else {
             return nil
@@ -68,23 +65,23 @@ class EntityManager {
         return componentsDict.values.first as? T
     }
 
-    func getEntities<T: GKComponent>(withComponentType type: T.Type) -> [GKEntity] {
+    func getEntities<T: Component>(withComponentType type: T.Type) -> [any Entity] {
         let componentTypeName = String(describing: type)
         guard let componentsDict = componentsByType[componentTypeName] else {
             return []
         }
 
-        return Array(componentsDict.keys.compactMap { entityID in
-            entities.first { ObjectIdentifier($0) == entityID }
+        return Array(componentsDict.keys.compactMap {
+            entities[$0]
         })
     }
 
-    func getEntities(withComponentTypes types: [GKComponent.Type]) -> [GKEntity] {
+    func getEntities(withComponentTypes types: [Component.Type]) -> [any Entity] {
         guard !types.isEmpty else {
-            return Array(entities)
+            return Array(entities.values)
         }
 
-        var result: [GKEntity] = []
+        var result: [any Entity] = []
 
         for i in 0..<types.count {
             let currentType = types[i]
@@ -95,16 +92,16 @@ class EntityManager {
         return result
     }
 
-    func getAllEntities() -> [GKEntity] {
-        Array(entities)
+    func getAllEntities() -> [any Entity] {
+        Array(entities.values)
     }
 
     // MARK: - Private Helper Methods
 
-    private func registerComponent(_ component: GKComponent, for entity: GKEntity) {
+    private func registerComponent(_ component: Component, for entity: any Entity) {
         let componentType = type(of: component)
         let componentTypeName = String(describing: componentType)
-        let entityID = ObjectIdentifier(entity)
+        let entityID = entity.id
 
         if componentsByType[componentTypeName] == nil {
             componentsByType[componentTypeName] = [:]
@@ -113,10 +110,10 @@ class EntityManager {
         componentsByType[componentTypeName]?[entityID] = component
     }
 
-    private func unregisterComponent(_ component: GKComponent, for entity: GKEntity) {
+    private func unregisterComponent(_ component: Component, for entity: any Entity) {
         let componentType = type(of: component)
         let componentTypeName = String(describing: componentType)
-        let entityID = ObjectIdentifier(entity)
+        let entityID = entity.id
 
         componentsByType[componentTypeName]?[entityID] = nil
     }

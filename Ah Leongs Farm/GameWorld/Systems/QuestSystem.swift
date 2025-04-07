@@ -1,6 +1,3 @@
-import Foundation
-import GameplayKit
-
 class QuestSystem: ISystem {
 
     unowned var manager: EntityManager?

@@ -1,5 +1,3 @@
-import GameplayKit
-
 protocol IRenderManager: AnyObject {
     func createNode(for entity: EntityType, in renderer: GameRenderer)
 

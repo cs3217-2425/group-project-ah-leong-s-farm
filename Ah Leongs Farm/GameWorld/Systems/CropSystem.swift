@@ -1,4 +1,4 @@
-import GameplayKit
+import Foundation
 
 class CropSystem: ISystem {
     unowned var manager: EntityManager?

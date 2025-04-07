@@ -5,8 +5,6 @@
 //  Created by proglab on 29/3/25.
 //
 
-import GameplayKit
-
 class MarketSystem: ISystem {
 
     private var itemPrices: [ItemType: Price] = MarketInformation.initialItemPrices
@@ -27,12 +25,11 @@ class MarketSystem: ISystem {
 
     func getSellQuantity(for itemType: ItemType) -> Int {
         sellableComponents
-            .compactMap { $0 as? SellComponent }
             .filter { $0.itemType == itemType }
             .count
     }
 
-    private var sellableComponents: [GKComponent] {
+    private var sellableComponents: [SellComponent] {
         manager?.getAllComponents(ofType: SellComponent.self) ?? []
     }
 

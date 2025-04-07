@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import GameplayKit
 
 class InventorySystem: ISystem {
     unowned var manager: EntityManager?

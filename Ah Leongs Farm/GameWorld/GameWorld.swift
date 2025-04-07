@@ -5,8 +5,7 @@
 //  Created by Jerry Leong on 14/3/25.
 //
 
-import GameplayKit
-
+import Foundation
 class GameWorld {
 
     private let entityManager: EntityManager
@@ -39,15 +38,15 @@ class GameWorld {
         processEvents()
     }
 
-    func addEntity(_ entity: GKEntity) {
+    func addEntity(_ entity: any Entity) {
         entityManager.addEntity(entity)
     }
 
-    func removeEntity(_ entity: GKEntity) {
+    func removeEntity(_ entity: any Entity) {
         entityManager.removeEntity(entity)
     }
 
-    func getAllEntities() -> [GKEntity] {
+    func getAllEntities() -> [any Entity] {
         entityManager.getAllEntities()
     }
 

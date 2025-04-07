@@ -1,4 +1,4 @@
-import GameplayKit
+import Foundation
 
 class GridSystem: ISystem {
     unowned var manager: EntityManager?

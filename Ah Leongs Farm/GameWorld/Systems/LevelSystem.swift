@@ -1,5 +1,4 @@
 import Foundation
-import GameplayKit
 
 class LevelSystem: ISystem {
     unowned var manager: EntityManager?

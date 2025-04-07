@@ -1,6 +1,6 @@
-import GameplayKit
+import SpriteKit
 
-typealias EntityType = GKEntity
+typealias EntityType = Entity
 
 /// The `GameRenderer` class is responsible for rendering the game world.
 /// It manages different render managers and coordinates the rendering process

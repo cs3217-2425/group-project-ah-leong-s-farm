@@ -5,7 +5,7 @@
 //  Created by Jerry Leong on 14/3/25.
 //
 
-import GameplayKit
+import Foundation
 
 class TileMapRenderManager: IRenderManager {
     /// hard-coded from `FarmTileSet.sks`

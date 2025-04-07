@@ -5,7 +5,7 @@
 //  Created by Jerry Leong on 27/3/25.
 //
 
-import GameplayKit
+import Foundation
 
 class SpriteRenderManager: IRenderManager {
     private static let EntityTypeTextureMap: [ObjectIdentifier: String] = [
