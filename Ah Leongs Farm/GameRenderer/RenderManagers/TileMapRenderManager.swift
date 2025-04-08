@@ -5,7 +5,7 @@
 //  Created by Jerry Leong on 14/3/25.
 //
 
-import Foundation
+import SpriteKit
 
 class TileMapRenderManager: IRenderManager {
     /// hard-coded from `FarmTileSet.sks`
@@ -14,7 +14,7 @@ class TileMapRenderManager: IRenderManager {
     private static let TileSetName: String = "Farm Tile Set"
     private static let LandTileGroupName: String = "Land"
 
-    func createNode(for entity: EntityType, in renderer: GameRenderer) {
+    func createNode(for entity: Entity, in renderer: GameRenderer) {
         guard let gridComponent = entity.component(ofType: GridComponent.self),
               let tileSet = SKTileSet(named: TileMapRenderManager.TileSetName) else {
             return

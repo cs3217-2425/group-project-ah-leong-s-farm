@@ -6,7 +6,7 @@
 //
 
 class ItemFactory {
-    static let itemToInitialisers: [ItemType: () -> (any Entity)?] = [
+    static let itemToInitialisers: [ItemType: () -> (Entity)?] = [
         .bokChoySeed: {
             setupComponents(createSeed(for: .bokChoy), type: .bokChoySeed)
             },
@@ -33,32 +33,32 @@ class ItemFactory {
             }
     ]
 
-    private static let cropToSeedInitialisers: [CropType: () -> any Entity] = [
+    private static let cropToSeedInitialisers: [CropType: () -> Entity] = [
         .bokChoy: { BokChoy.createSeed() },
         .apple: { Apple.createSeed() },
         .potato: { Potato.createSeed() }
     ]
 
-    private static func createSeed(for crop: CropType) -> any Entity {
+    private static func createSeed(for crop: CropType) -> Entity {
         guard let seedInitialiser = cropToSeedInitialisers[crop] else {
             fatalError("Seed initialiser for \(crop) not defined!")
         }
         return seedInitialiser()
     }
-    private static let cropToHarvestedInitialisers: [CropType: () -> any Entity] = [
+    private static let cropToHarvestedInitialisers: [CropType: () -> Entity] = [
         .bokChoy: { BokChoy.createHarvested() },
         .apple: { Apple.createHarvested() },
         .potato: { Potato.createHarvested() }
     ]
 
-    private static func createHarvested(for crop: CropType) -> any Entity {
+    private static func createHarvested(for crop: CropType) -> Entity {
         guard let harvestedInitialiser = cropToHarvestedInitialisers[crop] else {
             fatalError("Harvested initialiser for \(crop) not defined!")
         }
         return harvestedInitialiser()
     }
 
-    private static func setupComponents(_ entity: any Entity, type: ItemType) -> any Entity {
+    private static func setupComponents(_ entity: Entity, type: ItemType) -> Entity {
         entity.addComponent(ItemComponent(itemType: type))
 
         // Add SellComponent if the market can sell that item

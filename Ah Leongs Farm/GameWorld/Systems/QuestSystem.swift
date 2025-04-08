@@ -79,7 +79,7 @@ class QuestSystem: ISystem {
 
     private func completeQuest(_ questComponent: QuestComponent) {
         guard let eventQueueable = eventQueueable,
-              let questEntity = questComponent.entity as? Quest else {
+              let questEntity = questComponent.ownerEntity as? Quest else {
             return
         }
 

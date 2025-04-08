@@ -8,10 +8,10 @@
 /// EntityManager is responsible for managing all entities and their components.
 /// It provides an interface for systems to query entities with specific components.
 class EntityManager {
-    private var entities: [EntityID: any Entity] = [:]
+    private var entities: [EntityID: Entity] = [:]
     private var componentsByType: [String: [EntityID: Component]] = [:]
 
-    func addEntity(_ entity: any Entity) {
+    func addEntity(_ entity: Entity) {
         let entityID = entity.id
         entities[entityID] = entity
 
@@ -20,7 +20,7 @@ class EntityManager {
         }
     }
 
-    func removeEntity(_ entity: any Entity) {
+    func removeEntity(_ entity: Entity) {
         let entityID = entity.id
         entities.removeValue(forKey: entityID)
 
@@ -33,16 +33,16 @@ class EntityManager {
         }
     }
 
-    func addComponent(_ component: Component, to entity: any Entity) {
+    func addComponent(_ component: Component, to entity: Entity) {
         entity.addComponent(component)
         registerComponent(component, for: entity)
     }
 
-    func removeComponent<T: Component>(ofType type: T.Type, from entity: any Entity) {
+    func removeComponent<T: Component>(ofType type: T.Type, from entity: Entity) {
         if let component = entity.component(ofType: type) {
             unregisterComponent(component, for: entity)
         }
-        entity.removeComponent(ofType: type)
+        entity.removeComponentByType(ofType: type)
     }
 
     func getAllComponents<T: Component>(ofType type: T.Type) -> [T] {
@@ -65,7 +65,7 @@ class EntityManager {
         return componentsDict.values.first as? T
     }
 
-    func getEntities<T: Component>(withComponentType type: T.Type) -> [any Entity] {
+    func getEntities<T: Component>(withComponentType type: T.Type) -> [Entity] {
         let componentTypeName = String(describing: type)
         guard let componentsDict = componentsByType[componentTypeName] else {
             return []
@@ -76,12 +76,12 @@ class EntityManager {
         })
     }
 
-    func getEntities(withComponentTypes types: [Component.Type]) -> [any Entity] {
+    func getEntities(withComponentTypes types: [Component.Type]) -> [Entity] {
         guard !types.isEmpty else {
             return Array(entities.values)
         }
 
-        var result: [any Entity] = []
+        var result: [Entity] = []
 
         for i in 0..<types.count {
             let currentType = types[i]
@@ -92,13 +92,13 @@ class EntityManager {
         return result
     }
 
-    func getAllEntities() -> [any Entity] {
+    func getAllEntities() -> [Entity] {
         Array(entities.values)
     }
 
     // MARK: - Private Helper Methods
 
-    private func registerComponent(_ component: Component, for entity: any Entity) {
+    private func registerComponent(_ component: Component, for entity: Entity) {
         let componentType = type(of: component)
         let componentTypeName = String(describing: componentType)
         let entityID = entity.id
@@ -110,7 +110,7 @@ class EntityManager {
         componentsByType[componentTypeName]?[entityID] = component
     }
 
-    private func unregisterComponent(_ component: Component, for entity: any Entity) {
+    private func unregisterComponent(_ component: Component, for entity: Entity) {
         let componentType = type(of: component)
         let componentTypeName = String(describing: componentType)
         let entityID = entity.id

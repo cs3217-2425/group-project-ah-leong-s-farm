@@ -38,15 +38,15 @@ class GameWorld {
         processEvents()
     }
 
-    func addEntity(_ entity: any Entity) {
+    func addEntity(_ entity: Entity) {
         entityManager.addEntity(entity)
     }
 
-    func removeEntity(_ entity: any Entity) {
+    func removeEntity(_ entity: Entity) {
         entityManager.removeEntity(entity)
     }
 
-    func getAllEntities() -> [any Entity] {
+    func getAllEntities() -> [Entity] {
         entityManager.getAllEntities()
     }
 

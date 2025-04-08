@@ -9,10 +9,10 @@ import GameplayKit
 
 typealias EntityID = ObjectIdentifier
 
-protocol Entity: AnyObject, Hashable {
+protocol Entity: AnyObject {
     var id: EntityID { get }
     func addComponent(_ component: Component)
-    func removeComponent(ofType type: Component.Type)
+    func removeComponentByType(ofType type: Component.Type)
     func component<T: Component>(ofType type: T.Type) -> T?
     var allComponents: [Component] { get }
 }
@@ -28,20 +28,22 @@ extension GKEntity: Entity {
             self.addComponent(gkComponent)
         }
     }
-    
-    func removeComponent(ofType type: Component.Type) {
-        if let gkType = type as? GKComponent.Type {
-            self.removeComponent(ofType: type)
+
+    func removeComponentByType(ofType componentType: Component.Type) {
+        guard let gkType = componentType as? GKComponent.Type else {
+            return
         }
+        self.removeComponent(ofType: gkType)
     }
-    
-    func component<T: Component>(ofType type: T.Type) -> T? {
-        guard let gkType = type as? GKComponent.Type else {
-            return nil
+
+    func component<T: Component>(ofType componentType: T.Type) -> T? {
+        let filteredComponent = allComponents.first {
+            type(of: $0) == componentType
         }
-        return self.component(ofType: type)
+
+        return filteredComponent as? T
     }
-    
+
     var allComponents: [any Component] {
         self.components
     }

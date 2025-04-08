@@ -35,7 +35,7 @@ class InventorySystem: ISystem {
             return
         }
 
-        guard let entity = itemToRemove.entity else {
+        guard let entity = itemToRemove.ownerEntity else {
             return
         }
 

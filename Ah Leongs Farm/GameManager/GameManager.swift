@@ -1,5 +1,4 @@
-import GameplayKit
-import SpriteKit
+import Foundation
 
 class GameManager {
     let gameWorld: GameWorld
@@ -14,7 +13,7 @@ class GameManager {
 
     func update(_ currentTime: TimeInterval) {
         let deltaTime = max(currentTime - previousTime, 0) // Ensure deltaTime is not negative
-        let entities = Set(gameWorld.getAllEntities())
+        let entities = gameWorld.getAllEntities()
 
         previousTime = currentTime
         gameWorld.update(deltaTime: deltaTime)

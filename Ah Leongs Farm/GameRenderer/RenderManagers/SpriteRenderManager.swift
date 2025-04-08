@@ -24,7 +24,7 @@ class SpriteRenderManager: IRenderManager {
         self.uiPositionProvider = uiPositionProvider
     }
 
-    func createNode(for entity: EntityType, in renderer: GameRenderer) {
+    func createNode(for entity: Entity, in renderer: GameRenderer) {
         guard let spriteComponent = entity.component(ofType: SpriteComponent.self) else {
             return
         }

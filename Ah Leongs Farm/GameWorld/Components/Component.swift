@@ -8,11 +8,11 @@
 import GameplayKit
 
 protocol Component: AnyObject {
-    var ownerEntity: (any Entity)? { get }
+    var ownerEntity: (Entity)? { get }
 }
 
 extension GKComponent: Component {
-    var ownerEntity: (any Entity)? {
-        return self.entity
+    var ownerEntity: (Entity)? {
+        self.entity
     }
 }

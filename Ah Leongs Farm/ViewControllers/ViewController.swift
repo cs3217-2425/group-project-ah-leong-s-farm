@@ -7,7 +7,6 @@
 
 import UIKit
 import SpriteKit
-import GameplayKit
 
 class ViewController: UIViewController {
     let gameManager: GameManager
@@ -180,7 +179,7 @@ extension ViewController: IGameObserver {
         gameStatisticsView?.updateXPLabel(currentXP: currentXP, levelXP: currentLevelXP)
     }
 
-    func observe(entities: Set<GKEntity>) {
+    func observe(entities: [Entity]) {
         updateDayLabel()
         updateCurrencyLabel()
         updateEnergyLabel()
