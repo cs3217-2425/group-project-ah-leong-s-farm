@@ -59,11 +59,11 @@ class ItemFactory {
     }
 
     private static func setupComponents(_ entity: Entity, type: ItemType) -> Entity {
-        entity.addComponent(ItemComponent(itemType: type))
+        entity.attachComponent(ItemComponent(itemType: type))
 
         // Add SellComponent if the market can sell that item
         if MarketInformation.sellableItems.contains(type) {
-            entity.addComponent(SellComponent(itemType: type))
+            entity.attachComponent(SellComponent(itemType: type))
         }
         return entity
     }

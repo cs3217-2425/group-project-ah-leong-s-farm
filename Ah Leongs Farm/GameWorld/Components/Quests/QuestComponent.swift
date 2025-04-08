@@ -1,7 +1,6 @@
 import Foundation
-import GameplayKit
 
-class QuestComponent: GKComponent {
+class QuestComponent: ComponentAdapter {
     let title: String
     var status: QuestStatus
     var objectives: [QuestObjective]

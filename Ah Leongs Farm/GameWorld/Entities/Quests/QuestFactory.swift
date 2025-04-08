@@ -5,7 +5,7 @@
 //  Created by Ma Yuchen on 21/3/25.
 //
 
-import GameplayKit
+import Foundation
 
 class QuestFactory {
 

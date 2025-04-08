@@ -115,7 +115,7 @@ class GameRenderer {
 
         let entityIDsWithPositionComponentRemoved = Set(
             allEntities.filter { entitySpriteNodeMap.keys.contains(ObjectIdentifier($0)) }
-                .filter { $0.component(ofType: PositionComponent.self) == nil }
+                .filter { $0.getComponentByType(ofType: PositionComponent.self) == nil }
                 .map { ObjectIdentifier($0) }
         )
 

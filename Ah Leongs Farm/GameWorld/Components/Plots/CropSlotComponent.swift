@@ -6,13 +6,12 @@
 //
 
 import Foundation
-import GameplayKit
 
-class CropSlotComponent: GKComponent {
+class CropSlotComponent: ComponentAdapter {
     var crop: Crop?
 
     init(crop: Crop? = nil) {
-        guard let crop = crop, crop.component(ofType: CropComponent.self) != nil else {
+        guard let crop = crop, crop.getComponentByType(ofType: CropComponent.self) != nil else {
             self.crop = nil
             super.init()
             return

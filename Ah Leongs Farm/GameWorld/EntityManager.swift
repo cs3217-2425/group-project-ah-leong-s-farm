@@ -34,15 +34,15 @@ class EntityManager {
     }
 
     func addComponent(_ component: Component, to entity: Entity) {
-        entity.addComponent(component)
+        entity.attachComponent(component)
         registerComponent(component, for: entity)
     }
 
     func removeComponent<T: Component>(ofType type: T.Type, from entity: Entity) {
-        if let component = entity.component(ofType: type) {
+        if let component = entity.getComponentByType(ofType: type) {
             unregisterComponent(component, for: entity)
         }
-        entity.removeComponentByType(ofType: type)
+        entity.detachComponent(ofType: type)
     }
 
     func getAllComponents<T: Component>(ofType type: T.Type) -> [T] {

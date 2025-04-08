@@ -86,7 +86,7 @@ class MarketSystem: ISystem {
         }
 
         let sellableEntities = manager.getEntities(withComponentType: SellComponent.self).filter { entity in
-            if let sellComponent = entity.component(ofType: SellComponent.self) {
+            if let sellComponent = entity.getComponentByType(ofType: SellComponent.self) {
                 return sellComponent.itemType == type
             }
             return false

@@ -1,7 +1,6 @@
 import Foundation
-import GameplayKit
 
-class LevelComponent: GKComponent {
+class LevelComponent: ComponentAdapter {
     private(set) var level: Int
     private(set) var currentXP: Float
     private(set) var thresholdXP: Float

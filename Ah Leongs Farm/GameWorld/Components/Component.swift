@@ -11,8 +11,8 @@ protocol Component: AnyObject {
     var ownerEntity: (Entity)? { get }
 }
 
-extension GKComponent: Component {
+class ComponentAdapter: GKComponent, Component {
     var ownerEntity: (Entity)? {
-        self.entity
+        self.entity as? Entity
     }
 }

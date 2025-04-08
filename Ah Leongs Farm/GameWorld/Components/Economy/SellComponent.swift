@@ -5,9 +5,8 @@
 //  Created by proglab on 29/3/25.
 //
 
-import GameplayKit
-
-class SellComponent: GKComponent {
+import Foundation
+class SellComponent: ComponentAdapter {
     let itemType: ItemType
 
     init(itemType: ItemType) {

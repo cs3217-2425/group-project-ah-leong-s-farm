@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import GameplayKit
 
-class HarvestedComponent: GKComponent {
+class HarvestedComponent: ComponentAdapter {
     override init() {
         super.init()
     }

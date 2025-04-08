@@ -15,7 +15,7 @@ class TileMapRenderManager: IRenderManager {
     private static let LandTileGroupName: String = "Land"
 
     func createNode(for entity: Entity, in renderer: GameRenderer) {
-        guard let gridComponent = entity.component(ofType: GridComponent.self),
+        guard let gridComponent = entity.getComponentByType(ofType: GridComponent.self),
               let tileSet = SKTileSet(named: TileMapRenderManager.TileSetName) else {
             return
         }

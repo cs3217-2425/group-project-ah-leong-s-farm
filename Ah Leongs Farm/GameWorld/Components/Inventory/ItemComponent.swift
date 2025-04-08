@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import GameplayKit
 
-class ItemComponent: GKComponent {
+class ItemComponent: ComponentAdapter {
     let itemType: ItemType
     var quantity: Int
     var stackable: Bool {
