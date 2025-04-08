@@ -35,13 +35,8 @@ class GameRenderer {
     func setRenderNode(for entityIdentifier: ObjectIdentifier, node: TileMapNode) {
         tileMapNode = node
 
-        let shouldAddToScene = entityNodeMap[entityIdentifier] == nil
-
-        entityNodeMap[entityIdentifier] = node
-
-        if shouldAddToScene {
-            gameScene?.addChild(node)
-        }
+        let renderNode: IRenderNode = node
+        setRenderNode(for: entityIdentifier, node: renderNode)
     }
 
     func setRenderNode(for entityIdentifier: ObjectIdentifier, node: any IRenderNode) {

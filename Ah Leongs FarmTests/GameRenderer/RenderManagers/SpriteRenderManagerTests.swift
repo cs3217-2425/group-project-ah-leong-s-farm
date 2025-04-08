@@ -95,9 +95,9 @@ class SpriteRenderManagerTests: XCTestCase {
 class MockGameRenderer: GameRenderer {
     var didSetRenderNode = false
     var renderNodeIdentifier: ObjectIdentifier?
-    var renderNode: SpriteNode?
+    var renderNode: (any IRenderNode)?
 
-    override func setRenderNode(for identifier: ObjectIdentifier, node: SpriteNode) {
+    override func setRenderNode(for identifier: ObjectIdentifier, node: any IRenderNode) {
         didSetRenderNode = true
         renderNodeIdentifier = identifier
         renderNode = node
