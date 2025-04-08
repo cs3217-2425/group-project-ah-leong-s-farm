@@ -9,12 +9,8 @@ class GameRenderer {
     private weak var gameScene: GameScene?
     private var renderPipeline: Queue<any IRenderManager> = Queue()
 
-    private var entityTileMapNodeMap: [ObjectIdentifier: TileMapNode] = [:]
-    private var entitySpriteNodeMap: [ObjectIdentifier: SpriteNode] = [:]
-    private var entityNodeMap: [ObjectIdentifier: any IRenderNode] {
-        let maps: [[ObjectIdentifier: any IRenderNode]] = [entityTileMapNodeMap, entitySpriteNodeMap]
-        return maps.reduce(into: [:]) { $0.merge($1) { _, new in new } }
-    }
+    private var tileMapNode: TileMapNode?
+    private var entityNodeMap: [ObjectIdentifier: any IRenderNode] = [:]
 
     var allRenderNodes: [any IRenderNode] {
         Array(entityNodeMap.values)
@@ -37,9 +33,10 @@ class GameRenderer {
     }
 
     func setRenderNode(for entityIdentifier: ObjectIdentifier, node: TileMapNode) {
-        let shouldAddToScene = entityTileMapNodeMap[entityIdentifier] == nil
+        let shouldAddToScene = entityNodeMap[entityIdentifier] == nil
 
-        entityTileMapNodeMap[entityIdentifier] = node
+        entityNodeMap[entityIdentifier] = node
+        tileMapNode = node
 
         if shouldAddToScene {
             gameScene?.addChild(node)
@@ -47,9 +44,9 @@ class GameRenderer {
     }
 
     func setRenderNode(for entityIdentifier: ObjectIdentifier, node: SpriteNode) {
-        let shouldAddToScene = entitySpriteNodeMap[entityIdentifier] == nil
+        let shouldAddToScene = entityNodeMap[entityIdentifier] == nil
 
-        entitySpriteNodeMap[entityIdentifier] = node
+        entityNodeMap[entityIdentifier] = node
 
         if shouldAddToScene {
             gameScene?.addChild(node)
@@ -70,12 +67,15 @@ class GameRenderer {
     }
 
     private func removeRenderNode(for entityIdentifier: ObjectIdentifier) {
-        if let node = entityTileMapNodeMap[entityIdentifier] {
-            node.removeFromParent()
-            entityTileMapNodeMap.removeValue(forKey: entityIdentifier)
-        } else if let node = entitySpriteNodeMap[entityIdentifier] {
-            node.removeFromParent()
-            entitySpriteNodeMap.removeValue(forKey: entityIdentifier)
+        guard let node = entityNodeMap[entityIdentifier] else {
+            return
+        }
+
+        node.removeFromParent()
+        entityNodeMap.removeValue(forKey: entityIdentifier)
+
+        if node === tileMapNode {
+            tileMapNode = nil
         }
     }
 
@@ -115,15 +115,19 @@ class GameRenderer {
         let allEntityIdentifiers = allEntities.map { ObjectIdentifier($0) }
         let entityIdentifiersWithRenderNodes = Set(entityNodeMap.keys)
 
-        let entityIdentifiersWithPositionComponentRemoved = Set(
-            allEntities.filter { entitySpriteNodeMap.keys.contains(ObjectIdentifier($0)) }
-                .filter { $0.component(ofType: PositionComponent.self) == nil }
+        let entityIdentifiersWithSpriteComponentRemoved = Set(
+            allEntities.filter { entityNodeMap.keys.contains(ObjectIdentifier($0)) }
+                .filter { $0.component(ofType: SpriteComponent.self) == nil }
+                .filter {
+                    // exclude entity with tile map node
+                    entityNodeMap[ObjectIdentifier($0)] !== tileMapNode
+                }
                 .map { ObjectIdentifier($0) }
         )
 
         let entityIdentifiersForRemoval = entityIdentifiersWithRenderNodes
             .subtracting(allEntityIdentifiers)
-            .union(entityIdentifiersWithPositionComponentRemoved)
+            .union(entityIdentifiersWithSpriteComponentRemoved)
 
         return entityIdentifiersForRemoval
     }
@@ -140,10 +144,6 @@ extension GameRenderer: IGameObserver {
 }
 
 extension GameRenderer: UIPositionProvider {
-
-    private var tileMapNode: TileMapNode? {
-        entityTileMapNodeMap.values.first
-    }
 
     func getUIPosition(row: Int, column: Int) -> CGPoint? {
         guard let skTileMapNode = tileMapNode else {

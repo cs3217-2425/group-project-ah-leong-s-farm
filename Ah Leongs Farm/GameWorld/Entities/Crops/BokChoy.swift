@@ -28,9 +28,6 @@ class BokChoy: GKEntity, Crop {
 
         let healthComponent = HealthComponent()
         addComponent(healthComponent)
-
-        let spriteComponent = SpriteComponent(visitor: self)
-        addComponent(spriteComponent)
     }
 
     static func createSeed() -> GKEntity {

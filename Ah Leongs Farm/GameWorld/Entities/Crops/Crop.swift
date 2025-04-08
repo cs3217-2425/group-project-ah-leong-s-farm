@@ -8,7 +8,7 @@
 import Foundation
 import GameplayKit
 
-protocol Crop where Self: GKEntity {
+protocol Crop: SpriteRenderManagerVisitor where Self: GKEntity {
     var seedItemType: ItemType { get }
     var harvestedItemType: ItemType { get }
     var components: [GKComponent] { get }

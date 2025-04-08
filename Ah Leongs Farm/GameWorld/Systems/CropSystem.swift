@@ -58,6 +58,7 @@ class CropSystem: ISystem {
         manager?.addComponent(GrowthComponent(
             totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: crop)
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
+        manager?.addComponent(SpriteComponent(visitor: crop), to: crop)
         cropSlot.crop = crop
         return true
     }
@@ -85,6 +86,7 @@ class CropSystem: ISystem {
 
         manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
         manager?.removeComponent(ofType: PositionComponent.self, from: crop)
+        manager?.removeComponent(ofType: SpriteComponent.self, from: crop)
         manager?.addComponent(HarvestedComponent(), to: crop)
         manager?.addComponent(SellComponent(itemType: crop.harvestedItemType), to: crop)
         manager?.addComponent(ItemComponent(itemType: crop.harvestedItemType), to: crop)
