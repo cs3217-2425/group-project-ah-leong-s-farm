@@ -41,9 +41,7 @@ class Potato: GKEntity, Crop {
         potato.addComponent(HarvestedComponent())
         return potato
     }
-}
 
-extension Potato: SpriteRenderManagerVisitor {
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(potato: self, in: renderer)
     }

@@ -41,9 +41,7 @@ class BokChoy: GKEntity, Crop {
         bokChoy.addComponent(HarvestedComponent())
         return bokChoy
     }
-}
 
-extension BokChoy: SpriteRenderManagerVisitor {
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(bokChoy: self, in: renderer)
     }

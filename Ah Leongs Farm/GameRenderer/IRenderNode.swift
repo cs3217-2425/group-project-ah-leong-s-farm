@@ -10,5 +10,5 @@ import SpriteKit
 protocol IRenderNode: AnyObject {
     func visitTouchHandlerRegistry(registry: TouchHandlerRegistry)
 
-    func removeFromParent()
+    func getSKNode() -> SKNode
 }

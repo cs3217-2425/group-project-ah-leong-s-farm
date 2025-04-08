@@ -41,9 +41,7 @@ class Apple: GKEntity, Crop {
         apple.addComponent(HarvestedComponent())
         return apple
     }
-}
 
-extension Apple: SpriteRenderManagerVisitor {
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(apple: self, in: renderer)
     }

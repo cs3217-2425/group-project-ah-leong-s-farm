@@ -33,23 +33,24 @@ class GameRenderer {
     }
 
     func setRenderNode(for entityIdentifier: ObjectIdentifier, node: TileMapNode) {
+        tileMapNode = node
+
         let shouldAddToScene = entityNodeMap[entityIdentifier] == nil
 
         entityNodeMap[entityIdentifier] = node
-        tileMapNode = node
 
         if shouldAddToScene {
             gameScene?.addChild(node)
         }
     }
 
-    func setRenderNode(for entityIdentifier: ObjectIdentifier, node: SpriteNode) {
+    func setRenderNode(for entityIdentifier: ObjectIdentifier, node: any IRenderNode) {
         let shouldAddToScene = entityNodeMap[entityIdentifier] == nil
 
         entityNodeMap[entityIdentifier] = node
 
         if shouldAddToScene {
-            gameScene?.addChild(node)
+            gameScene?.addChild(node.getSKNode())
         }
     }
 
@@ -71,7 +72,7 @@ class GameRenderer {
             return
         }
 
-        node.removeFromParent()
+        node.getSKNode().removeFromParent()
         entityNodeMap.removeValue(forKey: entityIdentifier)
 
         if node === tileMapNode {
@@ -146,21 +147,21 @@ extension GameRenderer: IGameObserver {
 extension GameRenderer: UIPositionProvider {
 
     func getUIPosition(row: Int, column: Int) -> CGPoint? {
-        guard let skTileMapNode = tileMapNode else {
+        guard let tileMapNode = tileMapNode else {
             return nil
         }
 
-        guard skTileMapNode.isRowValid(row), skTileMapNode.isColumnValid(column) else {
+        guard tileMapNode.isRowValid(row), tileMapNode.isColumnValid(column) else {
             return nil
         }
 
-        let tileSize = skTileMapNode.tileSize
+        let tileSize = tileMapNode.tileSize
 
         // TODO: Investigate why deduction of half the tile size is needed
         let xPosition = CGFloat(column) * tileSize.width + tileSize.width / 2
-            - skTileMapNode.mapSize.width / 2
+            - tileMapNode.mapSize.width / 2
         let yPosition = CGFloat(row) * tileSize.height + tileSize.height / 2
-            - skTileMapNode.mapSize.height / 2
+            - tileMapNode.mapSize.height / 2
 
         return CGPoint(x: xPosition, y: yPosition)
     }
