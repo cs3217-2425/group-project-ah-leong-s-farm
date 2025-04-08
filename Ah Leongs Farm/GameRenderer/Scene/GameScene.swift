@@ -48,17 +48,33 @@ class GameScene: SKScene {
 
     override func didMove(to view: SKView) {
         gameCamera.position = position
-        setUpGestureRecognizers()
     }
 
     override func update(_ currentTime: TimeInterval) {
         gameSceneUpdateDelegate?.update(currentTime)
     }
 
+    @objc private func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        guard gestureRecognizer.state == .began else {
+            return
+        }
+
+        let touchPosition = gestureRecognizer.location(in: self.view)
+        let scenePosition = convertPoint(fromView: touchPosition)
+
+        if let (row, column) = uiPositionProvider?.getRowAndColumn(fromPosition: scenePosition) {
+            interactionHandler?.handleGridInteraction(row: row, column: column)
+        }
+    }
+
     private func setupGestureRecognizers(in view: SKView) {
         let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
         let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
         let rotationRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)))
+        let longPressRecognizer = UILongPressGestureRecognizer(
+            target: self,
+            action: #selector(handleLongPress(_:))
+        )
 
         pinchRecognizer.delegate = self
         panRecognizer.delegate = self
@@ -75,6 +91,7 @@ class GameScene: SKScene {
         view.addGestureRecognizer(pinchRecognizer)
         view.addGestureRecognizer(panRecognizer)
         view.addGestureRecognizer(rotationRecognizer)
+        view.addGestureRecognizer(longPressRecognizer)
     }
 
     @objc private func handlePinchGesture(_ gesture: UIPinchGestureRecognizer) {
@@ -104,27 +121,5 @@ extension GameScene: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
                            shouldReceive touch: UITouch) -> Bool {
         true
-    }
-
-    @objc private func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
-        guard gestureRecognizer.state == .began else {
-            return
-        }
-
-        let touchPosition = gestureRecognizer.location(in: self.view)
-        let scenePosition = convertPoint(fromView: touchPosition)
-
-        if let (row, column) = uiPositionProvider?.getRowAndColumn(fromPosition: scenePosition) {
-            interactionHandler?.handleGridInteraction(row: row, column: column)
-        }
-    }
-
-    private func setUpGestureRecognizers() {
-        let longPressRecognizer = UILongPressGestureRecognizer(
-            target: self,
-            action: #selector(handleLongPress(_:))
-        )
-
-        view?.addGestureRecognizer(longPressRecognizer)
     }
 }
