@@ -42,6 +42,8 @@ class SpriteRenderManagerTests: XCTestCase {
         let apple = Apple()
 
         apple.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)))
+        apple.addComponent(SpriteComponent(visitor: apple))
+
         mockUIPositionProvider.row = row
         mockUIPositionProvider.column = column
 
@@ -58,6 +60,8 @@ class SpriteRenderManagerTests: XCTestCase {
         let bokChoy = BokChoy()
 
         bokChoy.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)))
+        bokChoy.addComponent(SpriteComponent(visitor: bokChoy))
+
         mockUIPositionProvider.row = row
         mockUIPositionProvider.column = column
 
@@ -74,6 +78,8 @@ class SpriteRenderManagerTests: XCTestCase {
         let potato = Potato()
 
         potato.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)))
+        potato.addComponent(SpriteComponent(visitor: potato))
+
         mockUIPositionProvider.row = row
         mockUIPositionProvider.column = column
 
