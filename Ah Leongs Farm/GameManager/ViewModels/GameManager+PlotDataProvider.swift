@@ -15,7 +15,7 @@ extension GameManager: PlotDataProvider {
             return nil
         }
 
-        guard let crop = plot.component(ofType: CropSlotComponent.self)?.crop else {
+        guard let crop = plot.getComponentByType(ofType: CropSlotComponent.self)?.crop else {
             return PlotViewModel(row: row, column: column, crop: nil)
         }
 

@@ -19,7 +19,7 @@ extension GameManager: QuestDataProvider, RewardDataRetrievalVisitor {
             $0.order < $1.order
         })
         return sortedQuests.compactMap { questComponent in
-            guard let questEntity = questComponent.entity as? Quest else {
+            guard let questEntity = questComponent.ownerEntity as? Quest else {
                 return nil
             }
             let rewardComponents = questSystem.getAllRewardComponents(questEntity: questEntity)

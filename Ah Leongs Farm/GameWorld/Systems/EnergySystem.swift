@@ -5,8 +5,6 @@
 //  Created by Ma Yuchen on 19/3/25.
 //
 
-import GameplayKit
-
 class EnergySystem: ISystem {
     unowned var manager: EntityManager?
 

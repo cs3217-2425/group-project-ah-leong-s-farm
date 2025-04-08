@@ -1,4 +1,4 @@
-import GameplayKit
+import Foundation
 
 class GridSystem: ISystem {
     unowned var manager: EntityManager?
@@ -57,7 +57,7 @@ class GridSystem: ISystem {
         manager?.removeEntity(plot)
 
         // Remove the crop from the entity manager if it exists
-        if let cropSlotComponent = plot.component(ofType: CropSlotComponent.self),
+        if let cropSlotComponent = plot.getComponentByType(ofType: CropSlotComponent.self),
            let crop = cropSlotComponent.crop {
             manager?.removeEntity(crop)
         }

@@ -5,9 +5,9 @@
 //  Created by Ma Yuchen on 29/3/25.
 //
 
-import GameplayKit
+import Foundation
 
-class RewardItemComponent: GKComponent, RewardComponent {
+class RewardItemComponent: ComponentAdapter, RewardComponent {
 
     let itemTypes: [ItemType: Int]
 

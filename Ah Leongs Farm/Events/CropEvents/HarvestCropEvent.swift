@@ -24,7 +24,7 @@ struct HarvestCropEvent: GameEvent {
         }
 
         guard let harvestedCrop = cropSystem.harvestCrop(row: row, column: column),
-              let cropComponent = harvestedCrop.component(ofType: CropComponent.self) else {
+              let cropComponent = harvestedCrop.getComponentByType(ofType: CropComponent.self) else {
             return nil
         }
 

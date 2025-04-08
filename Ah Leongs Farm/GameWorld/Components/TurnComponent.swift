@@ -5,9 +5,9 @@
 //  Created by Ma Yuchen on 19/3/25.
 //
 
-import GameplayKit
+import Foundation
 
-class TurnComponent: GKComponent {
+class TurnComponent: ComponentAdapter {
     private var _currentTurn: Int
     private var _maxTurns: Int
 

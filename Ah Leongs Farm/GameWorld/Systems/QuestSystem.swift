@@ -1,6 +1,3 @@
-import Foundation
-import GameplayKit
-
 class QuestSystem: ISystem {
 
     unowned var manager: EntityManager?
@@ -82,7 +79,7 @@ class QuestSystem: ISystem {
 
     private func completeQuest(_ questComponent: QuestComponent) {
         guard let eventQueueable = eventQueueable,
-              let questEntity = questComponent.entity as? Quest else {
+              let questEntity = questComponent.ownerEntity as? Quest else {
             return
         }
 
@@ -105,7 +102,7 @@ extension QuestSystem: IEventObserver {
 
 extension QuestSystem: RewardEventQueuer {
     func getAllRewardComponents(questEntity: Quest) -> [any RewardComponent] {
-        let components = questEntity.components
+        let components = questEntity.allComponents
         return components.compactMap { component in
             component as? any RewardComponent
         }

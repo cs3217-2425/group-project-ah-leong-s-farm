@@ -1,6 +1,6 @@
-import GameplayKit
+import Foundation
 
-class PositionComponent: GKComponent {
+class PositionComponent: ComponentAdapter {
     var x: CGFloat
     var y: CGFloat
 

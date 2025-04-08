@@ -5,13 +5,9 @@
 //  Created by Lester Ong on 27/3/25.
 //
 
-import Foundation
-import GameplayKit
-
-protocol Crop where Self: GKEntity {
+protocol Crop where Self: EntityAdapter {
     var seedItemType: ItemType { get }
     var harvestedItemType: ItemType { get }
-    var components: [GKComponent] { get }
-    static func createSeed() -> GKEntity
-    static func createHarvested() -> GKEntity
+    static func createSeed() -> Entity
+    static func createHarvested() -> Entity
 }

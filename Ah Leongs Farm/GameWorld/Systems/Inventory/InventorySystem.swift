@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import GameplayKit
 
 class InventorySystem: ISystem {
     unowned var manager: EntityManager?
@@ -36,7 +35,7 @@ class InventorySystem: ISystem {
             return
         }
 
-        guard let entity = itemToRemove.entity else {
+        guard let entity = itemToRemove.ownerEntity else {
             return
         }
 

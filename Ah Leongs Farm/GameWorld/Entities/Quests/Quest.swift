@@ -1,12 +1,12 @@
-import GameplayKit
+import Foundation
 
-class Quest: GKEntity {
+class Quest: EntityAdapter {
 
     init(questComponent: QuestComponent, rewardComponents: [any RewardComponent]) {
         super.init()
-        self.addComponent(questComponent)
+        self.attachComponent(questComponent)
         for rewardComponent in rewardComponents {
-            self.addComponent(rewardComponent)
+            self.attachComponent(rewardComponent)
         }
     }
 

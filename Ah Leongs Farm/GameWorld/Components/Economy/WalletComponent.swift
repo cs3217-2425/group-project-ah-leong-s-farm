@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import GameplayKit
 
-class WalletComponent: GKComponent {
+class WalletComponent: ComponentAdapter {
     static let exchangeRate: [CurrencyType: Double] = [
         .coin: 1.0
     ]
