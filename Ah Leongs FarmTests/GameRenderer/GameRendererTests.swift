@@ -16,10 +16,11 @@ class GameRendererTests: XCTestCase {
         let gameRenderer = GameRenderer()
         gameRenderer.setScene(gameScene)
 
-        let entity = GKEntity()
+        let entity = EntityAdapter()
         let gridComponent = GridComponent(rows: 3, columns: 3)
         entity.addComponent(gridComponent)
-        let entities: Set<GKEntity> = [entity]
+
+        let entities: [any Entity] = [entity]
 
         gameRenderer.observe(entities: entities)
 
@@ -31,10 +32,10 @@ class GameRendererTests: XCTestCase {
         let gameRenderer = GameRenderer()
         gameRenderer.setScene(gameScene)
 
-        let entity = GKEntity()
+        let entity = EntityAdapter()
         let gridComponent = GridComponent(rows: 3, columns: 3)
         entity.addComponent(gridComponent)
-        let entities: Set<GKEntity> = [entity]
+        let entities: [any Entity] = [entity]
 
         gameRenderer.observe(entities: entities)
         gameRenderer.observe(entities: entities)
