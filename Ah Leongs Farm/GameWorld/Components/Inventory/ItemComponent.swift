@@ -8,14 +8,9 @@
 import Foundation
 
 class ItemComponent: ComponentAdapter {
-    let itemType: ItemType
     var quantity: Int
-    var stackable: Bool {
-        itemType.isStackable
-    }
 
-    init(itemType: ItemType, quantity: Int = 1) {
-        self.itemType = itemType
+    init(quantity: Int = 1) {
         self.quantity = quantity
         super.init()
     }
@@ -26,10 +21,6 @@ class ItemComponent: ComponentAdapter {
     }
 
     func add(_ amount: Int) {
-        guard stackable else {
-            return
-        }
-
         guard amount >= 0 else {
             return
         }
@@ -53,28 +44,5 @@ class ItemComponent: ComponentAdapter {
 
     func hasSufficientQuantity(_ amount: Int) -> Bool {
         quantity >= amount
-    }
-}
-
-enum ItemType: Hashable {
-    case bokChoyHarvested
-    case bokChoySeed
-    case appleSeed
-    case appleHarvested
-    case potatoSeed
-    case potatoHarvested
-    case fertiliser
-    case premiumFertiliser
-
-    private struct Properties {
-        static let stackable: Set<ItemType> = [
-            .bokChoyHarvested, .bokChoySeed, .appleSeed,
-            .appleHarvested, .potatoSeed, .potatoHarvested,
-            .fertiliser
-        ]
-    }
-
-    var isStackable: Bool {
-        Properties.stackable.contains(self)
     }
 }

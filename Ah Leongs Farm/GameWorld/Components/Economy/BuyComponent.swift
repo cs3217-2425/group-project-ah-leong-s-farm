@@ -1,13 +1,13 @@
 //
-//  BuyComponent 2.swift
+//  BuyComponent.swift
 //  Ah Leongs Farm
 //
-//  Created by proglab on 29/3/25.
+//  Created by Ma Yuchen on 11/4/25.
 //
 
 import Foundation
-class SellComponent: ComponentAdapter {
-
+class BuyComponent: ComponentAdapter {
+    
     var price: [CurrencyType: Int]
 
     init(price: [CurrencyType: Int]) {

@@ -6,65 +6,41 @@
 //
 
 class ItemFactory {
-    static let itemToInitialisers: [ItemType: () -> (Entity)?] = [
-        .bokChoySeed: {
-            setupComponents(createSeed(for: .bokChoy), type: .bokChoySeed)
-            },
-        .appleSeed: {
-            setupComponents(createSeed(for: .apple), type: .appleSeed)
-            },
-        .potatoSeed: {
-            setupComponents(createSeed(for: .potato), type: .potatoSeed)
-             },
-        .appleHarvested: {
-            setupComponents(createHarvested(for: .apple), type: .appleHarvested)
-            },
-        .bokChoyHarvested: {
-            setupComponents(createHarvested(for: .bokChoy), type: .bokChoyHarvested)
-            },
-        .potatoHarvested: {
-            setupComponents(createHarvested(for: .potato), type: .potatoHarvested)
-            },
-        .fertiliser: {
-            setupComponents(Fertiliser(), type: .fertiliser)
-            },
-        .premiumFertiliser: {
-            setupComponents(PremiumFertiliser(), type: .premiumFertiliser)
-            }
-    ]
-
-    private static let cropToSeedInitialisers: [CropType: () -> Entity] = [
-        .bokChoy: { BokChoy.createSeed() },
-        .apple: { Apple.createSeed() },
-        .potato: { Potato.createSeed() }
-    ]
-
-    private static func createSeed(for crop: CropType) -> Entity {
-        guard let seedInitialiser = cropToSeedInitialisers[crop] else {
-            fatalError("Seed initialiser for \(crop) not defined!")
-        }
-        return seedInitialiser()
-    }
-    private static let cropToHarvestedInitialisers: [CropType: () -> Entity] = [
-        .bokChoy: { BokChoy.createHarvested() },
-        .apple: { Apple.createHarvested() },
-        .potato: { Potato.createHarvested() }
-    ]
-
-    private static func createHarvested(for crop: CropType) -> Entity {
-        guard let harvestedInitialiser = cropToHarvestedInitialisers[crop] else {
-            fatalError("Harvested initialiser for \(crop) not defined!")
-        }
-        return harvestedInitialiser()
+    static func createBokChoySeed() -> Entity {
+        setupComponents(BokChoy.createSeed())
     }
 
-    private static func setupComponents(_ entity: Entity, type: ItemType) -> Entity {
-        entity.attachComponent(ItemComponent(itemType: type))
+    static func createBokChoyHarvested() -> Entity {
+        setupComponents(BokChoy.createHarvested())
+    }
 
-        // Add SellComponent if the market can sell that item
-        if MarketInformation.sellableItems.contains(type) {
-            entity.attachComponent(SellComponent(itemType: type))
-        }
+    static func createAppleSeed() -> Entity {
+        setupComponents(Apple.createSeed())
+    }
+
+    static func createAppleHarvested() -> Entity {
+        setupComponents(Apple.createHarvested())
+    }
+
+    static func createPotatoSeed() -> Entity {
+        setupComponents(Potato.createSeed())
+    }
+
+    static func createPotatoHarvested() -> Entity {
+        setupComponents(Potato.createHarvested())
+    }
+
+    static func createFertiliser() -> Entity {
+        setupComponents(Fertiliser())
+    }
+
+    static func createPremiumFertiliser() -> Entity {
+        setupComponents(PremiumFertiliser())
+    }
+
+    private static func setupComponents(_ entity: Entity) -> Entity {
+        entity.attachComponent(ItemComponent())
+        entity.attachComponent(SellComponent())
         return entity
     }
 }

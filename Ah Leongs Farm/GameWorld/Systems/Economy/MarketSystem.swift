@@ -7,15 +7,17 @@
 
 class MarketSystem: ISystem {
 
-    private var itemPrices: [ItemType: Price] = MarketInformation.initialItemPrices
-    private var itemStocks: [ItemType: Int] = MarketInformation.initialItemStocks
+    private var seedPrices: [EntityType: Price] = MarketInformation.initialSeedPrices
+    private var harvestedPrices: [EntityType: Price] = MarketInformation.initialHarvestedPrices
+    private var seedStocks: [EntityType: Int] = MarketInformation.initialSeedStocks
+    private var harvestedStocks: [EntityType: Int] = MarketInformation.initialHarvestedStocks
     unowned var manager: EntityManager?
 
     required init(for manager: EntityManager) {
         self.manager = manager
     }
 
-    func getItemPrices() -> [ItemType: Price] {
+    func getSeedPrices() -> [EntityType: Price] {
         itemPrices
     }
 
