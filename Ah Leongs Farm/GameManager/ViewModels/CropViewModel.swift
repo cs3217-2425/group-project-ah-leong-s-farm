@@ -10,8 +10,8 @@ struct CropViewModel {
     let canHarvest: Bool
 
     init?(crop: Crop) {
-        guard let cropComponent = crop.component(ofType: CropComponent.self),
-              let growthComponent = crop.component(ofType: GrowthComponent.self) else {
+        guard let cropComponent = crop.getComponentByType(ofType: CropComponent.self),
+              let growthComponent = crop.getComponentByType(ofType: GrowthComponent.self) else {
             return nil
         }
 

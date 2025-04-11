@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import GameplayKit
 
-class BokChoy: GKEntity, Crop {
+class BokChoy: EntityAdapter, Crop {
     var seedItemType: ItemType = .bokChoySeed
     var harvestedItemType: ItemType = .bokChoyHarvested
 
@@ -24,21 +23,21 @@ class BokChoy: GKEntity, Crop {
 
     private func setUpComponents() {
         let cropComponent = CropComponent(cropType: .bokChoy)
-        addComponent(cropComponent)
+        attachComponent(cropComponent)
 
         let healthComponent = HealthComponent()
-        addComponent(healthComponent)
+        attachComponent(healthComponent)
     }
 
-    static func createSeed() -> GKEntity {
+    static func createSeed() -> Entity {
         let bokChoy = BokChoy()
-        bokChoy.addComponent(SeedComponent())
+        bokChoy.attachComponent(SeedComponent())
         return bokChoy
     }
 
-    static func createHarvested() -> GKEntity {
+    static func createHarvested() -> Entity {
         let bokChoy = BokChoy()
-        bokChoy.addComponent(HarvestedComponent())
+        bokChoy.attachComponent(HarvestedComponent())
         return bokChoy
     }
 

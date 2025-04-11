@@ -5,9 +5,9 @@
 //  Created by Jerry Leong on 16/3/25.
 //
 
-import GameplayKit
+import Foundation
 
-class SoilComponent: GKComponent {
+class SoilComponent: ComponentAdapter {
     var quality: Float
     var moisture: Float
 

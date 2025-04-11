@@ -5,7 +5,7 @@
 //  Created by Ma Yuchen on 21/3/25.
 //
 
-import GameplayKit
+import Foundation
 
 class QuestFactory {
 
@@ -234,7 +234,7 @@ class QuestFactory {
             createSellQuestBakChoy(order: 8),
             createFarmBusinessQuest(order: 9),
             createAppleHarvestQuest(order: 10),
-            createReallyLongQuest(order: 11),
+            createReallyLongQuest(order: 11)
         ]
     }
 

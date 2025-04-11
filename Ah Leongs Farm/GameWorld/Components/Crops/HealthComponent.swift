@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import GameplayKit
 
-class HealthComponent: GKComponent {
+class HealthComponent: ComponentAdapter {
     var health: Double
 
     override init() {

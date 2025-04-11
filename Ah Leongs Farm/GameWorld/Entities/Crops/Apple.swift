@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import GameplayKit
 
-class Apple: GKEntity, Crop {
+class Apple: EntityAdapter, Crop {
     var seedItemType: ItemType = .appleSeed
     var harvestedItemType: ItemType = .appleHarvested
 
@@ -24,21 +23,21 @@ class Apple: GKEntity, Crop {
 
     private func setUpComponents() {
         let cropComponent = CropComponent(cropType: .apple)
-        addComponent(cropComponent)
+        attachComponent(cropComponent)
 
         let healthComponent = HealthComponent()
-        addComponent(healthComponent)
+        attachComponent(healthComponent)
     }
 
-    static func createSeed() -> GKEntity {
+    static func createSeed() -> Entity {
         let apple = Apple()
-        apple.addComponent(SeedComponent())
+        apple.attachComponent(SeedComponent())
         return apple
     }
 
-    static func createHarvested() -> GKEntity {
+    static func createHarvested() -> Entity {
         let apple = Apple()
-        apple.addComponent(HarvestedComponent())
+        apple.attachComponent(HarvestedComponent())
         return apple
     }
 

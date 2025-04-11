@@ -5,9 +5,9 @@
 //  Created by Ma Yuchen on 29/3/25.
 //
 
-import GameplayKit
+import Foundation
 
-class RewardCurrencyComponent: GKComponent, RewardComponent {
+class RewardCurrencyComponent: ComponentAdapter, RewardComponent {
 
     let currencies: [CurrencyType: Double]
 

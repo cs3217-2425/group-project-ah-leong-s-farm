@@ -5,9 +5,9 @@
 //  Created by Ma Yuchen on 19/3/25.
 //
 
-import GameplayKit
+import Foundation
 
-class EnergyComponent: GKComponent {
+class EnergyComponent: ComponentAdapter {
     var currentEnergy: Int
     var maxEnergy: Int
 

@@ -5,9 +5,9 @@
 //  Created by Jerry Leong on 27/3/25.
 //
 
-import GameplayKit
+import Foundation
 
-class SpriteComponent: GKComponent {
+class SpriteComponent: ComponentAdapter {
     let spriteRenderManagerVisitor: SpriteRenderManagerVisitor
 
     @available(*, unavailable)

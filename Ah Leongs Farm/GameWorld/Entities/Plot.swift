@@ -5,14 +5,15 @@
 //  Created by Jerry Leong on 13/3/25.
 //
 
-import GameplayKit
+import Foundation
 
-class Plot: GKEntity {
+class Plot: EntityAdapter {
     private static let DefaultSoilQuality: Float = 0
     private static let DefaultSoilMoisture: Float = 0
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError("init(coder:) not implemented")
     }
 
     init(position: CGPoint, crop: Crop? = nil) {
@@ -21,10 +22,10 @@ class Plot: GKEntity {
     }
 
     func setUpComponents(position: CGPoint, crop: Crop? = nil) {
-        addComponent(CropSlotComponent(crop: crop))
-        addComponent(PositionComponent(x: position.x, y: position.y))
-        addComponent(SoilComponent(quality: Plot.DefaultSoilQuality, moisture: Plot.DefaultSoilMoisture))
-        addComponent(SpriteComponent(visitor: self))
+        attachComponent(CropSlotComponent(crop: crop))
+        attachComponent(PositionComponent(x: position.x, y: position.y))
+        attachComponent(SoilComponent(quality: Plot.DefaultSoilQuality, moisture: Plot.DefaultSoilMoisture))
+        attachComponent(SpriteComponent(visitor: self))
     }
 }
 

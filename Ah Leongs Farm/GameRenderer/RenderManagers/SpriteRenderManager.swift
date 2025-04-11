@@ -5,7 +5,7 @@
 //  Created by Jerry Leong on 27/3/25.
 //
 
-import GameplayKit
+import Foundation
 
 class SpriteRenderManager: IRenderManager {
     private static let EntityTypeTextureMap: [ObjectIdentifier: String] = [
@@ -24,8 +24,8 @@ class SpriteRenderManager: IRenderManager {
         self.uiPositionProvider = uiPositionProvider
     }
 
-    func createNode(for entity: EntityType, in renderer: GameRenderer) {
-        guard let spriteComponent = entity.component(ofType: SpriteComponent.self) else {
+    func createNode(for entity: Entity, in renderer: GameRenderer) {
+        guard let spriteComponent = entity.getComponentByType(ofType: SpriteComponent.self) else {
             return
         }
 
@@ -34,7 +34,7 @@ class SpriteRenderManager: IRenderManager {
     }
 
     func createNodeForEntity(plot: Plot, in renderer: GameRenderer) {
-        guard let positionComponent = plot.component(ofType: PositionComponent.self) else {
+        guard let positionComponent = plot.getComponentByType(ofType: PositionComponent.self) else {
             return
         }
 
@@ -75,7 +75,7 @@ class SpriteRenderManager: IRenderManager {
     }
 
     private func createCropNode(for crop: Crop, in renderer: GameRenderer, textureName: String) {
-        guard let positionComponent = crop.component(ofType: PositionComponent.self) else {
+        guard let positionComponent = crop.getComponentByType(ofType: PositionComponent.self) else {
             return
         }
 

@@ -1,6 +1,4 @@
-import GameplayKit
-
-typealias EntityType = GKEntity
+import SpriteKit
 
 /// The `GameRenderer` class is responsible for rendering the game world.
 /// It manages different render managers and coordinates the rendering process
@@ -10,7 +8,7 @@ class GameRenderer {
     private var renderPipeline: Queue<any IRenderManager> = Queue()
 
     private var tileMapNode: TileMapNode?
-    private var entityNodeMap: [ObjectIdentifier: any IRenderNode] = [:]
+    private var entityNodeMap: [EntityID: any IRenderNode] = [:]
 
     var allRenderNodes: [any IRenderNode] {
         Array(entityNodeMap.values)
@@ -32,17 +30,17 @@ class GameRenderer {
         gameScene = scene
     }
 
-    func setRenderNode(for entityIdentifier: ObjectIdentifier, node: TileMapNode) {
+    func setRenderNode(for entityID: EntityID, node: TileMapNode) {
         tileMapNode = node
 
-        let renderNode: IRenderNode = node
-        setRenderNode(for: entityIdentifier, node: renderNode)
+        let renderNode: any IRenderNode = node
+        setRenderNode(for: entityID, node: renderNode)
     }
 
-    func setRenderNode(for entityIdentifier: ObjectIdentifier, node: any IRenderNode) {
-        let shouldAddToScene = entityNodeMap[entityIdentifier] == nil
+    func setRenderNode(for entityID: EntityID, node: any IRenderNode) {
+        let shouldAddToScene = entityNodeMap[entityID] == nil
 
-        entityNodeMap[entityIdentifier] = node
+        entityNodeMap[entityID] = node
 
         if shouldAddToScene {
             gameScene?.addChild(node.getSKNode())
@@ -62,13 +60,13 @@ class GameRenderer {
         tileMapNode?.removeAllLightUpTiles()
     }
 
-    private func removeRenderNode(for entityIdentifier: ObjectIdentifier) {
-        guard let node = entityNodeMap[entityIdentifier] else {
+    private func removeRenderNode(for entityID: EntityID) {
+        guard let node = entityNodeMap[entityID] else {
             return
         }
 
         node.getSKNode().removeFromParent()
-        entityNodeMap.removeValue(forKey: entityIdentifier)
+        entityNodeMap.removeValue(forKey: entityID)
 
         if node === tileMapNode {
             tileMapNode = nil
@@ -76,8 +74,8 @@ class GameRenderer {
     }
 
     private func removeAllRenderNodes() {
-        for entityIdentifier in entityNodeMap.keys {
-            removeRenderNode(for: entityIdentifier)
+        for entityID in entityNodeMap.keys {
+            removeRenderNode(for: entityID)
         }
     }
 
@@ -86,9 +84,9 @@ class GameRenderer {
         renderPipeline.enqueue(SpriteRenderManager(uiPositionProvider: self))
     }
 
-    private func executeRenderPipeline(allEntities: Set<EntityType>, in scene: GameScene) {
+    private func executeRenderPipeline(allEntities: [Entity], in scene: GameScene) {
         let entitiesToCreateFor = getEntitiesForCreation(allEntities: allEntities)
-        let entityIdentifiersToRemove = getEntitiesForRemoval(allEntities: allEntities)
+        let entityIDsToRemove = getEntitiesForRemoval(allEntities: allEntities)
 
         for renderManager in renderPipeline.iterable {
             for entity in entitiesToCreateFor {
@@ -96,24 +94,24 @@ class GameRenderer {
             }
         }
 
-        for entityIdentifier in entityIdentifiersToRemove {
-            removeRenderNode(for: entityIdentifier)
+        for entityID in entityIDsToRemove {
+            removeRenderNode(for: entityID)
         }
     }
 
-    private func getEntitiesForCreation(allEntities: Set<EntityType>) -> Set<EntityType> {
+    private func getEntitiesForCreation(allEntities: [Entity]) -> [Entity] {
         allEntities.filter { entity in
-            entityNodeMap[ObjectIdentifier(entity)] == nil
+            entityNodeMap[entity.id] == nil
         }
     }
 
-    private func getEntitiesForRemoval(allEntities: Set<EntityType>) -> Set<ObjectIdentifier> {
-        let allEntityIdentifiers = allEntities.map { ObjectIdentifier($0) }
-        let entityIdentifiersWithRenderNodes = Set(entityNodeMap.keys)
+    private func getEntitiesForRemoval(allEntities: [Entity]) -> Set<EntityID> {
+        let allEntityIDs = Set(allEntities.map { $0.id })
+        let entityIDsWithRenderNodes = Set(entityNodeMap.keys)
 
-        let entityIdentifiersWithSpriteComponentRemoved = Set(
+        let entityIDsWithSpriteComponentRemoved = Set(
             allEntities.filter { entityNodeMap.keys.contains(ObjectIdentifier($0)) }
-                .filter { $0.component(ofType: SpriteComponent.self) == nil }
+                .filter { $0.getComponentByType(ofType: SpriteComponent.self) == nil }
                 .filter {
                     // exclude entity with tile map node
                     entityNodeMap[ObjectIdentifier($0)] !== tileMapNode
@@ -121,16 +119,16 @@ class GameRenderer {
                 .map { ObjectIdentifier($0) }
         )
 
-        let entityIdentifiersForRemoval = entityIdentifiersWithRenderNodes
-            .subtracting(allEntityIdentifiers)
-            .union(entityIdentifiersWithSpriteComponentRemoved)
+        let entityIDsForRemoval = entityIDsWithRenderNodes
+            .subtracting(allEntityIDs)
+            .union(entityIDsWithSpriteComponentRemoved)
 
-        return entityIdentifiersForRemoval
+        return entityIDsForRemoval
     }
 }
 
 extension GameRenderer: IGameObserver {
-    func observe(entities: Set<GKEntity>) {
+    func observe(entities: [Entity]) {
         guard let scene = gameScene else {
             return
         }

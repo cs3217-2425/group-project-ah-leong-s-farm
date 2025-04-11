@@ -1,5 +1,4 @@
 import UIKit
-import GameplayKit
 
 class MarketViewController: UIViewController {
 
@@ -151,7 +150,7 @@ extension MarketViewController: SellPopupDelegate {
 }
 
 extension MarketViewController: IGameObserver {
-    func observe(entities: Set<GKEntity>) {
+    func observe(entities: [Entity]) {
         updateCurrencyLabel()
     }
 
