@@ -16,7 +16,7 @@ struct EndTurnEvent: GameEvent {
         }
 
         let shouldContinue = turnSystem.incrementTurn()
-        energySystem.replenishEnergy()
+        energySystem.replenishEnergy(of: .base)
         cropSystem.growCrops()
         marketSystem.resetItemStocks()
 

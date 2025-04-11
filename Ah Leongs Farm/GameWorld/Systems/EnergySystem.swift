@@ -8,8 +8,8 @@
 class EnergySystem: ISystem {
     unowned var manager: EntityManager?
 
-    private var energyComponent: EnergyComponent? {
-        manager?.getSingletonComponent(ofType: EnergyComponent.self)
+    private var energyBankComponent: EnergyBankComponent? {
+        manager?.getSingletonComponent(ofType: EnergyBankComponent.self)
     }
 
     required init(for manager: EntityManager) {
@@ -17,46 +17,49 @@ class EnergySystem: ISystem {
     }
 
     @discardableResult
-    func useEnergy(amount: Int) -> Bool {
-        guard let energyComponent = energyComponent else {
+    func useEnergy(of type: EnergyType, amount: Int) -> Bool {
+        guard let energyBankComponent = energyBankComponent else {
             return false
         }
-        guard energyComponent.currentEnergy >= amount else {
+        guard energyBankComponent.getCurrentEnergy(of: type) >= amount else {
             return false
         }
         guard amount >= 0 else {
             return false
         }
 
-        energyComponent.currentEnergy -= amount
+        let newAmount = energyBankComponent.getCurrentEnergy(of: type) - amount
+        energyBankComponent.setCurrentEnergy(of: type, to: newAmount)
         return true
     }
 
-    func replenishEnergy() {
-        guard let energyComponent = energyComponent else {
+    func replenishEnergy(of type: EnergyType) {
+        guard let energyBankComponent = energyBankComponent else {
             return
         }
-        energyComponent.currentEnergy = energyComponent.maxEnergy
+
+        energyBankComponent.setCurrentEnergy(of: type, to: energyBankComponent.getMaxEnergy(of: type))
     }
 
-    func increaseMaxEnergy(by amount: Int) {
-        guard let energyComponent = energyComponent else {
+    func increaseMaxEnergy(of type: EnergyType, by amount: Int) {
+        guard let energyBankComponent = energyBankComponent else {
             return
         }
-        energyComponent.maxEnergy += amount
+
+        energyBankComponent.setCurrentEnergy(of: type, to: energyBankComponent.getMaxEnergy(of: type) + amount)
     }
 
-    func getCurrentEnergy() -> Int {
-        guard let energyComponent = energyComponent else {
+    func getCurrentEnergy(of type: EnergyType) -> Int {
+        guard let energyBankComponent = energyBankComponent else {
             return 0
         }
-        return energyComponent.currentEnergy
+        return energyBankComponent.getCurrentEnergy(of: type)
     }
 
-    func getMaxEnergy() -> Int {
-        guard let energyComponent = energyComponent else {
+    func getMaxEnergy(of type: EnergyType) -> Int {
+        guard let energyBankComponent = energyBankComponent else {
             return 0
         }
-        return energyComponent.maxEnergy
+        return energyBankComponent.getMaxEnergy(of: type)
     }
 }
