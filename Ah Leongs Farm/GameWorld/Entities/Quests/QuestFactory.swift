@@ -30,11 +30,12 @@ class QuestFactory {
         )
     }
 
-    private static func createSellCropObjective(type: CropType,
+    private static func createSellItemObjective(type: ItemType,
                                                 sellAmount: Int) -> QuestObjective {
-        let sellCropCriteria = SellCropCriteria(cropType: type)
+        let sellCropCriteria = SellItemCriteria(itemType: type)
+        let displayName = ItemToViewDataMap.itemTypeToDisplayName[type]
         return QuestObjective(
-            description: "Sell \(sellAmount) \(type)s",
+            description: "Sell \(sellAmount) \(displayName ?? "Item")s",
             criteria: sellCropCriteria,
             target: Float(sellAmount)
         )
@@ -51,17 +52,18 @@ class QuestFactory {
 
     private static func createFarmBusinessQuest(
         cropType: CropType = .apple,
+        sellItemType: ItemType = .appleHarvested,
         harvestAmount: Int = 15,
         sellAmount: Int = 10,
         survivalDays: Int = 3,
         order: Int = Int.max
     ) -> Quest {
         // First objective: Harvest crops
-        let harvestObjective = createHarvestCropObjective(type: cropType,
+        let harvestObjective = createHarvestCropObjective(type: .apple,
                                                           harvestAmount: harvestAmount)
 
         // Second objective: Sell crops
-        let sellObjective = createSellCropObjective(type: cropType,
+        let sellObjective = createSellItemObjective(type: sellItemType,
                                                     sellAmount: sellAmount)
 
         // Third objective: Survive days
@@ -132,7 +134,7 @@ class QuestFactory {
             RewardCurrencyComponent(currencies: [.coin: 100])
         ]
 
-        let sellObjective = createSellCropObjective(type: .bokChoy,
+        let sellObjective = createSellItemObjective(type: .bokChoyHarvested,
                                                     sellAmount: 8)
 
         let title = "Market sales"
@@ -161,9 +163,9 @@ class QuestFactory {
         let harvestPotatoObjective = createHarvestCropObjective(type: .potato, harvestAmount: 10)
         let harvestBokChoyObjective = createHarvestCropObjective(type: .bokChoy, harvestAmount: 15)
 
-        let sellAppleObjective = createSellCropObjective(type: .apple, sellAmount: 10)
-        let sellPotatoObjective = createSellCropObjective(type: .potato, sellAmount: 10)
-        let sellBokChoyObjective = createSellCropObjective(type: .bokChoy, sellAmount: 15)
+        let sellAppleObjective = createSellItemObjective(type: .appleHarvested, sellAmount: 10)
+        let sellPotatoObjective = createSellItemObjective(type: .potatoHarvested, sellAmount: 10)
+        let sellBokChoyObjective = createSellItemObjective(type: .bokChoyHarvested, sellAmount: 15)
 
         let survivalObjective = createSurvivalObjective(days: 5)
 

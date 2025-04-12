@@ -22,11 +22,6 @@ struct HarvestCropEventData: EventData {
     var quantity: Int
 }
 
-struct SellCropEventData: EventData {
-    var type: CropType
-    var quantity: Int
-}
-
 struct XPGrantEventData: EventData {
     var xpGrantAmount: Float = 0
 }
