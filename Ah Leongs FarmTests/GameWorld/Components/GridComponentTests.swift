@@ -12,15 +12,21 @@ class GridComponentTests: XCTestCase {
 
     func testSetAndGetEntity() {
         let gridComponent = GridComponent(rows: 3, columns: 3)
-        let entity = GKEntity()
+        let entity = EntityAdapter()
 
         gridComponent.setEntity(entity, row: 1, column: 1)
-        XCTAssertEqual(gridComponent.getEntity(row: 1, column: 1), entity)
+
+        guard let gridEntity = gridComponent.getEntity(row: 1, column: 1) else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(gridEntity.id, entity.id)
     }
 
     func testSetEntityOutOfBounds() {
         let gridComponent = GridComponent(rows: 3, columns: 3)
-        let entity = GKEntity()
+        let entity = EntityAdapter()
 
         gridComponent.setEntity(entity, row: 3, column: 3)
         XCTAssertNil(gridComponent.getEntity(row: 3, column: 3))

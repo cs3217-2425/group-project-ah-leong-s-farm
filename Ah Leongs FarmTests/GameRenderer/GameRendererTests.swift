@@ -19,8 +19,7 @@ class GameRendererTests: XCTestCase {
         let entity = EntityAdapter()
         let gridComponent = GridComponent(rows: 3, columns: 3)
         entity.addComponent(gridComponent)
-
-        let entities: [any Entity] = [entity]
+        let entities = [entity]
 
         gameRenderer.observe(entities: entities)
 
@@ -35,7 +34,7 @@ class GameRendererTests: XCTestCase {
         let entity = EntityAdapter()
         let gridComponent = GridComponent(rows: 3, columns: 3)
         entity.addComponent(gridComponent)
-        let entities: [any Entity] = [entity]
+        let entities = [entity]
 
         gameRenderer.observe(entities: entities)
         gameRenderer.observe(entities: entities)
@@ -48,7 +47,7 @@ class GameRendererTests: XCTestCase {
         let gameRenderer = GameRenderer()
         gameRenderer.setScene(gameScene)
 
-        let entity = GKEntity()
+        let entity = EntityAdapter()
         let entityIdentifier = ObjectIdentifier(entity)
         let tileMapNode = TileMapNode()
 
@@ -63,7 +62,7 @@ class GameRendererTests: XCTestCase {
         let gameRenderer = GameRenderer()
         gameRenderer.setScene(gameScene)
 
-        let entity = GKEntity()
+        let entity = EntityAdapter()
         let entityIdentifier = ObjectIdentifier(entity)
         let spriteNode = SpriteNode()
 
