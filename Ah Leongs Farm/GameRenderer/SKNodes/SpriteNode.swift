@@ -14,4 +14,8 @@ class SpriteNode: SKSpriteNode, IRenderNode {
     func visitTouchHandlerRegistry(registry: any TouchHandlerRegistry) {
         // ignore
     }
+
+    func getSKNode() -> SKNode {
+        self
+    }
 }

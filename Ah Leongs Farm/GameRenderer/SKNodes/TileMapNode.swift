@@ -53,4 +53,8 @@ class TileMapNode: SKTileMapNode, IRenderNode {
         }
         lightUpNodes.removeAll()
     }
+
+    func getSKNode() -> SKNode {
+        self
+    }
 }

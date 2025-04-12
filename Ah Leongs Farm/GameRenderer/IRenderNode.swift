@@ -7,6 +7,8 @@
 
 import SpriteKit
 
-protocol IRenderNode where Self: SKNode {
+protocol IRenderNode: AnyObject {
     func visitTouchHandlerRegistry(registry: TouchHandlerRegistry)
+
+    func getSKNode() -> SKNode
 }

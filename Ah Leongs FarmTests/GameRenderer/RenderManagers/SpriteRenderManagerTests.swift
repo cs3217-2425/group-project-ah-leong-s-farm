@@ -42,6 +42,8 @@ class SpriteRenderManagerTests: XCTestCase {
         let apple = Apple()
 
         apple.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)))
+        apple.addComponent(SpriteComponent(visitor: apple))
+
         mockUIPositionProvider.row = row
         mockUIPositionProvider.column = column
 
@@ -58,6 +60,8 @@ class SpriteRenderManagerTests: XCTestCase {
         let bokChoy = BokChoy()
 
         bokChoy.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)))
+        bokChoy.addComponent(SpriteComponent(visitor: bokChoy))
+
         mockUIPositionProvider.row = row
         mockUIPositionProvider.column = column
 
@@ -74,6 +78,8 @@ class SpriteRenderManagerTests: XCTestCase {
         let potato = Potato()
 
         potato.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)))
+        potato.addComponent(SpriteComponent(visitor: potato))
+
         mockUIPositionProvider.row = row
         mockUIPositionProvider.column = column
 
@@ -89,9 +95,9 @@ class SpriteRenderManagerTests: XCTestCase {
 class MockGameRenderer: GameRenderer {
     var didSetRenderNode = false
     var renderNodeIdentifier: ObjectIdentifier?
-    var renderNode: SpriteNode?
+    var renderNode: (any IRenderNode)?
 
-    override func setRenderNode(for identifier: ObjectIdentifier, node: SpriteNode) {
+    override func setRenderNode(for identifier: ObjectIdentifier, node: any IRenderNode) {
         didSetRenderNode = true
         renderNodeIdentifier = identifier
         renderNode = node
