@@ -5,7 +5,10 @@
 //  Created by Lester Ong on 27/3/25.
 //
 
-protocol Crop where Self: EntityAdapter {
+import Foundation
+import GameplayKit
+
+protocol Crop: SpriteRenderManagerVisitor where Self: EntityAdapter {
     static func createSeed() -> Entity
     static func createHarvested() -> Entity
 }

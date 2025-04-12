@@ -1,12 +1,11 @@
 import XCTest
-import GameplayKit
 @testable import Ah_Leongs_Farm
 
 class TileMapRenderManagerTests: XCTestCase {
 
     func testCreateNode() {
         let tileMapRenderManager = TileMapRenderManager()
-        let entity = GKEntity()
+        let entity = EntityAdapter()
         let gridComponent = GridComponent(rows: 3, columns: 3)
         entity.addComponent(gridComponent)
 
@@ -18,7 +17,7 @@ class TileMapRenderManagerTests: XCTestCase {
 
     func testCreateNodeWithoutGridComponent() {
         let tileMapRenderManager = TileMapRenderManager()
-        let entity = GKEntity()
+        let entity = EntityAdapter()
 
         let renderer = GameRenderer()
         tileMapRenderManager.createNode(for: entity, in: renderer)

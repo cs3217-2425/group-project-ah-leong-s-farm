@@ -24,9 +24,6 @@ class Apple: EntityAdapter, Crop {
 
         let healthComponent = HealthComponent()
         attachComponent(healthComponent)
-
-        let spriteComponent = SpriteComponent(visitor: self)
-        attachComponent(spriteComponent)
     }
 
     static func createSeed() -> Entity {
@@ -40,9 +37,7 @@ class Apple: EntityAdapter, Crop {
         apple.attachComponent(HarvestedComponent())
         return apple
     }
-}
 
-extension Apple: SpriteRenderManagerVisitor {
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(apple: self, in: renderer)
     }

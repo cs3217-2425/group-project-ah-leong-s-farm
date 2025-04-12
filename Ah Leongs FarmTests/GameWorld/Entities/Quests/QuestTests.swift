@@ -22,7 +22,7 @@ final class QuestTests: XCTestCase {
     }
 }
 
-class MockRewardComponent: GKComponent, RewardComponent {
+class MockRewardComponent: ComponentAdapter, RewardComponent {
     func processReward(with queuer: any Ah_Leongs_Farm.RewardEventQueuer) {
     }
 
