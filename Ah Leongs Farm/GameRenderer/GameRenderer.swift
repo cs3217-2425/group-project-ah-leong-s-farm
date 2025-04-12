@@ -7,12 +7,8 @@ class GameRenderer {
     private weak var gameScene: GameScene?
     private var renderPipeline: Queue<any IRenderManager> = Queue()
 
-    private var entityTileMapNodeMap: [EntityID: TileMapNode] = [:]
-    private var entitySpriteNodeMap: [EntityID: SpriteNode] = [:]
-    private var entityNodeMap: [EntityID: any IRenderNode] {
-        let maps: [[EntityID: any IRenderNode]] = [entityTileMapNodeMap, entitySpriteNodeMap]
-        return maps.reduce(into: [:]) { $0.merge($1) { _, new in new } }
-    }
+    private var tileMapNode: TileMapNode?
+    private var entityNodeMap: [EntityID: any IRenderNode] = [:]
 
     var allRenderNodes: [any IRenderNode] {
         Array(entityNodeMap.values)
@@ -35,22 +31,19 @@ class GameRenderer {
     }
 
     func setRenderNode(for entityID: EntityID, node: TileMapNode) {
-        let shouldAddToScene = entityTileMapNodeMap[entityID] == nil
+        tileMapNode = node
 
-        entityTileMapNodeMap[entityID] = node
-
-        if shouldAddToScene {
-            gameScene?.addChild(node)
-        }
+        let renderNode: any IRenderNode = node
+        setRenderNode(for: entityID, node: renderNode)
     }
 
-    func setRenderNode(for entityID: EntityID, node: SpriteNode) {
-        let shouldAddToScene = entitySpriteNodeMap[entityID] == nil
+    func setRenderNode(for entityID: EntityID, node: any IRenderNode) {
+        let shouldAddToScene = entityNodeMap[entityID] == nil
 
-        entitySpriteNodeMap[entityID] = node
+        entityNodeMap[entityID] = node
 
         if shouldAddToScene {
-            gameScene?.addChild(node)
+            gameScene?.addChild(node.getSKNode())
         }
     }
 
@@ -68,12 +61,15 @@ class GameRenderer {
     }
 
     private func removeRenderNode(for entityID: EntityID) {
-        if let node = entityTileMapNodeMap[entityID] {
-            node.removeFromParent()
-            entityTileMapNodeMap.removeValue(forKey: entityID)
-        } else if let node = entitySpriteNodeMap[entityID] {
-            node.removeFromParent()
-            entitySpriteNodeMap.removeValue(forKey: entityID)
+        guard let node = entityNodeMap[entityID] else {
+            return
+        }
+
+        node.getSKNode().removeFromParent()
+        entityNodeMap.removeValue(forKey: entityID)
+
+        if node === tileMapNode {
+            tileMapNode = nil
         }
     }
 
@@ -110,18 +106,22 @@ class GameRenderer {
     }
 
     private func getEntitiesForRemoval(allEntities: [Entity]) -> Set<EntityID> {
-        let allentityIDs = Set(allEntities.map { $0.id })
+        let allEntityIDs = Set(allEntities.map { $0.id })
         let entityIDsWithRenderNodes = Set(entityNodeMap.keys)
 
-        let entityIDsWithPositionComponentRemoved = Set(
-            allEntities.filter { entitySpriteNodeMap.keys.contains(ObjectIdentifier($0)) }
-                .filter { $0.getComponentByType(ofType: PositionComponent.self) == nil }
+        let entityIDsWithSpriteComponentRemoved = Set(
+            allEntities.filter { entityNodeMap.keys.contains(ObjectIdentifier($0)) }
+                .filter { $0.getComponentByType(ofType: SpriteComponent.self) == nil }
+                .filter {
+                    // exclude entity with tile map node
+                    entityNodeMap[ObjectIdentifier($0)] !== tileMapNode
+                }
                 .map { ObjectIdentifier($0) }
         )
 
         let entityIDsForRemoval = entityIDsWithRenderNodes
-            .subtracting(allentityIDs)
-            .union(entityIDsWithPositionComponentRemoved)
+            .subtracting(allEntityIDs)
+            .union(entityIDsWithSpriteComponentRemoved)
 
         return entityIDsForRemoval
     }
@@ -139,26 +139,22 @@ extension GameRenderer: IGameObserver {
 
 extension GameRenderer: UIPositionProvider {
 
-    private var tileMapNode: TileMapNode? {
-        entityTileMapNodeMap.values.first
-    }
-
     func getUIPosition(row: Int, column: Int) -> CGPoint? {
-        guard let skTileMapNode = tileMapNode else {
+        guard let tileMapNode = tileMapNode else {
             return nil
         }
 
-        guard skTileMapNode.isRowValid(row), skTileMapNode.isColumnValid(column) else {
+        guard tileMapNode.isRowValid(row), tileMapNode.isColumnValid(column) else {
             return nil
         }
 
-        let tileSize = skTileMapNode.tileSize
+        let tileSize = tileMapNode.tileSize
 
         // TODO: Investigate why deduction of half the tile size is needed
         let xPosition = CGFloat(column) * tileSize.width + tileSize.width / 2
-            - skTileMapNode.mapSize.width / 2
+            - tileMapNode.mapSize.width / 2
         let yPosition = CGFloat(row) * tileSize.height + tileSize.height / 2
-            - skTileMapNode.mapSize.height / 2
+            - tileMapNode.mapSize.height / 2
 
         return CGPoint(x: xPosition, y: yPosition)
     }
