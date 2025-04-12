@@ -6,7 +6,7 @@
 //
 
 class MarketInformation {
-    static let initialItemPrices: [ItemTypeNew: Price] = [
+    static let initialItemPrices: [ItemType: Price] = [
         .bokChoySeed: Price(buyPrice: [.coin: 5.0], sellPrice: [.coin: 3.0]),
         .appleSeed: Price(buyPrice: [.coin: 10.0], sellPrice: [.coin: 6.0]),
         .appleHarvested: Price(buyPrice: [.coin: 5.0], sellPrice: [.coin: 3.0]),
@@ -15,7 +15,7 @@ class MarketInformation {
         .potatoHarvested: Price(buyPrice: [.coin: 20.0], sellPrice: [.coin: 15.0])
     ]
 
-    static let initialItemStocks: [ItemTypeNew: Int] = [
+    static let initialItemStocks: [ItemType: Int] = [
         .bokChoySeed: Int.max,
         .appleSeed: Int.max,
         .bokChoyHarvested: Int.max,
@@ -24,7 +24,7 @@ class MarketInformation {
         .potatoHarvested: Int.max
     ]
 
-    static let sellableItems: Set<ItemTypeNew> = [
+    static let sellableItems: Set<ItemType> = [
         .bokChoySeed,
         .appleSeed,
         .bokChoyHarvested,

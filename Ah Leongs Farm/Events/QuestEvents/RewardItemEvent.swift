@@ -6,9 +6,9 @@
 //
 
 class RewardItemEvent: GameEvent {
-    private let itemTypes: [ItemTypeNew: Int]
+    private let itemTypes: [ItemType: Int]
 
-    init(itemTypes: [ItemTypeNew: Int]) {
+    init(itemTypes: [ItemType: Int]) {
         self.itemTypes = itemTypes
     }
 

@@ -8,7 +8,7 @@
 import Foundation
 class SellComponent: ComponentAdapter {
 
-    init() {
+    override init() {
         super.init()
     }
 

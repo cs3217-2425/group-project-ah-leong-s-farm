@@ -5,7 +5,7 @@
 //  Created by Ma Yuchen on 12/4/25.
 //
 
-enum ItemTypeNew: Hashable {
+enum ItemType: Hashable {
     case bokChoyHarvested
     case bokChoySeed
     case appleSeed
@@ -15,8 +15,8 @@ enum ItemTypeNew: Hashable {
     case fertiliser
     case premiumFertiliser
 
-    static func getItemTypeToEntities(from manager: EntityManager) -> [ItemTypeNew: [Entity]] {
-        let itemTypeToEntities: [ItemTypeNew: [Entity]] = [
+    static func getItemTypeToEntities(from manager: EntityManager) -> [ItemType: [Entity]] {
+        let itemTypeToEntities: [ItemType: [Entity]] = [
             .bokChoySeed: manager
                 .getEntities(withComponentType: SeedComponent.self)
                 .filter { $0.type == BokChoy.type },
@@ -43,9 +43,5 @@ enum ItemTypeNew: Hashable {
                 .filter { $0.type == PremiumFertiliser.type }
         ]
         return itemTypeToEntities
-    }
-
-    static func getItemTypeToInitialisers() -> [ItemTypeNew: () -> Entity] {
-        .bokChoySeed: 
     }
 }

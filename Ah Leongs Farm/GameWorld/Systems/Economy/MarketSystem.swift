@@ -7,13 +7,13 @@
 
 class MarketSystem: ISystem {
 
-    private var itemPrices: [ItemTypeNew: Price] = MarketInformation.initialItemPrices
-    private var itemStocks: [ItemTypeNew: Int] = MarketInformation.initialItemStocks
-    private var itemTypeToEntities: [ItemTypeNew: [Entity]] {
+    private var itemPrices: [ItemType: Price] = MarketInformation.initialItemPrices
+    private var itemStocks: [ItemType: Int] = MarketInformation.initialItemStocks
+    private var itemTypeToEntities: [ItemType: [Entity]] {
         guard let manager = manager else {
             return [:]
         }
-        return ItemTypeNew.getItemTypeToEntities(from: manager)
+        return ItemType.getItemTypeToEntities(from: manager)
     }
     unowned var manager: EntityManager?
 
@@ -21,20 +21,19 @@ class MarketSystem: ISystem {
         self.manager = manager
     }
 
-    func getItemPrices() -> [ItemTypeNew: Price] {
+    func getItemPrices() -> [ItemType: Price] {
         itemPrices
     }
 
-    func getItemStocks() -> [ItemTypeNew: Int] {
+    func getItemStocks() -> [ItemType: Int] {
         itemStocks
     }
 
-    func getSellQuantity(for itemType: ItemTypeNew) -> Int {
+    func getSellQuantity(for itemType: ItemType) -> Int {
         getSellableEntitiesOf(itemType).count
     }
 
-
-    func getBuyPrice(for type: ItemTypeNew, currency: CurrencyType) -> Double? {
+    func getBuyPrice(for type: ItemType, currency: CurrencyType) -> Double? {
         guard let price = itemPrices[type] else {
             print("Item not found in the market!")
             return nil
@@ -42,7 +41,7 @@ class MarketSystem: ISystem {
         return price.buyPrice[currency]
     }
 
-    func getSellPrice(for type: ItemTypeNew, currency: CurrencyType) -> Double? {
+    func getSellPrice(for type: ItemType, currency: CurrencyType) -> Double? {
         guard let price = itemPrices[type] else {
             print("Item not found in the market!")
             return nil
@@ -50,7 +49,7 @@ class MarketSystem: ISystem {
         return price.sellPrice[currency]
     }
 
-    func getBuyQuantity(for type: ItemTypeNew) -> Int? {
+    func getBuyQuantity(for type: ItemType) -> Int? {
         guard let stock = itemStocks[type] else {
             print("Item not found in the market!")
             return nil
@@ -59,7 +58,7 @@ class MarketSystem: ISystem {
     }
 
     @discardableResult
-    func buyItem(type: ItemTypeNew, quantity: Int) -> Bool {
+    func buyItem(type: ItemType, quantity: Int) -> Bool {
         // Check if the item exists in the market and if there's enough stock
         guard let currentStock = itemStocks[type], currentStock >= quantity else {
             print("Not enough stock for \(type).")
@@ -80,7 +79,7 @@ class MarketSystem: ISystem {
     }
 
     @discardableResult
-    func sellItem(type: ItemTypeNew, quantity: Int) -> Bool {
+    func sellItem(type: ItemType, quantity: Int) -> Bool {
         guard let manager = manager else {
             return false
         }
@@ -108,8 +107,8 @@ class MarketSystem: ISystem {
         // To be added once buy and sell price algo is decided
     }
 
-    private func getSellableEntitiesOf(_ type: ItemTypeNew) -> [Entity] {
-        return itemTypeToEntities[type]?.filter {
+    private func getSellableEntitiesOf(_ type: ItemType) -> [Entity] {
+        itemTypeToEntities[type]?.filter {
             $0.getComponentByType(ofType: SellComponent.self) != nil
         } ?? []
     }

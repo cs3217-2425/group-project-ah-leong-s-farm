@@ -54,10 +54,10 @@ class GameItemDisplayService: ItemDisplayService {
     }
 
     func getDisplayName(for entity: Entity) -> String {
-        return getMetadata(for: entity).displayName
+        getMetadata(for: entity).displayName
     }
 
     func getImageName(for entity: Entity) -> String {
-        return getMetadata(for: entity).imageName
+        getMetadata(for: entity).imageName
     }
 }

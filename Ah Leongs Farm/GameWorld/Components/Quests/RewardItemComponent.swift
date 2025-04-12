@@ -9,9 +9,9 @@ import Foundation
 
 class RewardItemComponent: ComponentAdapter, RewardComponent {
 
-    let itemTypes: [ItemTypeNew: Int]
+    let itemTypes: [ItemType: Int]
 
-    init(itemTypes: [ItemTypeNew: Int]) {
+    init(itemTypes: [ItemType: Int]) {
         self.itemTypes = itemTypes
         super.init()
     }

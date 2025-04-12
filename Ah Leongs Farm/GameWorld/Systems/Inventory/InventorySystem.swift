@@ -19,12 +19,17 @@ class InventorySystem: ISystem {
     }
 
     func addItem(_ itemToAdd: Entity) {
-        guard let itemComponent = itemToAdd.getComponentByType(ofType: ItemComponent.self) else {
+        guard itemToAdd.getComponentByType(ofType: ItemComponent.self) != nil else {
             return
         }
 
         manager?.addEntity(itemToAdd)
+    }
 
+    func addItems(_ itemsToAdd: [Entity]) {
+        for item in itemsToAdd {
+            addItem(item)
+        }
     }
 
     func removeItem(_ item: ItemComponent) {
@@ -44,7 +49,7 @@ class InventorySystem: ISystem {
     }
 
     func hasItem(of type: Entity.Type) -> Bool {
-        items.contains(where: { Swift.type(of:$0.ownerEntity) == type })
+        items.contains(where: { Swift.type(of :$0.ownerEntity) == type })
     }
 
     func getAllComponents() -> [ItemComponent] {
