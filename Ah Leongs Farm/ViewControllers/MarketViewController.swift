@@ -134,7 +134,7 @@ extension MarketViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension MarketViewController: BuyPopupDelegate {
-    func didConfirmPurchase(item: ItemType, quantity: Int) {
+    func didConfirmPurchase(item: ItemTypeNew, quantity: Int) {
         marketDataHandler.buyItem(itemType: item, quantity: quantity, currency: .coin)
         collectionView.reloadData()
         print("Confirm purchase: \(item), \(quantity)")
@@ -142,7 +142,7 @@ extension MarketViewController: BuyPopupDelegate {
 }
 
 extension MarketViewController: SellPopupDelegate {
-    func didConfirmSale(item: ItemType, quantity: Int) {
+    func didConfirmSale(item: ItemTypeNew, quantity: Int) {
         marketDataHandler.sellItem(itemType: item, quantity: quantity, currency: .coin)
         collectionView.reloadData()
         print("Confirm selling: \(item), \(quantity)")

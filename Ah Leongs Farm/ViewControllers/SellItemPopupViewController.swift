@@ -248,5 +248,5 @@ class SellItemPopupViewController: UIViewController {
 }
 
 protocol SellPopupDelegate: AnyObject {
-    func didConfirmSale(item: ItemType, quantity: Int)
+    func didConfirmSale(item: ItemTypeNew, quantity: Int)
 }

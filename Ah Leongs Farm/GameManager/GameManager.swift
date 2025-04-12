@@ -2,11 +2,13 @@ import Foundation
 
 class GameManager {
     let gameWorld: GameWorld
+    let displayService: ItemDisplayService
     private var gameObservers: [any IGameObserver] = []
     private var previousTime: TimeInterval = 0
 
     init() {
         gameWorld = GameWorld()
+        displayService = GameItemDisplayService()
         setUpBaseEntities()
         setUpQuests()
     }

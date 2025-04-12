@@ -75,11 +75,11 @@ extension GameManager: MarketDataHandler {
         return viewModels.sorted { $0.quantity > $1.quantity }
     }
 
-    func buyItem(itemType: ItemType, quantity: Int, currency: CurrencyType = .coin) {
+    func buyItem(itemType: ItemTypeNew, quantity: Int, currency: CurrencyType = .coin) {
         gameWorld.queueEvent(BuyItemEvent(itemType: itemType, quantity: quantity, currencyType: currency))
     }
 
-    func sellItem(itemType: ItemType, quantity: Int, currency: CurrencyType = .coin) {
+    func sellItem(itemType: ItemTypeNew, quantity: Int, currency: CurrencyType = .coin) {
         gameWorld.queueEvent(SellItemEvent(itemType: itemType, quantity: quantity, currencyType: currency))
     }
 

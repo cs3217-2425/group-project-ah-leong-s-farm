@@ -36,16 +36,16 @@ struct CurrencyGrantEventData: EventData {
 }
 
 struct ItemGrantEventData: EventData {
-    var itemGrants: [ItemType: Int] = [:]
+    var itemGrants: [ItemTypeNew: Int] = [:]
 }
 
 struct BuyItemEventData: EventData {
-    var itemType: ItemType
+    var itemType: ItemTypeNew
     var quantity: Int
 }
 
 struct SellItemEventData: EventData {
-    var itemType: ItemType
+    var itemType: ItemTypeNew
     var quantity: Int
 }
 

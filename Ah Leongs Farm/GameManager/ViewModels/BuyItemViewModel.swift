@@ -10,7 +10,7 @@ struct BuyItemViewModel {
     let imageName: String
     let buyPrice: Double
     let quantity: Int
-    let itemType: ItemType
+    let itemType: ItemTypeNew
 }
 
 struct SellItemViewModel {
@@ -18,13 +18,13 @@ struct SellItemViewModel {
     let imageName: String
     let sellPrice: Double
     let quantity: Int
-    let itemType: ItemType
+    let itemType: ItemTypeNew
 }
 
 protocol MarketDataHandler {
     func getBuyItemViewModels() -> [BuyItemViewModel]
     func getSellItemViewModels() -> [SellItemViewModel]
-    func buyItem(itemType: ItemType, quantity: Int, currency: CurrencyType)
-    func sellItem(itemType: ItemType, quantity: Int, currency: CurrencyType)
+    func buyItem(itemType: ItemTypeNew, quantity: Int, currency: CurrencyType)
+    func sellItem(itemType: ItemTypeNew, quantity: Int, currency: CurrencyType)
     func getAmountOfCurrencyForMarket(_ currency: CurrencyType) -> Double
 }

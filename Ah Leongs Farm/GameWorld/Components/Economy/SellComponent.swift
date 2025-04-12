@@ -8,10 +8,7 @@
 import Foundation
 class SellComponent: ComponentAdapter {
 
-    var price: [CurrencyType: Int]
-
-    init(price: [CurrencyType: Int]) {
-        self.price = price
+    init() {
         super.init()
     }
 

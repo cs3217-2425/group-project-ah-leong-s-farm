@@ -6,9 +6,9 @@
 //
 
 class RewardItemEvent: GameEvent {
-    private let itemTypes: [ItemType: Int]
+    private let itemTypes: [ItemTypeNew: Int]
 
-    init(itemTypes: [ItemType: Int]) {
+    init(itemTypes: [ItemTypeNew: Int]) {
         self.itemTypes = itemTypes
     }
 
@@ -18,7 +18,12 @@ class RewardItemEvent: GameEvent {
             return nil
         }
         for (type, quantity) in itemTypes {
-            inventorySystem.addItem(type: type, quantity: quantity)
+            guard let itemInitialiser = ItemFactory.itemToInitialisers[type] else {
+                continue
+            }
+            for _ in 0..<quantity {
+                inventorySystem.addItem(itemInitialiser())
+            }
             eventData.itemGrants[type] = quantity
         }
         return eventData

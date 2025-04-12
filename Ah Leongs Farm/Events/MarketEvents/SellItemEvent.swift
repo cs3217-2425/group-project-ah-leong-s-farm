@@ -6,11 +6,11 @@
 //
 
 class SellItemEvent: GameEvent {
-    private let itemType: ItemType
+    private let itemType: ItemTypeNew
     private let quantity: Int
     private let currencyType: CurrencyType
 
-    init(itemType: ItemType, quantity: Int, currencyType: CurrencyType) {
+    init(itemType: ItemTypeNew, quantity: Int, currencyType: CurrencyType) {
         self.itemType = itemType
         self.quantity = quantity
         self.currencyType = currencyType

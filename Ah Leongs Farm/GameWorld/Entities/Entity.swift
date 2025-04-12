@@ -13,6 +13,8 @@ typealias EntityType = ObjectIdentifier
 
 protocol Entity: AnyObject {
     var id: EntityID { get }
+    static var type: EntityType { get }
+    var type: EntityType { get }
     func attachComponent(_ component: Component)
     func detachComponent(ofType componentType: Component.Type)
     func getComponentByType<T: Component>(ofType componentType: T.Type) -> T?
@@ -26,6 +28,10 @@ class EntityAdapter: GKEntity, Entity {
     }
 
     static var type: EntityType {
+        ObjectIdentifier(Self.self)
+    }
+
+    var type: EntityType {
         ObjectIdentifier(Self.self)
     }
 
