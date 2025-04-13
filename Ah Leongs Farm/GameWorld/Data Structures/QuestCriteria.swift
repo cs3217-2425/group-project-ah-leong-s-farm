@@ -71,7 +71,7 @@ struct SurviveNumberOfTurnsCriteria: QuestCriteria {
  ensuring the event data matches the required crop type.
  */
 struct SellItemCriteria: QuestCriteria {
-    let itemType: ItemType
+    let itemType: EntityType
 
     func calculateValue(from eventData: EventData) -> Float {
 

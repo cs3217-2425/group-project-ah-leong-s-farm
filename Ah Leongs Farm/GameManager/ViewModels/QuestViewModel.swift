@@ -43,7 +43,7 @@ struct RewardCurrencyViewModel: RewardViewModel {
 }
 
 struct RewardItemViewModel: RewardViewModel {
-    let itemType: ItemType
+    let itemType: EntityType
     let quantity: Int
 
     func getDisplayText() -> String {

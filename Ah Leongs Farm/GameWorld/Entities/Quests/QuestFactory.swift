@@ -30,7 +30,7 @@ class QuestFactory {
         )
     }
 
-    private static func createSellItemObjective(type: ItemType,
+    private static func createSellItemObjective(type: EntityType,
                                                 sellAmount: Int) -> QuestObjective {
         let sellCropCriteria = SellItemCriteria(itemType: type)
         let displayName = ItemToViewDataMap.itemTypeToDisplayName[type]
@@ -52,7 +52,7 @@ class QuestFactory {
 
     private static func createFarmBusinessQuest(
         cropType: CropType = .apple,
-        sellItemType: ItemType = .appleHarvested,
+        sellItemType: EntityType = Apple.type,
         harvestAmount: Int = 15,
         sellAmount: Int = 10,
         survivalDays: Int = 3,
@@ -72,8 +72,8 @@ class QuestFactory {
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 150),
             RewardCurrencyComponent(currencies: [.coin: 200]),
-            RewardItemComponent(itemTypes: [.fertiliser: 2,
-                                            .potatoSeed: 3])
+            RewardItemComponent(itemTypes: [Fertiliser.type: 2,
+                                            PotatoSeed.type: 3])
         ]
 
         // Create the quest with all objectives
@@ -113,7 +113,7 @@ class QuestFactory {
     private static func createFarmStarterQuest(order: Int = Int.max) -> Quest {
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 50),
-            RewardItemComponent(itemTypes: [.premiumFertiliser: 1])
+            RewardItemComponent(itemTypes: [PremiumFertiliser.type: 1])
         ]
 
         let survivalObjective = createSurvivalObjective(days: 7)
@@ -134,7 +134,7 @@ class QuestFactory {
             RewardCurrencyComponent(currencies: [.coin: 100])
         ]
 
-        let sellObjective = createSellItemObjective(type: .bokChoyHarvested,
+        let sellObjective = createSellItemObjective(type: BokChoy.type,
                                                     sellAmount: 8)
 
         let title = "Market sales"
@@ -151,8 +151,8 @@ class QuestFactory {
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 150),
             RewardCurrencyComponent(currencies: [.coin: 200]),
-            RewardItemComponent(itemTypes: [.fertiliser: 2,
-                                            .potatoSeed: 3])
+            RewardItemComponent(itemTypes: [Fertiliser.type: 2,
+                                            PotatoSeed.type: 3])
         ]
 
         let plantAppleObjective = createPlantCropObjective(type: .apple, plantAmount: 5)
@@ -163,9 +163,9 @@ class QuestFactory {
         let harvestPotatoObjective = createHarvestCropObjective(type: .potato, harvestAmount: 10)
         let harvestBokChoyObjective = createHarvestCropObjective(type: .bokChoy, harvestAmount: 15)
 
-        let sellAppleObjective = createSellItemObjective(type: .appleHarvested, sellAmount: 10)
-        let sellPotatoObjective = createSellItemObjective(type: .potatoHarvested, sellAmount: 10)
-        let sellBokChoyObjective = createSellItemObjective(type: .bokChoyHarvested, sellAmount: 15)
+        let sellAppleObjective = createSellItemObjective(type: Apple.type, sellAmount: 10)
+        let sellPotatoObjective = createSellItemObjective(type: Potato.type, sellAmount: 10)
+        let sellBokChoyObjective = createSellItemObjective(type: BokChoy.type, sellAmount: 15)
 
         let survivalObjective = createSurvivalObjective(days: 5)
 
@@ -211,7 +211,7 @@ class QuestFactory {
                                          order: Int = Int.max) -> Quest {
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 50),
-            RewardItemComponent(itemTypes: [.premiumFertiliser: 1]),
+            RewardItemComponent(itemTypes: [PremiumFertiliser.type: 1]),
             RewardCurrencyComponent(currencies: [
                 .coin: 100
             ])

@@ -210,7 +210,7 @@ extension PlotActionViewController: UICollectionViewDelegate, UICollectionViewDa
         plotDataProvider?.plantCrop(
             row: plotViewModel.row,
             column: plotViewModel.column,
-            cropType: selectedSeed.cropType
+            seedType: selectedSeed.seedType
         )
 
         dismiss(animated: true)
