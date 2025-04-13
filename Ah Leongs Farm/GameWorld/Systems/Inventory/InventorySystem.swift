@@ -48,8 +48,10 @@ class InventorySystem: ISystem {
         items.contains(item)
     }
 
-    func hasItem(of type: Entity.Type) -> Bool {
-        items.contains(where: { Swift.type(of :$0.ownerEntity) == type })
+    func hasItem(of type: EntityType) -> Bool {
+        items.contains(where: {
+            $0.ownerEntity?.type == type
+        })
     }
 
     func getAllComponents() -> [ItemComponent] {
