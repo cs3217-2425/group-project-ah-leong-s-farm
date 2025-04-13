@@ -38,4 +38,9 @@ extension GameManager: PlotDataProvider {
         let event = RemoveCropEvent(row: row, column: column)
         gameWorld.queueEvent(event)
     }
+
+    func waterPlot(row: Int, column: Int) {
+        let event = WaterPlotEvent(row: row, column: column)
+        gameWorld.queueEvent(event)
+    }
 }

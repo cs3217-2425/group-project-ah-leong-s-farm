@@ -23,4 +23,6 @@ protocol PlotDataProvider: AnyObject {
     func harvestCrop(row: Int, column: Int)
 
     func removeCrop(row: Int, column: Int)
+
+    func waterPlot(row: Int, column: Int)
 }

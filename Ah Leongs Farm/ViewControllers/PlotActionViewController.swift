@@ -38,6 +38,8 @@ class PlotActionViewController: UIViewController {
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
+        setupWaterButton(in: stackView)
+
         if let crop = plotViewModel.crop {
             setupHarvestCropButton(in: stackView)
 
@@ -100,6 +102,18 @@ class PlotActionViewController: UIViewController {
         actionButtons.append(button)
     }
 
+    private func setupWaterButton(in stackView: UIStackView) {
+        let button = UIButton(type: .system)
+        button.setTitle("Water Plot", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        button.backgroundColor = .systemBlue
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(waterPlotTapped), for: .touchUpInside)
+        stackView.addArrangedSubview(button)
+        actionButtons.append(button)
+    }
+
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -141,6 +155,10 @@ class PlotActionViewController: UIViewController {
         if shouldDismiss(location: location) {
             dismiss(animated: true)
         }
+    }
+
+    @objc private func waterPlotTapped() {
+        plotDataProvider?.waterPlot(row: plotViewModel.row, column: plotViewModel.column)
     }
 
     @objc private func addCropTapped() {

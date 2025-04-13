@@ -51,6 +51,12 @@ struct PlantCropEventData: EventData {
     var isSuccessfullyPlanted: Bool
 }
 
+struct WaterPlotEventData: EventData {
+    var row: Int
+    var column: Int
+    var isSuccessfullyWatered: Bool
+}
+
 struct AddPlotEventData: EventData {
     var row: Int
     var column: Int
