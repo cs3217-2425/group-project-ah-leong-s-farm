@@ -5,18 +5,18 @@
 //  Created by Jerry Leong on 27/3/25.
 //
 
-import GameplayKit
+import Foundation
 
-class SpriteComponent: GKComponent {
-    var textureName: String
+class SpriteComponent: ComponentAdapter {
+    let spriteRenderManagerVisitor: SpriteRenderManagerVisitor
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")
     }
 
-    init(textureName: String) {
-        self.textureName = textureName
+    init(visitor: SpriteRenderManagerVisitor) {
+        self.spriteRenderManagerVisitor = visitor
         super.init()
     }
 }

@@ -1,6 +1,3 @@
-import Foundation
-import GameplayKit
-
 class QuestSystem: ISystem {
 
     unowned var manager: EntityManager?
@@ -36,9 +33,20 @@ class QuestSystem: ISystem {
             return
         }
 
-        // Change the first inactive quest to active
-        if let firstInactiveQuest = quests.first(where: { $0.status == .inactive }) {
-            firstInactiveQuest.status = .active
+        let sortedInactiveQuests = quests
+            .filter { $0.status == .inactive }
+            .sorted { $0.order < $1.order }
+
+        if let nextQuest = sortedInactiveQuests.first {
+            nextQuest.status = .active
+        }
+    }
+
+    func ensureTargetActiveQuestCount(target: Int = 2) {
+        let activeQuestsCount = quests.filter { $0.status == .active }.count
+
+        for _ in 0..<(target - activeQuestsCount) {
+            moveToNextQuest()
         }
     }
 
@@ -64,21 +72,23 @@ class QuestSystem: ISystem {
         }
 
         if questUpdated && questComponent.isCompleted && questComponent.status != .completed {
-             completeQuest(questComponent)
+            questComponent.status = .completed
+            completeQuest(questComponent)
         }
     }
 
     private func completeQuest(_ questComponent: QuestComponent) {
         guard let eventQueueable = eventQueueable,
-              let questEntity = questComponent.entity as? Quest else {
+              let questEntity = questComponent.ownerEntity as? Quest else {
             return
         }
 
-        eventQueueable.queueEvent(QuestCompletedEvent())
+        eventQueueable.queueEvent(QuestCompletedEvent(questTitle: questComponent.title))
         let rewardComponents = getAllRewardComponents(questEntity: questEntity)
         for rewardComponent in rewardComponents {
             rewardComponent.processReward(with: self)
         }
+        ensureTargetActiveQuestCount()
     }
 }
 
@@ -91,8 +101,8 @@ extension QuestSystem: IEventObserver {
 }
 
 extension QuestSystem: RewardEventQueuer {
-    private func getAllRewardComponents(questEntity: Quest) -> [any RewardComponent] {
-        let components = questEntity.components
+    func getAllRewardComponents(questEntity: Quest) -> [any RewardComponent] {
+        let components = questEntity.allComponents
         return components.compactMap { component in
             component as? any RewardComponent
         }

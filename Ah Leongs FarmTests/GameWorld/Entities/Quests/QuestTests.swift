@@ -12,22 +12,21 @@ import GameplayKit
 final class QuestTests: XCTestCase {
 
     func testQuestInitialization() {
+            let questComponent = QuestComponent(title: "Test Quest", objectives: [], order: 1)
+            let rewardComponent = MockRewardComponent()
 
-        let reward = Reward(rewards: [])
-        let objective = QuestObjective(
-            description: "Test Objective",
-            criteria: QuestCriteria(eventType: .plantCrop, progressCalculator: FixedProgressCalculator(amount: 1)),
-            target: 10
-        )
-        let questComponent = QuestComponent(title: "Test Quest", objectives: [objective], reward: reward)
+            let quest = Quest(questComponent: questComponent, rewardComponents: [rewardComponent])
 
-        let quest = Quest(questComponent: questComponent)
+            XCTAssertNotNil(quest.component(ofType: QuestComponent.self))
+            XCTAssertNotNil(quest.component(ofType: MockRewardComponent.self))
+    }
+}
 
-        XCTAssertEqual(quest.questComponent.title, "Test Quest")
-        XCTAssertEqual(quest.questComponent.objectives.count, 1)
+class MockRewardComponent: ComponentAdapter, RewardComponent {
+    func processReward(with queuer: any Ah_Leongs_Farm.RewardEventQueuer) {
+    }
 
-        let retrievedComponent = quest.component(ofType: QuestComponent.self)
-        XCTAssertNotNil(retrievedComponent)
-        XCTAssertTrue(retrievedComponent === questComponent)
+    func accept(visitor: any Ah_Leongs_Farm.RewardDataRetrievalVisitor) -> [any Ah_Leongs_Farm.RewardViewModel] {
+        []
     }
 }

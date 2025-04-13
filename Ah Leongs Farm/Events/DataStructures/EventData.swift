@@ -12,6 +12,11 @@ struct EndTurnEventData: EventData {
     var endTurnCount: Int = 1
 }
 
+struct GameOverEventData: EventData {
+    var score: Int
+    var coins: Double
+}
+
 struct HarvestCropEventData: EventData {
     var type: CropType
     var quantity: Int
@@ -42,4 +47,33 @@ struct BuyItemEventData: EventData {
 struct SellItemEventData: EventData {
     var itemType: ItemType
     var quantity: Int
+}
+
+struct PlantCropEventData: EventData {
+    var row: Int
+    var column: Int
+    var cropType: CropType
+    var isSuccessfullyPlanted: Bool
+}
+
+struct AddPlotEventData: EventData {
+    var row: Int
+    var column: Int
+    var isSuccessfullyAdded: Bool
+}
+
+struct QuestCompletedEventData: EventData {
+    let questTitle: String
+}
+
+struct RazePlotEventData: EventData {
+    var row: Int
+    var column: Int
+    var isSuccessfullyRazed: Bool
+}
+
+struct RemoveCropEventData: EventData {
+    var row: Int
+    var column: Int
+    var isSuccessfullyRemoved: Bool
 }

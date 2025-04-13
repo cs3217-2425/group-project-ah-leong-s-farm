@@ -18,9 +18,5 @@ protocol UIPositionProvider: AnyObject {
     /// - Returns: A CGPoint representing the position in the UI, or nil if the row or column is invalid.
     func getUIPosition(row: Int, column: Int) -> CGPoint?
 
-    /// Converts a touch position in the UI to a row and column index in the tile map.
-    ///
-    /// - Parameter touchPosition: The CGPoint representing the touch position in the UI.
-    /// - Returns: A tuple containing the row and column index, or nil if the touch position is invalid.
-    func getSelectedRowAndColumn(at touchPosition: CGPoint) -> (Int, Int)?
+    func getRowAndColumn(fromPosition location: CGPoint) -> (row: Int, column: Int)?
 }

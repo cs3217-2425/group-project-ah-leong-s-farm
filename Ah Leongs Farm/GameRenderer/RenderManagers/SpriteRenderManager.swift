@@ -5,10 +5,18 @@
 //  Created by Jerry Leong on 27/3/25.
 //
 
-import GameplayKit
+import Foundation
 
 class SpriteRenderManager: IRenderManager {
-    private(set) var entityNodeMap: [ObjectIdentifier: SpriteRenderNode] = [:]
+    private static let EntityTypeTextureMap: [ObjectIdentifier: String] = [
+        ObjectIdentifier(Plot.self): "dirt"
+    ]
+
+    private static let CropTypeSeedTextureMap: [ObjectIdentifier: String] = [
+        ObjectIdentifier(Apple.self): "apple_seed",
+        ObjectIdentifier(BokChoy.self): "bokchoy_seed",
+        ObjectIdentifier(Potato.self): "potato_seed"
+    ]
 
     private weak var uiPositionProvider: UIPositionProvider?
 
@@ -16,34 +24,85 @@ class SpriteRenderManager: IRenderManager {
         self.uiPositionProvider = uiPositionProvider
     }
 
-    func createNode(of entity: EntityType, in scene: SKScene) {
-        if entityNodeMap[ObjectIdentifier(entity)] != nil {
+    func createNode(for entity: Entity, in renderer: GameRenderer) {
+        guard let spriteComponent = entity.getComponentByType(ofType: SpriteComponent.self) else {
             return
         }
 
-        guard let spriteComponent = entity.component(ofType: SpriteComponent.self),
-              let positionComponent = entity.component(ofType: PositionComponent.self) else {
+        let visitor = spriteComponent.spriteRenderManagerVisitor
+        visitor.visitSpriteRenderManager(manager: self, renderer: renderer)
+    }
+
+    func createNodeForEntity(plot: Plot, in renderer: GameRenderer) {
+        guard let positionComponent = plot.getComponentByType(ofType: PositionComponent.self) else {
             return
         }
 
-        let spriteRenderNode = SpriteRenderNode(imageNamed: spriteComponent.textureName)
+        guard let textureName = Self.EntityTypeTextureMap[ObjectIdentifier(Plot.self)] else {
+            return
+        }
+
+        let spriteNode = PlotSpriteNode(imageNamed: textureName)
+
+        setSpritePosition(spriteNode: spriteNode, using: positionComponent)
+
+        setRelativeSize(spriteNode: spriteNode, scaleFactor: 1.0)
+        renderer.setRenderNode(for: ObjectIdentifier(plot), node: spriteNode)
+    }
+
+    func createNodeForEntity(apple: Apple, in renderer: GameRenderer) {
+        guard let textureName = Self.CropTypeSeedTextureMap[ObjectIdentifier(Apple.self)] else {
+            return
+        }
+
+        createCropNode(for: apple, in: renderer, textureName: textureName)
+    }
+
+    func createNodeForEntity(bokChoy: BokChoy, in renderer: GameRenderer) {
+        guard let textureName = Self.CropTypeSeedTextureMap[ObjectIdentifier(BokChoy.self)] else {
+            return
+        }
+
+        createCropNode(for: bokChoy, in: renderer, textureName: textureName)
+    }
+
+    func createNodeForEntity(potato: Potato, in renderer: GameRenderer) {
+        guard let textureName = Self.CropTypeSeedTextureMap[ObjectIdentifier(Potato.self)] else {
+            return
+        }
+
+        createCropNode(for: potato, in: renderer, textureName: textureName)
+    }
+
+    private func createCropNode(for crop: Crop, in renderer: GameRenderer, textureName: String) {
+        guard let positionComponent = crop.getComponentByType(ofType: PositionComponent.self) else {
+            return
+        }
+
+        let spriteNode = CropSpriteNode(imageNamed: textureName)
+
+        setSpritePosition(spriteNode: spriteNode, using: positionComponent)
+        setRelativeSize(spriteNode: spriteNode, scaleFactor: 1.0)
+        renderer.setRenderNode(for: ObjectIdentifier(crop), node: spriteNode)
+    }
+
+    private func setSpritePosition(spriteNode: SpriteNode, using component: PositionComponent) {
         let position = uiPositionProvider?.getUIPosition(
-            row: Int(positionComponent.x),
-            column: Int(positionComponent.y)
+            row: Int(component.x),
+            column: Int(component.y)
         ) ?? .zero
 
-        spriteRenderNode.skNode.position = position
-
-        scene.addChild(spriteRenderNode.skNode)
-        entityNodeMap[ObjectIdentifier(entity)] = spriteRenderNode
+        spriteNode.position = position
     }
 
-    func removeNode(of entityIdentifier: ObjectIdentifier, in scene: SKScene) {
-        guard let node = entityNodeMap[entityIdentifier] else {
-            return
-        }
+    private func setRelativeSize(spriteNode: SpriteNode, scaleFactor: CGFloat) {
+        assert(scaleFactor > 0, "Scale factor must be positive")
 
-        node.skNode.removeFromParent()
-        entityNodeMap.removeValue(forKey: entityIdentifier)
+        let tileSize = TileMapRenderManager.TileSize
+        spriteNode.size = CGSize(
+            width: scaleFactor * tileSize.width,
+            height: scaleFactor * tileSize.height
+        )
     }
+
 }

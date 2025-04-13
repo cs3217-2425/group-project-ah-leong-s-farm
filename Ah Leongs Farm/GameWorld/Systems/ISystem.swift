@@ -1,4 +1,4 @@
-import GameplayKit
+import Foundation
 
 protocol ISystem: AnyObject {
     var manager: EntityManager? { get set }

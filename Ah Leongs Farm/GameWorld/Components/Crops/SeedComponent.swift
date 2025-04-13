@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import GameplayKit
 
-class SeedComponent: GKComponent {
+class SeedComponent: ComponentAdapter {
 }

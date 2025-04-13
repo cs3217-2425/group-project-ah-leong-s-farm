@@ -1,5 +1,4 @@
-import GameplayKit
-import SpriteKit
+import Foundation
 
 class GameManager {
     let gameWorld: GameWorld
@@ -14,7 +13,7 @@ class GameManager {
 
     func update(_ currentTime: TimeInterval) {
         let deltaTime = max(currentTime - previousTime, 0) // Ensure deltaTime is not negative
-        let entities = Set(gameWorld.getAllEntities())
+        let entities = gameWorld.getAllEntities()
 
         previousTime = currentTime
         gameWorld.update(deltaTime: deltaTime)
@@ -73,6 +72,41 @@ class GameManager {
         return energySystem.getCurrentEnergy()
     }
 
+    func ensureTargetActiveQuestCount(target: Int = 3) {
+        guard let questSystem = gameWorld.getSystem(ofType: QuestSystem.self) else {
+            return
+        }
+        questSystem.ensureTargetActiveQuestCount(target: target)
+    }
+
+    func getCurrentLevel() -> Int {
+        guard let levelSystem = gameWorld.getSystem(ofType: LevelSystem.self) else {
+            return 1
+        }
+
+        return levelSystem.getCurrentLevel()
+    }
+
+    func getCurrentXP() -> Float {
+        guard let levelSystem = gameWorld.getSystem(ofType: LevelSystem.self) else {
+            return 0
+        }
+
+        return levelSystem.getCurrentXP()
+    }
+
+    func getXPForCurrentLevel() -> Float {
+        guard let levelSystem = gameWorld.getSystem(ofType: LevelSystem.self) else {
+            return 0
+        }
+
+        return levelSystem.getXPForCurrentLevel()
+    }
+
+    func registerEventObserver(_ observer: IEventObserver) {
+        gameWorld.registerEventObserver(observer)
+    }
+
     private func setUpEntities() {
         gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
     }
@@ -84,11 +118,8 @@ class GameManager {
 
         addStartingItems()
 
-        let farmLand = FarmLand(rows: 20, columns: 20)
+        let farmLand = FarmLand(rows: 10, columns: 10)
         gameWorld.addEntity(farmLand)
-        if let gridComponent = farmLand.component(ofType: GridComponent.self) {
-            setUpPlotEntities(using: gridComponent)
-        }
     }
 
     private func setUpQuests() {
@@ -96,6 +127,7 @@ class GameManager {
         for quest in quests {
             gameWorld.addEntity(quest)
         }
+        ensureTargetActiveQuestCount()
     }
 
     // MARK: - Entity Creation Helpers
@@ -103,16 +135,12 @@ class GameManager {
     private func addStartingItems() {
         if let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) {
             inventorySystem.addItem(type: .bokChoySeed, quantity: 5)
-        }
-    }
-
-    private func setUpPlotEntities(using grid: GridComponent) {
-        for row in 0..<grid.numberOfRows where row.isMultiple(of: 2) {
-            for column in 0..<grid.numberOfColumns where column.isMultiple(of: 2) {
-                let plot = Plot(position: CGPoint(x: row, y: column))
-                grid.setEntity(plot, row: row, column: column)
-                gameWorld.addEntity(plot)
-            }
+            // Additional starting items just to test the UI
+            inventorySystem.addItem(type: .fertiliser, quantity: 3)
+            inventorySystem.addItem(type: .premiumFertiliser, quantity: 6)
+            inventorySystem.addItem(type: .appleSeed, quantity: 7)
+            inventorySystem.addItem(type: .potatoSeed, quantity: 52)
+            inventorySystem.addItem(type: .bokChoySeed, quantity: 5)
         }
     }
 }

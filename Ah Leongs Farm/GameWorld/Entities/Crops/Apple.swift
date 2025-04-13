@@ -1,0 +1,47 @@
+//
+//  Apple.swift
+//  Ah Leongs Farm
+//
+//  Created by Ma Yuchen on 30/3/25.
+//
+
+import Foundation
+
+class Apple: EntityAdapter, Crop {
+    var seedItemType: ItemType = .appleSeed
+    var harvestedItemType: ItemType = .appleHarvested
+
+    override init() {
+        super.init()
+        setUpComponents()
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) not implemented")
+    }
+
+    private func setUpComponents() {
+        let cropComponent = CropComponent(cropType: .apple)
+        attachComponent(cropComponent)
+
+        let healthComponent = HealthComponent()
+        attachComponent(healthComponent)
+    }
+
+    static func createSeed() -> Entity {
+        let apple = Apple()
+        apple.attachComponent(SeedComponent())
+        return apple
+    }
+
+    static func createHarvested() -> Entity {
+        let apple = Apple()
+        apple.attachComponent(HarvestedComponent())
+        return apple
+    }
+
+    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.createNodeForEntity(apple: self, in: renderer)
+    }
+}

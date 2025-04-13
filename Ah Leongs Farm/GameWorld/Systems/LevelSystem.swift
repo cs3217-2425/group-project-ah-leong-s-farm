@@ -1,5 +1,4 @@
 import Foundation
-import GameplayKit
 
 class LevelSystem: ISystem {
     unowned var manager: EntityManager?
@@ -36,6 +35,14 @@ class LevelSystem: ISystem {
 
     func getCurrentXP() -> Float {
         levelComponent?.currentXP ?? 0
+    }
+
+    func getXPForCurrentLevel() -> Float {
+        guard let component = levelComponent else {
+            return 1
+        }
+
+        return component.thresholdXP
     }
 
     func getXPForNextLevel() -> Float {

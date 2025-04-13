@@ -6,11 +6,13 @@
 //
 
 class QuestCompletedEvent: GameEvent {
+    private let questTitle: String
 
-    init() {
+    init(questTitle: String) {
+        self.questTitle = questTitle
     }
 
     func execute(in context: EventContext, queueable: EventQueueable) -> EventData? {
-        nil
+        QuestCompletedEventData(questTitle: questTitle)
     }
 }

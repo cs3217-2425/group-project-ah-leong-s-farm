@@ -5,12 +5,12 @@
 //  Created by Ma Yuchen on 19/3/25.
 //
 
-import GameplayKit
+import Foundation
 
-class GameState: GKEntity {
+class GameState: EntityAdapter {
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setUpComponents(maxTurns: 30, maxEnergy: 10)
+        fatalError("init(coder:) not implemented")
     }
 
     init(maxTurns: Int, maxEnergy: Int) {
@@ -23,12 +23,14 @@ class GameState: GKEntity {
         let energyComponent = EnergyComponent(maxEnergy: maxEnergy)
         let levelComponent = LevelComponent()
         let walletComponent = WalletComponent()
+
+        attachComponent(turnComponent)
+        attachComponent(energyComponent)
+        attachComponent(levelComponent)
+        attachComponent(walletComponent)
+
         let persistenceComponent = PersistenceComponent(visitor: self)
-        addComponent(turnComponent)
-        addComponent(energyComponent)
-        addComponent(levelComponent)
-        addComponent(walletComponent)
-        addComponent(persistenceComponent)
+        attachComponent(persistenceComponent)
     }
 }
 

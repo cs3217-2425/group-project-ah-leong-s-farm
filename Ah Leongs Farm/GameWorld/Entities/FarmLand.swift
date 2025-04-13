@@ -5,11 +5,12 @@
 //  Created by Jerry Leong on 14/3/25.
 //
 
-import GameplayKit
+import Foundation
 
-class FarmLand: GKEntity {
+class FarmLand: EntityAdapter {
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError("init(coder:) not implemented")
     }
 
     init(rows: Int, columns: Int) {
@@ -20,8 +21,8 @@ class FarmLand: GKEntity {
     private func setUpComponents(rows: Int, columns: Int) {
         let gridComponent = GridComponent(rows: rows, columns: columns)
         let persistenceComponent = PersistenceComponent(visitor: self)
-        addComponent(gridComponent)
-        addComponent(persistenceComponent)
+        attachComponent(gridComponent)
+        attachComponent(persistenceComponent)
     }
 }
 

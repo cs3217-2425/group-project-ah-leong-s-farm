@@ -1,28 +1,27 @@
 import XCTest
-import GameplayKit
 @testable import Ah_Leongs_Farm
 
 class TileMapRenderManagerTests: XCTestCase {
 
     func testCreateNode() {
-        let TileMapRenderManager = TileMapRenderManager()
-        let entity = GKEntity()
+        let tileMapRenderManager = TileMapRenderManager()
+        let entity = EntityAdapter()
         let gridComponent = GridComponent(rows: 3, columns: 3)
         entity.addComponent(gridComponent)
 
-        let scene = SKScene(size: CGSize(width: 100, height: 100))
-        TileMapRenderManager.createNode(of: entity, in: scene)
+        let renderer = GameRenderer()
+        tileMapRenderManager.createNode(for: entity, in: renderer)
 
-        XCTAssertEqual(scene.children.count, 1)
+        XCTAssertEqual(renderer.allRenderNodes.count, 1)
     }
 
     func testCreateNodeWithoutGridComponent() {
-        let TileMapRenderManager = TileMapRenderManager()
-        let entity = GKEntity()
+        let tileMapRenderManager = TileMapRenderManager()
+        let entity = EntityAdapter()
 
-        let scene = SKScene(size: CGSize(width: 100, height: 100))
-        TileMapRenderManager.createNode(of: entity, in: scene)
+        let renderer = GameRenderer()
+        tileMapRenderManager.createNode(for: entity, in: renderer)
 
-        XCTAssertTrue(scene.children.isEmpty)
+        XCTAssertTrue(renderer.allRenderNodes.isEmpty)
     }
 }

@@ -8,9 +8,10 @@
 import GameplayKit
 
 extension PersistenceManager: IGameObserver {
-    func observe(entities: Set<GKEntity>) {
+    func observe(entities: [any Entity]) {
         for entity in entities {
-            guard let persistenceComponent = entity.component(ofType: PersistenceComponent.self) else {
+            guard let persistenceComponent = entity.getComponentByType(
+                ofType: PersistenceComponent.self) else {
                 continue
             }
 

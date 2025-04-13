@@ -5,81 +5,101 @@ import GameplayKit
 class GameRendererTests: XCTestCase {
 
     func testInit() {
-        let scene = SKScene(size: CGSize(width: 100, height: 100))
-        let gameRenderer = GameRenderer(scene: scene)
-
+        let gameScene = GameScene(view: SKView())
+        let gameRenderer = GameRenderer()
+        gameRenderer.setScene(gameScene)
         XCTAssertNotNil(gameRenderer)
     }
 
     func testNotifyAddsNodesToScene() {
-        let scene = SKScene(size: CGSize(width: 100, height: 100))
-        let gameRenderer = GameRenderer(scene: scene)
-        let gameWorld = GameWorld()
+        let gameScene = GameScene(view: SKView())
+        let gameRenderer = GameRenderer()
+        gameRenderer.setScene(gameScene)
 
-        let entity = GKEntity()
+        let entity = EntityAdapter()
         let gridComponent = GridComponent(rows: 3, columns: 3)
         entity.addComponent(gridComponent)
-        gameWorld.addEntity(entity)
+        let entities = [entity]
 
-        gameRenderer.notify(gameWorld)
+        gameRenderer.observe(entities: entities)
 
-        XCTAssertEqual(scene.children.count, 1)
+        XCTAssertEqual(gameScene.children.count, 1)
     }
 
     func testNotifyDoesNotAddDuplicateNodes() {
-        let scene = SKScene(size: CGSize(width: 100, height: 100))
-        let gameRenderer = GameRenderer(scene: scene)
-        let gameWorld = GameWorld()
+        let gameScene = GameScene(view: SKView())
+        let gameRenderer = GameRenderer()
+        gameRenderer.setScene(gameScene)
 
-        let entity = GKEntity()
+        let entity = EntityAdapter()
         let gridComponent = GridComponent(rows: 3, columns: 3)
         entity.addComponent(gridComponent)
-        gameWorld.addEntity(entity)
+        let entities = [entity]
 
-        gameRenderer.notify(gameWorld)
-        gameRenderer.notify(gameWorld)
+        gameRenderer.observe(entities: entities)
+        gameRenderer.observe(entities: entities)
 
-        XCTAssertEqual(scene.children.count, 1)
+        XCTAssertEqual(gameScene.children.count, 1)
     }
 
-    func testGetSelectedRowAndColumn() {
-        guard let tileSet = SKTileSet(named: "Farm Tile Set") else {
-            XCTFail("Could not load tile set")
-            return
-        }
+    func testSetRenderNodeForTileMapNode() {
+        let gameScene = GameScene(view: SKView())
+        let gameRenderer = GameRenderer()
+        gameRenderer.setScene(gameScene)
 
-        let sceneSize = CGSize(width: 144, height: 144)
-        let tileSize = CGSize(width: 48, height: 48)
+        let entity = EntityAdapter()
+        let entityIdentifier = ObjectIdentifier(entity)
+        let tileMapNode = TileMapNode()
 
-        let scene = SKScene(size: sceneSize)
-        let gameRenderer = GameRenderer(scene: scene)
+        gameRenderer.setRenderNode(for: entityIdentifier, node: tileMapNode)
 
-        // No tile at CGPoint(x: -0.1, y: 0)
-        var touchPosition = CGPoint(x: -0.1, y: 0)
-        var selectedRowAndColumn = gameRenderer.getSelectedRowAndColumn(at: touchPosition)
-        XCTAssertNil(selectedRowAndColumn)
+        XCTAssertEqual(gameScene.children.count, 1)
+        XCTAssertEqual(gameRenderer.allRenderNodes.count, 1)
+    }
 
-        // Test tile at row 0, column 0
-        touchPosition = CGPoint(x: 0, y: 0)
-        selectedRowAndColumn = gameRenderer.getSelectedRowAndColumn(at: touchPosition)
-        XCTAssertEqual(selectedRowAndColumn?.0, 0)
-        XCTAssertEqual(selectedRowAndColumn?.1, 0)
+    func testSetRenderNodeForSpriteNode() {
+        let gameScene = GameScene(view: SKView())
+        let gameRenderer = GameRenderer()
+        gameRenderer.setScene(gameScene)
 
-        // Test tile at row 1, column 1
-        touchPosition = CGPoint(x: 72, y: 72)
-        selectedRowAndColumn = gameRenderer.getSelectedRowAndColumn(at: touchPosition)
-        XCTAssertEqual(selectedRowAndColumn?.0, 1)
-        XCTAssertEqual(selectedRowAndColumn?.1, 1)
+        let entity = EntityAdapter()
+        let entityIdentifier = ObjectIdentifier(entity)
+        let spriteNode = SpriteNode()
 
-        // Test tile at row 2, column 2
-        touchPosition = CGPoint(x: 120, y: 120)
-        selectedRowAndColumn = gameRenderer.getSelectedRowAndColumn(at: touchPosition)
-        XCTAssertEqual(selectedRowAndColumn?.0, 2)
-        XCTAssertEqual(selectedRowAndColumn?.1, 2)
+        gameRenderer.setRenderNode(for: entityIdentifier, node: spriteNode)
 
-        // No tile at CGPoint(x: 148, y: 148)
-        touchPosition = CGPoint(x: 148, y: 148)
-        selectedRowAndColumn = gameRenderer.getSelectedRowAndColumn(at: touchPosition)
-        XCTAssertNil(selectedRowAndColumn)
+        XCTAssertEqual(gameScene.children.count, 1)
+        XCTAssertEqual(gameRenderer.allRenderNodes.count, 1)
+    }
+
+    func testLightUpTile() {
+        let gameScene = GameScene(view: SKView())
+        let gameRenderer = GameRenderer()
+        gameRenderer.setScene(gameScene)
+
+        let tileMapNode = TileMapNode()
+        tileMapNode.numberOfRows = 3
+        tileMapNode.numberOfColumns = 3
+        gameRenderer.setRenderNode(for: ObjectIdentifier(GKEntity()), node: tileMapNode)
+
+        gameRenderer.lightUpTile(at: 0, column: 0)
+
+        XCTAssertEqual(tileMapNode.lightUpNodes.count, 1)
+    }
+
+    func testUnlightAllTiles() {
+        let gameScene = GameScene(view: SKView())
+        let gameRenderer = GameRenderer()
+        gameRenderer.setScene(gameScene)
+
+        let tileMapNode = TileMapNode()
+        tileMapNode.numberOfRows = 3
+        tileMapNode.numberOfColumns = 3
+        gameRenderer.setRenderNode(for: ObjectIdentifier(GKEntity()), node: tileMapNode)
+
+        gameRenderer.lightUpTile(at: 0, column: 0)
+        gameRenderer.unlightAllTiles()
+
+        XCTAssertTrue(tileMapNode.lightUpNodes.isEmpty)
     }
 }

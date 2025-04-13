@@ -21,8 +21,9 @@ class BuyItemEvent: GameEvent {
         guard let marketSystem = context.getSystem(ofType: MarketSystem.self),
               let walletSystem = context.getSystem(ofType: WalletSystem.self),
               let price = marketSystem.getBuyPrice(for: itemType, currency: currencyType),
-              let stock = marketSystem.getStock(for: itemType), stock >= quantity
+              let stock = marketSystem.getBuyQuantity(for: itemType), stock >= quantity
         else {
+            print("Not enough stock.")
             return nil
         }
 

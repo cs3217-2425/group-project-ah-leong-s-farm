@@ -5,8 +5,7 @@
 //  Created by Ma Yuchen on 29/3/25.
 //
 
-import GameplayKit
-
-protocol RewardComponent where Self: GKComponent {
+protocol RewardComponent where Self: ComponentAdapter {
     func processReward(with queuer: RewardEventQueuer)
+    func accept(visitor: RewardDataRetrievalVisitor) -> [RewardViewModel]
 }

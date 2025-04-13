@@ -5,8 +5,6 @@
 //  Created by proglab on 29/3/25.
 //
 
-import GameplayKit
-
 class MarketSystem: ISystem {
 
     private var itemPrices: [ItemType: Price] = MarketInformation.initialItemPrices
@@ -25,7 +23,13 @@ class MarketSystem: ISystem {
         itemStocks
     }
 
-    private var sellableComponents: [GKComponent] {
+    func getSellQuantity(for itemType: ItemType) -> Int {
+        sellableComponents
+            .filter { $0.itemType == itemType }
+            .count
+    }
+
+    private var sellableComponents: [SellComponent] {
         manager?.getAllComponents(ofType: SellComponent.self) ?? []
     }
 
@@ -45,7 +49,7 @@ class MarketSystem: ISystem {
         return price.sellPrice[currency]
     }
 
-    func getStock(for type: ItemType) -> Int? {
+    func getBuyQuantity(for type: ItemType) -> Int? {
         guard let stock = itemStocks[type] else {
             print("Item not found in the market!")
             return nil
@@ -61,13 +65,16 @@ class MarketSystem: ISystem {
             return false
         }
 
-        guard let factoryEntity = ItemFactory.itemToInitialisers[type], let entity = factoryEntity else {
-            print("Item not found in the item factory.")
-            return false
-        }
+        for _ in 0..<quantity {
+            guard let initialiser = ItemFactory.itemToInitialisers[type],
+                  let entity = initialiser() else {
+                print("Item not found in the item factory.")
+                return false
+            }
 
+            manager?.addEntity(entity)
+        }
         itemStocks[type] = currentStock - quantity
-        manager?.addEntity(entity)
 
         return true
     }
@@ -78,13 +85,11 @@ class MarketSystem: ISystem {
             return false
         }
 
-        var sellableEntities: [GKEntity] = []
-        for component in sellableComponents {
-            if let sellComponent = component as? SellComponent, sellComponent.itemType == type {
-                if let entity = component.entity {
-                    sellableEntities.append(entity)
-                }
+        let sellableEntities = manager.getEntities(withComponentType: SellComponent.self).filter { entity in
+            if let sellComponent = entity.getComponentByType(ofType: SellComponent.self) {
+                return sellComponent.itemType == type
             }
+            return false
         }
 
         if sellableEntities.count < quantity {

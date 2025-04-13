@@ -1,12 +1,14 @@
 //
-//  Renderable.swift
+//  IRenderNode.swift
 //  Ah Leongs Farm
 //
-//  Created by Jerry Leong on 18/3/25.
+//  Created by Jerry Leong on 30/3/25.
 //
 
-import GameplayKit
+import SpriteKit
 
-protocol IRenderNode {
-    var skNode: SKNode { get }
+protocol IRenderNode: AnyObject {
+    func visitTouchHandlerRegistry(registry: TouchHandlerRegistry)
+
+    func getSKNode() -> SKNode
 }

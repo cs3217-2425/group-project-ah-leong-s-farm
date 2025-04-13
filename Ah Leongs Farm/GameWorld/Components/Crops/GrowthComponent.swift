@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import GameplayKit
 
-class GrowthComponent: GKComponent {
+class GrowthComponent: ComponentAdapter {
     var totalGrowthTurns: Int
     var currentGrowthTurn: Int = 0
     var canHarvest: Bool {

@@ -8,9 +8,9 @@
 import Foundation
 import GameplayKit
 
-protocol Crop where Self: GKEntity {
+protocol Crop: SpriteRenderManagerVisitor where Self: EntityAdapter {
     var seedItemType: ItemType { get }
     var harvestedItemType: ItemType { get }
-    var components: [GKComponent] { get }
-    static func createSeed() -> GKEntity
+    static func createSeed() -> Entity
+    static func createHarvested() -> Entity
 }

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import GameplayKit
 
 class InventorySystem: ISystem {
     unowned var manager: EntityManager?
@@ -19,13 +18,14 @@ class InventorySystem: ISystem {
         self.manager = manager
     }
 
-    // Creates new entities if and only if it exists in the ItemFactory
     func addItem(type: ItemType, quantity: Int) {
+        guard let initialiser = ItemFactory.itemToInitialisers[type] else {
+            return
+        }
         for _ in 0..<quantity {
-            guard let factoryEntity = ItemFactory.itemToInitialisers[type], let entity = factoryEntity else {
+            guard let entity = initialiser() else {
                 return
             }
-
             manager?.addEntity(entity)
         }
     }
@@ -35,7 +35,7 @@ class InventorySystem: ISystem {
             return
         }
 
-        guard let entity = itemToRemove.entity else {
+        guard let entity = itemToRemove.ownerEntity else {
             return
         }
 
@@ -52,6 +52,16 @@ class InventorySystem: ISystem {
 
     func getAllComponents() -> [ItemComponent] {
         items
+    }
+
+    func getItemsByQuantity() -> [ItemType: Int] {
+        let itemComponents = getAllComponents()
+
+        var typeToQuantity: [ItemType: Int] = [:]
+        for itemComponent in itemComponents {
+            typeToQuantity[itemComponent.itemType] = typeToQuantity[itemComponent.itemType, default: 0] + 1
+        }
+        return typeToQuantity
     }
 
     func getNumberOfItems(of type: ItemType) -> Int {

@@ -5,10 +5,10 @@
 //  Created by Jerry Leong on 15/3/25.
 //
 
-import GameplayKit
+import Foundation
 
-class GridComponent: GKComponent {
-    private var matrix: [[GKEntity?]]
+class GridComponent: ComponentAdapter {
+    private var matrix: [[Entity?]]
 
     let numberOfRows: Int
     let numberOfColumns: Int
@@ -25,7 +25,7 @@ class GridComponent: GKComponent {
         super.init()
     }
 
-    func setEntity(_ entity: GKEntity?, row: Int, column: Int) {
+    func setEntity(_ entity: Entity?, row: Int, column: Int) {
         guard isRowValid(row), isColumnValid(column) else {
             return
         }
@@ -33,7 +33,7 @@ class GridComponent: GKComponent {
         matrix[row][column] = entity
     }
 
-    func getEntity(row: Int, column: Int) -> GKEntity? {
+    func getEntity(row: Int, column: Int) -> Entity? {
         guard isRowValid(row), isColumnValid(column) else {
             return nil
         }

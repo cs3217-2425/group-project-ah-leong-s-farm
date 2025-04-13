@@ -5,7 +5,7 @@
 //  Created by Jerry Leong on 16/3/25.
 //
 
-import GameplayKit
+import Foundation
 
 enum CropType: String, Hashable {
     case potato
@@ -13,7 +13,7 @@ enum CropType: String, Hashable {
     case bokChoy
 }
 
-class CropComponent: GKComponent {
+class CropComponent: ComponentAdapter {
     var cropType: CropType
 
     init(cropType: CropType) {

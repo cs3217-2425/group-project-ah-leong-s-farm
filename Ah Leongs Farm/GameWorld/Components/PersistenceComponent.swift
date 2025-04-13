@@ -7,7 +7,7 @@
 
 import GameplayKit
 
-class PersistenceComponent: GKComponent {
+class PersistenceComponent: ComponentAdapter {
     let persistenceVisitor: PersistenceVisitor
 
     @available(*, unavailable)
