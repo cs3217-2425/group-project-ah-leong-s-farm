@@ -13,21 +13,31 @@ extension GameManager: InventoryDataProvider {
             return []
         }
 
-        let itemsByQuantity = inventorySystem.getItemsByQuantity()
-        var viewModels: [InventoryItemViewModel] = []
+        let items = inventorySystem.getAllComponents()
+            .compactMap { $0.ownerEntity }
 
-        for (itemType, quantity) in itemsByQuantity {
-            guard let name = ItemToViewDataMap.itemTypeToDisplayName[itemType],
-                  let imageName = ItemToViewDataMap.itemTypeToImage[itemType] else {
-                fatalError("Name or image not stored in ItemToViewDataMap for \(itemType)")
+        // Use the displayName as an identifier for the viewModel
+        var viewModels: [String: InventoryItemViewModel] = [:]
+
+        for item in items {
+            let currDisplayName = displayService.getDisplayName(for: item)
+            let currImageName = displayService.getImageName(for: item)
+
+            if let existingViewModel = viewModels[currDisplayName] {
+                viewModels[currDisplayName] = InventoryItemViewModel(
+                    name: currDisplayName,
+                    imageName: currImageName,
+                    quantity: existingViewModel.quantity + 1
+                )
+            } else {
+                viewModels[currDisplayName] = InventoryItemViewModel(
+                    name: currDisplayName,
+                    imageName: currImageName,
+                    quantity: 1
+                )
             }
-            viewModels.append(InventoryItemViewModel(
-                name: name,
-                imageName: imageName,
-                quantity: quantity
-            ))
         }
-        return viewModels.sorted { $0.name < $1.name }
+        return viewModels.values.sorted { $0.name < $1.name }
     }
 
     func getSeedItemViewModels() -> [SeedItemViewModel] {
@@ -35,24 +45,39 @@ extension GameManager: InventoryDataProvider {
             return []
         }
 
-        let itemsByQuantity = inventorySystem.getItemsByQuantity()
-        var viewModels: [SeedItemViewModel] = []
+        let items = inventorySystem.getAllComponents()
+            .compactMap { $0.ownerEntity }
 
-        for (itemType, quantity) in itemsByQuantity {
-            guard let name = ItemToViewDataMap.itemTypeToDisplayName[itemType],
-                  let imageName = ItemToViewDataMap.itemTypeToImage[itemType] else {
-                fatalError("Name or image not stored in ItemToViewDataMap for \(itemType)")
+        let seedItems = items.filter {
+            $0.getComponentByType(ofType: SeedComponent.self) != nil
+        }
+
+        // Use the displayName as an identifier for the viewModel
+        var viewModels: [String: SeedItemViewModel] = [:]
+
+        for item in seedItems {
+            guard let cropComponent = item.getComponentByType(ofType: CropComponent.self) else {
+                continue
             }
+            let currDisplayName = displayService.getDisplayName(for: item)
+            let currImageName = displayService.getImageName(for: item)
 
-            if let viewModel = SeedItemViewModel(
-                itemType: itemType,
-                name: name,
-                imageName: imageName,
-                quantity: quantity
-            ) {
-                viewModels.append(viewModel)
+            if let existingViewModel = viewModels[currDisplayName] {
+                viewModels[currDisplayName] = SeedItemViewModel(
+                    cropType: cropComponent.cropType,
+                    name: currDisplayName,
+                    imageName: currImageName,
+                    quantity: existingViewModel.quantity + 1
+                )
+            } else {
+                viewModels[currDisplayName] = SeedItemViewModel(
+                    cropType: cropComponent.cropType,
+                    name: currDisplayName,
+                    imageName: currImageName,
+                    quantity: 1
+                )
             }
         }
-        return viewModels.sorted { $0.name < $1.name }
+        return viewModels.values.sorted { $0.name < $1.name }
     }
 }

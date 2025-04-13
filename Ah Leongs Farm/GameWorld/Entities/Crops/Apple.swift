@@ -8,9 +8,6 @@
 import Foundation
 
 class Apple: EntityAdapter, Crop {
-    var seedItemType: ItemType = .appleSeed
-    var harvestedItemType: ItemType = .appleHarvested
-
     override init() {
         super.init()
         setUpComponents()

@@ -18,15 +18,17 @@ class InventorySystem: ISystem {
         self.manager = manager
     }
 
-    func addItem(type: ItemType, quantity: Int) {
-        guard let initialiser = ItemFactory.itemToInitialisers[type] else {
+    func addItem(_ itemToAdd: Entity) {
+        guard itemToAdd.getComponentByType(ofType: ItemComponent.self) != nil else {
             return
         }
-        for _ in 0..<quantity {
-            guard let entity = initialiser() else {
-                return
-            }
-            manager?.addEntity(entity)
+
+        manager?.addEntity(itemToAdd)
+    }
+
+    func addItems(_ itemsToAdd: [Entity]) {
+        for item in itemsToAdd {
+            addItem(item)
         }
     }
 
@@ -46,30 +48,13 @@ class InventorySystem: ISystem {
         items.contains(item)
     }
 
-    func hasItem(of type: ItemType) -> Bool {
-        items.contains(where: { $0.itemType == type })
+    func hasItem(of type: EntityType) -> Bool {
+        items.contains(where: {
+            $0.ownerEntity?.type == type
+        })
     }
 
     func getAllComponents() -> [ItemComponent] {
         items
-    }
-
-    func getItemsByQuantity() -> [ItemType: Int] {
-        let itemComponents = getAllComponents()
-
-        var typeToQuantity: [ItemType: Int] = [:]
-        for itemComponent in itemComponents {
-            typeToQuantity[itemComponent.itemType] = typeToQuantity[itemComponent.itemType, default: 0] + 1
-        }
-        return typeToQuantity
-    }
-
-    func getNumberOfItems(of type: ItemType) -> Int {
-
-        var count = 0
-        for item in items where item.itemType == type {
-            count += item.quantity
-        }
-        return count
     }
 }

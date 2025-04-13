@@ -8,9 +8,6 @@
 import Foundation
 
 class BokChoy: EntityAdapter, Crop {
-    var seedItemType: ItemType = .bokChoySeed
-    var harvestedItemType: ItemType = .bokChoyHarvested
-
     override init() {
         super.init()
         setUpComponents()

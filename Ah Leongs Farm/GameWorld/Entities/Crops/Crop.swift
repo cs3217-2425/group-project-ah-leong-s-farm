@@ -9,8 +9,6 @@ import Foundation
 import GameplayKit
 
 protocol Crop: SpriteRenderManagerVisitor where Self: EntityAdapter {
-    var seedItemType: ItemType { get }
-    var harvestedItemType: ItemType { get }
     static func createSeed() -> Entity
     static func createHarvested() -> Entity
 }

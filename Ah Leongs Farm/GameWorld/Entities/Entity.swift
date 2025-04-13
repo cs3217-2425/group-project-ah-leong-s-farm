@@ -9,8 +9,12 @@ import GameplayKit
 
 typealias EntityID = ObjectIdentifier
 
+typealias EntityType = ObjectIdentifier
+
 protocol Entity: AnyObject {
     var id: EntityID { get }
+    static var type: EntityType { get }
+    var type: EntityType { get }
     func attachComponent(_ component: Component)
     func detachComponent(ofType componentType: Component.Type)
     func getComponentByType<T: Component>(ofType componentType: T.Type) -> T?
@@ -21,6 +25,14 @@ class EntityAdapter: GKEntity, Entity {
 
     var id: EntityID {
         ObjectIdentifier(self)
+    }
+
+    static var type: EntityType {
+        ObjectIdentifier(Self.self)
+    }
+
+    var type: EntityType {
+        ObjectIdentifier(Self.self)
     }
 
     func attachComponent(_ component: Component) {
@@ -38,7 +50,7 @@ class EntityAdapter: GKEntity, Entity {
 
     func getComponentByType<T: Component>(ofType componentType: T.Type) -> T? {
         let filteredComponent = allComponents.first {
-            type(of: $0) == componentType
+            Swift.type(of: $0) == componentType
         }
 
         return filteredComponent as? T

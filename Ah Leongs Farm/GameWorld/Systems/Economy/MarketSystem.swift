@@ -9,6 +9,12 @@ class MarketSystem: ISystem {
 
     private var itemPrices: [ItemType: Price] = MarketInformation.initialItemPrices
     private var itemStocks: [ItemType: Int] = MarketInformation.initialItemStocks
+    private var itemTypeToEntities: [ItemType: [Entity]] {
+        guard let manager = manager else {
+            return [:]
+        }
+        return ItemType.getItemTypeToEntities(from: manager)
+    }
     unowned var manager: EntityManager?
 
     required init(for manager: EntityManager) {
@@ -24,13 +30,7 @@ class MarketSystem: ISystem {
     }
 
     func getSellQuantity(for itemType: ItemType) -> Int {
-        sellableComponents
-            .filter { $0.itemType == itemType }
-            .count
-    }
-
-    private var sellableComponents: [SellComponent] {
-        manager?.getAllComponents(ofType: SellComponent.self) ?? []
+        getSellableEntitiesOf(itemType).count
     }
 
     func getBuyPrice(for type: ItemType, currency: CurrencyType) -> Double? {
@@ -66,13 +66,12 @@ class MarketSystem: ISystem {
         }
 
         for _ in 0..<quantity {
-            guard let initialiser = ItemFactory.itemToInitialisers[type],
-                  let entity = initialiser() else {
+            guard let initialiser = ItemFactory.itemToInitialisers[type] else {
                 print("Item not found in the item factory.")
                 return false
             }
 
-            manager?.addEntity(entity)
+            manager?.addEntity(initialiser())
         }
         itemStocks[type] = currentStock - quantity
 
@@ -85,12 +84,7 @@ class MarketSystem: ISystem {
             return false
         }
 
-        let sellableEntities = manager.getEntities(withComponentType: SellComponent.self).filter { entity in
-            if let sellComponent = entity.getComponentByType(ofType: SellComponent.self) {
-                return sellComponent.itemType == type
-            }
-            return false
-        }
+        let sellableEntities = getSellableEntitiesOf(type)
 
         if sellableEntities.count < quantity {
             print("Not enough stock for \(type).")
@@ -111,5 +105,11 @@ class MarketSystem: ISystem {
 
     func updateBuyandSellPrice() {
         // To be added once buy and sell price algo is decided
+    }
+
+    private func getSellableEntitiesOf(_ type: ItemType) -> [Entity] {
+        itemTypeToEntities[type]?.filter {
+            $0.getComponentByType(ofType: SellComponent.self) != nil
+        } ?? []
     }
 }

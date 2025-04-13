@@ -88,8 +88,8 @@ class CropSystem: ISystem {
         manager?.removeComponent(ofType: PositionComponent.self, from: crop)
         manager?.removeComponent(ofType: SpriteComponent.self, from: crop)
         manager?.addComponent(HarvestedComponent(), to: crop)
-        manager?.addComponent(SellComponent(itemType: crop.harvestedItemType), to: crop)
-        manager?.addComponent(ItemComponent(itemType: crop.harvestedItemType), to: crop)
+        manager?.addComponent(SellComponent(), to: crop)
+        manager?.addComponent(ItemComponent(), to: crop)
         cropSlot.crop = nil
         return crop
     }

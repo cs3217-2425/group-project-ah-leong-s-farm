@@ -6,7 +6,7 @@
 //
 
 class ItemFactory {
-    static let itemToInitialisers: [ItemType: () -> (Entity)?] = [
+    static let itemToInitialisers: [ItemType: () -> Entity] = [
         .bokChoySeed: {
             setupComponents(createSeed(for: .bokChoy), type: .bokChoySeed)
             },
@@ -32,6 +32,17 @@ class ItemFactory {
             setupComponents(PremiumFertiliser(), type: .premiumFertiliser)
             }
     ]
+
+    static func createItems(type: ItemType, quantity: Int) -> [Entity] {
+        guard let itemInitialiser = itemToInitialisers[type] else {
+            fatalError("Item initialiser for \(type) not defined!")
+        }
+        var items: [Entity] = []
+        for _ in 0..<quantity {
+            items.append(itemInitialiser())
+        }
+        return items
+    }
 
     private static let cropToSeedInitialisers: [CropType: () -> Entity] = [
         .bokChoy: { BokChoy.createSeed() },
@@ -59,11 +70,11 @@ class ItemFactory {
     }
 
     private static func setupComponents(_ entity: Entity, type: ItemType) -> Entity {
-        entity.attachComponent(ItemComponent(itemType: type))
+        entity.attachComponent(ItemComponent())
 
         // Add SellComponent if the market can sell that item
         if MarketInformation.sellableItems.contains(type) {
-            entity.attachComponent(SellComponent(itemType: type))
+            entity.attachComponent(SellComponent())
         }
         return entity
     }
