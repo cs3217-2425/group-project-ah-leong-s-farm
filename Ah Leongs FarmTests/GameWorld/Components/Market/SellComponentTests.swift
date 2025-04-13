@@ -11,10 +11,8 @@ import XCTest
 class SellComponentTests: XCTestCase {
 
     func testInitialization() {
-        let itemType: ItemType = .bokChoySeed
-        let sellComponent = SellComponent(itemType: itemType)
+        let sellComponent = SellComponent()
 
-        XCTAssertEqual(sellComponent.itemType, itemType)
         XCTAssertNotNil(sellComponent)
     }
 }

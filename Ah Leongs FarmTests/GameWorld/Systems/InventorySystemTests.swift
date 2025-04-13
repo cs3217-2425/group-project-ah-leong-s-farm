@@ -10,6 +10,7 @@ import GameplayKit
 @testable import Ah_Leongs_Farm
 
 final class InventorySystemTests: XCTestCase {
+    // TODO: REWRITE TESTS
     var inventorySystem: InventorySystem!
     var manager: EntityManager!
 
