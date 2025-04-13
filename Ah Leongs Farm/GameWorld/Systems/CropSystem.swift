@@ -117,8 +117,34 @@ class CropSystem: ISystem {
     }
 
     func growCrops() {
-        for crop in growingCrops {
-            crop.currentGrowthTurn += 1
+        guard let grid = grid else {
+            return
+        }
+
+        for r in 0..<grid.numberOfRows {
+            for c in 0..<grid.numberOfColumns {
+                guard let plot = grid.getEntity(row: r, column: c) else {
+                    continue
+                }
+
+                guard let cropSlot = plot.getComponentByType(ofType: CropSlotComponent.self),
+                      let crop = cropSlot.crop else {
+                    continue
+                }
+
+                guard let growthComponent = crop.getComponentByType(ofType: GrowthComponent.self) else {
+                    continue
+                }
+
+                guard let soil = plot.getComponentByType(ofType: SoilComponent.self) else {
+                    continue
+                }
+
+                if soil.hasWater {
+                    growthComponent.currentGrowthTurn += 1
+                    soil.hasWater = false
+                }
+            }
         }
     }
 
