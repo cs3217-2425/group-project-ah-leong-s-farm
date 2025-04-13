@@ -33,13 +33,13 @@ struct PlantCropEvent: GameEvent {
             return nil
         }
 
-        guard energySystem.getCurrentEnergy() >= ENERGY_USAGE else {
+        guard energySystem.getCurrentEnergy(of: .base) >= ENERGY_USAGE else {
             return nil
         }
         let isSuccessfullyPlanted = cropSystem.plantCrop(crop: crop, row: row, column: column)
 
         if isSuccessfullyPlanted {
-            energySystem.useEnergy(amount: ENERGY_USAGE)
+            energySystem.useEnergy(of: .base, amount: ENERGY_USAGE)
             levelSystem.addXP(XP_AMOUNT)
         }
 

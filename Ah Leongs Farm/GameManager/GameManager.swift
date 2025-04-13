@@ -56,20 +56,20 @@ class GameManager {
         return currencySystem.getTotalAmount(of: .coin)
     }
 
-    func getMaxEnergy() -> Int {
+    func getMaxEnergy(of type: EnergyType) -> Int {
         guard let energySystem = gameWorld.getSystem(ofType: EnergySystem.self) else {
             return 0
         }
 
-        return energySystem.getMaxEnergy()
+        return energySystem.getMaxEnergy(of: type)
     }
 
-    func getCurrentEnergy() -> Int {
+    func getCurrentEnergy(of type: EnergyType) -> Int {
         guard let energySystem = gameWorld.getSystem(ofType: EnergySystem.self) else {
             return 0
         }
 
-        return energySystem.getCurrentEnergy()
+        return energySystem.getCurrentEnergy(of: type)
     }
 
     func ensureTargetActiveQuestCount(target: Int = 3) {
@@ -108,13 +108,14 @@ class GameManager {
     }
 
     private func setUpEntities() {
-        gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
+        gameWorld.addEntity(GameState(maxTurns: 30))
     }
 
     // MARK: - Setup Methods
 
     private func setUpBaseEntities() {
-        gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
+
+        gameWorld.addEntity(GameState(maxTurns: 30))
 
         addStartingItems()
 

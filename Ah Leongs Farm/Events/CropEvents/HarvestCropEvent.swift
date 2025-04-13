@@ -19,7 +19,7 @@ struct HarvestCropEvent: GameEvent {
             return nil
         }
 
-        guard energySystem.getCurrentEnergy() >= ENERGY_USAGE else {
+        guard energySystem.getCurrentEnergy(of: .base) >= ENERGY_USAGE else {
             return nil
         }
 
@@ -31,7 +31,7 @@ struct HarvestCropEvent: GameEvent {
         // Set harvested quantity to 1 for now
         let harvestedQuantity = 1
 
-        energySystem.useEnergy(amount: ENERGY_USAGE)
+        energySystem.useEnergy(of: .base, amount: ENERGY_USAGE)
         levelSystem.addXP(XP_AMOUNT)
 
         return HarvestCropEventData(type: cropComponent.cropType, quantity: harvestedQuantity)

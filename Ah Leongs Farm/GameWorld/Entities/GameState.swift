@@ -13,18 +13,18 @@ class GameState: EntityAdapter {
         fatalError("init(coder:) not implemented")
     }
 
-    init(maxTurns: Int, maxEnergy: Int) {
+    init(maxTurns: Int) {
         super.init()
-        setUpComponents(maxTurns: maxTurns, maxEnergy: maxEnergy)
+        setUpComponents(maxTurns: maxTurns)
     }
 
-    private func setUpComponents(maxTurns: Int, maxEnergy: Int) {
+    private func setUpComponents(maxTurns: Int) {
         let turnComponent = TurnComponent(maxTurns: maxTurns)
-        let energyComponent = EnergyComponent(maxEnergy: maxEnergy)
+        let energyBankComponent = EnergyBankComponent()
         let levelComponent = LevelComponent()
         let walletComponent = WalletComponent()
         attachComponent(turnComponent)
-        attachComponent(energyComponent)
+        attachComponent(energyBankComponent)
         attachComponent(levelComponent)
         attachComponent(walletComponent)
     }
