@@ -20,14 +20,16 @@ class FarmLand: EntityAdapter {
 
     private func setUpComponents(rows: Int, columns: Int) {
         let gridComponent = GridComponent(rows: rows, columns: columns)
-        let persistenceComponent = PersistenceComponent(visitor: self)
         attachComponent(gridComponent)
-        attachComponent(persistenceComponent)
     }
 }
 
-extension FarmLand: PersistenceVisitor {
-    func visitPersistenceManager(manager: PersistenceManager) {
-        manager.save(farmLand: self)
+extension FarmLand: GamePersistenceObject {
+    func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {
+        manager.save(farmLand: self, persistenceId: persistenceId)
+    }
+
+    func delete(manager: PersistenceManager, persistenceId: UUID) -> Bool {
+        manager.delete(farmLand: self, persistenceId: persistenceId)
     }
 }

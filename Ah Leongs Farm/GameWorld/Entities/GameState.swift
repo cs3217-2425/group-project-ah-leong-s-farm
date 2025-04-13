@@ -28,14 +28,5 @@ class GameState: EntityAdapter {
         attachComponent(energyComponent)
         attachComponent(levelComponent)
         attachComponent(walletComponent)
-
-        let persistenceComponent = PersistenceComponent(visitor: self)
-        attachComponent(persistenceComponent)
-    }
-}
-
-extension GameState: PersistenceVisitor {
-    func visitPersistenceManager(manager: PersistenceManager) {
-        manager.save(gameState: self)
     }
 }

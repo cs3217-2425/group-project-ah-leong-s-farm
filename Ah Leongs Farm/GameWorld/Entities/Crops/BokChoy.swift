@@ -27,9 +27,6 @@ class BokChoy: EntityAdapter, Crop {
 
         let healthComponent = HealthComponent()
         attachComponent(healthComponent)
-
-        let persistenceComponent = PersistenceComponent(visitor: self)
-        attachComponent(persistenceComponent)
     }
 
     static func createSeed() -> Entity {
@@ -46,11 +43,5 @@ class BokChoy: EntityAdapter, Crop {
 
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(bokChoy: self, in: renderer)
-    }
-}
-
-extension BokChoy: PersistenceVisitor {
-    func visitPersistenceManager(manager: PersistenceManager) {
-        manager.save(bokChoy: self)
     }
 }

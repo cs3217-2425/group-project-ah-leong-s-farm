@@ -5,23 +5,59 @@
 //  Created by Jerry Leong on 1/4/25.
 //
 
+import Foundation
+
 class PersistenceManager {
-    func accept(visitor: PersistenceVisitor) {
-        visitor.visitPersistenceManager(manager: self)
+    private var persistenceMap: [UUID: any GamePersistenceObject] = [:]
+
+    private(set) var plotMutation: (any PlotMutation)? = CoreDataPlotMutation()
+    private(set) var farmLandMutation: (any FarmLandMutation)? = CoreDataFarmLandMutation()
+
+    func acceptToSave(visitor: GamePersistenceObject, persistenceId: UUID) {
+        let isSuccessfullySaved = visitor.save(manager: self, persistenceId: persistenceId)
+
+        if isSuccessfullySaved {
+            persistenceMap[persistenceId] = visitor
+        }
     }
 
-    func save(plot: Plot) {
-    }
+    func acceptToDelete(visitor: GamePersistenceObject, persistenceId: UUID) {
+        let isSuccessfullyDeleted = visitor.delete(manager: self, persistenceId: persistenceId)
 
-    func save(farmLand: FarmLand) {
+        if isSuccessfullyDeleted {
+            persistenceMap.removeValue(forKey: persistenceId)
+        }
     }
+}
 
-    func save(gameState: GameState) {
-    }
+extension PersistenceManager: IGameObserver {
 
-    func save(bokChoy: BokChoy) {
-    }
+    func observe(entities: [any Entity]) {
+        var deletePersistenceMap: [UUID: any GamePersistenceObject] = persistenceMap
 
-    func save(quest: Quest) {
+        for entity in entities {
+            guard let persistenceComponent = entity.getComponentByType(
+                ofType: PersistenceComponent.self) else {
+                continue
+            }
+
+            let persistenceVisitor = persistenceComponent.persistenceVisitor
+            let persistenceId = persistenceComponent.persistenceId
+            acceptToSave(visitor: persistenceVisitor, persistenceId: persistenceId)
+
+            deletePersistenceMap.removeValue(forKey: persistenceId)
+        }
+
+        for (persistenceID, gamePersistenceObject) in deletePersistenceMap {
+            acceptToDelete(visitor: gamePersistenceObject, persistenceId: persistenceID)
+        }
     }
+}
+
+// MARK: - AbstractPlotPersistenceManager
+extension PersistenceManager: AbstractPlotPersistenceManager {
+}
+
+// MARK: - AbstractFarmLandPersistenceManager
+extension PersistenceManager: AbstractFarmLandPersistenceManager {
 }
