@@ -25,7 +25,8 @@ class CoreDataGameStateMutation: GameStateMutation {
     }
 
     func upsertGameState(_ gameState: GameState) -> Bool {
-        let persistenceEntity = gameStateSerializer.serialize(gameState: gameState) ?? gameStateSerializer.serializeNew(gameState: gameState)
+        _ = gameStateSerializer.serialize(gameState: gameState) ??
+            gameStateSerializer.serializeNew(gameState: gameState)
 
         do {
             try store.save()
@@ -55,4 +56,3 @@ class CoreDataGameStateMutation: GameStateMutation {
         return true
     }
 }
-

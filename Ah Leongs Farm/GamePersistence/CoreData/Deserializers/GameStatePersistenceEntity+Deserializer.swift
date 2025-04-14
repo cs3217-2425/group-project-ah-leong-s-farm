@@ -7,7 +7,7 @@
 
 extension GameStatePersistenceEntity {
     func deserialize() -> GameState {
-        GameState(
+        let config = GameStateConfig(
             maxTurns: Int(maxTurns),
             currentTurn: Int(currentTurn),
             maxEnergy: Int(maxEnergy),
@@ -16,5 +16,6 @@ extension GameStatePersistenceEntity {
             currentXP: currentXP,
             coinAmount: walletCoinAmount
         )
+        return GameState(config: config)
     }
 }

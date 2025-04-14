@@ -43,7 +43,7 @@ class CoreDataPlotMutation: PlotMutation {
             // No plot found with the given ID
             return true
         }
-        
+
         store.managedContext.delete(plotPersistenceEntity)
 
         do {

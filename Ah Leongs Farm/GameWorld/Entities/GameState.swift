@@ -7,6 +7,16 @@
 
 import Foundation
 
+struct GameStateConfig {
+    let maxTurns: Int
+    let currentTurn: Int
+    let maxEnergy: Int
+    let currentEnergy: Int
+    let level: Int
+    let currentXP: Float
+    let coinAmount: Double
+}
+
 class GameState: EntityAdapter {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
@@ -18,12 +28,9 @@ class GameState: EntityAdapter {
         setUpComponents(maxTurns: maxTurns, maxEnergy: maxEnergy)
     }
 
-    init(maxTurns: Int, currentTurn: Int, maxEnergy: Int, currentEnergy: Int, level: Int,
-         currentXP: Float, coinAmount: Double) {
+    init(config: GameStateConfig) {
         super.init()
-        setUpComponents(maxTurns: maxTurns, currentTurn: currentTurn, maxEnergy: maxEnergy,
-                        currentEnergy: currentEnergy, level: level, currentXP: currentXP,
-                        coinAmount: coinAmount)
+        setUpComponents(config: config)
     }
 
     private func setUpComponents(maxTurns: Int, maxEnergy: Int) {
@@ -40,22 +47,13 @@ class GameState: EntityAdapter {
         attachComponent(persistenceComponent)
     }
 
-    private func setUpComponents(maxTurns: Int, currentTurn: Int, maxEnergy: Int,
-                                 currentEnergy: Int, level: Int, currentXP: Float,
-                                 coinAmount: Double) {
-        let turnComponent = TurnComponent(maxTurns: maxTurns, currentTurn: currentTurn)
-        let energyComponent = EnergyComponent(currentEnergy: currentEnergy, maxEnergy: maxEnergy)
-        let levelComponent = LevelComponent(level: level, currentXP: currentXP)
-        let walletComponent = WalletComponent(coinAmount: coinAmount)
-        let persistenceComponent = PersistenceComponent(persistenceObject: self)
-
-        attachComponent(turnComponent)
-        attachComponent(energyComponent)
-        attachComponent(levelComponent)
-        attachComponent(walletComponent)
-        addComponent(persistenceComponent)
+    private func setUpComponents(config: GameStateConfig) {
+        attachComponent(TurnComponent(maxTurns: config.maxTurns, currentTurn: config.currentTurn))
+        attachComponent(EnergyComponent(currentEnergy: config.currentEnergy, maxEnergy: config.maxEnergy))
+        attachComponent(LevelComponent(level: config.level, currentXP: config.currentXP))
+        attachComponent(WalletComponent(coinAmount: config.coinAmount))
+        addComponent(PersistenceComponent(persistenceObject: self))
     }
-
 }
 
 extension GameState: GamePersistenceObject {
