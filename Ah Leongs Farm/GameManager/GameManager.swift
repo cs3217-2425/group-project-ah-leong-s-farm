@@ -135,12 +135,12 @@ class GameManager {
 
     private func addStartingItems() {
         if let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) {
-            inventorySystem.addItems(ItemFactory.createItems(type: BokChoySeed.type, quantity: 5))
+            inventorySystem.addItems(SeedFactory.createMultiple(type: BokChoySeed.type, quantity: 5))
             // Additional starting items just to test the UI
-            inventorySystem.addItems(ItemFactory.createItems(type: Fertiliser.type, quantity: 3))
-            inventorySystem.addItems(ItemFactory.createItems(type: PremiumFertiliser.type, quantity: 6))
-            inventorySystem.addItems(ItemFactory.createItems(type: AppleSeed.type, quantity: 3))
-            inventorySystem.addItems(ItemFactory.createItems(type: BokChoySeed.type, quantity: 3))
+            inventorySystem.addItems(ToolFactory.createMultiple(type: Fertiliser.type, quantity: 3))
+            inventorySystem.addItems(ToolFactory.createMultiple(type: PremiumFertiliser.type, quantity: 6))
+            inventorySystem.addItems(SeedFactory.createMultiple(type: AppleSeed.type, quantity: 3))
+            inventorySystem.addItems(SeedFactory.createMultiple(type: BokChoySeed.type, quantity: 3))
         }
     }
 }

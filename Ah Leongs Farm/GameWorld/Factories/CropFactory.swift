@@ -6,25 +6,25 @@
 //
 
 
-class CropFactory: EntitySubfactory {
-    private let initializers: [EntityType: () -> Entity] = [
+class CropFactory: EntityFactory {
+    static private let initializers: [EntityType: () -> Entity] = [
         Apple.type: { Apple() },
         BokChoy.type: { BokChoy() },
         Potato.type: { Potato() }
     ]
 
-    func canCreate(type: EntityType) -> Bool {
+    static func canCreate(type: EntityType) -> Bool {
         initializers[type] != nil
     }
 
-    func create(type: EntityType) -> Entity {
+    static func create(type: EntityType) -> Entity {
         guard let initFn = initializers[type] else {
             fatalError("No crop initializer for type: \(type)")
         }
         return initFn()
     }
 
-    func createMultiple(type: EntityType, quantity: Int) -> [Entity] {
+    static func createMultiple(type: EntityType, quantity: Int) -> [Entity] {
         guard let initFn = initializers[type] else {
             fatalError("No crop initializer for type: \(type)")
         }
