@@ -9,16 +9,16 @@ import Foundation
 
 class SoilComponent: ComponentAdapter {
     var quality: Float
-    var moisture: Float
+    var hasWater: Bool
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")
     }
 
-    init(quality: Float, moisture: Float) {
+    init(quality: Float, hasWater: Bool) {
         self.quality = quality
-        self.moisture = moisture
+        self.hasWater = hasWater
         super.init()
     }
 }
