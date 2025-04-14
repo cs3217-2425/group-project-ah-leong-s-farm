@@ -26,18 +26,6 @@ class BokChoy: EntityAdapter, Crop {
         attachComponent(healthComponent)
     }
 
-    static func createSeed() -> Entity {
-        let bokChoy = BokChoy()
-        bokChoy.attachComponent(SeedComponent())
-        return bokChoy
-    }
-
-    static func createHarvested() -> Entity {
-        let bokChoy = BokChoy()
-        bokChoy.attachComponent(HarvestedComponent())
-        return bokChoy
-    }
-
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(bokChoy: self, in: renderer)
     }

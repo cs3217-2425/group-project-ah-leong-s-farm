@@ -9,19 +9,22 @@ import Foundation
 
 extension GameManager: InventoryDataProvider {
     func getInventoryItemViewModels() -> [InventoryItemViewModel] {
-        guard let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) else {
-            return []
-        }
 
-        let items = inventorySystem.getAllComponents()
-            .compactMap { $0.ownerEntity }
+        let items = gameWorld.getAllEntities()
+            .filter {
+                $0.getComponentByType(ofType: ItemComponent.self) != nil
+            }
 
         // Use the displayName as an identifier for the viewModel
         var viewModels: [String: InventoryItemViewModel] = [:]
 
         for item in items {
-            let currDisplayName = displayService.getDisplayName(for: item)
-            let currImageName = displayService.getImageName(for: item)
+            guard let currDisplayName = ItemToViewDataMap
+                .itemTypeToDisplayName[item.type],
+                  let currImageName = ItemToViewDataMap
+                .itemTypeToImage[item.type] else {
+                continue
+            }
 
             if let existingViewModel = viewModels[currDisplayName] {
                 viewModels[currDisplayName] = InventoryItemViewModel(
@@ -41,37 +44,33 @@ extension GameManager: InventoryDataProvider {
     }
 
     func getSeedItemViewModels() -> [SeedItemViewModel] {
-        guard let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) else {
-            return []
-        }
 
-        let items = inventorySystem.getAllComponents()
-            .compactMap { $0.ownerEntity }
-
-        let seedItems = items.filter {
-            $0.getComponentByType(ofType: SeedComponent.self) != nil
-        }
+        let seedItems = gameWorld.getAllEntities()
+            .filter {
+                $0.getComponentByType(ofType: SeedComponent.self) != nil
+            }
 
         // Use the displayName as an identifier for the viewModel
         var viewModels: [String: SeedItemViewModel] = [:]
 
         for item in seedItems {
-            guard let cropComponent = item.getComponentByType(ofType: CropComponent.self) else {
+            guard let currDisplayName = ItemToViewDataMap
+                .itemTypeToDisplayName[item.type],
+                  let currImageName = ItemToViewDataMap
+                .itemTypeToImage[item.type] else {
                 continue
             }
-            let currDisplayName = displayService.getDisplayName(for: item)
-            let currImageName = displayService.getImageName(for: item)
 
             if let existingViewModel = viewModels[currDisplayName] {
                 viewModels[currDisplayName] = SeedItemViewModel(
-                    cropType: cropComponent.cropType,
+                    seedType: item.type,
                     name: currDisplayName,
                     imageName: currImageName,
                     quantity: existingViewModel.quantity + 1
                 )
             } else {
                 viewModels[currDisplayName] = SeedItemViewModel(
-                    cropType: cropComponent.cropType,
+                    seedType: item.type,
                     name: currDisplayName,
                     imageName: currImageName,
                     quantity: 1

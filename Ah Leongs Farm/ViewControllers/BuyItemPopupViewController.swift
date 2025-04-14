@@ -235,5 +235,5 @@ class BuyItemPopupViewController: UIViewController {
 }
 
 protocol BuyPopupDelegate: AnyObject {
-    func didConfirmPurchase(item: ItemType, quantity: Int)
+    func didConfirmPurchase(item: EntityType, quantity: Int)
 }

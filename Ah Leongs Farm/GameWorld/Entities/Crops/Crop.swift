@@ -6,9 +6,7 @@
 //
 
 import Foundation
-import GameplayKit
 
 protocol Crop: SpriteRenderManagerVisitor where Self: EntityAdapter {
-    static func createSeed() -> Entity
-    static func createHarvested() -> Entity
+
 }

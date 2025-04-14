@@ -24,8 +24,8 @@ extension GameManager: PlotDataProvider {
         return PlotViewModel(row: row, column: column, crop: cropViewModel)
     }
 
-    func plantCrop(row: Int, column: Int, cropType: CropType) {
-        let event = PlantCropEvent(row: row, column: column, cropType: cropType)
+    func plantCrop(row: Int, column: Int, seedType: EntityType) {
+        let event = PlantCropEvent(row: row, column: column, seedType: seedType)
         gameWorld.queueEvent(event)
     }
 
