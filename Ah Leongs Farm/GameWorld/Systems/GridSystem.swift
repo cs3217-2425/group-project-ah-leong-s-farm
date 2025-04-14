@@ -19,6 +19,41 @@ class GridSystem: ISystem {
         return gridComponent.getEntity(row: row, column: column) as? Plot
     }
 
+    func waterPlot(row: Int, column: Int) {
+        guard let plot = self.getPlot(row: row, column: column) else {
+            return
+        }
+
+        guard let soil = plot.getComponentByType(ofType: SoilComponent.self) else {
+            return
+        }
+
+        soil.hasWater = true
+    }
+
+    func unwaterPlots() {
+        guard let gridComponent = gridComponent else {
+            return
+        }
+
+        let numRows = gridComponent.numberOfRows
+        let numCols = gridComponent.numberOfColumns
+
+        for r in 0..<numRows {
+            for c in 0..<numCols {
+                guard let plot = getPlot(row: r, column: c) else {
+                    continue
+                }
+
+                guard let soilComponent = plot.getComponentByType(ofType: SoilComponent.self) else {
+                    continue
+                }
+
+                soilComponent.hasWater = false
+            }
+        }
+    }
+
     /// Adds a plot to the grid at the specified row and column.
     /// - Parameters:
     ///  - row: The row to add the plot to.

@@ -9,7 +9,6 @@ import Foundation
 
 class Plot: EntityAdapter {
     private static let DefaultSoilQuality: Float = 0
-    private static let DefaultSoilMoisture: Float = 0
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
@@ -24,7 +23,7 @@ class Plot: EntityAdapter {
     func setUpComponents(position: CGPoint, crop: Crop? = nil) {
         attachComponent(CropSlotComponent(crop: crop))
         attachComponent(PositionComponent(x: position.x, y: position.y))
-        attachComponent(SoilComponent(quality: Plot.DefaultSoilQuality, moisture: Plot.DefaultSoilMoisture))
+        attachComponent(SoilComponent(quality: Plot.DefaultSoilQuality, hasWater: false))
         attachComponent(SpriteComponent(visitor: self))
     }
 }
