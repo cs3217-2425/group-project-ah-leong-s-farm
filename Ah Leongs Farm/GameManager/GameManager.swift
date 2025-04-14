@@ -2,13 +2,11 @@ import Foundation
 
 class GameManager {
     let gameWorld: GameWorld
-    let displayService: ItemDisplayService
     private var gameObservers: [any IGameObserver] = []
     private var previousTime: TimeInterval = 0
 
     init() {
         gameWorld = GameWorld()
-        displayService = GameItemDisplayService()
         setUpBaseEntities()
         setUpQuests()
     }
@@ -137,12 +135,12 @@ class GameManager {
 
     private func addStartingItems() {
         if let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) {
-            inventorySystem.addItems(ItemFactory.createItems(type: .bokChoySeed, quantity: 5))
+            inventorySystem.addItems(ItemFactory.createItems(type: BokChoySeed.type, quantity: 5))
             // Additional starting items just to test the UI
-            inventorySystem.addItems(ItemFactory.createItems(type: .fertiliser, quantity: 3))
-            inventorySystem.addItems(ItemFactory.createItems(type: .premiumFertiliser, quantity: 6))
-            inventorySystem.addItems(ItemFactory.createItems(type: .appleSeed, quantity: 3))
-            inventorySystem.addItems(ItemFactory.createItems(type: .bokChoySeed, quantity: 3))
+            inventorySystem.addItems(ItemFactory.createItems(type: Fertiliser.type, quantity: 3))
+            inventorySystem.addItems(ItemFactory.createItems(type: PremiumFertiliser.type, quantity: 6))
+            inventorySystem.addItems(ItemFactory.createItems(type: AppleSeed.type, quantity: 3))
+            inventorySystem.addItems(ItemFactory.createItems(type: BokChoySeed.type, quantity: 3))
         }
     }
 }
