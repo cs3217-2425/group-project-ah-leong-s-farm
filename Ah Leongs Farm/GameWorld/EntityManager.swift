@@ -20,6 +20,12 @@ class EntityManager {
         }
     }
 
+    func addEntities(_ entities: [Entity]) {
+        for entity in entities {
+            addEntity(entity)
+        }
+    }
+
     func removeEntity(_ entity: Entity) {
         let entityID = entity.id
         entities.removeValue(forKey: entityID)

@@ -14,11 +14,8 @@ class RewardItemEvent: GameEvent {
 
     func execute(in context: EventContext, queueable: EventQueueable) -> EventData? {
         var eventData = ItemGrantEventData()
-        guard let inventorySystem = context.getSystem(ofType: InventorySystem.self) else {
-            return nil
-        }
         for (type, quantity) in itemTypes {
-            inventorySystem.addItems(ItemFactory.createItems(type: type, quantity: quantity))
+            context.addEntities(ItemFactory.createItems(type: type, quantity: quantity))
             eventData.itemGrants[type] = quantity
         }
         return eventData

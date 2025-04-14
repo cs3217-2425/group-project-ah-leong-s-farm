@@ -6,6 +6,8 @@
 //
 
 protocol EventContext: AnyObject {
+    func addEntity(_ entity: Entity)
+    func addEntities(_ entities: [Entity])
     func getEntitiesOfType(_ type: EntityType) -> [Entity]
     func getSystem<T>(ofType: T.Type) -> T?
 }

@@ -18,32 +18,6 @@ class InventorySystem: ISystem {
         self.manager = manager
     }
 
-    func addItem(_ itemToAdd: Entity) {
-        guard itemToAdd.getComponentByType(ofType: ItemComponent.self) != nil else {
-            return
-        }
-
-        manager?.addEntity(itemToAdd)
-    }
-
-    func addItems(_ itemsToAdd: [Entity]) {
-        for item in itemsToAdd {
-            addItem(item)
-        }
-    }
-
-    func removeItem(_ item: ItemComponent) {
-        guard let itemToRemove = items.first(where: { $0 == item }) else {
-            return
-        }
-
-        guard let entity = itemToRemove.ownerEntity else {
-            return
-        }
-
-        manager?.removeComponent(ofType: ItemComponent.self, from: entity)
-    }
-
     func hasItem(_ item: ItemComponent) -> Bool {
         items.contains(item)
     }
