@@ -63,7 +63,7 @@ class MarketSystem: ISystem {
         var purchasedEntities: [Entity] = []
 
         for _ in 0..<quantity {
-            let entity = EntityFactoryRegistry.createItem(type: type)
+            let entity = EntityFactoryRegistry.create(type: type)
 
             addEntityToSellMarket(entity: entity)
 
@@ -96,7 +96,7 @@ class MarketSystem: ISystem {
 
         return true
     }
-    
+
     func addEntityToSellMarket(entity: Entity) {
         if sellableEntityTypes.contains(entity.type) {
             entity.attachComponent(SellComponent())

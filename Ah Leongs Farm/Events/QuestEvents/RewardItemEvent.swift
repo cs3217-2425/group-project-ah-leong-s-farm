@@ -18,7 +18,7 @@ class RewardItemEvent: GameEvent {
             return nil
         }
         for (type, quantity) in itemTypes {
-            inventorySystem.addItems(EntityFactoryRegistry.createItems(type: type, quantity: quantity))
+            inventorySystem.addItems(EntityFactoryRegistry.createMultiple(type: type, quantity: quantity))
             eventData.itemGrants[type] = quantity
         }
         return eventData
