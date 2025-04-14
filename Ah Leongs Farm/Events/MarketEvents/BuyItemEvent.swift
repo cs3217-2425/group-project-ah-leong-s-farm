@@ -35,7 +35,9 @@ class BuyItemEvent: GameEvent {
             return nil
         }
 
-        marketSystem.buyItem(type: itemType, quantity: quantity)
+        context.addEntities(ItemFactory.createItems(type: itemType,
+                                                    quantity: quantity))
+        marketSystem.decreaseStock(type: itemType, quantity: quantity)
         walletSystem.removeCurrencyFromAll(currencyType, amount: totalCost)
 
         return BuyItemEventData(itemType: itemType, quantity: quantity)

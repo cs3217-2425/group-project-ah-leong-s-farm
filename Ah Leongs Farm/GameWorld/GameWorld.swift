@@ -38,11 +38,6 @@ class GameWorld {
         processEvents()
     }
 
-    func removeEntity(_ entity: Entity) {
-        entityManager.removeEntity(entity)
-    }
-
-
     func getAllEntities() -> [Entity] {
         entityManager.getAllEntities()
     }
@@ -83,6 +78,14 @@ extension GameWorld: EventContext {
 
     func addEntities(_ entities: [Entity]) {
         entityManager.addEntities(entities)
+    }
+
+    func removeEntity(_ entity: Entity) {
+        entityManager.removeEntity(entity)
+    }
+
+    func getEntities(withComponentType type: Component.Type) -> [Entity] {
+        entityManager.getEntities(withComponentType: type)
     }
 
     func getEntitiesOfType(_ type: EntityType) -> [Entity] {

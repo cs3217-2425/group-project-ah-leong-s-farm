@@ -5,6 +5,7 @@
 //  Created by proglab on 29/3/25.
 //
 
+import Foundation
 class SellItemEvent: GameEvent {
     private let itemType: EntityType
     private let quantity: Int
@@ -27,11 +28,23 @@ class SellItemEvent: GameEvent {
 
         let totalProfit = price * Double(quantity)
 
-        if marketSystem.sellItem(type: itemType, quantity: quantity) {
-            walletSystem.addCurrencyToAll(currencyType, amount: totalProfit)
-        } else {
-            print("Failed to sell \(quantity) of \(itemType).")
+        let sellableEntities = context.getEntities(withComponentType: SellComponent.self)
+        let filteredEntities = sellableEntities.filter {
+            $0.type == itemType
         }
+
+        guard filteredEntities.count >= quantity else {
+            return nil
+        }
+
+        let entitiesToSell = filteredEntities.prefix(quantity)
+        for entity in filteredEntities {
+            context.removeEntity(entity)
+        }
+
+        marketSystem.increaseStock(type: itemType, quantity: quantity)
+
+        walletSystem.addCurrencyToAll(currencyType, amount: totalProfit)
 
         return SellItemEventData(itemType: itemType, quantity: quantity)
     }
