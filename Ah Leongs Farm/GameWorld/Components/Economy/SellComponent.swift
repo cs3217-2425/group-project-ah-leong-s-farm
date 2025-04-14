@@ -7,10 +7,8 @@
 
 import Foundation
 class SellComponent: ComponentAdapter {
-    let itemType: ItemType
 
-    init(itemType: ItemType) {
-        self.itemType = itemType
+    override init() {
         super.init()
     }
 

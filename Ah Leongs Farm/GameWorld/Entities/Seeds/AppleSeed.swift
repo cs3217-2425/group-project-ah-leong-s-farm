@@ -1,13 +1,13 @@
 //
-//  Apple.swift
+//  AppleSeed.swift
 //  Ah Leongs Farm
 //
-//  Created by Ma Yuchen on 30/3/25.
+//  Created by Ma Yuchen on 13/4/25.
 //
 
 import Foundation
 
-class Apple: EntityAdapter, Crop {
+class AppleSeed: EntityAdapter, Seed {
     override init() {
         super.init()
         setUpComponents()
@@ -19,14 +19,15 @@ class Apple: EntityAdapter, Crop {
     }
 
     private func setUpComponents() {
-        let cropComponent = CropComponent(cropType: .apple)
-        attachComponent(cropComponent)
+        let seedComponent = SeedComponent()
+        attachComponent(seedComponent)
+    }
 
-        let healthComponent = HealthComponent()
-        attachComponent(healthComponent)
+    func toCrop() -> Crop {
+        Apple()
     }
 
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(apple: self, in: renderer)
+        manager.createNodeForEntity(appleSeed: self, in: renderer)
     }
 }

@@ -70,16 +70,16 @@ struct SurviveNumberOfTurnsCriteria: QuestCriteria {
  Calculates the quest progress based on sold crop quantity,
  ensuring the event data matches the required crop type.
  */
-struct SellCropCriteria: QuestCriteria {
-    let cropType: CropType
+struct SellItemCriteria: QuestCriteria {
+    let itemType: EntityType
 
     func calculateValue(from eventData: EventData) -> Float {
 
-        guard let sellData = eventData as? SellCropEventData else {
+        guard let sellData = eventData as? SellItemEventData else {
             return 0
         }
 
-        guard sellData.type == cropType else {
+        guard sellData.itemType == itemType else {
             return 0
         }
         return Float(sellData.quantity)

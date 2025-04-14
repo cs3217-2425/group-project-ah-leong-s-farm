@@ -25,59 +25,108 @@ final class InventorySystemTests: XCTestCase {
 
     func testInit_createsInventorySystem() {
         let inventorySystem = InventorySystem(for: manager)
-
         XCTAssertNotNil(inventorySystem)
     }
 
-    func testAddItem_createsCorrectQuantity() {
-        inventorySystem.addItem(type: .bokChoySeed, quantity: 2)
-        XCTAssertEqual(inventorySystem.getNumberOfItems(of: .bokChoySeed), 2)
+    func testAddItem_addsItemToInventory() {
+        let testItem = createTestEntity()
+
+        inventorySystem.addItem(testItem)
+
+        XCTAssertEqual(inventorySystem.getAllComponents().count, 1)
     }
 
-    func testRemoveItem_removesCorrectItem() {
-        inventorySystem.addItem(type: .bokChoySeed, quantity: 1)
-        guard let item = inventorySystem.getAllComponents().first else {
-            XCTFail("Failed to retrieve item")
+    func testAddItem_withoutItemComponent_doesNotAddToInventory() {
+        let entityWithoutItemComponent = EntityAdapter()
+
+        inventorySystem.addItem(entityWithoutItemComponent)
+
+        XCTAssertEqual(inventorySystem.getAllComponents().count, 0)
+    }
+
+    func testAddItems_addsMultipleItemsToInventory() {
+        let testItems = [createTestEntity(), createTestEntity(), createTestEntity()]
+
+        inventorySystem.addItems(testItems)
+
+        XCTAssertEqual(inventorySystem.getAllComponents().count, 3)
+    }
+
+    func testRemoveItem_removesItemFromInventory() {
+        let testItem = createTestEntity()
+        inventorySystem.addItem(testItem)
+
+        guard let itemComponent = testItem.getComponentByType(ofType: ItemComponent.self) else {
+            XCTFail("Failed to get ItemComponent")
             return
         }
-        inventorySystem.removeItem(item)
-        XCTAssertFalse(inventorySystem.hasItem(item))
+
+        inventorySystem.removeItem(itemComponent)
+
+        XCTAssertEqual(inventorySystem.getAllComponents().count, 0)
     }
 
-    func testHasItem_returnsCorrectValue() {
-        inventorySystem.addItem(type: .premiumFertiliser, quantity: 1)
-        XCTAssertTrue(inventorySystem.hasItem(of: .premiumFertiliser))
-        XCTAssertFalse(inventorySystem.hasItem(of: .bokChoySeed))
+    func testHasItem_withExistingItem_returnsTrue() {
+        let testItem = createTestEntity()
+        inventorySystem.addItem(testItem)
+
+        guard let itemComponent = testItem.getComponentByType(ofType: ItemComponent.self) else {
+            XCTFail("Failed to get ItemComponent")
+            return
+        }
+
+        XCTAssertTrue(inventorySystem.hasItem(itemComponent))
     }
 
-    func testHasItem_existingItem_returnsTrue() {
-        inventorySystem.addItem(type: .premiumFertiliser, quantity: 1)
-        XCTAssertTrue(inventorySystem.hasItem(of: .premiumFertiliser))
+    func testHasItem_withNonExistingItem_returnsFalse() {
+        let testItem = createTestEntity()
+
+        guard let itemComponent = testItem.getComponentByType(ofType: ItemComponent.self) else {
+            XCTFail("Failed to get ItemComponent")
+            return
+        }
+
+        XCTAssertFalse(inventorySystem.hasItem(itemComponent))
     }
 
-    func testHasItem_nonExistingItem_returnsFalse() {
-        inventorySystem.addItem(type: .bokChoySeed, quantity: 1)
-        XCTAssertFalse(inventorySystem.hasItem(of: .premiumFertiliser))
+    func testHasItemOfType_withExistingType_returnsTrue() {
+        let testItem = TestItemEntity()
+        testItem.attachComponent(ItemComponent())
+        inventorySystem.addItem(testItem)
+
+        XCTAssertTrue(inventorySystem.hasItem(of: TestItemEntity.type))
     }
 
-    func testGetAllComponents_noComponents_returnsEmptyArray() {
+    func testHasItemOfType_withNonExistingType_returnsFalse() {
+        let testItem = TestItemEntity()
+        testItem.attachComponent(ItemComponent())
+        inventorySystem.addItem(testItem)
+
+        XCTAssertFalse(inventorySystem.hasItem(of: DifferentTestItemEntity.type))
+    }
+
+    func testGetAllComponents_returnsAllItemComponents() {
+        let item1 = createTestEntity()
+        let item2 = createTestEntity()
+
+        inventorySystem.addItem(item1)
+        inventorySystem.addItem(item2)
+
         let allComponents = inventorySystem.getAllComponents()
 
-        XCTAssertEqual(allComponents, [])
+        XCTAssertEqual(allComponents.count, 2)
     }
 
-    func testGetItemsByQuantity_returnsCorrectMapping() {
-        inventorySystem.addItem(type: .bokChoySeed, quantity: 2)
-        inventorySystem.addItem(type: .premiumFertiliser, quantity: 1)
+    // MARK: - Helper Methods
 
-        let itemsByQuantity = inventorySystem.getItemsByQuantity()
-        XCTAssertEqual(itemsByQuantity[.bokChoySeed], 2)
-        XCTAssertEqual(itemsByQuantity[.premiumFertiliser], 1)
-    }
-
-    func testGetNumberOfItems_noItems_returnsZero() {
-        let numOfItems = inventorySystem.getNumberOfItems(of: .bokChoySeed)
-
-        XCTAssertEqual(numOfItems, 0)
+    private func createTestEntity() -> Entity {
+        let entity = TestItemEntity()
+        entity.attachComponent(ItemComponent())
+        return entity
     }
 }
+
+// MARK: - Test Entity Classes
+
+private class TestItemEntity: EntityAdapter {}
+private class DifferentTestItemEntity: EntityAdapter {}

@@ -9,50 +9,74 @@ import Foundation
 
 extension GameManager: InventoryDataProvider {
     func getInventoryItemViewModels() -> [InventoryItemViewModel] {
-        guard let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) else {
-            return []
-        }
 
-        let itemsByQuantity = inventorySystem.getItemsByQuantity()
-        var viewModels: [InventoryItemViewModel] = []
-
-        for (itemType, quantity) in itemsByQuantity {
-            guard let name = ItemToViewDataMap.itemTypeToDisplayName[itemType],
-                  let imageName = ItemToViewDataMap.itemTypeToImage[itemType] else {
-                fatalError("Name or image not stored in ItemToViewDataMap for \(itemType)")
+        let items = gameWorld.getAllEntities()
+            .filter {
+                $0.getComponentByType(ofType: ItemComponent.self) != nil
             }
-            viewModels.append(InventoryItemViewModel(
-                name: name,
-                imageName: imageName,
-                quantity: quantity
-            ))
+
+        // Use the displayName as an identifier for the viewModel
+        var viewModels: [String: InventoryItemViewModel] = [:]
+
+        for item in items {
+            guard let currDisplayName = ItemToViewDataMap
+                .itemTypeToDisplayName[item.type],
+                  let currImageName = ItemToViewDataMap
+                .itemTypeToImage[item.type] else {
+                continue
+            }
+
+            if let existingViewModel = viewModels[currDisplayName] {
+                viewModels[currDisplayName] = InventoryItemViewModel(
+                    name: currDisplayName,
+                    imageName: currImageName,
+                    quantity: existingViewModel.quantity + 1
+                )
+            } else {
+                viewModels[currDisplayName] = InventoryItemViewModel(
+                    name: currDisplayName,
+                    imageName: currImageName,
+                    quantity: 1
+                )
+            }
         }
-        return viewModels.sorted { $0.name < $1.name }
+        return viewModels.values.sorted { $0.name < $1.name }
     }
 
     func getSeedItemViewModels() -> [SeedItemViewModel] {
-        guard let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) else {
-            return []
-        }
 
-        let itemsByQuantity = inventorySystem.getItemsByQuantity()
-        var viewModels: [SeedItemViewModel] = []
-
-        for (itemType, quantity) in itemsByQuantity {
-            guard let name = ItemToViewDataMap.itemTypeToDisplayName[itemType],
-                  let imageName = ItemToViewDataMap.itemTypeToImage[itemType] else {
-                fatalError("Name or image not stored in ItemToViewDataMap for \(itemType)")
+        let seedItems = gameWorld.getAllEntities()
+            .filter {
+                $0.getComponentByType(ofType: SeedComponent.self) != nil
             }
 
-            if let viewModel = SeedItemViewModel(
-                itemType: itemType,
-                name: name,
-                imageName: imageName,
-                quantity: quantity
-            ) {
-                viewModels.append(viewModel)
+        // Use the displayName as an identifier for the viewModel
+        var viewModels: [String: SeedItemViewModel] = [:]
+
+        for item in seedItems {
+            guard let currDisplayName = ItemToViewDataMap
+                .itemTypeToDisplayName[item.type],
+                  let currImageName = ItemToViewDataMap
+                .itemTypeToImage[item.type] else {
+                continue
+            }
+
+            if let existingViewModel = viewModels[currDisplayName] {
+                viewModels[currDisplayName] = SeedItemViewModel(
+                    seedType: item.type,
+                    name: currDisplayName,
+                    imageName: currImageName,
+                    quantity: existingViewModel.quantity + 1
+                )
+            } else {
+                viewModels[currDisplayName] = SeedItemViewModel(
+                    seedType: item.type,
+                    name: currDisplayName,
+                    imageName: currImageName,
+                    quantity: 1
+                )
             }
         }
-        return viewModels.sorted { $0.name < $1.name }
+        return viewModels.values.sorted { $0.name < $1.name }
     }
 }

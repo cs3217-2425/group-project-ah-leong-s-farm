@@ -26,7 +26,6 @@ extension AbstractGameStatePersistenceManager {
         }
 
         let isSuccessfullyDeleted = gameStateMutation.deleteGameState()
-
         return isSuccessfullyDeleted
     }
 }

@@ -8,9 +8,6 @@
 import Foundation
 
 class BokChoy: EntityAdapter, Crop {
-    var seedItemType: ItemType = .bokChoySeed
-    var harvestedItemType: ItemType = .bokChoyHarvested
-
     override init() {
         super.init()
         setUpComponents()
@@ -27,18 +24,6 @@ class BokChoy: EntityAdapter, Crop {
 
         let healthComponent = HealthComponent()
         attachComponent(healthComponent)
-    }
-
-    static func createSeed() -> Entity {
-        let bokChoy = BokChoy()
-        bokChoy.attachComponent(SeedComponent())
-        return bokChoy
-    }
-
-    static func createHarvested() -> Entity {
-        let bokChoy = BokChoy()
-        bokChoy.attachComponent(HarvestedComponent())
-        return bokChoy
     }
 
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {

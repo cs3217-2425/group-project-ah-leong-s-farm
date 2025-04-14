@@ -2,30 +2,30 @@
 //  ItemToViewDataMap.swift
 //  Ah Leongs Farm
 //
-//  Created by Ma Yuchen on 30/3/25.
+//  Created by Ma Yuchen on 13/4/25.
 //
 
 struct ItemToViewDataMap {
-    static let itemTypeToImage: [ItemType: String] = [
-        .bokChoySeed: "bokchoy_seed",
-        .bokChoyHarvested: "bokchoy_harvested",
-        .appleSeed: "apple_seed",
-        .appleHarvested: "apple_harvested",
-        .potatoSeed: "potato_seed",
-        .potatoHarvested: "potato_harvested",
-        .fertiliser: "fertiliser",
-        .premiumFertiliser: "premium_fertiliser"
+    static let itemTypeToImage: [EntityType: String] = [
+        BokChoySeed.type: "bokchoy_seed",
+        BokChoy.type: "bokchoy_harvested",
+        AppleSeed.type: "apple_seed",
+        Apple.type: "apple_harvested",
+        PotatoSeed.type: "potato_seed",
+        Potato.type: "potato_harvested",
+        Fertiliser.type: "fertiliser",
+        PremiumFertiliser.type: "premium_fertiliser"
     ]
 
-    static let itemTypeToDisplayName: [ItemType: String] = [
-        .bokChoySeed: "Bokchoy seed",
-        .bokChoyHarvested: "Bokchoy",
-        .appleSeed: "Apple seed",
-        .appleHarvested: "Apple",
-        .potatoSeed: "Potato seed",
-        .potatoHarvested: "Potato",
-        .fertiliser: "Fertiliser",
-        .premiumFertiliser: "Premium fertiliser"
+    static let itemTypeToDisplayName: [EntityType: String] = [
+        BokChoySeed.type: "Bokchoy seed",
+        BokChoy.type: "Bokchoy",
+        AppleSeed.type: "Apple seed",
+        Apple.type: "Apple",
+        PotatoSeed.type: "Potato seed",
+        Potato.type: "Potato",
+        Fertiliser.type: "Fertiliser",
+        PremiumFertiliser.type: "Premium fertiliser"
     ]
 
 }

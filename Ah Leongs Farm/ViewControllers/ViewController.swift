@@ -163,8 +163,8 @@ extension ViewController: IGameObserver {
     }
 
     private func updateEnergyLabel() {
-        let currentEnergy = gameManager.getCurrentEnergy()
-        let maxEnergy = gameManager.getMaxEnergy()
+        let currentEnergy = gameManager.getCurrentEnergy(of: .base)
+        let maxEnergy = gameManager.getMaxEnergy(of: .base)
         gameStatisticsView?.updateEnergyLabel(currentEnergy: currentEnergy, maxEnergy: maxEnergy)
     }
 

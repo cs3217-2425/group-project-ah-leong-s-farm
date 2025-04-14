@@ -5,6 +5,10 @@ class GameManager {
     private var gameObservers: [any IGameObserver] = []
     private var previousTime: TimeInterval = 0
 
+    private var shouldResetGame: Bool {
+        getCurrentTurn() > getMaxTurns()
+    }
+
     init() {
         gameWorld = GameWorld()
         setUpBaseEntities()
@@ -12,6 +16,10 @@ class GameManager {
     }
 
     func update(_ currentTime: TimeInterval) {
+        if shouldResetGame {
+            resetGame()
+        }
+
         let deltaTime = max(currentTime - previousTime, 0) // Ensure deltaTime is not negative
         let entities = gameWorld.getAllEntities()
 
@@ -56,20 +64,20 @@ class GameManager {
         return currencySystem.getTotalAmount(of: .coin)
     }
 
-    func getMaxEnergy() -> Int {
+    func getMaxEnergy(of type: EnergyType) -> Int {
         guard let energySystem = gameWorld.getSystem(ofType: EnergySystem.self) else {
             return 0
         }
 
-        return energySystem.getMaxEnergy()
+        return energySystem.getMaxEnergy(of: type)
     }
 
-    func getCurrentEnergy() -> Int {
+    func getCurrentEnergy(of type: EnergyType) -> Int {
         guard let energySystem = gameWorld.getSystem(ofType: EnergySystem.self) else {
             return 0
         }
 
-        return energySystem.getCurrentEnergy()
+        return energySystem.getCurrentEnergy(of: type)
     }
 
     func ensureTargetActiveQuestCount(target: Int = 3) {
@@ -107,27 +115,49 @@ class GameManager {
         gameWorld.registerEventObserver(observer)
     }
 
+    private func resetGame() {
+        let oldEntities = gameWorld.getAllEntities()
+        for entity in oldEntities {
+            gameWorld.removeEntity(entity)
+        }
+
+        setUpBaseEntities(shouldReset: true)
+        setUpQuests()
+    }
+
     // MARK: - Setup Methods
 
-    private func setUpBaseEntities() {
-        setUpGameStateEntity()
+    private func setUpBaseEntities(shouldReset: Bool = false) {
+        setUpGameStateEntity(shouldReset: shouldReset)
 
         addStartingItems()
 
-        setUpFarmLandEntity()
+        setUpFarmLandEntity(shouldReset: shouldReset)
     }
 
-    private func setUpGameStateEntity() {
+    private func setUpGameStateEntity(shouldReset: Bool) {
+        let defaultGameState = GameState(maxTurns: 30)
+
+        if shouldReset {
+            gameWorld.addEntity(defaultGameState)
+            return
+        }
+
         let gameStateQuery = CoreDataGameStateQuery()
 
-        let gameState = gameStateQuery?.fetch() ?? GameState(maxTurns: 30, maxEnergy: 10)
+        let gameState = gameStateQuery?.fetch() ?? defaultGameState
 
         gameWorld.addEntity(gameState)
     }
 
-    private func setUpFarmLandEntity() {
+    private func setUpFarmLandEntity(shouldReset: Bool) {
         let farmLand = FarmLand(rows: 10, columns: 10)
         gameWorld.addEntity(farmLand)
+
+        if shouldReset {
+            // do not create plots
+            return
+        }
 
         let plotQuery = CoreDataPlotQuery()
         let plots = plotQuery?.fetch() ?? []
@@ -161,13 +191,12 @@ class GameManager {
 
     private func addStartingItems() {
         if let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) {
-            inventorySystem.addItem(type: .bokChoySeed, quantity: 5)
+            inventorySystem.addItems(ItemFactory.createItems(type: BokChoySeed.type, quantity: 5))
             // Additional starting items just to test the UI
-            inventorySystem.addItem(type: .fertiliser, quantity: 3)
-            inventorySystem.addItem(type: .premiumFertiliser, quantity: 6)
-            inventorySystem.addItem(type: .appleSeed, quantity: 7)
-            inventorySystem.addItem(type: .potatoSeed, quantity: 52)
-            inventorySystem.addItem(type: .bokChoySeed, quantity: 5)
+            inventorySystem.addItems(ItemFactory.createItems(type: Fertiliser.type, quantity: 3))
+            inventorySystem.addItems(ItemFactory.createItems(type: PremiumFertiliser.type, quantity: 6))
+            inventorySystem.addItems(ItemFactory.createItems(type: AppleSeed.type, quantity: 3))
+            inventorySystem.addItems(ItemFactory.createItems(type: BokChoySeed.type, quantity: 3))
         }
     }
 }

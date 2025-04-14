@@ -22,11 +22,6 @@ struct HarvestCropEventData: EventData {
     var quantity: Int
 }
 
-struct SellCropEventData: EventData {
-    var type: CropType
-    var quantity: Int
-}
-
 struct XPGrantEventData: EventData {
     var xpGrantAmount: Float = 0
 }
@@ -36,16 +31,16 @@ struct CurrencyGrantEventData: EventData {
 }
 
 struct ItemGrantEventData: EventData {
-    var itemGrants: [ItemType: Int] = [:]
+    var itemGrants: [EntityType: Int] = [:]
 }
 
 struct BuyItemEventData: EventData {
-    var itemType: ItemType
+    var itemType: EntityType
     var quantity: Int
 }
 
 struct SellItemEventData: EventData {
-    var itemType: ItemType
+    var itemType: EntityType
     var quantity: Int
 }
 

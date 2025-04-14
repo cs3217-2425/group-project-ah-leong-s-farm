@@ -13,12 +13,13 @@ final class EnergySystemTests: XCTestCase {
 
     var energySystem: EnergySystem?
     var manager: EntityManager?
+    private let energyType = EnergyType.base
 
     override func setUp() {
         super.setUp()
         manager = EntityManager()
         energySystem = EnergySystem(for: manager!)
-        manager?.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
+        manager?.addEntity(GameState(maxTurns: 30))
     }
 
     override func tearDown() {
@@ -50,10 +51,10 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        let success = energySystem.useEnergy(amount: 5)
+        let success = energySystem.useEnergy(of: energyType, amount: 5)
 
         XCTAssertTrue(success)
-        XCTAssertEqual(energySystem.getCurrentEnergy(), 5)
+        XCTAssertEqual(energySystem.getCurrentEnergy(of: energyType), 5)
     }
 
     func testUseEnergy_WithExactlyAvailableEnergy_ShouldSucceed() {
@@ -62,10 +63,10 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        let success = energySystem.useEnergy(amount: 10)
+        let success = energySystem.useEnergy(of: energyType, amount: 10)
 
         XCTAssertTrue(success)
-        XCTAssertEqual(energySystem.getCurrentEnergy(), 0)
+        XCTAssertEqual(energySystem.getCurrentEnergy(of: energyType), 0)
     }
 
     func testUseEnergy_WithInsufficientEnergy_ShouldFail() {
@@ -74,17 +75,17 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        guard let energyComponent = manager?.getSingletonComponent(ofType: EnergyComponent.self) else {
+        guard let energyBankComponent = manager?.getSingletonComponent(ofType: EnergyBankComponent.self) else {
             XCTFail("EnergyComponent not found")
             return
         }
 
-        energyComponent.currentEnergy = 5
+        energyBankComponent.setCurrentEnergy(of: energyType, to: 5)
 
-        let success = energySystem.useEnergy(amount: 10)
+        let success = energySystem.useEnergy(of: energyType, amount: 10)
 
         XCTAssertFalse(success)
-        XCTAssertEqual(energyComponent.currentEnergy, 5)
+        XCTAssertEqual(energyBankComponent.getCurrentEnergy(of: energyType), 5)
     }
 
     func testUseEnergy_WithZeroAmount_ShouldSucceed() {
@@ -93,10 +94,10 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        let success = energySystem.useEnergy(amount: 0)
+        let success = energySystem.useEnergy(of: energyType, amount: 0)
 
         XCTAssertTrue(success)
-        XCTAssertEqual(energySystem.getCurrentEnergy(), 10)
+        XCTAssertEqual(energySystem.getCurrentEnergy(of: energyType), 10)
     }
 
     func testUseEnergy_WithNegativeAmount_ShouldFailSafely() {
@@ -105,16 +106,16 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        let success = energySystem.useEnergy(amount: -5)
+        let success = energySystem.useEnergy(of: energyType, amount: -5)
 
         XCTAssertFalse(success)
-        XCTAssertEqual(energySystem.getCurrentEnergy(), 10)
+        XCTAssertEqual(energySystem.getCurrentEnergy(of: energyType), 10)
     }
 
     func testUseEnergy_WithNoComponents_ShouldReturnFalse() {
         let emptySystem = createEmptySystem()
 
-        let result = emptySystem.useEnergy(amount: 5)
+        let result = emptySystem.useEnergy(of: energyType, amount: 5)
 
         XCTAssertFalse(result)
     }
@@ -125,16 +126,16 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        guard let energyComponent = manager?.getSingletonComponent(ofType: EnergyComponent.self) else {
+        guard let energyBankComponent = manager?.getSingletonComponent(ofType: EnergyBankComponent.self) else {
             XCTFail("EnergyComponent not found")
             return
         }
 
-        energyComponent.currentEnergy = 3
+        energyBankComponent.setCurrentEnergy(of: energyType, to: 3)
 
-        energySystem.replenishEnergy()
+        energySystem.replenishEnergy(of: energyType)
 
-        XCTAssertEqual(energyComponent.currentEnergy, 10)
+        XCTAssertEqual(energyBankComponent.getCurrentEnergy(of: energyType), 10)
     }
 
     func testReplenishEnergy_WhenFullyDepleted_ShouldRestoreToMax() {
@@ -143,16 +144,16 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        guard let energyComponent = manager?.getSingletonComponent(ofType: EnergyComponent.self) else {
+        guard let energyBankComponent = manager?.getSingletonComponent(ofType: EnergyBankComponent.self) else {
             XCTFail("EnergyComponent not found")
             return
         }
 
-        energyComponent.currentEnergy = 0
+        energyBankComponent.setCurrentEnergy(of: energyType, to: 0)
 
-        energySystem.replenishEnergy()
+        energySystem.replenishEnergy(of: energyType)
 
-        XCTAssertEqual(energyComponent.currentEnergy, 10)
+        XCTAssertEqual(energyBankComponent.getCurrentEnergy(of: energyType), 10)
     }
 
     func testReplenishEnergy_WhenAlreadyFull_ShouldMaintainMax() {
@@ -161,15 +162,15 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        energySystem.replenishEnergy()
+        energySystem.replenishEnergy(of: energyType)
 
-        XCTAssertEqual(energySystem.getCurrentEnergy(), 10)
+        XCTAssertEqual(energySystem.getCurrentEnergy(of: energyType), 10)
     }
 
     func testReplenishEnergy_WithNoComponents_ShouldHandleSafely() {
         let emptySystem = createEmptySystem()
 
-        XCTAssertNoThrow(emptySystem.replenishEnergy())
+        XCTAssertNoThrow(emptySystem.replenishEnergy(of: energyType))
     }
 
     func testIncreaseMaxEnergy_ShouldIncreaseMaximum() {
@@ -178,10 +179,10 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        energySystem.increaseMaxEnergy(by: 5)
+        energySystem.increaseMaxEnergy(of: energyType, by: 5)
 
-        XCTAssertEqual(energySystem.getMaxEnergy(), 15)
-        XCTAssertEqual(energySystem.getCurrentEnergy(), 10)
+        XCTAssertEqual(energySystem.getMaxEnergy(of: energyType), 15)
+        XCTAssertEqual(energySystem.getCurrentEnergy(of: energyType), 10)
     }
 
     func testIncreaseMaxEnergy_WithZeroAmount_ShouldNotChange() {
@@ -190,9 +191,9 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        energySystem.increaseMaxEnergy(by: 0)
+        energySystem.increaseMaxEnergy(of: energyType, by: 0)
 
-        XCTAssertEqual(energySystem.getMaxEnergy(), 10)
+        XCTAssertEqual(energySystem.getMaxEnergy(of: energyType), 10)
     }
 
     func testIncreaseMaxEnergy_WithNegativeAmount_ShouldHandleSafely() {
@@ -201,15 +202,15 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        energySystem.increaseMaxEnergy(by: -5)
+        energySystem.increaseMaxEnergy(of: energyType, by: -5)
 
-        XCTAssertEqual(energySystem.getMaxEnergy(), 5)
+        XCTAssertEqual(energySystem.getMaxEnergy(of: energyType), 5)
     }
 
     func testIncreaseMaxEnergy_WithNoComponents_ShouldHandleSafely() {
         let emptySystem = createEmptySystem()
 
-        XCTAssertNoThrow(emptySystem.increaseMaxEnergy(by: 5))
+        XCTAssertNoThrow(emptySystem.increaseMaxEnergy(of: energyType, by: 5))
     }
 
     func testGetCurrentEnergy_ShouldReturnCorrectValue() {
@@ -218,14 +219,14 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        guard let energyComponent = manager?.getSingletonComponent(ofType: EnergyComponent.self) else {
+        guard let energyBankComponent = manager?.getSingletonComponent(ofType: EnergyBankComponent.self) else {
             XCTFail("EnergyComponent not found")
             return
         }
 
-        energyComponent.currentEnergy = 7
+        energyBankComponent.setCurrentEnergy(of: energyType, to: 7)
 
-        let currentEnergy = energySystem.getCurrentEnergy()
+        let currentEnergy = energySystem.getCurrentEnergy(of: energyType)
 
         XCTAssertEqual(currentEnergy, 7)
     }
@@ -233,7 +234,7 @@ final class EnergySystemTests: XCTestCase {
     func testGetCurrentEnergy_WithNoComponents_ShouldReturnZero() {
         let emptySystem = createEmptySystem()
 
-        let currentEnergy = emptySystem.getCurrentEnergy()
+        let currentEnergy = emptySystem.getCurrentEnergy(of: energyType)
 
         XCTAssertEqual(currentEnergy, 0)
     }
@@ -244,7 +245,7 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        let maxEnergy = energySystem.getMaxEnergy()
+        let maxEnergy = energySystem.getMaxEnergy(of: energyType)
 
         XCTAssertEqual(maxEnergy, 10)
     }
@@ -252,7 +253,7 @@ final class EnergySystemTests: XCTestCase {
     func testGetMaxEnergy_WithNoComponents_ShouldReturnZero() {
         let emptySystem = createEmptySystem()
 
-        let maxEnergy = emptySystem.getMaxEnergy()
+        let maxEnergy = emptySystem.getMaxEnergy(of: energyType)
 
         XCTAssertEqual(maxEnergy, 0)
     }
@@ -263,28 +264,28 @@ final class EnergySystemTests: XCTestCase {
         }
         let (energySystem) = setup
 
-        guard let energyComponent = manager?.getSingletonComponent(ofType: EnergyComponent.self) else {
+        guard let energyBankComponent = manager?.getSingletonComponent(ofType: EnergyBankComponent.self) else {
             XCTFail("EnergyComponent not found")
             return
         }
 
-        XCTAssertEqual(energyComponent.currentEnergy, 10)
-        XCTAssertEqual(energyComponent.maxEnergy, 10)
+        XCTAssertEqual(energyBankComponent.getCurrentEnergy(of: energyType), 10)
+        XCTAssertEqual(energyBankComponent.getMaxEnergy(of: energyType), 10)
 
-        XCTAssertTrue(energySystem.useEnergy(amount: 7))
-        XCTAssertEqual(energyComponent.currentEnergy, 3)
+        XCTAssertTrue(energySystem.useEnergy(of: energyType, amount: 7))
+        XCTAssertEqual(energyBankComponent.getCurrentEnergy(of: energyType), 3)
 
-        energySystem.increaseMaxEnergy(by: 5)
-        XCTAssertEqual(energyComponent.maxEnergy, 15)
-        XCTAssertEqual(energyComponent.currentEnergy, 3)
+        energySystem.increaseMaxEnergy(of: energyType, by: 5)
+        XCTAssertEqual(energyBankComponent.getMaxEnergy(of: energyType), 15)
+        XCTAssertEqual(energyBankComponent.getCurrentEnergy(of: energyType), 3)
 
-        energySystem.replenishEnergy()
-        XCTAssertEqual(energyComponent.currentEnergy, 15)
+        energySystem.replenishEnergy(of: energyType)
+        XCTAssertEqual(energyBankComponent.getCurrentEnergy(of: energyType), 15)
 
-        XCTAssertFalse(energySystem.useEnergy(amount: 20))
-        XCTAssertEqual(energyComponent.currentEnergy, 15)
+        XCTAssertFalse(energySystem.useEnergy(of: energyType, amount: 20))
+        XCTAssertEqual(energyBankComponent.getCurrentEnergy(of: energyType), 15)
 
-        XCTAssertTrue(energySystem.useEnergy(amount: 15))
-        XCTAssertEqual(energyComponent.currentEnergy, 0)
+        XCTAssertTrue(energySystem.useEnergy(of: energyType, amount: 15))
+        XCTAssertEqual(energyBankComponent.getCurrentEnergy(of: energyType), 0)
     }
 }

@@ -38,13 +38,15 @@ class GameStateSerializer {
     }
 
     private func updateAttributes(gameStatePersistenceEntity: GameStatePersistenceEntity, gameState: GameState) {
-        let energyComponent = gameState.getComponentByType(ofType: EnergyComponent.self)
+        let energyComponent = gameState.getComponentByType(ofType: EnergyBankComponent.self)
         let turnComponent = gameState.getComponentByType(ofType: TurnComponent.self)
         let levelComponent = gameState.getComponentByType(ofType: LevelComponent.self)
         let walletComponent = gameState.getComponentByType(ofType: WalletComponent.self)
 
-        gameStatePersistenceEntity.currentEnergy = Int64(energyComponent?.currentEnergy ?? 0)
-        gameStatePersistenceEntity.maxEnergy = Int64(energyComponent?.maxEnergy ?? 0)
+        gameStatePersistenceEntity.currentBaseEnergy = Int64(energyComponent?.getCurrentEnergy(
+            of: .base) ?? 0)
+        gameStatePersistenceEntity.maxBaseEnergy = Int64(energyComponent?.getMaxEnergy(
+            of: .base) ?? 0)
 
         gameStatePersistenceEntity.level = Int64(levelComponent?.level ?? 0)
         gameStatePersistenceEntity.currentXP = levelComponent?.currentXP ?? 0

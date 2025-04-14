@@ -8,9 +8,6 @@
 import Foundation
 
 class Potato: EntityAdapter, Crop {
-    var seedItemType: ItemType = .potatoSeed
-    var harvestedItemType: ItemType = .potatoHarvested
-
     override init() {
         super.init()
         setUpComponents()
@@ -27,18 +24,6 @@ class Potato: EntityAdapter, Crop {
 
         let healthComponent = HealthComponent()
         attachComponent(healthComponent)
-    }
-
-    static func createSeed() -> Entity {
-        let potato = Potato()
-        potato.attachComponent(SeedComponent())
-        return potato
-    }
-
-    static func createHarvested() -> Entity {
-        let potato = Potato()
-        potato.attachComponent(HarvestedComponent())
-        return potato
     }
 
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {

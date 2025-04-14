@@ -10,8 +10,8 @@ import Foundation
 struct GameStateConfig {
     let maxTurns: Int
     let currentTurn: Int
-    let maxEnergy: Int
-    let currentEnergy: Int
+    let maxBaseEnergy: Int
+    let currentBaseEnergy: Int
     let level: Int
     let currentXP: Float
     let coinAmount: Double
@@ -23,9 +23,9 @@ class GameState: EntityAdapter {
         fatalError("init(coder:) not implemented")
     }
 
-    init(maxTurns: Int, maxEnergy: Int) {
+    init(maxTurns: Int) {
         super.init()
-        setUpComponents(maxTurns: maxTurns, maxEnergy: maxEnergy)
+        setUpComponents(maxTurns: maxTurns)
     }
 
     init(config: GameStateConfig) {
@@ -33,23 +33,27 @@ class GameState: EntityAdapter {
         setUpComponents(config: config)
     }
 
-    private func setUpComponents(maxTurns: Int, maxEnergy: Int) {
+    private func setUpComponents(maxTurns: Int) {
         let turnComponent = TurnComponent(maxTurns: maxTurns)
-        let energyComponent = EnergyComponent(maxEnergy: maxEnergy)
+        let energyBankComponent = EnergyBankComponent()
         let levelComponent = LevelComponent()
         let walletComponent = WalletComponent()
         let persistenceComponent = PersistenceComponent(persistenceObject: self)
 
         attachComponent(turnComponent)
-        attachComponent(energyComponent)
+        attachComponent(energyBankComponent)
         attachComponent(levelComponent)
         attachComponent(walletComponent)
         attachComponent(persistenceComponent)
     }
 
     private func setUpComponents(config: GameStateConfig) {
+        let energies: [EnergyType: EnergyStat] = [
+            .base: EnergyStat(current: config.currentBaseEnergy, max: config.maxBaseEnergy)
+        ]
+
         attachComponent(TurnComponent(maxTurns: config.maxTurns, currentTurn: config.currentTurn))
-        attachComponent(EnergyComponent(currentEnergy: config.currentEnergy, maxEnergy: config.maxEnergy))
+        attachComponent(EnergyBankComponent(initialEnergies: energies))
         attachComponent(LevelComponent(level: config.level, currentXP: config.currentXP))
         attachComponent(WalletComponent(coinAmount: config.coinAmount))
         addComponent(PersistenceComponent(persistenceObject: self))

@@ -6,16 +6,13 @@
 //
 
 struct SeedItemViewModel {
-    let cropType: CropType
+    let seedType: EntityType
     let name: String
     let imageName: String
     let quantity: Int
 
-    init?(itemType: ItemType, name: String, imageName: String, quantity: Int) {
-        guard let cropType = seedToCrop[itemType] else {
-            return nil
-        }
-        self.cropType = cropType
+    init?(seedType: EntityType, name: String, imageName: String, quantity: Int) {
+        self.seedType = seedType
         self.name = name
         self.imageName = imageName
         self.quantity = quantity

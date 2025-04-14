@@ -10,8 +10,8 @@ extension GameStatePersistenceEntity {
         let config = GameStateConfig(
             maxTurns: Int(maxTurns),
             currentTurn: Int(currentTurn),
-            maxEnergy: Int(maxEnergy),
-            currentEnergy: Int(currentEnergy),
+            maxBaseEnergy: Int(maxBaseEnergy),
+            currentBaseEnergy: Int(currentBaseEnergy),
             level: Int(level),
             currentXP: currentXP,
             coinAmount: walletCoinAmount
