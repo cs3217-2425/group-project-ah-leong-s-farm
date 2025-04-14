@@ -29,6 +29,29 @@ class PlotActionViewController: UIViewController {
         setupActionButtons()
         setupCollectionView()
         addDismissTapGesture()
+        setupGrowthLabel()
+    }
+
+    private func setupGrowthLabel() {
+        guard let crop = plotViewModel.crop else {
+            return
+        }
+
+        let growthLabel = UILabel()
+
+        growthLabel.text = "Growing for \(crop.currentGrowthTurn)/\(crop.totalGrowthTurns) turns"
+        growthLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        growthLabel.textAlignment = .center
+        growthLabel.translatesAutoresizingMaskIntoConstraints = false
+        growthLabel.textColor = .white
+
+        view.addSubview(growthLabel)
+
+        NSLayoutConstraint.activate([
+            growthLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            growthLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            growthLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
     }
 
     private func setupActionButtons() {
