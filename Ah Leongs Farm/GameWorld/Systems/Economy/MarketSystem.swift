@@ -64,6 +64,7 @@ class MarketSystem: ISystem {
         return true
     }
 
+    // DO NOT CALL THIS FUNCTION AS LONG AS currentStock == Int.max
     func increaseStock(type: EntityType, quantity: Int) {
         guard let currentStock = itemStocks[type] else {
             return

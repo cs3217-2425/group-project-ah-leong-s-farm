@@ -18,7 +18,7 @@ final class TurnSystemTests: XCTestCase {
         super.setUp()
         manager = EntityManager()
         turnSystem = TurnSystem(for: manager!)
-        manager?.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
+        manager?.addEntity(GameState(maxTurns: 30))
     }
 
     override func tearDown() {
