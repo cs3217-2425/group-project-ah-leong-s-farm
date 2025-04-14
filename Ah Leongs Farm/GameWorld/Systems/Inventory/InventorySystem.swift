@@ -66,6 +66,6 @@ class InventorySystem: ISystem {
     }
 
     private func isAllowedInInventory(_ entity: Entity) -> Bool {
-        return entity is Seed || entity is Crop || entity is Tool
+        entity is Seed || entity is Crop || entity is Tool
     }
 }

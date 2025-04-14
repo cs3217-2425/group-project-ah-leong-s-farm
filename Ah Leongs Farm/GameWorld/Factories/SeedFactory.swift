@@ -6,7 +6,7 @@
 //
 
 class SeedFactory: EntityFactory {
-    static private let initializers: [EntityType: () -> Entity] = [
+    private static let initializers: [EntityType: () -> Entity] = [
         BokChoySeed.type: { BokChoySeed() },
         AppleSeed.type: { AppleSeed() },
         PotatoSeed.type: { PotatoSeed() }
@@ -27,8 +27,6 @@ class SeedFactory: EntityFactory {
         guard let initFn = initializers[type] else {
             fatalError("No seed initializer for type: \(type)")
         }
-        let res = (0..<quantity).map { _ in initFn() }
-        print(res)
-        return res
+        return (0..<quantity).map { _ in initFn() }
     }
 }

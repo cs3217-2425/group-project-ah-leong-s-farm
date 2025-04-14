@@ -5,9 +5,8 @@
 //  Created by proglab on 14/4/25.
 //
 
-
 class CropFactory: EntityFactory {
-    static private let initializers: [EntityType: () -> Entity] = [
+    private static let initializers: [EntityType: () -> Entity] = [
         Apple.type: { Apple() },
         BokChoy.type: { BokChoy() },
         Potato.type: { Potato() }

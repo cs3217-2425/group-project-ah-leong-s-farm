@@ -13,21 +13,17 @@ class EntityFactoryRegistry {
     ]
 
     static func createItem(type: EntityType) -> Entity {
-        for factory in factories {
-            if factory.canCreate(type: type) {
-                return factory.create(type: type)
-            }
+        if let factory = factories.first(where: { $0.canCreate(type: type) }) {
+            return factory.create(type: type)
         }
         fatalError("No factory found for type: \(type)")
     }
 
     static func createItems(type: EntityType, quantity: Int) -> [Entity] {
-        for factory in factories {
-            if factory.canCreate(type: type) {
-                return factory.createMultiple(type: type, quantity: quantity)
-            }
+        if let factory = factories.first(where: { $0.canCreate(type: type) }) {
+            return factory.createMultiple(type: type, quantity: quantity)
         }
+
         fatalError("No factory found for type: \(type)")
     }
 }
-

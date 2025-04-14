@@ -5,9 +5,8 @@
 //  Created by proglab on 14/4/25.
 //
 
-
 class ToolFactory: EntityFactory {
-    static private let initializers: [EntityType: () -> Entity] = [
+    private static let initializers: [EntityType: () -> Entity] = [
         Fertiliser.type: { Fertiliser() },
         PremiumFertiliser.type: { PremiumFertiliser() }
     ]
