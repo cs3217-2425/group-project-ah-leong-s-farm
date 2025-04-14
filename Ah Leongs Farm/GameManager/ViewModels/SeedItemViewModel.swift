@@ -6,13 +6,13 @@
 //
 
 struct SeedItemViewModel {
-    let cropType: CropType
+    let seedType: EntityType
     let name: String
     let imageName: String
     let quantity: Int
 
-    init?(cropType: CropType, name: String, imageName: String, quantity: Int) {
-        self.cropType = cropType
+    init?(seedType: EntityType, name: String, imageName: String, quantity: Int) {
+        self.seedType = seedType
         self.name = name
         self.imageName = imageName
         self.quantity = quantity

@@ -18,7 +18,7 @@ struct PlotViewModel {
 protocol PlotDataProvider: AnyObject {
     func getPlotViewModel(row: Int, column: Int) -> PlotViewModel?
 
-    func plantCrop(row: Int, column: Int, cropType: CropType)
+    func plantCrop(row: Int, column: Int, seedType: EntityType)
 
     func harvestCrop(row: Int, column: Int)
 
