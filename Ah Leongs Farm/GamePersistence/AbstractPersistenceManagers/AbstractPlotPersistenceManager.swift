@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol AbstractPlotPersistenceManager{
+protocol AbstractPlotPersistenceManager {
     var plotMutation: PlotMutation? { get }
 }
 

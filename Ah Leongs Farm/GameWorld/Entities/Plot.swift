@@ -49,7 +49,7 @@ class Plot: EntityAdapter {
         attachComponent(PositionComponent(x: position.x, y: position.y))
         attachComponent(SoilComponent(quality: soilQuality, moisture: soilMoisture))
         attachComponent(SpriteComponent(visitor: self))
-        attachComponent(PersistenceComponent(persistenceId: persistenceID, visitor: self))
+        attachComponent(PersistenceComponent(persistenceObject: self, persistenceId: persistenceID))
     }
 }
 

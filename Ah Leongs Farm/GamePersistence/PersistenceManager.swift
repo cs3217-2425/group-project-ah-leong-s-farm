@@ -8,16 +8,19 @@
 import Foundation
 
 class PersistenceManager {
-    private var persistenceMap: [UUID: any GamePersistenceObject] = [:]
+    private var persistenceMap: [EntityID: GamePersistenceMetaData] = [:]
 
     private(set) var plotMutation: (any PlotMutation)? = CoreDataPlotMutation()
-    private(set) var farmLandMutation: (any FarmLandMutation)? = CoreDataFarmLandMutation()
+    private(set) var gameStateMutation: (any GameStateMutation)? = CoreDataGameStateMutation()
 
     func acceptToSave(visitor: GamePersistenceObject, persistenceId: UUID) {
         let isSuccessfullySaved = visitor.save(manager: self, persistenceId: persistenceId)
 
         if isSuccessfullySaved {
-            persistenceMap[persistenceId] = visitor
+            persistenceMap[visitor.id] = GamePersistenceMetaData(
+                persistenceId: persistenceId,
+                persistenceObject: visitor
+            )
         }
     }
 
@@ -25,7 +28,7 @@ class PersistenceManager {
         let isSuccessfullyDeleted = visitor.delete(manager: self, persistenceId: persistenceId)
 
         if isSuccessfullyDeleted {
-            persistenceMap.removeValue(forKey: persistenceId)
+            persistenceMap.removeValue(forKey: visitor.id)
         }
     }
 }
@@ -33,7 +36,7 @@ class PersistenceManager {
 extension PersistenceManager: IGameObserver {
 
     func observe(entities: [any Entity]) {
-        var deletePersistenceMap: [UUID: any GamePersistenceObject] = persistenceMap
+        var deletePersistenceMap: [EntityID: GamePersistenceMetaData] = persistenceMap
 
         for entity in entities {
             guard let persistenceComponent = entity.getComponentByType(
@@ -41,15 +44,15 @@ extension PersistenceManager: IGameObserver {
                 continue
             }
 
-            let persistenceVisitor = persistenceComponent.persistenceVisitor
+            let persistenceVisitor = persistenceComponent.persistenceObject
             let persistenceId = persistenceComponent.persistenceId
             acceptToSave(visitor: persistenceVisitor, persistenceId: persistenceId)
 
-            deletePersistenceMap.removeValue(forKey: persistenceId)
+            deletePersistenceMap.removeValue(forKey: entity.id)
         }
 
-        for (persistenceID, gamePersistenceObject) in deletePersistenceMap {
-            acceptToDelete(visitor: gamePersistenceObject, persistenceId: persistenceID)
+        for metaData in deletePersistenceMap.values {
+            acceptToDelete(visitor: metaData.persistenceObject, persistenceId: metaData.persistenceId)
         }
     }
 }
@@ -58,6 +61,6 @@ extension PersistenceManager: IGameObserver {
 extension PersistenceManager: AbstractPlotPersistenceManager {
 }
 
-// MARK: - AbstractFarmLandPersistenceManager
-extension PersistenceManager: AbstractFarmLandPersistenceManager {
+// MARK: - AbstractGameStatePersistenceManager
+extension PersistenceManager: AbstractGameStatePersistenceManager {
 }

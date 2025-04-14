@@ -9,16 +9,21 @@ import GameplayKit
 
 class PersistenceComponent: ComponentAdapter {
     let persistenceId: UUID
-    let persistenceVisitor: GamePersistenceObject
+    let persistenceObject: GamePersistenceObject
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")
     }
 
-    init(persistenceId: UUID, visitor: GamePersistenceObject) {
+    init(persistenceObject: GamePersistenceObject, persistenceId: UUID) {
         self.persistenceId = persistenceId
-        self.persistenceVisitor = visitor
+        self.persistenceObject = persistenceObject
         super.init()
+    }
+
+    // Can be used to initialize a PersistenceComponent whose persistenceID is not utilised
+    convenience init(persistenceObject: GamePersistenceObject) {
+        self.init(persistenceObject: persistenceObject, persistenceId: UUID())
     }
 }

@@ -23,13 +23,3 @@ class FarmLand: EntityAdapter {
         attachComponent(gridComponent)
     }
 }
-
-extension FarmLand: GamePersistenceObject {
-    func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {
-        manager.save(farmLand: self, persistenceId: persistenceId)
-    }
-
-    func delete(manager: PersistenceManager, persistenceId: UUID) -> Bool {
-        manager.delete(farmLand: self, persistenceId: persistenceId)
-    }
-}

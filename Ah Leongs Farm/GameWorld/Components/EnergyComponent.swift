@@ -16,10 +16,14 @@ class EnergyComponent: ComponentAdapter {
         fatalError("init(coder:) not implemented")
     }
 
-    init(maxEnergy: Int) {
-        self.currentEnergy = maxEnergy
+    init(currentEnergy: Int, maxEnergy: Int) {
+        self.currentEnergy = currentEnergy
         self.maxEnergy = maxEnergy
         super.init()
+    }
+
+    convenience init(maxEnergy: Int) {
+        self.init(currentEnergy: maxEnergy, maxEnergy: maxEnergy)
     }
 
 }

@@ -107,19 +107,46 @@ class GameManager {
         gameWorld.registerEventObserver(observer)
     }
 
-    private func setUpEntities() {
-        gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
-    }
-
     // MARK: - Setup Methods
 
     private func setUpBaseEntities() {
-        gameWorld.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
+        setUpGameStateEntity()
 
         addStartingItems()
 
+        setUpFarmLandEntity()
+    }
+
+    private func setUpGameStateEntity() {
+        let gameStateQuery = CoreDataGameStateQuery()
+
+        let gameState = gameStateQuery?.fetch() ?? GameState(maxTurns: 30, maxEnergy: 10)
+
+        gameWorld.addEntity(gameState)
+    }
+
+    private func setUpFarmLandEntity() {
         let farmLand = FarmLand(rows: 10, columns: 10)
         gameWorld.addEntity(farmLand)
+
+        let plotQuery = CoreDataPlotQuery()
+        let plots = plotQuery?.fetch() ?? []
+
+        guard let gridComponent = farmLand.getComponentByType(ofType: GridComponent.self) else {
+            return
+        }
+
+        for plot in plots {
+            guard let position = plot.getComponentByType(ofType: PositionComponent.self) else {
+                continue
+            }
+
+            let row = Int(position.x)
+            let column = Int(position.y)
+
+            gridComponent.setEntity(plot, row: row, column: column)
+            gameWorld.addEntity(plot)
+        }
     }
 
     private func setUpQuests() {

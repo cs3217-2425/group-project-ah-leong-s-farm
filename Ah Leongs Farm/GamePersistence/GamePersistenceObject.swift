@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol GamePersistenceObject {
+protocol GamePersistenceObject: Entity {
     func save(manager: PersistenceManager, persistenceId: UUID) -> Bool
 
     func delete(manager: PersistenceManager, persistenceId: UUID) -> Bool

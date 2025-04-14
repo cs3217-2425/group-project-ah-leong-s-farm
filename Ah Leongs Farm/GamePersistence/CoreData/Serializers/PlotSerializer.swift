@@ -39,7 +39,7 @@ class PlotSerializer {
         let soilComponent = plot.getComponentByType(ofType: SoilComponent.self)
 
         plotPersistenceEntity.positionX = Float(positionComponent?.x ?? 0)
-        plotPersistenceEntity.positionY  = Float(positionComponent?.y ?? 0)
+        plotPersistenceEntity.positionY = Float(positionComponent?.y ?? 0)
 
         plotPersistenceEntity.soilQuality = soilComponent?.quality ?? 0
         plotPersistenceEntity.soilMoisture = soilComponent?.moisture ?? 0
