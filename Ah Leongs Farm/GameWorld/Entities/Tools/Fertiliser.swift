@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Fertiliser: EntityAdapter {
+class Fertiliser: EntityAdapter, Tool {
     // TODO: Consider FertiliserComponent once we implement fertiliser logic
     let soilImprovementAmount: Int
 
