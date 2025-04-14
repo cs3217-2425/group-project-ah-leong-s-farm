@@ -142,7 +142,6 @@ class CropSystem: ISystem {
 
                 if soil.hasWater {
                     growthComponent.currentGrowthTurn += 1
-                    soil.hasWater = false
                 }
             }
         }
