@@ -38,11 +38,13 @@ class SellItemEvent: GameEvent {
         }
 
         let entitiesToSell = filteredEntities.prefix(quantity)
-        for entity in filteredEntities {
+        for entity in entitiesToSell {
             context.removeEntity(entity)
         }
 
-        marketSystem.increaseStock(type: itemType, quantity: quantity)
+        // Makes sense to increase stock of market after selling, however since
+        // stock is now Int.max, increasing stock will cause integer overflow.
+//        marketSystem.increaseStock(type: itemType, quantity: quantity)
 
         walletSystem.addCurrencyToAll(currencyType, amount: totalProfit)
 
