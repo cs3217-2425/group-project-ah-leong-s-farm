@@ -6,58 +6,48 @@
 //
 
 class ItemFactory {
-    private static let itemToInitialisers: [EntityType: () -> Entity] = [
+    private static let typeToInitialisers: [EntityType: () -> Entity] = [
         BokChoySeed.type: {
-            setupComponents(BokChoySeed())
+            BokChoySeed()
             },
         AppleSeed.type: {
-            setupComponents(AppleSeed())
+            AppleSeed()
             },
         PotatoSeed.type: {
-            setupComponents(PotatoSeed())
+            PotatoSeed()
              },
         Apple.type: {
-            setupComponents(Apple())
+            Apple()
             },
         BokChoy.type: {
-            setupComponents(BokChoy())
+            BokChoy()
             },
         Potato.type: {
-            setupComponents(Potato())
+            Potato()
             },
         Fertiliser.type: {
-            setupComponents(Fertiliser())
+            Fertiliser()
             },
         PremiumFertiliser.type: {
-            setupComponents(PremiumFertiliser())
+            PremiumFertiliser()
             }
     ]
 
     static func createItem(type: EntityType) -> Entity {
-        guard let itemInitialiser = itemToInitialisers[type] else {
+        guard let entityInitialiser = typeToInitialisers[type] else {
             fatalError("Item initialiser for \(type) not defined!")
         }
-        return itemInitialiser()
+        return entityInitialiser()
     }
 
     static func createItems(type: EntityType, quantity: Int) -> [Entity] {
-        guard let itemInitialiser = itemToInitialisers[type] else {
+        guard let entityInitialiser = typeToInitialisers[type] else {
             fatalError("Item initialiser for \(type) not defined!")
         }
         var items: [Entity] = []
         for _ in 0..<quantity {
-            items.append(itemInitialiser())
+            items.append(entityInitialiser())
         }
         return items
-    }
-
-    private static func setupComponents(_ entity: Entity) -> Entity {
-        entity.attachComponent(ItemComponent())
-
-        // Add SellComponent if the market can sell that item
-        if MarketInformation.sellableItems.contains(entity.type) {
-            entity.attachComponent(SellComponent())
-        }
-        return entity
     }
 }
