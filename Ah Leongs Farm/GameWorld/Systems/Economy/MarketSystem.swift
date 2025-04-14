@@ -100,6 +100,7 @@ class MarketSystem: ISystem {
     func addEntityToSellMarket(entity: Entity) {
         if sellableEntityTypes.contains(entity.type) {
             entity.attachComponent(SellComponent())
+            manager?.addEntity(entity)
         }
     }
 

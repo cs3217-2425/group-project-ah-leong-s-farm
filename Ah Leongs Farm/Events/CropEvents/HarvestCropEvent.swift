@@ -16,7 +16,8 @@ struct HarvestCropEvent: GameEvent {
         guard let cropSystem = context.getSystem(ofType: CropSystem.self),
               let energySystem = context.getSystem(ofType: EnergySystem.self),
               let levelSystem = context.getSystem(ofType: LevelSystem.self),
-              let inventorySystem = context.getSystem(ofType: InventorySystem.self) else {
+              let inventorySystem = context.getSystem(ofType: InventorySystem.self),
+              let marketSystem = context.getSystem(ofType: MarketSystem.self) else {
             return nil
         }
 
@@ -35,6 +36,7 @@ struct HarvestCropEvent: GameEvent {
         energySystem.useEnergy(of: .base, amount: ENERGY_USAGE)
         levelSystem.addXP(XP_AMOUNT)
         inventorySystem.addItem(harvestedCrop)
+        marketSystem.addEntityToSellMarket(entity: harvestedCrop)
 
         return HarvestCropEventData(type: cropComponent.cropType, quantity: harvestedQuantity)
     }
