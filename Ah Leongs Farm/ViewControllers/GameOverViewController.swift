@@ -8,6 +8,8 @@
 import UIKit
 
 class GameOverViewController: UIViewController {
+    private weak var resetGameDelegate: ResetGameDelegate?
+
     private lazy var containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -58,7 +60,7 @@ class GameOverViewController: UIViewController {
 
     private var continueButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Continue Game", for: .normal)
+        button.setTitle("Continue Playing", for: .normal)
         button.backgroundColor = .systemGray2
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
@@ -68,11 +70,13 @@ class GameOverViewController: UIViewController {
         return button
     }()
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
 
-    init() {
+    init(resetGameDelegate: ResetGameDelegate) {
+        self.resetGameDelegate = resetGameDelegate
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overCurrentContext
         modalTransitionStyle = .crossDissolve
@@ -138,12 +142,14 @@ class GameOverViewController: UIViewController {
     }
 
     @objc private func mainMenuButtonTapped() {
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: false, completion: nil)
         self.presentingViewController?.dismiss(animated: true, completion: nil)
+        resetGameDelegate?.resetGame()
     }
 
     @objc private func continueButtonTapped() {
         dismiss(animated: true, completion: nil)
+        resetGameDelegate?.resetGame()
     }
 
     private func setScore(_ score: Int) {

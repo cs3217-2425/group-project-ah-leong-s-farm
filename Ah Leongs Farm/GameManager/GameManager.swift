@@ -5,10 +5,6 @@ class GameManager {
     private var gameObservers: [any IGameObserver] = []
     private var previousTime: TimeInterval = 0
 
-    private var shouldResetGame: Bool {
-        getCurrentTurn() > getMaxTurns()
-    }
-
     init() {
         gameWorld = GameWorld()
         setUpBaseEntities()
@@ -16,10 +12,6 @@ class GameManager {
     }
 
     func update(_ currentTime: TimeInterval) {
-        if shouldResetGame {
-            resetGame()
-        }
-
         let deltaTime = max(currentTime - previousTime, 0) // Ensure deltaTime is not negative
         let entities = gameWorld.getAllEntities()
 
@@ -115,30 +107,20 @@ class GameManager {
         gameWorld.registerEventObserver(observer)
     }
 
-    private func resetGame() {
-        let oldEntities = gameWorld.getAllEntities()
-        for entity in oldEntities {
-            gameWorld.removeEntity(entity)
-        }
-
-        setUpBaseEntities(shouldReset: true)
-        setUpQuests()
-    }
-
     // MARK: - Setup Methods
 
-    private func setUpBaseEntities(shouldReset: Bool = false) {
-        setUpGameStateEntity(shouldReset: shouldReset)
+    private func setUpBaseEntities(shouldUsePreloadedSetUp: Bool = false) {
+        setUpGameStateEntity(shouldUsePreloadedSetUp: shouldUsePreloadedSetUp)
 
         addStartingItems()
 
-        setUpFarmLandEntity(shouldReset: shouldReset)
+        setUpFarmLandEntity(shouldUsePreloadedSetUp: shouldUsePreloadedSetUp)
     }
 
-    private func setUpGameStateEntity(shouldReset: Bool) {
+    private func setUpGameStateEntity(shouldUsePreloadedSetUp: Bool) {
         let defaultGameState = GameState(maxTurns: 30)
 
-        if shouldReset {
+        if shouldUsePreloadedSetUp {
             gameWorld.addEntity(defaultGameState)
             return
         }
@@ -150,11 +132,11 @@ class GameManager {
         gameWorld.addEntity(gameState)
     }
 
-    private func setUpFarmLandEntity(shouldReset: Bool) {
+    private func setUpFarmLandEntity(shouldUsePreloadedSetUp: Bool) {
         let farmLand = FarmLand(rows: 10, columns: 10)
         gameWorld.addEntity(farmLand)
 
-        if shouldReset {
+        if shouldUsePreloadedSetUp {
             // do not create plots
             return
         }
@@ -198,5 +180,20 @@ class GameManager {
             inventorySystem.addItems(ItemFactory.createItems(type: AppleSeed.type, quantity: 3))
             inventorySystem.addItems(ItemFactory.createItems(type: BokChoySeed.type, quantity: 3))
         }
+    }
+}
+
+extension GameManager: ResetGameDelegate {
+    func resetGame() {
+        let oldEntities = gameWorld.getAllEntities()
+        for entity in oldEntities {
+            gameWorld.removeEntity(entity)
+        }
+
+        setUpBaseEntities(shouldUsePreloadedSetUp: true)
+        setUpQuests()
+
+        let newEntities = gameWorld.getAllEntities()
+        gameObservers.forEach { $0.observe(entities: newEntities) }
     }
 }

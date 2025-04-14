@@ -16,9 +16,10 @@ class ViewController: UIViewController {
     private var gameScene: GameScene?
     private var gameControlsView: GameControlsView?
     private var gameStatisticsView: GameStatisticsView?
-    private var gameOverViewController = GameOverViewController()
+    private var gameOverViewController: GameOverViewController
 
     required init?(coder: NSCoder) {
+        gameOverViewController = GameOverViewController(resetGameDelegate: gameManager)
         super.init(coder: coder)
         setUpGameObservers()
     }
