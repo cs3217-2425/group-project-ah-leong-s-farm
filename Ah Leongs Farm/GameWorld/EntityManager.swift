@@ -96,6 +96,12 @@ class EntityManager {
         Array(entities.values)
     }
 
+    func getEntitiesByType(_ type: EntityType) -> [Entity] {
+        entities.values.filter {
+            $0.type == type
+        }
+    }
+
     // MARK: - Private Helper Methods
 
     private func registerComponent(_ component: Component, for entity: Entity) {

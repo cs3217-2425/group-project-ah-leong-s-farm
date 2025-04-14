@@ -21,7 +21,7 @@ struct PlantCropEvent: GameEvent {
             return nil
         }
 
-        guard let seed = cropSystem.getAllSeedEntities(for: seedType).first else {
+        guard let seed = context.getEntitiesOfType(seedType).first as? Seed else {
             return nil
         }
 
