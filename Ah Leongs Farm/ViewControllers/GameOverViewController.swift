@@ -142,14 +142,14 @@ class GameOverViewController: UIViewController {
     }
 
     @objc private func mainMenuButtonTapped() {
+        resetGameDelegate?.resetGame()
         dismiss(animated: false, completion: nil)
         self.presentingViewController?.dismiss(animated: true, completion: nil)
-        resetGameDelegate?.resetGame()
     }
 
     @objc private func continueButtonTapped() {
-        dismiss(animated: true, completion: nil)
         resetGameDelegate?.resetGame()
+        dismiss(animated: true, completion: nil)
     }
 
     private func setScore(_ score: Int) {

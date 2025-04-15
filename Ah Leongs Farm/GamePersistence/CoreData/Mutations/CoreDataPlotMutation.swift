@@ -40,8 +40,7 @@ class CoreDataPlotMutation: PlotMutation {
 
     func deletePlot(id: UUID) -> Bool {
         guard let plotPersistenceEntity = fetchPlotById(id: id) else {
-            // No plot found with the given ID
-            return true
+            return false
         }
 
         store.managedContext.delete(plotPersistenceEntity)

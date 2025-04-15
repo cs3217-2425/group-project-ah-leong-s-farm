@@ -10,7 +10,19 @@ import Foundation
 extension PlotPersistenceEntity {
     func deserialize() -> Plot {
         let position = CGPoint(x: CGFloat(positionX), y: CGFloat(positionY))
-        let persistenceID = id ?? UUID()
+
+        guard let persistenceID = id else {
+            let newPersistenceID = UUID()
+            id = newPersistenceID
+
+            return Plot(
+                position: position,
+                soilQuality: soilQuality,
+                soilMoisture: soilMoisture,
+                persistenceID: newPersistenceID,
+                crop: nil
+            )
+        }
 
         return Plot(
             position: position,
