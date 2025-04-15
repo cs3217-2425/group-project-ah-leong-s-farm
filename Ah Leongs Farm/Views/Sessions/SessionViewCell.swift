@@ -16,6 +16,7 @@ class SessionViewCell: UICollectionViewCell {
     private let label = UILabel()
     private let deleteButton = UIButton(type: .system)
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -36,7 +37,7 @@ class SessionViewCell: UICollectionViewCell {
 
         deleteButton.setTitle("✕", for: .normal)
         deleteButton.setTitleColor(.red, for: .normal)
-        deleteButton.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        deleteButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         deleteButton.translatesAutoresizingMaskIntoConstraints = false
         deleteButton.addTarget(self, action: #selector(deleteTapped), for: .touchUpInside)
 
@@ -48,6 +49,8 @@ class SessionViewCell: UICollectionViewCell {
             label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             label.trailingAnchor.constraint(lessThanOrEqualTo: deleteButton.leadingAnchor, constant: -10),
 
+            deleteButton.widthAnchor.constraint(equalToConstant: 30),
+            deleteButton.heightAnchor.constraint(equalToConstant: 30),
             deleteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             deleteButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
@@ -65,4 +68,3 @@ class SessionViewCell: UICollectionViewCell {
         label.text = "Session \(session.id.uuidString.prefix(8))"
     }
 }
-

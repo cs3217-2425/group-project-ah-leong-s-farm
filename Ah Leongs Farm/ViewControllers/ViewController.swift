@@ -12,7 +12,6 @@ class ViewController: UIViewController {
     let gameManager: GameManager
     let gameRenderer: GameRenderer
 
-    private var gameScene: GameScene?
     private var gameControlsView: GameControlsView?
     private var gameStatisticsView: GameStatisticsView?
     private var gameOverViewController = GameOverViewController()
@@ -79,13 +78,13 @@ class ViewController: UIViewController {
         let skView = SKView(frame: view.bounds)
         self.view = skView
 
-        self.gameScene = GameScene(view: skView)
-        gameScene?.setGameSceneUpdateDelegate(self)
-        gameScene?.setUIPositionProvider(gameRenderer)
-        gameScene?.setGridInteractionHandler(self)
+        let gameScene = GameScene(view: skView)
+        gameScene.setGameSceneUpdateDelegate(self)
+        gameScene.setUIPositionProvider(gameRenderer)
+        gameScene.setGridInteractionHandler(self)
         gameRenderer.setScene(gameScene)
 
-        gameScene?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        gameScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         skView.presentScene(gameScene)
     }
 

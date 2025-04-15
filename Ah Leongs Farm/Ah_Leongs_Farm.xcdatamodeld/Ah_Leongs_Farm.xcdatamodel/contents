@@ -5,11 +5,11 @@
         <attribute name="maxBaseEnergy" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <entity name="GameStatePersistenceEntity" representedClassName="GameStatePersistenceEntity" syncable="YES" codeGenerationType="class">
-        <relationship name="energyComponent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EnergyPersistenceComponent"/>
-        <relationship name="levelComponent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LevelPersistenceComponent"/>
+        <relationship name="energyComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="EnergyPersistenceComponent"/>
+        <relationship name="levelComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="LevelPersistenceComponent"/>
         <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="gameState" inverseEntity="Session"/>
-        <relationship name="turnComponent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TurnPersistenceComponent"/>
-        <relationship name="walletComponent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WalletPersistenceComponent"/>
+        <relationship name="turnComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="TurnPersistenceComponent"/>
+        <relationship name="walletComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WalletPersistenceComponent"/>
     </entity>
     <entity name="LevelPersistenceComponent" representedClassName="LevelPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="currentXP" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -17,9 +17,9 @@
     </entity>
     <entity name="PlotPersistenceEntity" representedClassName="PlotPersistenceEntity" syncable="YES" codeGenerationType="class">
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="positionComponent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PositionPersistenceComponent"/>
+        <relationship name="positionComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PositionPersistenceComponent"/>
         <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="plots" inverseEntity="Session"/>
-        <relationship name="soilComponent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SoilPersistenceComponent"/>
+        <relationship name="soilComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="SoilPersistenceComponent"/>
     </entity>
     <entity name="PositionPersistenceComponent" representedClassName="PositionPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="x" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -27,8 +27,8 @@
     </entity>
     <entity name="Session" representedClassName="Session" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="gameState" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GameStatePersistenceEntity" inverseName="session" inverseEntity="GameStatePersistenceEntity"/>
-        <relationship name="plots" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PlotPersistenceEntity" inverseName="session" inverseEntity="PlotPersistenceEntity"/>
+        <relationship name="gameState" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="GameStatePersistenceEntity" inverseName="session" inverseEntity="GameStatePersistenceEntity"/>
+        <relationship name="plots" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PlotPersistenceEntity" inverseName="session" inverseEntity="PlotPersistenceEntity"/>
     </entity>
     <entity name="SoilPersistenceComponent" representedClassName="SoilPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="moisture" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>

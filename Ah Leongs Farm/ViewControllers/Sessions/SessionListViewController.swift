@@ -46,7 +46,7 @@ class SessionListViewController: UIViewController, UICollectionViewDataSource, U
         view.addGestureRecognizer(tapRecognizer)
 
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 200, height: 40)
+        layout.itemSize = CGSize(width: 220, height: 60)
         layout.scrollDirection = .vertical
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
