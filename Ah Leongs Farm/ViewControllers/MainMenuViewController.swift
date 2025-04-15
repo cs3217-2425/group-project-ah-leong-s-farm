@@ -2,6 +2,8 @@ import UIKit
 
 class MainMenuViewController: UIViewController {
 
+    private let gameViewController = ViewController()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -34,14 +36,7 @@ class MainMenuViewController: UIViewController {
     }
 
     @objc func startButtonTapped() {
-        performSegue(withIdentifier: "gameView", sender: self)
-    }
-
-    // Override prepare method to set full screen presentation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "gameView" {
-            segue.destination.modalPresentationStyle = .fullScreen
-        }
+        present(gameViewController, animated: true)
     }
 
     override var prefersStatusBarHidden: Bool {

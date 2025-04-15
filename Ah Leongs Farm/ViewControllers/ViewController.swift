@@ -17,10 +17,18 @@ class ViewController: UIViewController {
     private var gameStatisticsView: GameStatisticsView?
     private var gameOverViewController = GameOverViewController()
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    init() {
         gameManager = GameManager()
         gameRenderer = GameRenderer()
-        super.init(coder: coder)
+        super.init(nibName: nil, bundle: nil)
+
+        self.modalPresentationStyle = .fullScreen
+
         setUpGameObservers()
     }
 
@@ -63,9 +71,8 @@ class ViewController: UIViewController {
     }
 
     private func setUpGameScene() {
-        guard let skView = self.view as? SKView else {
-            return
-        }
+        let skView = SKView(frame: view.bounds)
+        self.view = skView
 
         self.gameScene = GameScene(view: skView)
         gameScene?.setGameSceneUpdateDelegate(self)
