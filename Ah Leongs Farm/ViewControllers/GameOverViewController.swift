@@ -68,7 +68,6 @@ class GameOverViewController: UIViewController {
         return button
     }()
 
-    @available(*, unavailable)
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
@@ -139,7 +138,7 @@ class GameOverViewController: UIViewController {
     }
 
     @objc private func mainMenuButtonTapped() {
-        dismiss(animated: false, completion: nil)
+        dismiss(animated: true, completion: nil)
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
