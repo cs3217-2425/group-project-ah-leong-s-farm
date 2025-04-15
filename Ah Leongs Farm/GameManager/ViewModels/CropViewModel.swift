@@ -40,5 +40,4 @@ struct SolarPanelViewModel {
 enum PlotOccupantViewModel {
     case crop(CropViewModel)
     case solarPanel(SolarPanelViewModel)
-    // add other cases as needed
 }

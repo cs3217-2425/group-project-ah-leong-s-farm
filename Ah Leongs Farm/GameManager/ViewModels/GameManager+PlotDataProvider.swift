@@ -13,19 +13,16 @@ extension GameManager: PlotDataProvider {
             return nil
         }
 
-        // Get the occupant from a unified slot component (PlotOccupantComponent)
         guard let occupant = plot.getComponentByType(ofType: PlotOccupantSlotComponent.self)?.plotOccupant else {
             return PlotViewModel(row: row, column: column, occupant: nil)
         }
 
-        // Determine the type of occupant and construct the corresponding view model.
         let occupantViewModel: PlotOccupantViewModel?
         if let crop = occupant as? Crop, let cropVM = CropViewModel(crop: crop) {
             occupantViewModel = .crop(cropVM)
         } else if let solarPanel = occupant as? SolarPanel, let solarVM = SolarPanelViewModel(solarPanel: solarPanel) {
             occupantViewModel = .solarPanel(solarVM)
         } else {
-            // If the occupant isn't recognized, you might choose to return nil or have a default case.
             occupantViewModel = nil
         }
 
