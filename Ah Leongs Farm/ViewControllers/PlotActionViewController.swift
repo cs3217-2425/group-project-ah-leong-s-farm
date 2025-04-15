@@ -163,7 +163,7 @@ class PlotActionViewController: UIViewController {
         button.backgroundColor = .systemRed
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
-        button.addTarget(self, action: #selector(removeCropTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(removeSolarPanelTapped), for: .touchUpInside)
         stackView.addArrangedSubview(button)
         actionButtons.append(button)
     }
@@ -217,6 +217,11 @@ class PlotActionViewController: UIViewController {
 
     @objc private func placeSolarPanelTapped() {
         plotDataProvider?.placeSolarPanel(row: plotViewModel.row, column: plotViewModel.column)
+        dismiss(animated: true)
+    }
+
+    @objc private func removeSolarPanelTapped() {
+        plotDataProvider?.removeSolarPanel(row: plotViewModel.row, column: plotViewModel.column)
         dismiss(animated: true)
     }
 

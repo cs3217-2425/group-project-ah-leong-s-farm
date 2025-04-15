@@ -34,23 +34,22 @@ class SolarPanelSystem: ISystem {
         return true
     }
 
-    func removeSolarPanel(row: Int, column: Int) -> Bool {
+    func removeSolarPanel(row: Int, column: Int) -> SolarPanel? {
         guard let manager = manager else {
-            return false
+            return nil
         }
 
         guard let plotEntity = grid?.getEntity(row: row, column: column) else {
-            return false
+            return nil
         }
 
         guard let plotOccupantSlot = plotEntity.getComponentByType(ofType: PlotOccupantSlotComponent.self),
               let solarPanel = plotOccupantSlot.plotOccupant as? SolarPanel else {
-            return false
+            return nil
         }
 
-        manager.removeEntity(solarPanel)
         plotOccupantSlot.plotOccupant = nil
 
-        return true
+        return solarPanel
     }
 }

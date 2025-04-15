@@ -55,4 +55,9 @@ extension GameManager: PlotDataProvider {
         let event = PlaceSolarPanelEvent(row: row, column: column)
         gameWorld.queueEvent(event)
     }
+
+    func removeSolarPanel(row: Int, column: Int) {
+        let event = RemoveSolarPanelEvent(row: row, column: column)
+        gameWorld.queueEvent(event)
+    }
 }

@@ -28,4 +28,6 @@ protocol PlotDataProvider: AnyObject {
 
     func placeSolarPanel(row: Int, column: Int)
 
+    func removeSolarPanel(row: Int, column: Int)
+
 }
