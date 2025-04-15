@@ -2,6 +2,12 @@ import Foundation
 
 class LevelSystem: ISystem {
     unowned var manager: EntityManager?
+    private weak var eventQueueable: EventQueueable?
+
+    required init(for manager: EntityManager, eventQueueable: EventQueueable) {
+        self.manager = manager
+        self.eventQueueable = eventQueueable
+    }
 
     required init(for manager: EntityManager) {
         self.manager = manager
@@ -23,6 +29,7 @@ class LevelSystem: ISystem {
         while newXP >= newThreshold {
             newXP -= newThreshold
             newLevel += 1
+            eventQueueable?.queueEvent(LevelUpEvent())
             newThreshold = LevelComponent.calculateXPThreshold(for: newLevel)
         }
 
@@ -44,6 +51,7 @@ class LevelSystem: ISystem {
 
         return component.thresholdXP
     }
+
 
     func getXPForNextLevel() -> Float {
         levelComponent.map { LevelComponent.calculateXPThreshold(for: $0.level + 1) } ?? 0

@@ -85,3 +85,7 @@ struct UseFertiliserEventData: EventData {
     var fertiliserType: EntityType
     var isSuccessful: Bool
 }
+
+struct LevelUpEventData: EventData {
+    var newLevel: Int
+}
