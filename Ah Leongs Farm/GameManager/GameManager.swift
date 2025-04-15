@@ -187,18 +187,3 @@ class GameManager {
         }
     }
 }
-
-extension GameManager: ResetGameDelegate {
-    func resetGame() {
-        let oldEntities = gameWorld.getAllEntities()
-        for entity in oldEntities {
-            gameWorld.removeEntity(entity)
-        }
-
-        setUpBaseEntities(shouldUsePreloadedSetUp: true)
-        setUpQuests()
-
-        let newEntities = gameWorld.getAllEntities()
-        gameObservers.forEach { $0.observe(entities: newEntities) }
-    }
-}

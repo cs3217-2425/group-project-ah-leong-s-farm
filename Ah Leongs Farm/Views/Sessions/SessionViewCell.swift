@@ -10,9 +10,12 @@ import UIKit
 class SessionViewCell: UICollectionViewCell {
     static let reuseIdentifier = "SessionCell"
 
-    private let label = UILabel()
+    weak var delegate: SessionViewCellDelegate?
+    private var sessionId: UUID?
 
-    @available(*, unavailable)
+    private let label = UILabel()
+    private let deleteButton = UIButton(type: .system)
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -29,18 +32,37 @@ class SessionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: "Press Start 2P", size: 10)
         label.textColor = .systemBlue
-        label.textAlignment = .center
+        label.textAlignment = .left
+
+        deleteButton.setTitle("✕", for: .normal)
+        deleteButton.setTitleColor(.red, for: .normal)
+        deleteButton.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        deleteButton.translatesAutoresizingMaskIntoConstraints = false
+        deleteButton.addTarget(self, action: #selector(deleteTapped), for: .touchUpInside)
+
         contentView.addSubview(label)
+        contentView.addSubview(deleteButton)
 
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4)
+            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            label.trailingAnchor.constraint(lessThanOrEqualTo: deleteButton.leadingAnchor, constant: -10),
+
+            deleteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            deleteButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
 
+    @objc private func deleteTapped() {
+        guard let sessionId = sessionId else {
+            return
+        }
+        delegate?.didTapDelete(sessionId: sessionId)
+    }
+
     func configure(with session: SessionData) {
+        self.sessionId = session.id
         label.text = "Session \(session.id.uuidString.prefix(8))"
     }
 }
+

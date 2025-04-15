@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     private var gameScene: GameScene?
     private var gameControlsView: GameControlsView?
     private var gameStatisticsView: GameStatisticsView?
-    private var gameOverViewController: GameOverViewController = GameOverViewController()
+    private var gameOverViewController = GameOverViewController()
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {

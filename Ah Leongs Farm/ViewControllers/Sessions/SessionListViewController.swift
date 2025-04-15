@@ -83,9 +83,11 @@ class SessionListViewController: UIViewController, UICollectionViewDataSource, U
             withReuseIdentifier: SessionViewCell.reuseIdentifier, for: indexPath) as? SessionViewCell else {
             let newCell = SessionViewCell()
             newCell.configure(with: sessions[indexPath.item])
+            newCell.delegate = self
             return newCell
         }
         cell.configure(with: sessions[indexPath.item])
+        cell.delegate = self
         return cell
     }
 
@@ -100,9 +102,35 @@ class SessionListViewController: UIViewController, UICollectionViewDataSource, U
     }
 }
 
+// MARK: - UIGestureRecognizerDelegate
 extension SessionListViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        // Don't dismiss if tap is inside collectionView
-        !collectionView.frame.contains(touch.location(in: view))
+        // Prevent dismissal if the touch is inside a cell or its subviews (e.g. delete button)
+        let location = touch.location(in: collectionView)
+        if let indexPath = collectionView.indexPathForItem(at: location),
+           let cell = collectionView.cellForItem(at: indexPath) {
+            return !cell.bounds.contains(touch.location(in: cell))
+        }
+
+        return true // dismiss if touch is outside all cells
+    }
+}
+
+// MARK: - SessionViewCellDelegate
+extension SessionListViewController: SessionViewCellDelegate {
+    func didTapDelete(sessionId: UUID) {
+        guard let index = sessions.firstIndex(where: { $0.id == sessionId }) else {
+            return
+        }
+
+        // Delete from Core Data
+        guard let mutation = CoreDataSessionMutation(),
+              mutation.deleteSession(id: sessionId) else {
+            return
+        }
+
+        // Update UI
+        sessions.remove(at: index)
+        collectionView.deleteItems(at: [IndexPath(item: index, section: 0)])
     }
 }
