@@ -23,3 +23,22 @@ struct CropViewModel {
         totalGrowthTurns = growthComponent.totalGrowthTurns
     }
 }
+
+struct SolarPanelViewModel {
+    let efficiency: Int
+    let currentOutput: Int
+
+    init?(solarPanel: SolarPanel) {
+        guard let energyComponent = solarPanel.getComponentByType(ofType: EnergyCapBoostComponent.self) else {
+            return nil
+        }
+        self.efficiency = 1
+        self.currentOutput = 1
+    }
+}
+
+enum PlotOccupantViewModel {
+    case crop(CropViewModel)
+    case solarPanel(SolarPanelViewModel)
+    // add other cases as needed
+}

@@ -33,7 +33,7 @@ class PlotActionViewController: UIViewController {
     }
 
     private func setupGrowthLabel() {
-        guard let crop = plotViewModel.crop else {
+        guard case let .crop(crop) = plotViewModel.occupant else {
             return
         }
 
@@ -61,9 +61,9 @@ class PlotActionViewController: UIViewController {
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        setupWaterButton(in: stackView)
+        setupPlaceSolarPanelButton(in: stackView)
 
-        if let crop = plotViewModel.crop {
+        if case let .crop(crop) = plotViewModel.occupant {
             setupHarvestCropButton(in: stackView)
 
             // show remove crop button only when crop is not ready to be harvested
@@ -95,7 +95,7 @@ class PlotActionViewController: UIViewController {
         stackView.addArrangedSubview(button)
         actionButtons.append(button)
 
-        if let crop = plotViewModel.crop, !crop.canHarvest {
+        if case let .crop(crop) = plotViewModel.occupant, !crop.canHarvest {
             button.isEnabled = false
             button.backgroundColor = .systemGray
         }
@@ -133,6 +133,18 @@ class PlotActionViewController: UIViewController {
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(waterPlotTapped), for: .touchUpInside)
+        stackView.addArrangedSubview(button)
+        actionButtons.append(button)
+    }
+    
+    private func setupPlaceSolarPanelButton(in stackView: UIStackView) {
+        let button = UIButton(type: .system)
+        button.setTitle("Place Solar Panel", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        button.backgroundColor = .systemBlue
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(placeSolarPanelTapped), for: .touchUpInside)
         stackView.addArrangedSubview(button)
         actionButtons.append(button)
     }
@@ -182,6 +194,10 @@ class PlotActionViewController: UIViewController {
 
     @objc private func waterPlotTapped() {
         plotDataProvider?.waterPlot(row: plotViewModel.row, column: plotViewModel.column)
+    }
+
+    @objc private func placeSolarPanelTapped() {
+        plotDataProvider?.placeSolarPanel(row: plotViewModel.row, column: plotViewModel.column)
     }
 
     @objc private func addCropTapped() {

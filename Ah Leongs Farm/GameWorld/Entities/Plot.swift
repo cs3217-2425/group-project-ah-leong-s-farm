@@ -15,13 +15,13 @@ class Plot: EntityAdapter {
         fatalError("init(coder:) not implemented")
     }
 
-    init(position: CGPoint, crop: Crop? = nil) {
+    init(position: CGPoint, plotOccupant: PlotOccupant? = nil) {
         super.init()
-        setUpComponents(position: position, crop: crop)
+        setUpComponents(position: position, plotOccupant: plotOccupant)
     }
 
-    func setUpComponents(position: CGPoint, crop: Crop? = nil) {
-        attachComponent(CropSlotComponent(crop: crop))
+    func setUpComponents(position: CGPoint, plotOccupant: PlotOccupant? = nil) {
+        attachComponent(PlotOccupantSlotComponent(plotOccupant: plotOccupant))
         attachComponent(PositionComponent(x: position.x, y: position.y))
         attachComponent(SoilComponent(quality: Plot.DefaultSoilQuality, hasWater: false))
         attachComponent(SpriteComponent(visitor: self))

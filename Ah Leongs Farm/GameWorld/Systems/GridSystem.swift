@@ -97,9 +97,9 @@ class GridSystem: ISystem {
         manager?.removeEntity(plot)
 
         // Remove the crop from the entity manager if it exists
-        if let cropSlotComponent = plot.getComponentByType(ofType: CropSlotComponent.self),
-           let crop = cropSlotComponent.crop {
-            manager?.removeEntity(crop)
+        if let plotOccupantSlotComponent = plot.getComponentByType(ofType: PlotOccupantSlotComponent.self),
+           let plotOccupant = plotOccupantSlotComponent.plotOccupant {
+            manager?.removeEntity(plotOccupant)
         }
 
         return true

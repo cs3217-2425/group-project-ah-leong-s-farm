@@ -7,7 +7,7 @@
 
 import Foundation
 
-class SolarPanel: EntityAdapter {
+class SolarPanel: EntityAdapter, PlotOccupant {
     override init() {
         super.init()
         setUpComponents()
@@ -22,8 +22,10 @@ class SolarPanel: EntityAdapter {
         let energyCapBoostComponent = EnergyCapBoostComponent()
         attachComponent(energyCapBoostComponent)
     }
+}
 
+extension SolarPanel: SpriteRenderManagerVisitor {
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        // TO ADD LATER
+        manager.createNodeForEntity(solarPanel: self, in: renderer)
     }
 }
