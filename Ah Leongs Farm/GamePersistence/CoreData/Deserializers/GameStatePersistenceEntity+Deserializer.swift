@@ -8,13 +8,13 @@
 extension GameStatePersistenceEntity {
     func deserialize() -> GameState {
         let config = GameStateConfig(
-            maxTurns: Int(maxTurns),
-            currentTurn: Int(currentTurn),
-            maxBaseEnergy: Int(maxBaseEnergy),
-            currentBaseEnergy: Int(currentBaseEnergy),
-            level: Int(level),
-            currentXP: currentXP,
-            coinAmount: walletCoinAmount
+            maxTurns: Int(turnComponent?.maxTurns ?? 0),
+            currentTurn: Int(turnComponent?.currentTurn ?? 0),
+            maxBaseEnergy: Int(energyComponent?.maxBaseEnergy ?? 0),
+            currentBaseEnergy: Int(energyComponent?.currentBaseEnergy ?? 0),
+            level: Int(levelComponent?.level ?? 0),
+            currentXP: levelComponent?.currentXP ?? 0,
+            coinAmount: walletComponent?.coinAmount ?? 0
         )
         return GameState(config: config)
     }

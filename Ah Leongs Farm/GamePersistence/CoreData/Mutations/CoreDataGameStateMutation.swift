@@ -24,9 +24,11 @@ class CoreDataGameStateMutation: GameStateMutation {
         self.init(store: appDelegate.persistentContainer)
     }
 
-    func upsertGameState(_ gameState: GameState) -> Bool {
-        _ = gameStateSerializer.serialize(gameState: gameState) ??
-            gameStateSerializer.serializeNew(gameState: gameState)
+    func upsertGameState(sessionId: UUID, gameState: GameState) -> Bool {
+        guard gameStateSerializer.serialize(sessionId: sessionId, gameState: gameState) ??
+            gameStateSerializer.serializeNew(sessionId: sessionId, gameState: gameState) != nil else {
+            return false
+        }
 
         do {
             try store.save()
@@ -38,13 +40,12 @@ class CoreDataGameStateMutation: GameStateMutation {
         return true
     }
 
-    func deleteGameState() -> Bool {
-        let fetchRequest = GameStatePersistenceEntity.fetchRequest()
-        let existingGameStatePersistenceEntities = store.fetch(request: fetchRequest)
-
-        for persistenceEntity in existingGameStatePersistenceEntities {
-            store.managedContext.delete(persistenceEntity)
+    func deleteGameState(sessionId: UUID) -> Bool {
+        guard let gameState = fetchSession(sessionId: sessionId)?.gameState else {
+            return false
         }
+
+        store.managedContext.delete(gameState)
 
         do {
             try store.save()
@@ -55,4 +56,12 @@ class CoreDataGameStateMutation: GameStateMutation {
 
         return true
     }
+
+    private func fetchSession(sessionId: UUID) -> Session? {
+        let fetchRequest = Session.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", sessionId as CVarArg)
+
+        return store.fetch(request: fetchRequest).first
+    }
+
 }

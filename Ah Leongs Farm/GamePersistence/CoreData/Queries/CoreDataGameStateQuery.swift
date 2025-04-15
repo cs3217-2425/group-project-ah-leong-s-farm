@@ -23,13 +23,19 @@ class CoreDataGameStateQuery: GameStateQuery {
         self.init(store: appDelegate.persistentContainer)
     }
 
-    func fetch() -> GameState? {
-        let request = GameStatePersistenceEntity.fetchRequest()
-
-        guard let gameStatePersistenceEntity = store.fetch(request: request).first else {
+    func fetch(sessionId: UUID) -> GameState? {
+        guard let session = fetchSession(sessionId: sessionId) else {
             return nil
         }
 
-        return gameStatePersistenceEntity.deserialize()
+        return session.gameState?.deserialize()
     }
+
+    private func fetchSession(sessionId: UUID) -> Session? {
+        let request = Session.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", sessionId as CVarArg)
+
+        return store.fetch(request: request).first
+    }
+
 }

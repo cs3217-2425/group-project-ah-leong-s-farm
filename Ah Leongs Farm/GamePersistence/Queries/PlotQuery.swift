@@ -8,7 +8,7 @@
 import Foundation
 
 protocol PlotQuery {
-    func fetch() -> [Plot]
+    func fetch(sessionId: UUID) -> [Plot]
 
     func fetchById(id: UUID) -> Plot?
 }

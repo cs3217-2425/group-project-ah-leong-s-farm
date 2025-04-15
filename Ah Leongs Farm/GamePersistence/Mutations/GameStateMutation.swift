@@ -5,8 +5,10 @@
 //  Created by Jerry Leong on 14/4/25.
 //
 
-protocol GameStateMutation {
-    func upsertGameState(_ gameState: GameState) -> Bool
+import Foundation
 
-    func deleteGameState() -> Bool
+protocol GameStateMutation {
+    func upsertGameState(sessionId: UUID, gameState: GameState) -> Bool
+
+    func deleteGameState(sessionId: UUID) -> Bool
 }

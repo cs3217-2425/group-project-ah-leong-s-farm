@@ -22,11 +22,17 @@ class CoreDataPlotQuery: PlotQuery {
         self.init(store: appDelegate.persistentContainer)
     }
 
-    func fetch() -> [Plot] {
-        let request = PlotPersistenceEntity.fetchRequest()
+    func fetch(sessionId: UUID) -> [Plot] {
+        guard let session = fetchSession(sessionId: sessionId) else {
+            return []
+        }
 
-        return store.fetch(request: request)
-            .map({ $0.deserialize() })
+        guard let plotPersistenceEntities = session.plots?.allObjects as? [PlotPersistenceEntity] else {
+            return []
+        }
+
+        return plotPersistenceEntities.map({ $0.deserialize() })
+            
     }
 
     func fetchById(id: UUID) -> Plot? {
@@ -37,5 +43,12 @@ class CoreDataPlotQuery: PlotQuery {
         return store.fetch(request: request)
             .map({ $0.deserialize() })
             .first
+    }
+
+    private func fetchSession(sessionId: UUID) -> Session? {
+        let request = Session.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", sessionId as CVarArg)
+
+        return store.fetch(request: request).first
     }
 }

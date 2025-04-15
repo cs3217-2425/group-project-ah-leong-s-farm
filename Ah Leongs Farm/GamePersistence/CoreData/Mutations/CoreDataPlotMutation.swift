@@ -24,9 +24,11 @@ class CoreDataPlotMutation: PlotMutation {
         self.init(store: appDelegate.persistentContainer)
     }
 
-    func upsertPlot(id: UUID, plot: Plot) -> Bool {
-        _ = plotSerializer.serialize(id: id, plot: plot) ??
-            plotSerializer.serializeNew(id: id, plot: plot)
+    func upsertPlot(sessionId: UUID, id: UUID, plot: Plot) -> Bool {
+        guard plotSerializer.serialize(sessionId: sessionId, id: id, plot: plot) ??
+                plotSerializer.serializeNew(sessionId: sessionId, id: id, plot: plot) != nil else {
+            return false
+        }
 
         do {
             try store.save()

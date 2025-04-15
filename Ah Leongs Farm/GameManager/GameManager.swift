@@ -2,13 +2,21 @@ import Foundation
 
 class GameManager {
     let gameWorld: GameWorld
+    let persistenceManager: PersistenceManager
     private var gameObservers: [any IGameObserver] = []
     private var previousTime: TimeInterval = 0
 
-    init() {
+    init(sessionId: UUID) {
         gameWorld = GameWorld()
+        persistenceManager = PersistenceManager(sessionId: sessionId)
         setUpBaseEntities()
         setUpQuests()
+
+        addGameObserver(persistenceManager)
+    }
+
+    convenience init() {
+        self.init(sessionId: UUID())
     }
 
     func update(_ currentTime: TimeInterval) {
@@ -125,9 +133,7 @@ class GameManager {
             return
         }
 
-        let gameStateQuery = CoreDataGameStateQuery()
-
-        let gameState = gameStateQuery?.fetch() ?? defaultGameState
+        let gameState = persistenceManager.loadGameState() ?? defaultGameState
 
         gameWorld.addEntity(gameState)
     }
@@ -141,8 +147,7 @@ class GameManager {
             return
         }
 
-        let plotQuery = CoreDataPlotQuery()
-        let plots = plotQuery?.fetch() ?? []
+        let plots = persistenceManager.loadPlots()
 
         guard let gridComponent = farmLand.getComponentByType(ofType: GridComponent.self) else {
             return

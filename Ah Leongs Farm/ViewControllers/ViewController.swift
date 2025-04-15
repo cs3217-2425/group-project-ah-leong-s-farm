@@ -9,19 +9,30 @@ import UIKit
 import SpriteKit
 
 class ViewController: UIViewController {
-    let gameManager = GameManager()
-    let gameRenderer = GameRenderer()
-    let persistenceManager = PersistenceManager()
+    let gameManager: GameManager
+    let gameRenderer: GameRenderer
 
     private var gameScene: GameScene?
     private var gameControlsView: GameControlsView?
     private var gameStatisticsView: GameStatisticsView?
-    private var gameOverViewController: GameOverViewController
+    private var gameOverViewController: GameOverViewController = GameOverViewController()
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        gameOverViewController = GameOverViewController(resetGameDelegate: gameManager)
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    init(sessionId: UUID) {
+        gameManager = GameManager(sessionId: sessionId)
+        gameRenderer = GameRenderer()
+        super.init(nibName: nil, bundle: nil)
+
+        modalPresentationStyle = .fullScreen
         setUpGameObservers()
+    }
+
+    convenience init() {
+        self.init(sessionId: UUID())
     }
 
     override func viewDidLoad() {
@@ -63,9 +74,10 @@ class ViewController: UIViewController {
     }
 
     private func setUpGameScene() {
-        guard let skView = self.view as? SKView else {
-            return
-        }
+        loadViewIfNeeded()
+
+        let skView = SKView(frame: view.bounds)
+        self.view = skView
 
         self.gameScene = GameScene(view: skView)
         gameScene?.setGameSceneUpdateDelegate(self)
@@ -80,7 +92,6 @@ class ViewController: UIViewController {
     private func setUpGameObservers() {
         gameManager.addGameObserver(gameRenderer)
         gameManager.addGameObserver(self)
-        gameManager.addGameObserver(persistenceManager)
     }
 
     override var prefersStatusBarHidden: Bool {

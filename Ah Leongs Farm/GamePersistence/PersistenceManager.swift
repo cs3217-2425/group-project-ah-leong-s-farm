@@ -8,10 +8,24 @@
 import Foundation
 
 class PersistenceManager {
+    let sessionId: UUID
+
     private var persistenceMap: [EntityID: GamePersistenceMetaData] = [:]
 
+    private var sessionMutation: (any SessionMutation)? = CoreDataSessionMutation()
+    private var sessionQuery: (any SessionQuery)? = CoreDataSessionQuery()
+
+    // MARK: - AbstractPlotPersistenceManager
     private(set) var plotMutation: (any PlotMutation)? = CoreDataPlotMutation()
+    private(set) var plotQuery: (any PlotQuery)? = CoreDataPlotQuery()
+
+    // MARK: - AbstractGameStatePersistenceManager
     private(set) var gameStateMutation: (any GameStateMutation)? = CoreDataGameStateMutation()
+    private(set) var gameStateQuery: (any GameStateQuery)? = CoreDataGameStateQuery()
+
+    init(sessionId: UUID) {
+        self.sessionId = sessionId
+    }
 
     func acceptToSave(visitor: GamePersistenceObject, persistenceId: UUID) {
         let isSuccessfullySaved = visitor.save(manager: self, persistenceId: persistenceId)
@@ -31,11 +45,25 @@ class PersistenceManager {
             persistenceMap.removeValue(forKey: visitor.id)
         }
     }
+
+    private func createSessionIfNeeded() -> Bool {
+        guard let sessionMutation = sessionMutation else {
+            return false
+        }
+
+        let sessionData = SessionData(id: sessionId)
+
+        return sessionMutation.upsertSession(session: sessionData)
+    }
 }
 
 extension PersistenceManager: IGameObserver {
 
     func observe(entities: [any Entity]) {
+        guard createSessionIfNeeded() else {
+            return
+        }
+
         var deletePersistenceMap: [EntityID: GamePersistenceMetaData] = persistenceMap
 
         for entity in entities {
