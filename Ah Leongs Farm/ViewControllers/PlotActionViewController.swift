@@ -61,17 +61,24 @@ class PlotActionViewController: UIViewController {
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        setupPlaceSolarPanelButton(in: stackView)
+        switch plotViewModel.occupant {
+        case .solarPanel:
+            // Only show remove solar panel
+            setupRemoveSolarPanelButton(in: stackView)
 
-        if case let .crop(crop) = plotViewModel.occupant {
+        case .crop(let crop):
+            // Show water, harvest, and maybe remove crop
+            setupWaterButton(in: stackView)
             setupHarvestCropButton(in: stackView)
-
-            // show remove crop button only when crop is not ready to be harvested
             if !crop.canHarvest {
                 setupRemoveCropButton(in: stackView)
             }
-        } else {
+
+        case .none:
+            // Nothing present: show water, add crop, and place solar panel
+            setupWaterButton(in: stackView)
             setupAddCropButton(in: stackView)
+            setupPlaceSolarPanelButton(in: stackView)
         }
 
         view.addSubview(stackView)
@@ -136,15 +143,27 @@ class PlotActionViewController: UIViewController {
         stackView.addArrangedSubview(button)
         actionButtons.append(button)
     }
-    
+
     private func setupPlaceSolarPanelButton(in stackView: UIStackView) {
         let button = UIButton(type: .system)
         button.setTitle("Place Solar Panel", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        button.backgroundColor = .systemBlue
+        button.backgroundColor = .systemGreen
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(placeSolarPanelTapped), for: .touchUpInside)
+        stackView.addArrangedSubview(button)
+        actionButtons.append(button)
+    }
+
+    private func setupRemoveSolarPanelButton(in stackView: UIStackView) {
+        let button = UIButton(type: .system)
+        button.setTitle("Remove Solar Panel", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        button.backgroundColor = .systemRed
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(removeCropTapped), for: .touchUpInside)
         stackView.addArrangedSubview(button)
         actionButtons.append(button)
     }
@@ -198,6 +217,7 @@ class PlotActionViewController: UIViewController {
 
     @objc private func placeSolarPanelTapped() {
         plotDataProvider?.placeSolarPanel(row: plotViewModel.row, column: plotViewModel.column)
+        dismiss(animated: true)
     }
 
     @objc private func addCropTapped() {
