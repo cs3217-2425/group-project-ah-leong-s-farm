@@ -1,5 +1,6 @@
 import UIKit
 
+// TODO: Refactor this class as it's too bloated
 class PlotActionViewController: UIViewController {
     private let plotViewModel: PlotViewModel
     private weak var inventoryDataProvider: InventoryDataProvider?
