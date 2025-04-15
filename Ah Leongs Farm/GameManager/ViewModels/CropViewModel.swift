@@ -8,7 +8,7 @@
 struct CropViewModel {
     let cropType: CropType
     let canHarvest: Bool
-    let currentGrowthTurn: Int
+    let currentGrowthTurn: Float
     let totalGrowthTurns: Int
 
     init?(crop: Crop) {
