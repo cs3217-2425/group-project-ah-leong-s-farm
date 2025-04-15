@@ -9,6 +9,7 @@ class MarketSystem: ISystem {
 
     private var itemPrices: [EntityType: Price] = MarketInformation.initialItemPrices
     private var itemStocks: [EntityType: Int] = MarketInformation.initialItemStocks
+    private var sellableEntityTypes: Set<EntityType> = MarketInformation.sellableItems
     unowned var manager: EntityManager?
 
     required init(for manager: EntityManager) {
@@ -72,6 +73,19 @@ class MarketSystem: ISystem {
             itemStocks[type] = Int.max
         } else {
             itemStocks[type] = currentStock + quantity
+        }
+    }
+
+    func addEntityToSellMarket(entity: Entity) {
+        if sellableEntityTypes.contains(entity.type) {
+            entity.attachComponent(SellComponent())
+            manager?.addEntity(entity)
+        }
+    }
+
+    func addEntitiesToSellMarket(entities: [Entity]) {
+        for entity in entities {
+            addEntityToSellMarket(entity: entity)
         }
     }
 

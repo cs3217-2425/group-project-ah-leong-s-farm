@@ -134,11 +134,22 @@ class GameManager {
     // MARK: - Entity Creation Helpers
 
     private func addStartingItems() {
-        gameWorld.addEntities(ItemFactory.createItems(type: BokChoySeed.type, quantity: 5))
-        // Additional starting items just to test the UI
-        gameWorld.addEntities(ItemFactory.createItems(type: Fertiliser.type, quantity: 3))
-        gameWorld.addEntities(ItemFactory.createItems(type: PremiumFertiliser.type, quantity: 6))
-        gameWorld.addEntities(ItemFactory.createItems(type: AppleSeed.type, quantity: 3))
-        gameWorld.addEntities(ItemFactory.createItems(type: BokChoySeed.type, quantity: 3))
+        let bokChoySeeds = SeedFactory.createMultiple(type: BokChoySeed.type, quantity: 8)
+        let fertilisers = ToolFactory.createMultiple(type: Fertiliser.type, quantity: 3)
+        let premiumFertilisers = ToolFactory.createMultiple(type: PremiumFertiliser.type, quantity: 6)
+        let appleSeeds = SeedFactory.createMultiple(type: AppleSeed.type, quantity: 3)
+
+        let allItems = bokChoySeeds + fertilisers + premiumFertilisers + appleSeeds
+
+        gameWorld.addEntities(allItems)
+
+        if let marketSystem = gameWorld.getSystem(ofType: MarketSystem.self) {
+            marketSystem.addEntitiesToSellMarket(entities: allItems)
+        }
+
+        if let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) {
+            inventorySystem.addItemsToInventory(allItems)
+        }
     }
+
 }

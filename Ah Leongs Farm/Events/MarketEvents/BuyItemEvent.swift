@@ -19,11 +19,12 @@ class BuyItemEvent: GameEvent {
     func execute(in context: EventContext, queueable: EventQueueable) -> EventData? {
 
         guard let marketSystem = context.getSystem(ofType: MarketSystem.self),
-              let walletSystem = context.getSystem(ofType: WalletSystem.self),
-              let price = marketSystem.getBuyPrice(for: itemType, currency: currencyType),
-              let stock = marketSystem.getBuyQuantity(for: itemType), stock >= quantity
+                  let walletSystem = context.getSystem(ofType: WalletSystem.self),
+                  let inventorySystem = context.getSystem(ofType: InventorySystem.self),
+                  let price = marketSystem.getBuyPrice(for: itemType, currency: currencyType),
+                  let stock = marketSystem.getBuyQuantity(for: itemType), stock >= quantity
         else {
-            print("Not enough stock.")
+            print("Not enough stock or systems missing.")
             return nil
         }
 
@@ -35,9 +36,13 @@ class BuyItemEvent: GameEvent {
             return nil
         }
 
-        context.addEntities(ItemFactory.createItems(type: itemType,
-                                                    quantity: quantity))
+        let purchasedItems = EntityFactoryRegistry.createMultiple(type: itemType,
+                                                                  quantity: quantity)
+        context.addEntities(purchasedItems)
         marketSystem.decreaseStock(type: itemType, quantity: quantity)
+        marketSystem.addEntitiesToSellMarket(entities: purchasedItems)
+
+        inventorySystem.addItemsToInventory(purchasedItems)
         walletSystem.removeCurrencyFromAll(currencyType, amount: totalCost)
 
         return BuyItemEventData(itemType: itemType, quantity: quantity)
