@@ -73,6 +73,7 @@ class ViewController: UIViewController {
     private func setUpGameScene() {
         let skView = SKView(frame: view.bounds)
         self.view = skView
+        loadViewIfNeeded()
 
         self.gameScene = GameScene(view: skView)
         gameScene?.setGameSceneUpdateDelegate(self)
