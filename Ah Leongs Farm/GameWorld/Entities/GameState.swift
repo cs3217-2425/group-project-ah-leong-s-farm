@@ -23,7 +23,7 @@ class GameState: EntityAdapter {
         let energyBankComponent = EnergyBankComponent()
         let levelComponent = LevelComponent()
         let walletComponent = WalletComponent()
-        let upgradeComponent = UpgradeComponent()
+        let upgradeComponent = UpgradeComponent(points: 3)
         attachComponent(turnComponent)
         attachComponent(energyBankComponent)
         attachComponent(levelComponent)
