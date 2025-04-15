@@ -9,6 +9,8 @@ struct PlotViewModel {
     let row: Int
     let column: Int
     let crop: CropViewModel?
+    let soilQuality: Float
+    let maxSoilQuality: Float
 
     var hasCrop: Bool {
         crop != nil

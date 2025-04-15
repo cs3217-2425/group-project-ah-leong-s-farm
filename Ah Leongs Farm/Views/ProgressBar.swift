@@ -13,6 +13,7 @@ class ProgressBar: UIView {
     private var currentProgress: CGFloat = 0
     private var maxProgress: CGFloat = 1
     private var label: String = ""
+    private var shouldShowText: Bool = true
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -42,18 +43,28 @@ class ProgressBar: UIView {
 
     func setProgress(currentProgress: CGFloat,
                      maxProgress: CGFloat,
-                     label: String) {
+                     label: String,
+                     showText: Bool = true) {
         guard maxProgress > 0 else {
             return
         }
 
         self.currentProgress = currentProgress
         self.maxProgress = maxProgress
+        self.label = label
+        self.shouldShowText = showText
         let value = self.currentProgress / self.maxProgress
         let clampedValue = min(max(value, 0), 1)
 
         let newWidth = bounds.width * clampedValue
-        progressLabel.text = "\(currentProgress)/\(maxProgress) \(label)"
+
+        if showText {
+            progressLabel.text = "\(Int(currentProgress))/\(Int(maxProgress)) \(label)"
+            progressLabel.isHidden = false
+        } else {
+            progressLabel.text = ""
+            progressLabel.isHidden = true
+        }
 
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear, animations: {
             self.progressView.frame = CGRect(x: 0, y: 0, width: newWidth, height: self.bounds.height)
@@ -64,7 +75,8 @@ class ProgressBar: UIView {
         super.layoutSubviews()
         setProgress(currentProgress: currentProgress,
                     maxProgress: maxProgress,
-                    label: label)
+                    label: label,
+                    showText: shouldShowText)
         progressLabel.frame = bounds
     }
 }

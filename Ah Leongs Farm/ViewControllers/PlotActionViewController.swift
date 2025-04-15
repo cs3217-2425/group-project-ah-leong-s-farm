@@ -6,6 +6,9 @@ class PlotActionViewController: UIViewController {
     private weak var plotDataProvider: PlotDataProvider?
     private var actionButtons: [UIButton] = []
     private var collectionView: UICollectionView?
+    private var growthProgressBar: ProgressBar?
+    private var healthProgressBar: ProgressBar?
+    private var soilQualityProgressBar: ProgressBar?
 
     private enum CollectionViewMode {
         case seeds, fertilisers
@@ -84,28 +87,115 @@ class PlotActionViewController: UIViewController {
         setupActionButtons()
         setupCollectionView()
         addDismissTapGesture()
-        setupGrowthLabel()
+        setupProgressBars()
     }
 
-    private func setupGrowthLabel() {
+    private func setupProgressBars() {
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(containerView)
+
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            containerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.4)
+        ])
+
+        // ===== Soil Quality - Always show this =====
+        let soilTitleLabel = UILabel()
+        soilTitleLabel.text = "Soil Quality:"
+        soilTitleLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        soilTitleLabel.textColor = .white
+        soilTitleLabel.textAlignment = .center
+        soilTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(soilTitleLabel)
+
+        let soilQualityProgressBar = ProgressBar(frame: .zero)
+        soilQualityProgressBar.translatesAutoresizingMaskIntoConstraints = false
+        soilQualityProgressBar.setProgress(
+            currentProgress: CGFloat(plotViewModel.soilQuality),
+            maxProgress: CGFloat(plotViewModel.maxSoilQuality),
+            label: "",
+            showText: false
+        )
+        containerView.addSubview(soilQualityProgressBar)
+        self.soilQualityProgressBar = soilQualityProgressBar
+
+        NSLayoutConstraint.activate([
+            soilTitleLabel.topAnchor.constraint(equalTo: containerView.topAnchor),
+            soilTitleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            soilTitleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+
+            soilQualityProgressBar.topAnchor.constraint(equalTo: soilTitleLabel.bottomAnchor, constant: 5),
+            soilQualityProgressBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            soilQualityProgressBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            soilQualityProgressBar.heightAnchor.constraint(equalToConstant: 30)
+        ])
+
         guard let crop = plotViewModel.crop else {
+            // Add bottom constraint to the soil quality bar
+            soilQualityProgressBar.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10).isActive = true
             return
         }
 
-        let growthLabel = UILabel()
+        // ===== Growth Progress - Only show if crop exists =====
+        let growthTitleLabel = UILabel()
+        growthTitleLabel.text = "Growth Progress:"
+        growthTitleLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        growthTitleLabel.textColor = .white
+        growthTitleLabel.textAlignment = .center
+        growthTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(growthTitleLabel)
 
-        growthLabel.text = "Growing for \(crop.currentGrowthTurn)/\(crop.totalGrowthTurns) turns"
-        growthLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        growthLabel.textAlignment = .center
-        growthLabel.translatesAutoresizingMaskIntoConstraints = false
-        growthLabel.textColor = .white
+        let growthProgressBar = ProgressBar(frame: .zero)
+        growthProgressBar.translatesAutoresizingMaskIntoConstraints = false
+        growthProgressBar.setProgress(
+            currentProgress: CGFloat(crop.currentGrowthTurn),
+            maxProgress: CGFloat(crop.totalGrowthTurns),
+            label: ""
+        )
+        containerView.addSubview(growthProgressBar)
+        self.growthProgressBar = growthProgressBar
 
-        view.addSubview(growthLabel)
+        // ===== Health Progress - Only show if crop exists =====
+        let healthTitleLabel = UILabel()
+        healthTitleLabel.text = "Health:"
+        healthTitleLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        healthTitleLabel.textColor = .white
+        healthTitleLabel.textAlignment = .center
+        healthTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(healthTitleLabel)
+
+        let healthProgressBar = ProgressBar(frame: .zero)
+        healthProgressBar.translatesAutoresizingMaskIntoConstraints = false
+        healthProgressBar.setProgress(
+            currentProgress: CGFloat(crop.currentHealth),
+            maxProgress: 1.0,
+            label: "",
+            showText: false
+        )
+        containerView.addSubview(healthProgressBar)
+        self.healthProgressBar = healthProgressBar
 
         NSLayoutConstraint.activate([
-            growthLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            growthLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            growthLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            growthTitleLabel.topAnchor.constraint(equalTo: soilQualityProgressBar.bottomAnchor, constant: 15),
+            growthTitleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            growthTitleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+
+            growthProgressBar.topAnchor.constraint(equalTo: growthTitleLabel.bottomAnchor, constant: 5),
+            growthProgressBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            growthProgressBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            growthProgressBar.heightAnchor.constraint(equalToConstant: 30),
+
+            healthTitleLabel.topAnchor.constraint(equalTo: growthProgressBar.bottomAnchor, constant: 15),
+            healthTitleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            healthTitleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+
+            healthProgressBar.topAnchor.constraint(equalTo: healthTitleLabel.bottomAnchor, constant: 5),
+            healthProgressBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            healthProgressBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            healthProgressBar.heightAnchor.constraint(equalToConstant: 30),
+            healthProgressBar.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10)
         ])
     }
 
@@ -123,7 +213,6 @@ class PlotActionViewController: UIViewController {
         if let crop = plotViewModel.crop {
             setupHarvestCropButton(in: stackView)
 
-            // show remove crop button only when crop is not ready to be harvested
             if !crop.canHarvest {
                 setupRemoveCropButton(in: stackView)
             }

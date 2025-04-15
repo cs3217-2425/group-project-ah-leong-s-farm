@@ -31,7 +31,7 @@ class SoilSystem: ISystem {
             return false
         }
 
-        let maxSoilQuality: Float = 3.0
+        let maxSoilQuality = soilComponent.maxQuality
         soilComponent.quality = min(soilComponent.quality + improvementAmount, maxSoilQuality)
 
         return true
