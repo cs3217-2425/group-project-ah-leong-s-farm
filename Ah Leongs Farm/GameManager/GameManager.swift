@@ -12,7 +12,6 @@ class GameManager {
     }
 
     func update(_ currentTime: TimeInterval) {
-        print(ObjectIdentifier(self), "GameManager update")
         let deltaTime = max(currentTime - previousTime, 0) // Ensure deltaTime is not negative
         let entities = gameWorld.getAllEntities()
 
