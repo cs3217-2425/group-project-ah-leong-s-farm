@@ -7,6 +7,61 @@ class PlotActionViewController: UIViewController {
     private var actionButtons: [UIButton] = []
     private var collectionView: UICollectionView?
 
+    private enum CollectionViewMode {
+        case seeds, fertilisers
+    }
+
+    private func toggleCollectionView(mode: CollectionViewMode) {
+        let shouldHide = !(collectionView?.isHidden ?? true) && collectionViewMode == mode
+        collectionViewMode = mode
+        collectionView?.isHidden = shouldHide
+
+        if !shouldHide {
+            collectionView?.reloadData()
+        }
+    }
+
+    private var collectionViewMode: CollectionViewMode = .seeds
+
+    private lazy var itemProviders: [CollectionViewMode: () -> [Any]] = [
+        .seeds: { self.seedItems },
+        .fertilisers: { self.fertiliserItems }
+    ]
+
+    private lazy var cellConfigurators: [CollectionViewMode: (InventoryItemCell, Int) -> Void] = [
+        .seeds: { cell, index in
+            cell.configure(with: self.seedItems[index].toInventoryItemViewModel())
+        },
+        .fertilisers: { cell, index in
+            cell.configure(with: self.fertiliserItems[index].toInventoryItemViewModel())
+        }
+    ]
+
+    private lazy var selectionHandlers: [CollectionViewMode: (Int) -> Void] = [
+        .seeds: { [weak self] index in
+            guard let self = self else {
+                return
+            }
+            let selectedSeed = self.seedItems[index]
+            self.plotDataProvider?.plantCrop(
+                row: self.plotViewModel.row,
+                column: self.plotViewModel.column,
+                seedType: selectedSeed.type
+            )
+        },
+        .fertilisers: { [weak self] index in
+            guard let self = self else {
+                return
+            }
+            let selectedFertiliser = self.fertiliserItems[index]
+            self.plotDataProvider?.useFertiliser(
+                row: self.plotViewModel.row,
+                column: self.plotViewModel.column,
+                fertiliserType: selectedFertiliser.type
+            )
+        }
+    ]
+
     init(plotViewModel: PlotViewModel, inventoryDataProvider: InventoryDataProvider,
          plotDataProvider: PlotDataProvider) {
         self.plotViewModel = plotViewModel
@@ -63,6 +118,8 @@ class PlotActionViewController: UIViewController {
 
         setupWaterButton(in: stackView)
 
+        setupFertiliserButton(in: stackView)
+
         if let crop = plotViewModel.crop {
             setupHarvestCropButton(in: stackView)
 
@@ -109,6 +166,18 @@ class PlotActionViewController: UIViewController {
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(addCropTapped), for: .touchUpInside)
+        stackView.addArrangedSubview(button)
+        actionButtons.append(button)
+    }
+
+    private func setupFertiliserButton(in stackView: UIStackView) {
+        let button = UIButton(type: .system)
+        button.setTitle("Use Fertiliser", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        button.backgroundColor = .systemOrange // Distinct color for fertiliser
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(useFertiliserTapped), for: .touchUpInside)
         stackView.addArrangedSubview(button)
         actionButtons.append(button)
     }
@@ -184,8 +253,12 @@ class PlotActionViewController: UIViewController {
         plotDataProvider?.waterPlot(row: plotViewModel.row, column: plotViewModel.column)
     }
 
+    @objc private func useFertiliserTapped() {
+        toggleCollectionView(mode: .fertilisers)
+    }
+
     @objc private func addCropTapped() {
-        collectionView?.isHidden.toggle()
+        toggleCollectionView(mode: .seeds)
     }
 
     @objc private func harvestCropTapped() {
@@ -226,34 +299,32 @@ class PlotActionViewController: UIViewController {
 }
 
 extension PlotActionViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    private var seedItems: [SeedItemViewModel] {
+
+    private var seedItems: [PlotDisplayItemViewModel] {
         inventoryDataProvider?.getSeedItemViewModels() ?? []
+    }
+
+    private var fertiliserItems: [PlotDisplayItemViewModel] {
+        inventoryDataProvider?.getFertiliserItemViewModels() ?? []
     }
 
     // MARK: - UICollectionView DataSource & Delegate
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        seedItems.count
+        let items = itemProviders[collectionViewMode]?() as? [Any]
+        return items?.count ?? 0
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "InventoryCell", for: indexPath)
 
         if let cell = cell as? InventoryItemCell {
-            cell.configure(with: seedItems[indexPath.item].toInventoryItemViewModel())
+            cellConfigurators[collectionViewMode]?(cell, indexPath.item)
         }
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedSeed = seedItems[indexPath.item]
-
-        plotDataProvider?.plantCrop(
-            row: plotViewModel.row,
-            column: plotViewModel.column,
-            seedType: selectedSeed.seedType
-        )
-
+        selectionHandlers[collectionViewMode]?(indexPath.item)
         dismiss(animated: true)
     }
 }

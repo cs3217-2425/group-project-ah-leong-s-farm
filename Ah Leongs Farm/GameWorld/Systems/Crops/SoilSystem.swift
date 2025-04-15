@@ -17,8 +17,7 @@ class SoilSystem: ISystem {
         self.manager = manager
     }
 
-
-    private func degradeSoilQuality() {
+    func degradeSoilQuality() {
         let soilComponents = manager?.getAllComponents(ofType: SoilComponent.self) ?? []
 
         for soilComponent in soilComponents {

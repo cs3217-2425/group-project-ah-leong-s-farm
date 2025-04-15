@@ -20,6 +20,8 @@ protocol PlotDataProvider: AnyObject {
 
     func plantCrop(row: Int, column: Int, seedType: EntityType)
 
+    func useFertiliser(row: Int, column: Int, fertiliserType: EntityType)
+
     func harvestCrop(row: Int, column: Int)
 
     func removeCrop(row: Int, column: Int)

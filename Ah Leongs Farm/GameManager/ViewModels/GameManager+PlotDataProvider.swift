@@ -43,4 +43,9 @@ extension GameManager: PlotDataProvider {
         let event = WaterPlotEvent(row: row, column: column)
         gameWorld.queueEvent(event)
     }
+
+    func useFertiliser(row: Int, column: Int, fertiliserType: EntityType) {
+         let event = UseFertiliserEvent(row: row, column: column, fertiliserType: fertiliserType)
+         gameWorld.queueEvent(event)
+     }
 }
