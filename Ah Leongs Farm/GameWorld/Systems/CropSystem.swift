@@ -25,18 +25,7 @@ class CropSystem: ISystem {
         manager?.getAllComponents(ofType: GrowthComponent.self) ?? []
     }
 
-    /// Adds a crop entity to the `CropSlotComponent` of the entity at the specified row and column.
-    /// - Returns: True if the crop is successfully added, false otherwise.
-    /// Crop is only planted if the following conditions are fulfilled:
-    /// - The entity at the specified row and column must have a `CropSlotComponent`.
-    /// - The CropSlotComponent must not have any crops on it.
-    /// - The entity to add `crop`, must have a `SeedComponent` and a `CropComponent`.
-    @discardableResult
-    func plantCrop(seed: Seed, row: Int, column: Int) -> Bool {
-        guard seed.getComponentByType(ofType: SeedComponent.self) != nil else {
-            return false
-        }
-
+    func isOccupied(row: Int, column: Int) -> Bool {
         guard let plotEntity = grid?.getEntity(row: row, column: column) else {
             return false
         }
@@ -47,17 +36,29 @@ class CropSystem: ISystem {
         }
 
         // Disallow planting on entity with an existing crop
-        guard cropSlot.crop == nil else {
+        return cropSlot.crop != nil
+    }
+
+    /// Adds a crop entity to the `CropSlotComponent` of the entity at the specified row and column.
+    /// - Returns: True if the crop is successfully added, false otherwise.
+    /// Crop is only planted if the following conditions are fulfilled:
+    /// - The entity at the specified row and column must have a `CropSlotComponent`.
+    /// - The CropSlotComponent must not have any crops on it.
+    /// - The entity to add `crop`, must have a `SeedComponent` and a `CropComponent`.
+    @discardableResult
+    func plantCrop(crop: Crop, row: Int, column: Int) -> Bool {
+        guard let plotEntity = grid?.getEntity(row: row, column: column) else {
             return false
         }
-        let crop = seed.toCrop()
-        manager?.addEntity(crop)
+
+        guard let cropSlot = plotEntity.getComponentByType(ofType: CropSlotComponent.self) else {
+            return false
+        }
+
         // TODO: Shouldn't need to access cropComponent.cropType after removing CropType
         guard let cropComponent = crop.component(ofType: CropComponent.self) else {
             return false
         }
-        manager?.removeEntity(seed)
-
         manager?.addComponent(GrowthComponent(
             totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: crop)
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
@@ -147,23 +148,4 @@ class CropSystem: ISystem {
             }
         }
     }
-
-    /// Retrieves all seed entities of the specified crop type.
-    ///
-    /// - Parameter type: The type of crop to filter seed entities by.
-    /// - Returns: An array of `Crop` entities that match the specified crop type.
-    func getAllSeedEntities(for type: EntityType) -> [Seed] {
-        guard let manager = manager else {
-            return []
-        }
-
-        let seedEntities = manager.getEntities(withComponentType: SeedComponent.self)
-            .filter { $0.type == type }
-            .compactMap({
-                $0 as? Seed
-            })
-
-        return seedEntities
-    }
-
 }

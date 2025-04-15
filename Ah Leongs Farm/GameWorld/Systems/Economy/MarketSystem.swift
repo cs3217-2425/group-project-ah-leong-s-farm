@@ -53,48 +53,27 @@ class MarketSystem: ISystem {
     }
 
     @discardableResult
-    func buyItem(type: EntityType, quantity: Int) -> [Entity]? {
-        // Check if the item exists in the buy market and if there's enough stock
+    func decreaseStock(type: EntityType, quantity: Int) -> Bool {
+        // Check if the item exists in the market and if there's enough stock
         guard let currentStock = itemStocks[type], currentStock >= quantity else {
             print("Not enough stock for \(type).")
-            return nil
-        }
-
-        var purchasedEntities: [Entity] = []
-
-        for _ in 0..<quantity {
-            let entity = EntityFactoryRegistry.create(type: type)
-
-            addEntityToSellMarket(entity: entity)
-
-            purchasedEntities.append(entity)
-            manager?.addEntity(entity)
+            return false
         }
 
         itemStocks[type] = currentStock - quantity
 
-        return purchasedEntities
+        return true
     }
 
-    @discardableResult
-    func sellItem(type: EntityType, quantity: Int) -> Bool {
-        guard let manager = manager else {
-            return false
+    func increaseStock(type: EntityType, quantity: Int) {
+        guard let currentStock = itemStocks[type] else {
+            return
         }
-
-        let sellableEntities = getSellableEntitiesOf(type)
-
-        if sellableEntities.count < quantity {
-            print("Not enough stock for \(type).")
-            return false
+        if quantity > 0 && currentStock > Int.max - quantity {
+            itemStocks[type] = Int.max
+        } else {
+            itemStocks[type] = currentStock + quantity
         }
-
-        let entitiesToSell = sellableEntities.prefix(quantity)
-        for entity in entitiesToSell {
-            manager.removeEntity(entity)
-        }
-
-        return true
     }
 
     func addEntityToSellMarket(entity: Entity) {

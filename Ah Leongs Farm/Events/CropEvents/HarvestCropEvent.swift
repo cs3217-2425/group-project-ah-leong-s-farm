@@ -35,7 +35,7 @@ struct HarvestCropEvent: GameEvent {
 
         energySystem.useEnergy(of: .base, amount: ENERGY_USAGE)
         levelSystem.addXP(XP_AMOUNT)
-        inventorySystem.addItem(harvestedCrop)
+        inventorySystem.addItemToInventory(harvestedCrop)
         marketSystem.addEntityToSellMarket(entity: harvestedCrop)
 
         return HarvestCropEventData(type: cropComponent.cropType, quantity: harvestedQuantity)

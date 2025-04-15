@@ -27,112 +27,99 @@ class MarketSystemTests: XCTestCase {
     func testGetItemPrices() {
         let itemPrices = marketSystem.getItemPrices()
 
-        XCTAssertEqual(itemPrices[.bokChoySeed]?.buyPrice[.coin], 5.0)
-        XCTAssertEqual(itemPrices[.bokChoySeed]?.sellPrice[.coin], 3.0)
-        XCTAssertEqual(itemPrices[.appleSeed]?.buyPrice[.coin], 10.0)
-        XCTAssertEqual(itemPrices[.appleSeed]?.sellPrice[.coin], 6.0)
+        XCTAssertEqual(itemPrices[BokChoySeed.type]?.buyPrice[.coin], 5.0)
+        XCTAssertEqual(itemPrices[BokChoySeed.type]?.sellPrice[.coin], 3.0)
+        XCTAssertEqual(itemPrices[AppleSeed.type]?.buyPrice[.coin], 10.0)
+        XCTAssertEqual(itemPrices[AppleSeed.type]?.sellPrice[.coin], 6.0)
     }
 
     func testGetItemStocks() {
         let itemStocks = marketSystem.getItemStocks()
 
-        XCTAssertEqual(itemStocks[.bokChoySeed], Int.max)
-        XCTAssertEqual(itemStocks[.appleSeed], Int.max)
-        XCTAssertEqual(itemStocks[.potatoHarvested], Int.max)
+        XCTAssertEqual(itemStocks[BokChoySeed.type], Int.max)
+        XCTAssertEqual(itemStocks[AppleSeed.type], Int.max)
+        XCTAssertEqual(itemStocks[Potato.type], Int.max)
     }
 
     func testGetBuyPrice() {
-        let buyPrice = marketSystem.getBuyPrice(for: .bokChoySeed, currency: .coin)
+        let buyPrice = marketSystem.getBuyPrice(for: BokChoySeed.type, currency: .coin)
         XCTAssertEqual(buyPrice, 5.0)
 
-        let nonExistentItemPrice = marketSystem.getBuyPrice(for: .bokChoySeed, currency: .coin)
+        let nonExistentItemPrice = marketSystem.getBuyPrice(for: BokChoySeed.type, currency: .coin)
         XCTAssertNotNil(nonExistentItemPrice)
     }
 
     func testGetSellPrice() {
-        let sellPrice = marketSystem.getSellPrice(for: .bokChoySeed, currency: .coin)
+        let sellPrice = marketSystem.getSellPrice(for: BokChoySeed.type, currency: .coin)
         XCTAssertEqual(sellPrice, 3.0)
 
-        let sellCoinPrice = marketSystem.getSellPrice(for: .bokChoySeed, currency: .coin)
+        let sellCoinPrice = marketSystem.getSellPrice(for: BokChoySeed.type, currency: .coin)
         XCTAssertNotNil(sellCoinPrice)
     }
 
     func testGetBuyQuantity() {
-        let buyQuantity = marketSystem.getBuyQuantity(for: .bokChoySeed)
+        let buyQuantity = marketSystem.getBuyQuantity(for: BokChoySeed.type)
         XCTAssertEqual(buyQuantity, Int.max)
     }
 
     func testGetSellQuantity_noEntities_returnsZero() {
-        let sellQuantity = marketSystem.getSellQuantity(for: .bokChoySeed)
+        let sellQuantity = marketSystem.getSellQuantity(for: BokChoySeed.type)
         XCTAssertEqual(sellQuantity, 0)
     }
 
     func testGetSellQuantity_withEntities() {
-        let seedEntity1 = BokChoy.createSeed()
-        seedEntity1.attachComponent(SellComponent())
-        manager.addEntity(seedEntity1)
+        // Create and add bokchoy seeds with sell component
+        let bokChoySeed1 = BokChoySeed()
+        bokChoySeed1.attachComponent(SellComponent())
+        manager.addEntity(bokChoySeed1)
 
-        let seedEntity2 = BokChoy.createSeed()
-        seedEntity2.attachComponent(SellComponent())
-        manager.addEntity(seedEntity2)
+        let bokChoySeed2 = BokChoySeed()
+        bokChoySeed2.attachComponent(SellComponent())
+        manager.addEntity(bokChoySeed2)
 
-        let seedEntity3 = BokChoy.createSeed()
-        manager.addEntity(seedEntity3)
+        // Add one without sell component
+        let bokChoySeed3 = BokChoySeed()
+        manager.addEntity(bokChoySeed3)
 
-        let sellQuantity = marketSystem.getSellQuantity(for: .bokChoySeed)
+        let sellQuantity = marketSystem.getSellQuantity(for: BokChoySeed.type)
         XCTAssertEqual(sellQuantity, 2)
     }
 
-    func testBuyItem_validItem_success() {
-        let initialEntitiesCount = manager.getAllEntities().count
+    func testDecreaseStock() {
+        // Check initial stock
+        XCTAssertEqual(marketSystem.getBuyQuantity(for: BokChoySeed.type), Int.max)
 
-        let result = marketSystem.buyItem(type: .bokChoySeed, quantity: 3)
-
+        // Decrease stock
+        let result = marketSystem.decreaseStock(type: BokChoySeed.type, quantity: 5)
         XCTAssertTrue(result)
-        XCTAssertEqual(manager.getAllEntities().count, initialEntitiesCount + 3)
+
+        // Check updated stock (Int.max - 5)
+        XCTAssertEqual(marketSystem.getBuyQuantity(for: BokChoySeed.type), Int.max - 5)
     }
 
-    func testSellItem_sufficientQuantity_success() {
-        let seedEntity1 = BokChoy.createSeed()
-        seedEntity1.attachComponent(SellComponent())
-        manager.addEntity(seedEntity1)
+    func testIncreaseStock() {
+        // First decrease stock to create a non-max value
+        marketSystem.decreaseStock(type: BokChoySeed.type, quantity: 10)
+        let initialStock = marketSystem.getBuyQuantity(for: BokChoySeed.type) ?? 0
 
-        let seedEntity2 = BokChoy.createSeed()
-        seedEntity2.attachComponent(SellComponent())
-        manager.addEntity(seedEntity2)
+        // Increase stock
+        marketSystem.increaseStock(type: BokChoySeed.type, quantity: 5)
 
-        let initialEntitiesCount = manager.getAllEntities().count
-
-        let result = marketSystem.sellItem(type: .bokChoySeed, quantity: 1)
-
-        XCTAssertTrue(result)
-        XCTAssertEqual(manager.getAllEntities().count, initialEntitiesCount - 1)
-    }
-
-    func testSellItem_insufficientQuantity_failure() {
-        let seedEntity = BokChoy.createSeed()
-        seedEntity.attachComponent(SellComponent())
-        manager.addEntity(seedEntity)
-
-        let initialEntitiesCount = manager.getAllEntities().count
-
-        let result = marketSystem.sellItem(type: .bokChoySeed, quantity: 2)
-
-        XCTAssertFalse(result)
-        XCTAssertEqual(manager.getAllEntities().count, initialEntitiesCount)
-    }
-
-    func testSellItem_noEntities_failure() {
-        let result = marketSystem.sellItem(type: .bokChoySeed, quantity: 1)
-
-        XCTAssertFalse(result)
+        // Check updated stock
+        XCTAssertEqual(marketSystem.getBuyQuantity(for: BokChoySeed.type), initialStock + 5)
     }
 
     func testResetItemStocks() {
+        // First decrease some stocks
+        marketSystem.decreaseStock(type: BokChoySeed.type, quantity: 10)
+        marketSystem.decreaseStock(type: AppleSeed.type, quantity: 20)
+
+        // Reset stocks
         marketSystem.resetItemStocks()
 
+        // Check that stocks are reset
         let resetStocks = marketSystem.getItemStocks()
-        XCTAssertEqual(resetStocks[.bokChoySeed], Int.max)
-        XCTAssertEqual(resetStocks[.appleSeed], Int.max)
+        XCTAssertEqual(resetStocks[BokChoySeed.type], Int.max)
+        XCTAssertEqual(resetStocks[AppleSeed.type], Int.max)
     }
 }

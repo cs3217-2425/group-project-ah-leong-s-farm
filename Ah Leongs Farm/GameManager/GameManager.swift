@@ -141,12 +141,14 @@ class GameManager {
 
         let allItems = bokChoySeeds + fertilisers + premiumFertilisers + appleSeeds
 
+        gameWorld.addEntities(allItems)
+
         if let marketSystem = gameWorld.getSystem(ofType: MarketSystem.self) {
             marketSystem.addEntitiesToSellMarket(entities: allItems)
         }
 
         if let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) {
-            inventorySystem.addItems(allItems)
+            inventorySystem.addItemsToInventory(allItems)
         }
     }
 

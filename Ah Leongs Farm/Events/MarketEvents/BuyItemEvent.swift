@@ -36,11 +36,13 @@ class BuyItemEvent: GameEvent {
             return nil
         }
 
-        guard let purchasedItems = marketSystem.buyItem(type: itemType, quantity: quantity) else {
-            return nil
-        }
+        let purchasedItems = EntityFactoryRegistry.createMultiple(type: itemType,
+                                                                  quantity: quantity)
+        context.addEntities(purchasedItems)
+        marketSystem.decreaseStock(type: itemType, quantity: quantity)
+        marketSystem.addEntitiesToSellMarket(entities: purchasedItems)
 
-        inventorySystem.addItems(purchasedItems)
+        inventorySystem.addItemsToInventory(purchasedItems)
         walletSystem.removeCurrencyFromAll(currencyType, amount: totalCost)
 
         return BuyItemEventData(itemType: itemType, quantity: quantity)
