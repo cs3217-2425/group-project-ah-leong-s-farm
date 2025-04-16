@@ -6,7 +6,6 @@ class PlotActionViewController: UIViewController {
     private weak var spriteNode: SpriteNode?
     private weak var inventoryDataProvider: InventoryDataProvider?
     private weak var plotDataProvider: PlotDataProvider?
-    private weak var uiPositionProvider: UIPositionProvider?
     private var actionButtons: [UIButton] = []
     private var collectionView: UICollectionView?
 
