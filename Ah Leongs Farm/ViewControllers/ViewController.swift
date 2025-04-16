@@ -86,8 +86,10 @@ class ViewController: UIViewController {
         true
     }
 
-    deinit {
+    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        // removes strong cyclic reference between game manager and view controller
         gameManager.removeGameObserver(self)
+        super.dismiss(animated: flag, completion: completion)
     }
 }
 
