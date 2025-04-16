@@ -117,35 +117,24 @@ class GameManager {
 
     // MARK: - Setup Methods
 
-    private func setUpBaseEntities(shouldUsePreloadedSetUp: Bool = false) {
-        setUpGameStateEntity(shouldUsePreloadedSetUp: shouldUsePreloadedSetUp)
+    private func setUpBaseEntities() {
+        setUpGameStateEntity()
 
         addStartingItems()
 
-        setUpFarmLandEntity(shouldUsePreloadedSetUp: shouldUsePreloadedSetUp)
+        setUpFarmLandEntity()
     }
 
-    private func setUpGameStateEntity(shouldUsePreloadedSetUp: Bool) {
+    private func setUpGameStateEntity() {
         let defaultGameState = GameState(maxTurns: 30)
-
-        if shouldUsePreloadedSetUp {
-            gameWorld.addEntity(defaultGameState)
-            return
-        }
-
         let gameState = persistenceManager.loadGameState() ?? defaultGameState
 
         gameWorld.addEntity(gameState)
     }
 
-    private func setUpFarmLandEntity(shouldUsePreloadedSetUp: Bool) {
+    private func setUpFarmLandEntity() {
         let farmLand = FarmLand(rows: 10, columns: 10)
         gameWorld.addEntity(farmLand)
-
-        if shouldUsePreloadedSetUp {
-            // do not create plots
-            return
-        }
 
         let plots = persistenceManager.loadPlots()
 
