@@ -5,7 +5,7 @@
 //  Created by Jerry Leong on 5/4/25.
 //
 
-struct CropViewModel {
+struct CropViewModel: PlotOccupantViewModel {
     let cropType: CropType
     let canHarvest: Bool
     let currentGrowthTurn: Int
@@ -13,31 +13,13 @@ struct CropViewModel {
 
     init?(crop: Crop) {
         guard let cropComponent = crop.getComponentByType(ofType: CropComponent.self),
-              let growthComponent = crop.getComponentByType(ofType: GrowthComponent.self) else {
-            return nil
-        }
-
-        cropType = cropComponent.cropType
-        canHarvest = growthComponent.canHarvest
-        currentGrowthTurn = growthComponent.currentGrowthTurn
-        totalGrowthTurns = growthComponent.totalGrowthTurns
+              let growthComponent = crop.getComponentByType(ofType: GrowthComponent.self)
+        else { return nil }
+        
+        self.cropType = cropComponent.cropType
+        self.canHarvest = growthComponent.canHarvest
+        self.currentGrowthTurn = growthComponent.currentGrowthTurn
+        self.totalGrowthTurns = growthComponent.totalGrowthTurns
     }
 }
 
-struct SolarPanelViewModel {
-    let efficiency: Int
-    let currentOutput: Int
-
-    init?(solarPanel: SolarPanel) {
-        guard let energyComponent = solarPanel.getComponentByType(ofType: EnergyCapBoostComponent.self) else {
-            return nil
-        }
-        self.efficiency = 1
-        self.currentOutput = 1
-    }
-}
-
-enum PlotOccupantViewModel {
-    case crop(CropViewModel)
-    case solarPanel(SolarPanelViewModel)
-}

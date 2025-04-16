@@ -33,7 +33,7 @@ class PlotActionViewController: UIViewController {
     }
 
     private func setupGrowthLabel() {
-        guard case let .crop(crop) = plotViewModel.occupant else {
+        guard let crop = plotViewModel.occupant as? CropViewModel else {
             return
         }
 
@@ -61,21 +61,20 @@ class PlotActionViewController: UIViewController {
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        switch plotViewModel.occupant {
-        case .solarPanel:
-            // Only show remove solar panel
-            setupRemoveSolarPanelButton(in: stackView)
-
-        case .crop(let crop):
-            // Show water, harvest, and maybe remove crop
-            setupWaterButton(in: stackView)
-            setupHarvestCropButton(in: stackView)
-            if !crop.canHarvest {
-                setupRemoveCropButton(in: stackView)
+        if let occupant = plotViewModel.occupant {
+            if let crop = occupant as? CropViewModel {
+                // show water, harvest, and maybe remove crop
+                setupWaterButton(in: stackView)
+                setupHarvestCropButton(in: stackView)
+                if !crop.canHarvest {
+                    setupRemoveCropButton(in: stackView)
+                }
+            } else if occupant is SolarPanelViewModel {
+                // show remove solar panel button
+                setupRemoveSolarPanelButton(in: stackView)
             }
-
-        case .none:
-            // Nothing present: show water, add crop, and place solar panel
+        } else {
+            // show default actions
             setupWaterButton(in: stackView)
             setupAddCropButton(in: stackView)
             setupPlaceSolarPanelButton(in: stackView)
@@ -102,7 +101,7 @@ class PlotActionViewController: UIViewController {
         stackView.addArrangedSubview(button)
         actionButtons.append(button)
 
-        if case let .crop(crop) = plotViewModel.occupant, !crop.canHarvest {
+        if let crop = plotViewModel.occupant as? CropViewModel, !crop.canHarvest {
             button.isEnabled = false
             button.backgroundColor = .systemGray
         }

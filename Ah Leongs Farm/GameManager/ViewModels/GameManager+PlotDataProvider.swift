@@ -13,21 +13,14 @@ extension GameManager: PlotDataProvider {
             return nil
         }
 
-        guard let occupant = plot.getComponentByType(ofType: PlotOccupantSlotComponent.self)?.plotOccupant else {
-            return PlotViewModel(row: row, column: column, occupant: nil)
-        }
-
-        let occupantViewModel: PlotOccupantViewModel?
-        if let crop = occupant as? Crop, let cropVM = CropViewModel(crop: crop) {
-            occupantViewModel = .crop(cropVM)
-        } else if let solarPanel = occupant as? SolarPanel, let solarVM = SolarPanelViewModel(solarPanel: solarPanel) {
-            occupantViewModel = .solarPanel(solarVM)
-        } else {
-            occupantViewModel = nil
+        let occupant = plot.getComponentByType(ofType: PlotOccupantSlotComponent.self)?.plotOccupant
+        let occupantViewModel = occupant.flatMap {
+            PlotOccupantViewModelFactory.makeViewModel(from: $0)
         }
 
         return PlotViewModel(row: row, column: column, occupant: occupantViewModel)
     }
+
     func plantCrop(row: Int, column: Int, seedType: EntityType) {
         let event = PlantCropEvent(row: row, column: column, seedType: seedType)
         gameWorld.queueEvent(event)
