@@ -9,20 +9,18 @@ import Foundation
 
 class Plot: EntityAdapter {
     private static let DefaultSoilQuality: Float = 0
-    private static let DefaultSoilMoisture: Float = 0
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")
     }
 
-    init(position: CGPoint, soilQuality: Float, soilMoisture: Float, persistenceID: UUID,
-         crop: Crop? = nil) {
+    init(position: CGPoint, soilQuality: Float, soilHasWater: Bool, persistenceID: UUID, crop: Crop? = nil) {
         super.init()
         setUpComponents(
             position: position,
             soilQuality: soilQuality,
-            soilMoisture: soilMoisture,
+            soilHasWater: soilHasWater,
             persistenceID: persistenceID,
             crop: crop
         )
@@ -32,7 +30,7 @@ class Plot: EntityAdapter {
         self.init(
             position: position,
             soilQuality: Plot.DefaultSoilQuality,
-            soilMoisture: Plot.DefaultSoilMoisture,
+            soilHasWater: false,
             persistenceID: UUID(),
             crop: crop
         )
@@ -41,13 +39,13 @@ class Plot: EntityAdapter {
     private func setUpComponents(
         position: CGPoint,
         soilQuality: Float,
-        soilMoisture: Float,
+        soilHasWater: Bool,
         persistenceID: UUID,
         crop: Crop? = nil
     ) {
         attachComponent(CropSlotComponent(crop: crop))
         attachComponent(PositionComponent(x: position.x, y: position.y))
-        attachComponent(SoilComponent(quality: soilQuality, moisture: soilMoisture))
+        attachComponent(SoilComponent(quality: soilQuality, hasWater: soilHasWater))
         attachComponent(SpriteComponent(visitor: self))
         attachComponent(PersistenceComponent(persistenceObject: self, persistenceId: persistenceID))
     }

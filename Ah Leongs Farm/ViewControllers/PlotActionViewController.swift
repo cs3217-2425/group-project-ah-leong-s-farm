@@ -29,6 +29,29 @@ class PlotActionViewController: UIViewController {
         setupActionButtons()
         setupCollectionView()
         addDismissTapGesture()
+        setupGrowthLabel()
+    }
+
+    private func setupGrowthLabel() {
+        guard let crop = plotViewModel.crop else {
+            return
+        }
+
+        let growthLabel = UILabel()
+
+        growthLabel.text = "Growing for \(crop.currentGrowthTurn)/\(crop.totalGrowthTurns) turns"
+        growthLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        growthLabel.textAlignment = .center
+        growthLabel.translatesAutoresizingMaskIntoConstraints = false
+        growthLabel.textColor = .white
+
+        view.addSubview(growthLabel)
+
+        NSLayoutConstraint.activate([
+            growthLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            growthLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            growthLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
     }
 
     private func setupActionButtons() {
@@ -37,6 +60,8 @@ class PlotActionViewController: UIViewController {
         stackView.spacing = 16
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        setupWaterButton(in: stackView)
 
         if let crop = plotViewModel.crop {
             setupHarvestCropButton(in: stackView)
@@ -100,6 +125,18 @@ class PlotActionViewController: UIViewController {
         actionButtons.append(button)
     }
 
+    private func setupWaterButton(in stackView: UIStackView) {
+        let button = UIButton(type: .system)
+        button.setTitle("Water Plot", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        button.backgroundColor = .systemBlue
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(waterPlotTapped), for: .touchUpInside)
+        stackView.addArrangedSubview(button)
+        actionButtons.append(button)
+    }
+
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -141,6 +178,10 @@ class PlotActionViewController: UIViewController {
         if shouldDismiss(location: location) {
             dismiss(animated: true)
         }
+    }
+
+    @objc private func waterPlotTapped() {
+        plotDataProvider?.waterPlot(row: plotViewModel.row, column: plotViewModel.column)
     }
 
     @objc private func addCropTapped() {

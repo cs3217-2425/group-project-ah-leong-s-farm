@@ -31,7 +31,7 @@ final class InventorySystemTests: XCTestCase {
     func testAddItem_addsItemToInventory() {
         let testItem = createTestEntity()
 
-        inventorySystem.addItem(testItem)
+        manager.addEntity(testItem)
 
         XCTAssertEqual(inventorySystem.getAllComponents().count, 1)
     }
@@ -39,7 +39,7 @@ final class InventorySystemTests: XCTestCase {
     func testAddItem_withoutItemComponent_doesNotAddToInventory() {
         let entityWithoutItemComponent = EntityAdapter()
 
-        inventorySystem.addItem(entityWithoutItemComponent)
+        manager.addEntity(entityWithoutItemComponent)
 
         XCTAssertEqual(inventorySystem.getAllComponents().count, 0)
     }
@@ -47,28 +47,23 @@ final class InventorySystemTests: XCTestCase {
     func testAddItems_addsMultipleItemsToInventory() {
         let testItems = [createTestEntity(), createTestEntity(), createTestEntity()]
 
-        inventorySystem.addItems(testItems)
+        manager.addEntities(testItems)
 
         XCTAssertEqual(inventorySystem.getAllComponents().count, 3)
     }
 
     func testRemoveItem_removesItemFromInventory() {
         let testItem = createTestEntity()
-        inventorySystem.addItem(testItem)
+        manager.addEntity(testItem)
 
-        guard let itemComponent = testItem.getComponentByType(ofType: ItemComponent.self) else {
-            XCTFail("Failed to get ItemComponent")
-            return
-        }
-
-        inventorySystem.removeItem(itemComponent)
+        manager.removeComponent(ofType: ItemComponent.self, from: testItem)
 
         XCTAssertEqual(inventorySystem.getAllComponents().count, 0)
     }
 
     func testHasItem_withExistingItem_returnsTrue() {
         let testItem = createTestEntity()
-        inventorySystem.addItem(testItem)
+        manager.addEntity(testItem)
 
         guard let itemComponent = testItem.getComponentByType(ofType: ItemComponent.self) else {
             XCTFail("Failed to get ItemComponent")
@@ -92,7 +87,7 @@ final class InventorySystemTests: XCTestCase {
     func testHasItemOfType_withExistingType_returnsTrue() {
         let testItem = TestItemEntity()
         testItem.attachComponent(ItemComponent())
-        inventorySystem.addItem(testItem)
+        manager.addEntity(testItem)
 
         XCTAssertTrue(inventorySystem.hasItem(of: TestItemEntity.type))
     }
@@ -100,7 +95,7 @@ final class InventorySystemTests: XCTestCase {
     func testHasItemOfType_withNonExistingType_returnsFalse() {
         let testItem = TestItemEntity()
         testItem.attachComponent(ItemComponent())
-        inventorySystem.addItem(testItem)
+        manager.addEntity(testItem)
 
         XCTAssertFalse(inventorySystem.hasItem(of: DifferentTestItemEntity.type))
     }
@@ -109,8 +104,8 @@ final class InventorySystemTests: XCTestCase {
         let item1 = createTestEntity()
         let item2 = createTestEntity()
 
-        inventorySystem.addItem(item1)
-        inventorySystem.addItem(item2)
+        manager.addEntity(item1)
+        manager.addEntity(item2)
 
         let allComponents = inventorySystem.getAllComponents()
 

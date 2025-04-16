@@ -9,6 +9,7 @@ class MarketSystem: ISystem {
 
     private var itemPrices: [EntityType: Price] = MarketInformation.initialItemPrices
     private var itemStocks: [EntityType: Int] = MarketInformation.initialItemStocks
+    private var sellableEntityTypes: Set<EntityType> = MarketInformation.sellableItems
     unowned var manager: EntityManager?
 
     required init(for manager: EntityManager) {
@@ -52,40 +53,40 @@ class MarketSystem: ISystem {
     }
 
     @discardableResult
-    func buyItem(type: EntityType, quantity: Int) -> Bool {
+    func decreaseStock(type: EntityType, quantity: Int) -> Bool {
         // Check if the item exists in the market and if there's enough stock
         guard let currentStock = itemStocks[type], currentStock >= quantity else {
             print("Not enough stock for \(type).")
             return false
         }
 
-        for _ in 0..<quantity {
-            manager?.addEntity(ItemFactory.createItem(type: type))
-        }
         itemStocks[type] = currentStock - quantity
 
         return true
     }
 
-    @discardableResult
-    func sellItem(type: EntityType, quantity: Int) -> Bool {
-        guard let manager = manager else {
-            return false
+    func increaseStock(type: EntityType, quantity: Int) {
+        guard let currentStock = itemStocks[type] else {
+            return
         }
-
-        let sellableEntities = getSellableEntitiesOf(type)
-
-        if sellableEntities.count < quantity {
-            print("Not enough stock for \(type).")
-            return false
+        if quantity > 0 && currentStock > Int.max - quantity {
+            itemStocks[type] = Int.max
+        } else {
+            itemStocks[type] = currentStock + quantity
         }
+    }
 
-        let entitiesToSell = sellableEntities.prefix(quantity)
-        for entity in entitiesToSell {
-            manager.removeEntity(entity)
+    func addEntityToSellMarket(entity: Entity) {
+        if sellableEntityTypes.contains(entity.type) {
+            entity.attachComponent(SellComponent())
+            manager?.addEntity(entity)
         }
+    }
 
-        return true
+    func addEntitiesToSellMarket(entities: [Entity]) {
+        for entity in entities {
+            addEntityToSellMarket(entity: entity)
+        }
     }
 
     func resetItemStocks() {

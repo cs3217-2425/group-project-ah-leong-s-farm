@@ -8,6 +8,8 @@
 struct CropViewModel {
     let cropType: CropType
     let canHarvest: Bool
+    let currentGrowthTurn: Int
+    let totalGrowthTurns: Int
 
     init?(crop: Crop) {
         guard let cropComponent = crop.getComponentByType(ofType: CropComponent.self),
@@ -17,5 +19,7 @@ struct CropViewModel {
 
         cropType = cropComponent.cropType
         canHarvest = growthComponent.canHarvest
+        currentGrowthTurn = growthComponent.currentGrowthTurn
+        totalGrowthTurns = growthComponent.totalGrowthTurns
     }
 }

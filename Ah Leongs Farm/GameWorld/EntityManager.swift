@@ -20,6 +20,12 @@ class EntityManager {
         }
     }
 
+    func addEntities(_ entities: [Entity]) {
+        for entity in entities {
+            addEntity(entity)
+        }
+    }
+
     func removeEntity(_ entity: Entity) {
         let entityID = entity.id
         entities.removeValue(forKey: entityID)
@@ -94,6 +100,12 @@ class EntityManager {
 
     func getAllEntities() -> [Entity] {
         Array(entities.values)
+    }
+
+    func getEntitiesByType(_ type: EntityType) -> [Entity] {
+        entities.values.filter {
+            $0.type == type
+        }
     }
 
     // MARK: - Private Helper Methods

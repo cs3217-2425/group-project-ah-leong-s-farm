@@ -19,21 +19,61 @@ class GridSystem: ISystem {
         return gridComponent.getEntity(row: row, column: column) as? Plot
     }
 
+    func waterPlot(row: Int, column: Int) {
+        guard let plot = self.getPlot(row: row, column: column) else {
+            return
+        }
+
+        guard let soil = plot.getComponentByType(ofType: SoilComponent.self) else {
+            return
+        }
+
+        soil.hasWater = true
+    }
+
+    func unwaterPlots() {
+        guard let gridComponent = gridComponent else {
+            return
+        }
+
+        let numRows = gridComponent.numberOfRows
+        let numCols = gridComponent.numberOfColumns
+
+        for r in 0..<numRows {
+            for c in 0..<numCols {
+                guard let plot = getPlot(row: r, column: c) else {
+                    continue
+                }
+
+                guard let soilComponent = plot.getComponentByType(ofType: SoilComponent.self) else {
+                    continue
+                }
+
+                soilComponent.hasWater = false
+            }
+        }
+    }
+
     /// Adds a plot to the grid at the specified row and column.
     /// - Parameters:
     ///  - row: The row to add the plot to.
     ///  - column: The column to add the plot to.
     ///  - Returns: True if the plot was added, false otherwise.
-    func addPlot(row: Int, column: Int) -> Bool {
+    func addPlot(_ plot: Plot) -> Bool {
         guard let gridComponent = gridComponent else {
             return false
         }
 
+        guard let positionComponent =
+            plot.getComponentByType(ofType: PositionComponent.self) else {
+                return false
+            }
+        let row = Int(positionComponent.x)
+        let column = Int(positionComponent.y)
+
         guard gridComponent.getEntity(row: row, column: column) == nil else {
             return false
         }
-
-        let plot = Plot(position: CGPoint(x: row, y: column))
 
         gridComponent.setEntity(plot, row: row, column: column)
         manager?.addEntity(plot)

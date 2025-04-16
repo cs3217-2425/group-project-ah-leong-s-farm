@@ -11,7 +11,7 @@ extension PlotPersistenceEntity {
     func deserialize() -> Plot {
         let position = CGPoint(x: CGFloat(positionComponent?.x ?? 0), y: CGFloat(positionComponent?.y ?? 0))
         let soilQuality = soilComponent?.quality ?? 0
-        let soilMoisture = soilComponent?.moisture ?? 0
+        let soilHasWater = soilComponent?.hasWater ?? false
 
         guard let persistenceID = id else {
             let newPersistenceID = UUID()
@@ -20,7 +20,7 @@ extension PlotPersistenceEntity {
             return Plot(
                 position: position,
                 soilQuality: soilQuality,
-                soilMoisture: soilMoisture,
+                soilHasWater: soilHasWater,
                 persistenceID: newPersistenceID,
                 crop: nil
             )
@@ -29,7 +29,7 @@ extension PlotPersistenceEntity {
         return Plot(
             position: position,
             soilQuality: soilQuality,
-            soilMoisture: soilMoisture,
+            soilHasWater: soilHasWater,
             persistenceID: persistenceID,
             crop: nil
         )

@@ -57,11 +57,11 @@ class PlotSerializer {
 
         if let soilPersistenceComponent = plotPersistenceEntity.soilComponent {
             soilPersistenceComponent.quality = soilComponent?.quality ?? 0
-            soilPersistenceComponent.moisture = soilComponent?.moisture ?? 0
+            soilPersistenceComponent.hasWater = soilComponent?.hasWater ?? false
         } else {
             let newComponent = SoilPersistenceComponent(context: store.managedContext)
             newComponent.quality = soilComponent?.quality ?? 0
-            newComponent.moisture = soilComponent?.moisture ?? 0
+            newComponent.hasWater = soilComponent?.hasWater ?? false
             plotPersistenceEntity.soilComponent = newComponent
         }
     }

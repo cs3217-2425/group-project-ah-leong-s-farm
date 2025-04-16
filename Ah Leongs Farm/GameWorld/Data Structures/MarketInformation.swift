@@ -16,12 +16,12 @@ class MarketInformation {
     ]
 
     static let initialItemStocks: [EntityType: Int] = [
-        BokChoySeed.type: Int.max,
-        AppleSeed.type: Int.max,
-        BokChoy.type: Int.max,
-        Apple.type: Int.max,
-        PotatoSeed.type: Int.max,
-        Potato.type: Int.max
+        BokChoySeed.type: 999,
+        AppleSeed.type: 999,
+        BokChoy.type: 999,
+        Apple.type: 999,
+        PotatoSeed.type: 999,
+        Potato.type: 999
     ]
 
     static let sellableItems: Set<EntityType> = [

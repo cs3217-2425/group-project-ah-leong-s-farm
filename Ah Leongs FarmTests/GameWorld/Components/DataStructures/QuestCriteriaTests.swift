@@ -52,19 +52,19 @@ final class QuestCriteriaTests: XCTestCase {
     }
 
     func testSellCropCriteria_correctCropType() {
-        let criteria = SellItemCriteria(itemType: .appleHarvested)
-        let eventData = SellItemEventData(itemType: .appleHarvested, quantity: 8)
+        let criteria = SellItemCriteria(itemType: Apple.type)
+        let eventData = SellItemEventData(itemType: Apple.type, quantity: 8)
         XCTAssertEqual(criteria.calculateValue(from: eventData), 8.0)
     }
 
     func testSellCropCriteria_incorrectCropType() {
-        let criteria = SellItemCriteria(itemType: .appleHarvested)
-        let eventData = SellItemEventData(itemType: .potatoHarvested, quantity: 8)
+        let criteria = SellItemCriteria(itemType: Apple.type)
+        let eventData = SellItemEventData(itemType: Potato.type, quantity: 8)
         XCTAssertEqual(criteria.calculateValue(from: eventData), 0.0)
     }
 
     func testSellCropCriteria_invalidEventData() {
-        let criteria = SellItemCriteria(itemType: .appleHarvested)
+        let criteria = SellItemCriteria(itemType: Apple.type)
         let eventData = EndTurnEventData(endTurnCount: 2)
         XCTAssertEqual(criteria.calculateValue(from: eventData), 0.0)
     }

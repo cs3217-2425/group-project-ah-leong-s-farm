@@ -17,7 +17,7 @@ final class WalletSystemTests: XCTestCase {
         super.setUp()
         manager = EntityManager()
         walletSystem = WalletSystem(for: manager!)
-        manager?.addEntity(GameState(maxTurns: 30, maxEnergy: 10))
+        manager?.addEntity(GameState(maxTurns: 30))
     }
 
     override func tearDown() {

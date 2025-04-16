@@ -18,17 +18,23 @@ class InventorySystem: ISystem {
         self.manager = manager
     }
 
-    func addItem(_ itemToAdd: Entity) {
-        guard itemToAdd.getComponentByType(ofType: ItemComponent.self) != nil else {
+    func addItemToInventory(_ itemToAdd: Entity) {
+
+        guard isAllowedInInventory(itemToAdd) else {
+            print("Entity of type \(itemToAdd.type) is not allowed in inventory.")
             return
         }
 
-        manager?.addEntity(itemToAdd)
+        guard itemToAdd.getComponentByType(ofType: ItemComponent.self) == nil else {
+            return
+        }
+
+        itemToAdd.attachComponent(ItemComponent())
     }
 
-    func addItems(_ itemsToAdd: [Entity]) {
+    func addItemsToInventory(_ itemsToAdd: [Entity]) {
         for item in itemsToAdd {
-            addItem(item)
+            addItemToInventory(item)
         }
     }
 
@@ -56,5 +62,9 @@ class InventorySystem: ISystem {
 
     func getAllComponents() -> [ItemComponent] {
         items
+    }
+
+    private func isAllowedInInventory(_ entity: Entity) -> Bool {
+        entity is Seed || entity is Crop || entity is Tool
     }
 }

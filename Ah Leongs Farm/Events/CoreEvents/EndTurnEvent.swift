@@ -11,7 +11,8 @@ struct EndTurnEvent: GameEvent {
         guard let turnSystem = context.getSystem(ofType: TurnSystem.self),
               let energySystem = context.getSystem(ofType: EnergySystem.self),
               let cropSystem = context.getSystem(ofType: CropSystem.self),
-              let marketSystem = context.getSystem(ofType: MarketSystem.self) else {
+              let marketSystem = context.getSystem(ofType: MarketSystem.self),
+              let gridSystem = context.getSystem(ofType: GridSystem.self) else {
             return nil
         }
 
@@ -19,6 +20,7 @@ struct EndTurnEvent: GameEvent {
         energySystem.replenishEnergy(of: .base)
         cropSystem.growCrops()
         marketSystem.resetItemStocks()
+        gridSystem.unwaterPlots()
 
         if !shouldContinue {
             queueable.queueEvent(GameOverEvent())
