@@ -17,6 +17,7 @@ extension ViewController: PlotSpriteNodeTouchHandler {
 
         let plotActionVC = PlotActionViewController(
             plotViewModel: plotViewModel,
+            spriteNode: node,
             inventoryDataProvider: gameManager,
             plotDataProvider: gameManager
         )
