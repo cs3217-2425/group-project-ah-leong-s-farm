@@ -12,7 +12,10 @@ class MarketInformation {
         Apple.type: Price(buyPrice: [.coin: 5.0], sellPrice: [.coin: 3.0]),
         BokChoy.type: Price(buyPrice: [.coin: 15.0], sellPrice: [.coin: 10.0]),
         PotatoSeed.type: Price(buyPrice: [.coin: 15.0], sellPrice: [.coin: 10.0]),
-        Potato.type: Price(buyPrice: [.coin: 20.0], sellPrice: [.coin: 15.0])
+        Potato.type: Price(buyPrice: [.coin: 20.0], sellPrice: [.coin: 15.0]),
+        Fertiliser.type: Price(buyPrice: [.coin: 10.0], sellPrice: [.coin: 5.0]),
+        PremiumFertiliser.type: Price(buyPrice: [.coin: 15.0], sellPrice: [.coin: 10.0]),
+        SolarPanel.type: Price(buyPrice: [.coin: 35.0], sellPrice: [.coin: 30.0])
     ]
 
     static let initialItemStocks: [EntityType: Int] = [
@@ -21,7 +24,10 @@ class MarketInformation {
         BokChoy.type: 999,
         Apple.type: 999,
         PotatoSeed.type: 999,
-        Potato.type: 999
+        Potato.type: 999,
+        Fertiliser.type: 999,
+        PremiumFertiliser.type: 999,
+        SolarPanel.type: 999
     ]
 
     static let sellableItems: Set<EntityType> = [
@@ -30,6 +36,9 @@ class MarketInformation {
         BokChoy.type,
         PotatoSeed.type,
         Apple.type,
-        Potato.type
+        Potato.type,
+        Fertiliser.type,
+        PremiumFertiliser.type,
+        SolarPanel.type
     ]
 }

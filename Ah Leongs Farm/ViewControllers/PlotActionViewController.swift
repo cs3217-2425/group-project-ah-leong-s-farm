@@ -170,7 +170,7 @@ class PlotActionViewController: UIViewController {
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 80, height: 80) // Adjust size as needed
+        layout.itemSize = CGSize(width: 80, height: 80)
         layout.minimumLineSpacing = 10
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -182,7 +182,6 @@ class PlotActionViewController: UIViewController {
 
         view.addSubview(collectionView)
 
-        // Constraints (adjust position as needed)
         NSLayoutConstraint.activate([
             collectionView.bottomAnchor
                 .constraint(equalTo: actionButtons.first?.topAnchor ?? view.bottomAnchor, constant: -10),

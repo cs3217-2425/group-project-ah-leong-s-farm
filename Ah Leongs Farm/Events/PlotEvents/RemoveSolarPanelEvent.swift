@@ -11,7 +11,8 @@ struct RemoveSolarPanelEvent: GameEvent {
 
     func execute(in context: any EventContext, queueable: any EventQueueable) -> (any EventData)? {
         guard let solarPanelSystem = context.getSystem(ofType: SolarPanelSystem.self),
-              let energySystem = context.getSystem(ofType: EnergySystem.self) else {
+              let energySystem = context.getSystem(ofType: EnergySystem.self),
+              let inventorySystem = context.getSystem(ofType: InventorySystem.self) else {
             return nil
         }
 
@@ -24,7 +25,7 @@ struct RemoveSolarPanelEvent: GameEvent {
             return nil
         }
 
-        context.removeEntity(solarPanel)
+        inventorySystem.addItemToInventory(solarPanel)
 
         energySystem.decreaseMaxEnergy(of: energyCapBoostComponent.type, by: energyCapBoostComponent.boost)
 

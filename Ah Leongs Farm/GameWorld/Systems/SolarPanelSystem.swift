@@ -35,10 +35,6 @@ class SolarPanelSystem: ISystem {
     }
 
     func removeSolarPanel(row: Int, column: Int) -> SolarPanel? {
-        guard let manager = manager else {
-            return nil
-        }
-
         guard let plotEntity = grid?.getEntity(row: row, column: column) else {
             return nil
         }
@@ -48,6 +44,8 @@ class SolarPanelSystem: ISystem {
             return nil
         }
 
+        manager?.removeComponent(ofType: PositionComponent.self, from: solarPanel)
+        manager?.removeComponent(ofType: SpriteComponent.self, from: solarPanel)
         plotOccupantSlot.plotOccupant = nil
 
         return solarPanel

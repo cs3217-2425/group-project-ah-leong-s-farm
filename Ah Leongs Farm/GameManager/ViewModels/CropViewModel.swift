@@ -14,12 +14,13 @@ struct CropViewModel: PlotOccupantViewModel {
     init?(crop: Crop) {
         guard let cropComponent = crop.getComponentByType(ofType: CropComponent.self),
               let growthComponent = crop.getComponentByType(ofType: GrowthComponent.self)
-        else { return nil }
-        
+        else {
+            return nil
+        }
+
         self.cropType = cropComponent.cropType
         self.canHarvest = growthComponent.canHarvest
         self.currentGrowthTurn = growthComponent.currentGrowthTurn
         self.totalGrowthTurns = growthComponent.totalGrowthTurns
     }
 }
-

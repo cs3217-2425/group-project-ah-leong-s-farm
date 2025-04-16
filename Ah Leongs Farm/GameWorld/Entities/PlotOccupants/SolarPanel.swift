@@ -7,7 +7,7 @@
 
 import Foundation
 
-class SolarPanel: EntityAdapter, PlotOccupant {
+class SolarPanel: EntityAdapter, PlotOccupant, Tool {
     override init() {
         super.init()
         setUpComponents()
