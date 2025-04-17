@@ -197,8 +197,8 @@ class GameStatisticsView: UIView {
     }
 
     func updateXPLabel(currentXP: Float, levelXP: Float) {
-        progressBar?.setProgress(currentProgress: CGFloat(currentXP),
-                                 maxProgress: CGFloat(levelXP),
+        progressBar?.setProgress(current: CGFloat(currentXP),
+                                 max: CGFloat(levelXP),
                                  label: "XP")
     }
 }

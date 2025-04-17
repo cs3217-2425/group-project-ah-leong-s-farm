@@ -85,10 +85,6 @@ class ViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         true
     }
-
-    deinit {
-        gameManager.removeGameObserver(self)
-    }
 }
 
 // MARK: GameControlsViewDelegate
@@ -112,6 +108,8 @@ extension ViewController: GameControlsViewDelegate {
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 
         alert.addAction(UIAlertAction(title: "Quit", style: .destructive, handler: { _ in
+            // removes strong cyclic reference between game manager and view controller
+            self.gameManager.removeGameObserver(self)
             self.dismiss(animated: true, completion: nil)
         }))
 

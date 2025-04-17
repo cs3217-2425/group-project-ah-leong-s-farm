@@ -17,6 +17,7 @@ extension ViewController: CropSpriteNodeTouchHandler {
 
         let plotActionVC = PlotActionViewController(
             plotViewModel: plotViewModel,
+            spriteNode: node,
             inventoryDataProvider: gameManager,
             plotDataProvider: gameManager
         )
