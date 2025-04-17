@@ -9,9 +9,11 @@ import Foundation
 
 class HealthComponent: ComponentAdapter {
     var health: Double
+    let maxHealth: Double
 
     override init() {
         self.health = 1.0
+        self.maxHealth = 1.0
         super.init()
     }
 
