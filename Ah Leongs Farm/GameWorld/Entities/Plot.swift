@@ -8,7 +8,7 @@
 import Foundation
 
 class Plot: EntityAdapter {
-    private static let DefaultSoilQuality: Float = 0
+    private static let DefaultSoilQuality: Float = 1.0
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {

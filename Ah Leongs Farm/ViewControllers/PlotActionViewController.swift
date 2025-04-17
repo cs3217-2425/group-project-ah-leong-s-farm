@@ -1,15 +1,93 @@
 import UIKit
+import SpriteKit
 
+// swiftlint:disable type_body_length
+// TODO: Refactor this class as it's too bloated
 class PlotActionViewController: UIViewController {
     private let plotViewModel: PlotViewModel
+    fileprivate weak var spriteNode: SpriteNode?
     private weak var inventoryDataProvider: InventoryDataProvider?
     private weak var plotDataProvider: PlotDataProvider?
     private var actionButtons: [UIButton] = []
     private var collectionView: UICollectionView?
+    private var growthProgressBar: ProgressBar?
+    private var healthProgressBar: ProgressBar?
+    private var soilQualityProgressBar: ProgressBar?
+    private var plotAnimation = PlotAnimations()
 
-    init(plotViewModel: PlotViewModel, inventoryDataProvider: InventoryDataProvider,
-         plotDataProvider: PlotDataProvider) {
+    private enum CollectionViewMode {
+        case seeds, fertilisers, solarPanels
+    }
+
+    private func toggleCollectionView(mode: CollectionViewMode) {
+        let shouldHide = !(collectionView?.isHidden ?? true) && collectionViewMode == mode
+        collectionViewMode = mode
+        collectionView?.isHidden = shouldHide
+
+        if !shouldHide {
+            collectionView?.reloadData()
+        }
+    }
+
+    private var collectionViewMode: CollectionViewMode = .seeds
+
+    private lazy var itemProviders: [CollectionViewMode: () -> [Any]] = [
+        .seeds: { self.seedItems },
+        .fertilisers: { self.fertiliserItems },
+        .solarPanels: { self.solarPanelItems }
+    ]
+
+    private lazy var cellConfigurators: [CollectionViewMode: (InventoryItemCell, Int) -> Void] = [
+        .seeds: { cell, index in
+            cell.configure(with: self.seedItems[index].toInventoryItemViewModel())
+        },
+        .fertilisers: { cell, index in
+            cell.configure(with: self.fertiliserItems[index].toInventoryItemViewModel())
+        },
+        .solarPanels: { cell, index in
+            cell.configure(with: self.solarPanelItems[index].toInventoryItemViewModel())
+        }
+    ]
+
+    private lazy var selectionHandlers: [CollectionViewMode: (Int) -> Void] = [
+        .seeds: { [weak self] index in
+            guard let self = self else {
+                return
+            }
+            let selectedSeed = self.seedItems[index]
+            self.plotDataProvider?.plantCrop(
+                row: self.plotViewModel.row,
+                column: self.plotViewModel.column,
+                seedType: selectedSeed.type
+            )
+        },
+        .fertilisers: { [weak self] index in
+            guard let self = self else {
+                return
+            }
+            let selectedFertiliser = self.fertiliserItems[index]
+            self.plotDataProvider?.useFertiliser(
+                row: self.plotViewModel.row,
+                column: self.plotViewModel.column,
+                fertiliserType: selectedFertiliser.type
+            )
+        },
+        .solarPanels: { [weak self] index in
+            guard let self = self else {
+                return
+            }
+            let selectedSolarPanel = self.solarPanelItems[index]
+            self.plotDataProvider?.placeSolarPanel(
+                row: self.plotViewModel.row,
+                column: self.plotViewModel.column
+            )
+        }
+    ]
+
+    init(plotViewModel: PlotViewModel, spriteNode: SpriteNode,
+         inventoryDataProvider: InventoryDataProvider, plotDataProvider: PlotDataProvider) {
         self.plotViewModel = plotViewModel
+        self.spriteNode = spriteNode
         self.inventoryDataProvider = inventoryDataProvider
         self.plotDataProvider = plotDataProvider
 
@@ -29,28 +107,114 @@ class PlotActionViewController: UIViewController {
         setupActionButtons()
         setupCollectionView()
         addDismissTapGesture()
-        setupGrowthLabel()
+        setupProgressBars()
     }
 
-    private func setupGrowthLabel() {
+    private func setupProgressBars() {
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(containerView)
+
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            containerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.4)
+        ])
+
+        // ===== Soil Quality - Always show this =====
+        let soilTitleLabel = UILabel()
+        soilTitleLabel.text = "Soil Quality:"
+        soilTitleLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        soilTitleLabel.textColor = .white
+        soilTitleLabel.textAlignment = .center
+        soilTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(soilTitleLabel)
+
+        let soilQualityProgressBar = ProgressBar(frame: .zero)
+        soilQualityProgressBar.translatesAutoresizingMaskIntoConstraints = false
+        soilQualityProgressBar.setProgress(
+            current: CGFloat(plotViewModel.soilQuality),
+            max: CGFloat(plotViewModel.maxSoilQuality),
+            label: ""
+        )
+        containerView.addSubview(soilQualityProgressBar)
+        self.soilQualityProgressBar = soilQualityProgressBar
+
+        NSLayoutConstraint.activate([
+            soilTitleLabel.topAnchor.constraint(equalTo: containerView.topAnchor),
+            soilTitleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            soilTitleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+
+            soilQualityProgressBar.topAnchor.constraint(equalTo: soilTitleLabel.bottomAnchor, constant: 5),
+            soilQualityProgressBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            soilQualityProgressBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            soilQualityProgressBar.heightAnchor.constraint(equalToConstant: 30)
+        ])
+
         guard let crop = plotViewModel.occupant as? CropViewModel else {
+            // Add bottom constraint to the soil quality bar
+            soilQualityProgressBar.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10).isActive = true
             return
         }
 
-        let growthLabel = UILabel()
+        // ===== Growth Progress - Only show if crop exists =====
+        let growthTitleLabel = UILabel()
+        growthTitleLabel.text = "Growth Progress:"
+        growthTitleLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        growthTitleLabel.textColor = .white
+        growthTitleLabel.textAlignment = .center
+        growthTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(growthTitleLabel)
 
-        growthLabel.text = "Growing for \(crop.currentGrowthTurn)/\(crop.totalGrowthTurns) turns"
-        growthLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        growthLabel.textAlignment = .center
-        growthLabel.translatesAutoresizingMaskIntoConstraints = false
-        growthLabel.textColor = .white
+        let growthProgressBar = ProgressBar(frame: .zero)
+        growthProgressBar.translatesAutoresizingMaskIntoConstraints = false
+        growthProgressBar.setProgress(
+            current: CGFloat(crop.currentGrowthTurn),
+            max: CGFloat(crop.totalGrowthTurns),
+            label: ""
+        )
+        containerView.addSubview(growthProgressBar)
+        self.growthProgressBar = growthProgressBar
 
-        view.addSubview(growthLabel)
+        // ===== Health Progress - Only show if crop exists =====
+        let healthTitleLabel = UILabel()
+        healthTitleLabel.text = "Health:"
+        healthTitleLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        healthTitleLabel.textColor = .white
+        healthTitleLabel.textAlignment = .center
+        healthTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(healthTitleLabel)
+
+        let healthProgressBar = ProgressBar(frame: .zero)
+        healthProgressBar.translatesAutoresizingMaskIntoConstraints = false
+        healthProgressBar.setProgress(
+            current: CGFloat(crop.currentHealth),
+            max: 1.0,
+            label: "",
+            showText: false
+        )
+        containerView.addSubview(healthProgressBar)
+        self.healthProgressBar = healthProgressBar
 
         NSLayoutConstraint.activate([
-            growthLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            growthLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            growthLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            growthTitleLabel.topAnchor.constraint(equalTo: soilQualityProgressBar.bottomAnchor, constant: 15),
+            growthTitleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            growthTitleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+
+            growthProgressBar.topAnchor.constraint(equalTo: growthTitleLabel.bottomAnchor, constant: 5),
+            growthProgressBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            growthProgressBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            growthProgressBar.heightAnchor.constraint(equalToConstant: 30),
+
+            healthTitleLabel.topAnchor.constraint(equalTo: growthProgressBar.bottomAnchor, constant: 15),
+            healthTitleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            healthTitleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+
+            healthProgressBar.topAnchor.constraint(equalTo: healthTitleLabel.bottomAnchor, constant: 5),
+            healthProgressBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            healthProgressBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            healthProgressBar.heightAnchor.constraint(equalToConstant: 30),
+            healthProgressBar.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10)
         ])
     }
 
@@ -65,6 +229,7 @@ class PlotActionViewController: UIViewController {
             if let crop = occupant as? CropViewModel {
                 // show water, harvest, and maybe remove crop
                 setupWaterButton(in: stackView)
+                setupFertiliserButton(in: stackView)
                 setupHarvestCropButton(in: stackView)
                 if !crop.canHarvest {
                     setupRemoveCropButton(in: stackView)
@@ -76,6 +241,7 @@ class PlotActionViewController: UIViewController {
         } else {
             // show default actions
             setupWaterButton(in: stackView)
+            setupFertiliserButton(in: stackView)
             setupAddCropButton(in: stackView)
             setupPlaceSolarPanelButton(in: stackView)
         }
@@ -115,6 +281,18 @@ class PlotActionViewController: UIViewController {
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(addCropTapped), for: .touchUpInside)
+        stackView.addArrangedSubview(button)
+        actionButtons.append(button)
+    }
+
+    private func setupFertiliserButton(in stackView: UIStackView) {
+        let button = UIButton(type: .system)
+        button.setTitle("Use Fertiliser", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        button.backgroundColor = .systemOrange // Distinct color for fertiliser
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(useFertiliserTapped), for: .touchUpInside)
         stackView.addArrangedSubview(button)
         actionButtons.append(button)
     }
@@ -210,12 +388,20 @@ class PlotActionViewController: UIViewController {
     }
 
     @objc private func waterPlotTapped() {
-        plotDataProvider?.waterPlot(row: plotViewModel.row, column: plotViewModel.column)
+        guard let plotDataProvider = plotDataProvider else {
+            return
+        }
+
+        plotDataProvider.waterPlot(row: plotViewModel.row, column: plotViewModel.column)
+        plotAnimation.runWaterAnimation(on: spriteNode)
+    }
+
+    @objc private func useFertiliserTapped() {
+        toggleCollectionView(mode: .fertilisers)
     }
 
     @objc private func placeSolarPanelTapped() {
-        plotDataProvider?.placeSolarPanel(row: plotViewModel.row, column: plotViewModel.column)
-        dismiss(animated: true)
+        toggleCollectionView(mode: .solarPanels)
     }
 
     @objc private func removeSolarPanelTapped() {
@@ -224,7 +410,7 @@ class PlotActionViewController: UIViewController {
     }
 
     @objc private func addCropTapped() {
-        collectionView?.isHidden.toggle()
+        toggleCollectionView(mode: .seeds)
     }
 
     @objc private func harvestCropTapped() {
@@ -265,34 +451,36 @@ class PlotActionViewController: UIViewController {
 }
 
 extension PlotActionViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    private var seedItems: [SeedItemViewModel] {
+
+    private var seedItems: [PlotDisplayItemViewModel] {
         inventoryDataProvider?.getSeedItemViewModels() ?? []
+    }
+
+    private var fertiliserItems: [PlotDisplayItemViewModel] {
+        inventoryDataProvider?.getFertiliserItemViewModels() ?? []
+    }
+    
+    private var solarPanelItems: [PlotDisplayItemViewModel] {
+        inventoryDataProvider?.getSolarPanelItemViewModels() ?? []
     }
 
     // MARK: - UICollectionView DataSource & Delegate
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        seedItems.count
+        let items = itemProviders[collectionViewMode]?() as? [Any]
+        return items?.count ?? 0
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "InventoryCell", for: indexPath)
 
         if let cell = cell as? InventoryItemCell {
-            cell.configure(with: seedItems[indexPath.item].toInventoryItemViewModel())
+            cellConfigurators[collectionViewMode]?(cell, indexPath.item)
         }
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedSeed = seedItems[indexPath.item]
-
-        plotDataProvider?.plantCrop(
-            row: plotViewModel.row,
-            column: plotViewModel.column,
-            seedType: selectedSeed.seedType
-        )
-
+        selectionHandlers[collectionViewMode]?(indexPath.item)
         dismiss(animated: true)
     }
 }

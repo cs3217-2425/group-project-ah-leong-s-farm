@@ -13,12 +13,19 @@ extension GameManager: PlotDataProvider {
             return nil
         }
 
+        guard let plot = gridSystem.getPlot(row: row, column: column),
+              let soilComponent = plot.getComponentByType(ofType: SoilComponent.self) else {
+            return nil
+        }
+
         let occupant = plot.getComponentByType(ofType: PlotOccupantSlotComponent.self)?.plotOccupant
         let occupantViewModel = occupant.flatMap {
             PlotOccupantViewModelFactory.makeViewModel(from: $0)
         }
 
-        return PlotViewModel(row: row, column: column, occupant: occupantViewModel)
+        return PlotViewModel(row: row, column: column, occupant: occupantViewModel, soilQuality: soilComponent.quality,
+                             maxSoilQuality: soilComponent.maxQuality)
+
     }
 
     func plantCrop(row: Int, column: Int, seedType: EntityType) {
@@ -50,4 +57,9 @@ extension GameManager: PlotDataProvider {
         let event = RemoveSolarPanelEvent(row: row, column: column)
         gameWorld.queueEvent(event)
     }
+
+    func useFertiliser(row: Int, column: Int, fertiliserType: EntityType) {
+         let event = UseFertiliserEvent(row: row, column: column, fertiliserType: fertiliserType)
+         gameWorld.queueEvent(event)
+     }
 }

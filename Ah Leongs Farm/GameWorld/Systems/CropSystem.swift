@@ -143,7 +143,7 @@ class CropSystem: ISystem {
                 }
 
                 if soil.hasWater {
-                    growthComponent.currentGrowthTurn += 1
+                    growthComponent.currentGrowthTurn += soil.quality
                 }
             }
         }

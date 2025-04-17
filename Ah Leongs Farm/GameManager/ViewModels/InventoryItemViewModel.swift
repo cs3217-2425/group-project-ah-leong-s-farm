@@ -15,6 +15,7 @@ struct InventoryItemViewModel {
 
 protocol InventoryDataProvider: AnyObject {
     func getInventoryItemViewModels() -> [InventoryItemViewModel]
-
-    func getSeedItemViewModels() -> [SeedItemViewModel]
+    func getFertiliserItemViewModels() -> [PlotDisplayItemViewModel]
+    func getSeedItemViewModels() -> [PlotDisplayItemViewModel]
+    func getSolarPanelItemViewModels() -> [PlotDisplayItemViewModel]
 }

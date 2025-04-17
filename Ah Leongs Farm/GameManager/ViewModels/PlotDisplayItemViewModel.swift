@@ -5,14 +5,14 @@
 //  Created by Jerry Leong on 2/4/25.
 //
 
-struct SeedItemViewModel {
-    let seedType: EntityType
+struct PlotDisplayItemViewModel {
+    let type: EntityType
     let name: String
     let imageName: String
     let quantity: Int
 
     init?(seedType: EntityType, name: String, imageName: String, quantity: Int) {
-        self.seedType = seedType
+        self.type = seedType
         self.name = name
         self.imageName = imageName
         self.quantity = quantity

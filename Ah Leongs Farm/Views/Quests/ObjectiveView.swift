@@ -46,11 +46,11 @@ class ObjectiveView: UIView {
     func configure(with objective: QuestObjectiveViewModel) {
         descriptionLabel.text = objective.description
 
-        let currentProgress = CGFloat(objective.progress)
-        let maxProgress = CGFloat(objective.target)
+        let currentProgress = Int(objective.progress)
+        let maxProgress = Int(objective.target)
 
-        progressBar.setProgress(currentProgress: currentProgress,
-                                maxProgress: maxProgress,
+        progressBar.setProgress(current: currentProgress,
+                                max: maxProgress,
                                 label: "")
     }
 }

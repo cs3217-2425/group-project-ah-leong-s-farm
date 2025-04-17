@@ -28,6 +28,7 @@ class GameWorld {
         addSystem(GridSystem(for: entityManager))
         addSystem(MarketSystem(for: entityManager))
         addSystem(SolarPanelSystem(for: entityManager))
+        addSystem(SoilSystem(for: entityManager))
 
         let questSystem = QuestSystem(for: entityManager, eventQueueable: self)
         addSystem(questSystem)

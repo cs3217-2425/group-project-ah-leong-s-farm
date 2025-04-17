@@ -17,6 +17,7 @@ extension ViewController: SolarPanelSpriteNodeTouchHandler {
 
         let plotActionVC = PlotActionViewController(
             plotViewModel: plotViewModel,
+            spriteNode: node,
             inventoryDataProvider: gameManager,
             plotDataProvider: gameManager
         )

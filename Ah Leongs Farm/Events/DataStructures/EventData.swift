@@ -78,3 +78,10 @@ struct RemoveCropEventData: EventData {
     var column: Int
     var isSuccessfullyRemoved: Bool
 }
+
+struct UseFertiliserEventData: EventData {
+    var row: Int
+    var column: Int
+    var fertiliserType: EntityType
+    var isSuccessful: Bool
+}

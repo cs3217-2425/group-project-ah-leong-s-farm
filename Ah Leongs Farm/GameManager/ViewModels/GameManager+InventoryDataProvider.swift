@@ -43,34 +43,51 @@ extension GameManager: InventoryDataProvider {
         return viewModels.values.sorted { $0.name < $1.name }
     }
 
-    func getSeedItemViewModels() -> [SeedItemViewModel] {
+    func getSeedItemViewModels() -> [PlotDisplayItemViewModel] {
 
         let seedItems = gameWorld.getAllEntities()
             .filter {
                 $0.getComponentByType(ofType: SeedComponent.self) != nil
             }
+        return entitiesToPlotDisplayViewModel(seedItems)
+    }
 
-        // Use the displayName as an identifier for the viewModel
-        var viewModels: [String: SeedItemViewModel] = [:]
+    func getFertiliserItemViewModels() -> [PlotDisplayItemViewModel] {
+        let fertiliserItems = gameWorld.getAllEntities()
+            .filter {
+                $0 is Fertiliser
+            }
+        return entitiesToPlotDisplayViewModel(fertiliserItems)
+    }
 
-        for item in seedItems {
+    func getSolarPanelItemViewModels() -> [PlotDisplayItemViewModel] {
+        let solarPanelItems = gameWorld.getAllEntities()
+            .filter {
+                $0 is SolarPanel && $0.getComponentByType(ofType: ItemComponent.self) != nil
+            }
+        return entitiesToPlotDisplayViewModel(solarPanelItems)
+    }
+
+    private func entitiesToPlotDisplayViewModel(_ entities: [Entity]) -> [PlotDisplayItemViewModel] {
+        var viewModels: [String: PlotDisplayItemViewModel] = [:]
+        for entity in entities {
             guard let currDisplayName = ItemToViewDataMap
-                .itemTypeToDisplayName[item.type],
+                .itemTypeToDisplayName[entity.type],
                   let currImageName = ItemToViewDataMap
-                .itemTypeToImage[item.type] else {
+                .itemTypeToImage[entity.type] else {
                 continue
             }
 
             if let existingViewModel = viewModels[currDisplayName] {
-                viewModels[currDisplayName] = SeedItemViewModel(
-                    seedType: item.type,
+                viewModels[currDisplayName] = PlotDisplayItemViewModel(
+                    seedType: entity.type,
                     name: currDisplayName,
                     imageName: currImageName,
                     quantity: existingViewModel.quantity + 1
                 )
             } else {
-                viewModels[currDisplayName] = SeedItemViewModel(
-                    seedType: item.type,
+                viewModels[currDisplayName] = PlotDisplayItemViewModel(
+                    seedType: entity.type,
                     name: currDisplayName,
                     imageName: currImageName,
                     quantity: 1

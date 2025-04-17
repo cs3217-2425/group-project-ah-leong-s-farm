@@ -9,6 +9,8 @@ struct PlotViewModel {
     let row: Int
     let column: Int
     let occupant: PlotOccupantViewModel?
+    let soilQuality: Float
+    let maxSoilQuality: Float
 
     var hasOccupant: Bool {
         occupant != nil
@@ -19,6 +21,8 @@ protocol PlotDataProvider: AnyObject {
     func getPlotViewModel(row: Int, column: Int) -> PlotViewModel?
 
     func plantCrop(row: Int, column: Int, seedType: EntityType)
+
+    func useFertiliser(row: Int, column: Int, fertiliserType: EntityType)
 
     func harvestCrop(row: Int, column: Int)
 
