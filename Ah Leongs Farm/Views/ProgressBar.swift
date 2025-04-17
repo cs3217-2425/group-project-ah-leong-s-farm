@@ -22,13 +22,13 @@ class ProgressBar: UIView {
 
     private struct IntegerProgressFormatter: ProgressFormatter {
         func format(_ value: CGFloat) -> String {
-            return "\(Int(value))"
+            "\(Int(value))"
         }
     }
 
     private struct FloatProgressFormatter: ProgressFormatter {
         func format(_ value: CGFloat) -> String {
-            return String(format: "%.2f", value)
+            String(format: "%.2f", value)
         }
     }
 
@@ -76,7 +76,9 @@ class ProgressBar: UIView {
 
     // Internal implementation shared by all public methods
     private func setProgressInternal(currentProgress: CGFloat, maxProgress: CGFloat, label: String, showText: Bool) {
-        guard maxProgress > 0 else { return }
+        guard maxProgress > 0 else {
+            return
+        }
 
         self.currentProgress = currentProgress
         self.maxProgress = maxProgress
