@@ -114,10 +114,9 @@ class PlotActionViewController: UIViewController {
         let soilQualityProgressBar = ProgressBar(frame: .zero)
         soilQualityProgressBar.translatesAutoresizingMaskIntoConstraints = false
         soilQualityProgressBar.setProgress(
-            currentProgress: CGFloat(plotViewModel.soilQuality),
-            maxProgress: CGFloat(plotViewModel.maxSoilQuality),
-            label: "",
-            showText: false
+            current: CGFloat(plotViewModel.soilQuality),
+            max: CGFloat(plotViewModel.maxSoilQuality),
+            label: ""
         )
         containerView.addSubview(soilQualityProgressBar)
         self.soilQualityProgressBar = soilQualityProgressBar
@@ -151,8 +150,8 @@ class PlotActionViewController: UIViewController {
         let growthProgressBar = ProgressBar(frame: .zero)
         growthProgressBar.translatesAutoresizingMaskIntoConstraints = false
         growthProgressBar.setProgress(
-            currentProgress: CGFloat(crop.currentGrowthTurn),
-            maxProgress: CGFloat(crop.totalGrowthTurns),
+            current: CGFloat(crop.currentGrowthTurn),
+            max: CGFloat(crop.totalGrowthTurns),
             label: ""
         )
         containerView.addSubview(growthProgressBar)
@@ -170,8 +169,8 @@ class PlotActionViewController: UIViewController {
         let healthProgressBar = ProgressBar(frame: .zero)
         healthProgressBar.translatesAutoresizingMaskIntoConstraints = false
         healthProgressBar.setProgress(
-            currentProgress: CGFloat(crop.currentHealth),
-            maxProgress: 1.0,
+            current: CGFloat(crop.currentHealth),
+            max: 1.0,
             label: "",
             showText: false
         )
@@ -213,7 +212,6 @@ class PlotActionViewController: UIViewController {
 
         if let crop = plotViewModel.crop {
             setupHarvestCropButton(in: stackView)
-
             if !crop.canHarvest {
                 setupRemoveCropButton(in: stackView)
             }
