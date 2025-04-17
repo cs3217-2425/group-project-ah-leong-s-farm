@@ -9,6 +9,7 @@ import Foundation
 
 class SoilComponent: ComponentAdapter {
     var quality: Float
+    var maxQuality: Float = 10
     var hasWater: Bool
 
     @available(*, unavailable)

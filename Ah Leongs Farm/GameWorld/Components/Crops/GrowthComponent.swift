@@ -9,9 +9,9 @@ import Foundation
 
 class GrowthComponent: ComponentAdapter {
     var totalGrowthTurns: Int
-    var currentGrowthTurn: Int = 0
+    var currentGrowthTurn: Float = 0
     var canHarvest: Bool {
-        currentGrowthTurn >= totalGrowthTurns
+        currentGrowthTurn >= Float(totalGrowthTurns)
     }
 
     init(totalGrowthTurns: Int) {

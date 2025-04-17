@@ -12,6 +12,7 @@ struct EndTurnEvent: GameEvent {
               let energySystem = context.getSystem(ofType: EnergySystem.self),
               let cropSystem = context.getSystem(ofType: CropSystem.self),
               let marketSystem = context.getSystem(ofType: MarketSystem.self),
+              let soilSystem = context.getSystem(ofType: SoilSystem.self),
               let gridSystem = context.getSystem(ofType: GridSystem.self) else {
             return nil
         }
@@ -19,6 +20,7 @@ struct EndTurnEvent: GameEvent {
         let shouldContinue = turnSystem.incrementTurn()
         energySystem.replenishEnergy(of: .base)
         cropSystem.growCrops()
+        soilSystem.degradeSoilQuality()
         marketSystem.resetItemStocks()
         gridSystem.unwaterPlots()
 

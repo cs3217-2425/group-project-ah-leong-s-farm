@@ -11,17 +11,26 @@ extension GameManager: PlotDataProvider {
             return nil
         }
 
-        guard let plot = gridSystem.getPlot(row: row, column: column) else {
+        guard let plot = gridSystem.getPlot(row: row, column: column),
+              let soilComponent = plot.getComponentByType(ofType: SoilComponent.self) else {
             return nil
         }
 
         guard let crop = plot.getComponentByType(ofType: CropSlotComponent.self)?.crop else {
-            return PlotViewModel(row: row, column: column, crop: nil)
+            return PlotViewModel(row: row,
+                                 column: column,
+                                 crop: nil,
+                                 soilQuality: soilComponent.quality,
+                                 maxSoilQuality: soilComponent.maxQuality)
         }
 
         let cropViewModel = CropViewModel(crop: crop)
 
-        return PlotViewModel(row: row, column: column, crop: cropViewModel)
+        return PlotViewModel(row: row,
+                             column: column,
+                             crop: cropViewModel,
+                             soilQuality: soilComponent.quality,
+                             maxSoilQuality: soilComponent.maxQuality)
     }
 
     func plantCrop(row: Int, column: Int, seedType: EntityType) {
@@ -43,4 +52,9 @@ extension GameManager: PlotDataProvider {
         let event = WaterPlotEvent(row: row, column: column)
         gameWorld.queueEvent(event)
     }
+
+    func useFertiliser(row: Int, column: Int, fertiliserType: EntityType) {
+         let event = UseFertiliserEvent(row: row, column: column, fertiliserType: fertiliserType)
+         gameWorld.queueEvent(event)
+     }
 }

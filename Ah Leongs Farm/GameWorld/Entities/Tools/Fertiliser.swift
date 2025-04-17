@@ -9,9 +9,9 @@ import Foundation
 
 class Fertiliser: EntityAdapter, Tool {
     // TODO: Consider FertiliserComponent once we implement fertiliser logic
-    let soilImprovementAmount: Int
+    let soilImprovementAmount: Float
 
-    init(soilImprovementAmount: Int = 30) {
+    init(soilImprovementAmount: Float = 1) {
         self.soilImprovementAmount = soilImprovementAmount
         super.init()
     }
@@ -23,7 +23,7 @@ class Fertiliser: EntityAdapter, Tool {
 }
 
 class PremiumFertiliser: Fertiliser {
-    override init(soilImprovementAmount: Int = 100) {
+    override init(soilImprovementAmount: Float = 3) {
         super.init(soilImprovementAmount: soilImprovementAmount)
     }
 
