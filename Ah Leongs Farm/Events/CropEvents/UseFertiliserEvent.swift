@@ -40,19 +40,13 @@ struct UseFertiliserEvent: GameEvent {
 
             context.removeEntity(fertiliser)
 
-            return UseFertiliserEventData(
-                row: row,
-                column: column,
-                fertiliserType: fertiliserType,
-                isSuccessful: true
-            )
         }
 
         return UseFertiliserEventData(
             row: row,
             column: column,
             fertiliserType: fertiliserType,
-            isSuccessful: false
+            isSuccessful: isSuccessful
         )
     }
 }
