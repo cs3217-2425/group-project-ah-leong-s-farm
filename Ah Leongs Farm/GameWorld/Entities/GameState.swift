@@ -56,7 +56,7 @@ class GameState: EntityAdapter {
         attachComponent(EnergyBankComponent(initialEnergies: energies))
         attachComponent(LevelComponent(level: config.level, currentXP: config.currentXP))
         attachComponent(WalletComponent(coinAmount: config.coinAmount))
-        addComponent(PersistenceComponent(persistenceObject: self))
+        attachComponent(PersistenceComponent(persistenceObject: self))
     }
 }
 
