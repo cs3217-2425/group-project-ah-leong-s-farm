@@ -39,13 +39,7 @@ class InventorySystem: ISystem {
     }
 
     func removeItemFromInventory(_ entity: Entity) {
-        guard let itemComponent = entity.getComponentByType(ofType: ItemComponent.self) else {
-            return
-        }
-    
         manager?.removeComponent(ofType: ItemComponent.self, from: entity)
-        print(entity.allComponents)
-        //removeItem(itemComponent)
     }
 
     func removeItem(_ item: ItemComponent) {

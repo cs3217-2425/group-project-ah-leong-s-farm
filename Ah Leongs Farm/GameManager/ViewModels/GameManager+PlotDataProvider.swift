@@ -7,9 +7,7 @@
 
 extension GameManager: PlotDataProvider {
     func getPlotViewModel(row: Int, column: Int) -> PlotViewModel? {
-        guard let gridSystem = gameWorld.getSystem(ofType: GridSystem.self),
-              let plot = gridSystem.getPlot(row: row, column: column)
-        else {
+        guard let gridSystem = gameWorld.getSystem(ofType: GridSystem.self) else {
             return nil
         }
 

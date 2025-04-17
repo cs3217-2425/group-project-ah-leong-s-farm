@@ -459,7 +459,7 @@ extension PlotActionViewController: UICollectionViewDelegate, UICollectionViewDa
     private var fertiliserItems: [PlotDisplayItemViewModel] {
         inventoryDataProvider?.getFertiliserItemViewModels() ?? []
     }
-    
+
     private var solarPanelItems: [PlotDisplayItemViewModel] {
         inventoryDataProvider?.getSolarPanelItemViewModels() ?? []
     }
