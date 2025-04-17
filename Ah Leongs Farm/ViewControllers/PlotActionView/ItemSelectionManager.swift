@@ -78,7 +78,7 @@ class ItemSelectionManager: NSObject {
 
     // MARK: - Helper Methods
     private func getCurrentItems() -> [PlotDisplayItemViewModel] {
-        return itemProviders[currentMode]?() ?? []
+        itemProviders[currentMode]?() ?? []
     }
 }
 
@@ -86,7 +86,7 @@ class ItemSelectionManager: NSObject {
 extension ItemSelectionManager: UICollectionViewDelegate, UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return getCurrentItems().count
+        getCurrentItems().count
     }
 
     func collectionView(_ collectionView: UICollectionView,
