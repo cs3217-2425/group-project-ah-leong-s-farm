@@ -32,7 +32,6 @@ class CoreDataPlotQuery: PlotQuery {
         }
 
         return plotPersistenceEntities.map({ $0.deserialize() })
-            
     }
 
     func fetchById(id: UUID) -> Plot? {

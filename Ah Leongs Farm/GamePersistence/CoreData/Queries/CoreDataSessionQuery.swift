@@ -33,4 +33,3 @@ class CoreDataSessionQuery: SessionQuery {
             }
     }
 }
-

@@ -10,4 +10,3 @@ import Foundation
 protocol GameStateQuery {
     func fetch(sessionId: UUID) -> GameState?
 }
-

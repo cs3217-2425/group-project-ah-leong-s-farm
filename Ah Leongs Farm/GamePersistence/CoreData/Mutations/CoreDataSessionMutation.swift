@@ -53,7 +53,7 @@ class CoreDataSessionMutation: SessionMutation {
             store.rollback()
             return false
         }
-        
+
         return true
     }
 
