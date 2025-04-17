@@ -53,18 +53,18 @@ class PlotActionViewController: UIViewController {
         progressBarManager = ProgressBarManager(containerView: progressContainer)
         progressBarManager?.setupProgressBars(for: plotViewModel)
 
-        // Create action buttons
         actionButtonManager = ActionButtonManager(in: view, delegate: self)
         actionButtonManager?.setupButtons(for: plotViewModel)
 
-        // Create collection view for item selection
         let collectionView = createCollectionView()
         itemSelectionManager = ItemSelectionManager(
             collectionView: collectionView,
             seedItems: inventoryDataProvider?.getSeedItemViewModels() ?? [],
             fertiliserItems: inventoryDataProvider?.getFertiliserItemViewModels() ?? [],
             onSeedSelected: { [weak self] seedType in
-                guard let self = self else { return }
+                guard let self = self else {
+                    return
+                }
                 self.plotDataProvider?.plantCrop(
                     row: self.plotViewModel.row,
                     column: self.plotViewModel.column,
@@ -73,7 +73,9 @@ class PlotActionViewController: UIViewController {
                 self.dismiss(animated: true)
             },
             onFertiliserSelected: { [weak self] fertiliserType in
-                guard let self = self else { return }
+                guard let self = self else {
+                    return
+                }
                 self.plotDataProvider?.useFertiliser(
                     row: self.plotViewModel.row,
                     column: self.plotViewModel.column,

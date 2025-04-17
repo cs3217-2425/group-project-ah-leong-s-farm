@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Manages the progress bars for plot data visualization
 class ProgressBarManager {
 
     // MARK: - Properties
@@ -15,6 +16,9 @@ class ProgressBarManager {
     private var soilQualityProgressBar: ProgressBar?
     private var growthProgressBar: ProgressBar?
     private var healthProgressBar: ProgressBar?
+
+    // Track all bottom constraints so we can manage them
+    private var bottomConstraints: [NSLayoutConstraint] = []
 
     // MARK: - Initialization
     init(containerView: UIView) {
@@ -31,17 +35,41 @@ class ProgressBarManager {
 
     // MARK: - Setup Methods
     func setupProgressBars(for plotViewModel: PlotViewModel) {
+        // Clear any existing views from container
+        containerView.subviews.forEach { $0.removeFromSuperview() }
+        bottomConstraints.forEach { $0.isActive = false }
+        bottomConstraints.removeAll()
+
         // Setup soil quality bar (always visible)
-        setupSoilQualityBar(quality: plotViewModel.soilQuality, maxQuality: plotViewModel.maxSoilQuality)
+        let soilBar = setupSoilQualityBar(quality: plotViewModel.soilQuality, maxQuality: plotViewModel.maxSoilQuality)
+        var lastBar = soilBar
 
         // Add crop-specific bars if a crop exists
         if let crop = plotViewModel.crop {
-            setupGrowthBar(current: crop.currentGrowthTurn, max: Float(crop.totalGrowthTurns))
-            setupHealthBar(health: crop.currentHealth)
+            // Setup growth bar
+            let growthBar = setupGrowthBar(
+                after: soilBar,
+                current: crop.currentGrowthTurn,
+                max: Float(crop.totalGrowthTurns)
+            )
+            lastBar = growthBar
+
+            // Setup health bar
+            let healthBar = setupHealthBar(
+                after: growthBar,
+                health: crop.currentHealth
+            )
+            lastBar = healthBar
         }
+
+        // Add bottom constraint only to the last bar
+        let bottomConstraint = lastBar.bottomAnchor.constraint(
+            equalTo: containerView.bottomAnchor, constant: -10)
+        bottomConstraint.isActive = true
+        bottomConstraints.append(bottomConstraint)
     }
 
-    private func setupSoilQualityBar(quality: Float, maxQuality: Float) {
+    private func setupSoilQualityBar(quality: Float, maxQuality: Float) -> ProgressBar {
         let titleLabel = createTitleLabel(title: "Soil Quality:")
         containerView.addSubview(titleLabel)
 
@@ -67,15 +95,10 @@ class ProgressBarManager {
             progressBar.heightAnchor.constraint(equalToConstant: 30)
         ])
 
-        // If no crop bars will be added, set bottom constraint
-        if growthProgressBar == nil && healthProgressBar == nil {
-            progressBar.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10).isActive = true
-        }
+        return progressBar
     }
 
-    private func setupGrowthBar(current: Float, max: Float) {
-        guard let soilQualityBar = soilQualityProgressBar else { return }
-
+    private func setupGrowthBar(after previousBar: ProgressBar, current: Float, max: Float) -> ProgressBar {
         let titleLabel = createTitleLabel(title: "Growth Progress:")
         containerView.addSubview(titleLabel)
 
@@ -90,7 +113,7 @@ class ProgressBarManager {
         self.growthProgressBar = progressBar
 
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: soilQualityBar.bottomAnchor, constant: 15),
+            titleLabel.topAnchor.constraint(equalTo: previousBar.bottomAnchor, constant: 15),
             titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
 
@@ -99,11 +122,11 @@ class ProgressBarManager {
             progressBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             progressBar.heightAnchor.constraint(equalToConstant: 30)
         ])
+
+        return progressBar
     }
 
-    private func setupHealthBar(health: Double) {
-        guard let growthBar = growthProgressBar else { return }
-
+    private func setupHealthBar(after previousBar: ProgressBar, health: Double) -> ProgressBar {
         let titleLabel = createTitleLabel(title: "Health:")
         containerView.addSubview(titleLabel)
 
@@ -119,16 +142,17 @@ class ProgressBarManager {
         self.healthProgressBar = progressBar
 
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: growthBar.bottomAnchor, constant: 15),
+            titleLabel.topAnchor.constraint(equalTo: previousBar.bottomAnchor, constant: 15),
             titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
 
             progressBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
             progressBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             progressBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            progressBar.heightAnchor.constraint(equalToConstant: 30),
-            progressBar.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10)
+            progressBar.heightAnchor.constraint(equalToConstant: 30)
         ])
+
+        return progressBar
     }
 
     private func createTitleLabel(title: String) -> UILabel {

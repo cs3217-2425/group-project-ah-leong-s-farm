@@ -144,7 +144,6 @@ class GameStatisticsView: UIView {
         stackView.spacing = 8
         stackView.alignment = .center
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.isHidden = true  // Hide by default
 
         self.upgradePointsLabel = label
 
@@ -183,13 +182,9 @@ class GameStatisticsView: UIView {
 
     func updateUpgradePointsLabel(points: Int) {
         if let label = upgradePointsLabel, let stackView = label.superview as? UIStackView {
-            if points > 0 {
                 label.text = "\(points)"
                 stackView.isHidden = false
-            } else {
-                stackView.isHidden = true
             }
-        }
     }
 
     func updateLevelLabel(level: Int) {
