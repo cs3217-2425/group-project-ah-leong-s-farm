@@ -78,8 +78,7 @@ class ProgressBarManager {
         progressBar.setProgress(
             current: quality,
             max: maxQuality,
-            label: "",
-            showText: false
+            label: ""
         )
         containerView.addSubview(progressBar)
         self.soilQualityProgressBar = progressBar
