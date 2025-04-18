@@ -15,53 +15,16 @@ class Plot: EntityAdapter {
         fatalError("init(coder:) not implemented")
     }
 
-    init(position: CGPoint,
-         soilQuality: Float,
-         soilHasWater: Bool,
-         persistenceID: UUID,
-         plotOccupant: PlotOccupant? = nil) {
+    init(position: CGPoint, plotOccupant: PlotOccupant? = nil) {
         super.init()
-        setUpComponents(
-            position: position,
-            soilQuality: soilQuality,
-            soilHasWater: soilHasWater,
-            persistenceID: persistenceID,
-            plotOccupant: plotOccupant
-        )
+        setUpComponents(position: position, plotOccupant: plotOccupant)
     }
 
-    convenience init(position: CGPoint, plotOccupant: PlotOccupant? = nil) {
-        self.init(
-            position: position,
-            soilQuality: Plot.DefaultSoilQuality,
-            soilHasWater: false,
-            persistenceID: UUID(),
-            plotOccupant: plotOccupant
-        )
-    }
-
-    private func setUpComponents(
-        position: CGPoint,
-        soilQuality: Float,
-        soilHasWater: Bool,
-        persistenceID: UUID,
-        plotOccupant: PlotOccupant? = nil
-    ) {
+    func setUpComponents(position: CGPoint, plotOccupant: PlotOccupant? = nil) {
         attachComponent(PlotOccupantSlotComponent(plotOccupant: plotOccupant))
         attachComponent(PositionComponent(x: position.x, y: position.y))
-        attachComponent(SoilComponent(quality: soilQuality, hasWater: soilHasWater))
+        attachComponent(SoilComponent(quality: Plot.DefaultSoilQuality, hasWater: false))
         attachComponent(SpriteComponent(visitor: self))
-        attachComponent(PersistenceComponent(persistenceObject: self, persistenceId: persistenceID))
-    }
-}
-
-extension Plot: GamePersistenceObject {
-    func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {
-        manager.save(plot: self, persistenceId: persistenceId)
-    }
-
-    func delete(manager: PersistenceManager, persistenceId persistenceID: UUID) -> Bool {
-        manager.delete(plot: self, persistenceId: persistenceID)
     }
 }
 

@@ -11,29 +11,6 @@ class GridSystem: ISystem {
         self.manager = manager
     }
 
-    private var allPlots: [Plot] {
-        var plots: [Plot] = []
-
-        guard let gridComponent = gridComponent else {
-            return plots
-        }
-
-        let numRows = gridComponent.numberOfRows
-        let numCols = gridComponent.numberOfColumns
-
-        for r in 0..<numRows {
-            for c in 0..<numCols {
-                guard let plot = getPlot(row: r, column: c) else {
-                    continue
-                }
-
-                plots.append(plot)
-            }
-        }
-
-        return plots
-    }
-
     func getPlot(row: Int, column: Int) -> Plot? {
         guard let gridComponent = gridComponent else {
             return nil
@@ -55,55 +32,24 @@ class GridSystem: ISystem {
     }
 
     func unwaterPlots() {
-        for plot in allPlots {
-            guard let soilComponent = plot.getComponentByType(ofType: SoilComponent.self) else {
-                continue
-            }
-
-            soilComponent.hasWater = false
-        }
-    }
-
-    private let UNWATERED_DECAY_MULTIPLER: Double = 4.0
-    private let SOIL_QUALITY_BONUS: Double = 0.2
-
-    func updateHealth() {
-        guard let manager = manager else {
+        guard let gridComponent = gridComponent else {
             return
         }
 
-        for plot in allPlots {
-            guard let soilComponent = plot.getComponentByType(ofType: SoilComponent.self) else {
-                continue
-            }
+        let numRows = gridComponent.numberOfRows
+        let numCols = gridComponent.numberOfColumns
 
-            guard let plotOccupantSlot = plot.getComponentByType(ofType: PlotOccupantSlotComponent.self),
-                  let crop = plotOccupantSlot.plotOccupant as? Crop,
-                  let healthComponent = crop.getComponentByType(ofType: HealthComponent.self) else {
-                continue
-            }
+        for r in 0..<numRows {
+            for c in 0..<numCols {
+                guard let plot = getPlot(row: r, column: c) else {
+                    continue
+                }
 
-            var healthChange: Double = -0.05
+                guard let soilComponent = plot.getComponentByType(ofType: SoilComponent.self) else {
+                    continue
+                }
 
-            if !soilComponent.hasWater {
-                healthChange *= UNWATERED_DECAY_MULTIPLER
-            }
-
-            if soilComponent.quality > 5.0 {
-                healthChange += SOIL_QUALITY_BONUS
-            }
-
-            let maxHealth = healthComponent.maxHealth
-            let newHealth = healthComponent.health + healthChange
-
-            // 2 d.p. to prevent issues with floating point precision
-            let roundedHealth = (newHealth * 100).rounded() / 100
-            healthComponent.health = max(0, min(roundedHealth, maxHealth))
-
-            // Remove dead crops
-            if healthComponent.health <= 0 {
-                manager.removeEntity(crop)
-                plotOccupantSlot.plotOccupant = nil
+                soilComponent.hasWater = false
             }
         }
     }

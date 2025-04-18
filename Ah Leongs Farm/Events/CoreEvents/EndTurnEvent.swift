@@ -22,7 +22,6 @@ struct EndTurnEvent: GameEvent {
         cropSystem.growCrops()
         soilSystem.degradeSoilQuality()
         marketSystem.resetItemStocks()
-        gridSystem.updateHealth()
         gridSystem.unwaterPlots()
 
         if !shouldContinue {

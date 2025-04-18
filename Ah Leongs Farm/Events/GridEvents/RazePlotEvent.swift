@@ -10,13 +10,11 @@ struct RazePlotEvent: GameEvent {
     let column: Int
 
     func execute(in context: any EventContext, queueable: any EventQueueable) -> (any EventData)? {
-        guard let gridSystem = context.getSystem(ofType: GridSystem.self),
-              let upgradeSystem = context.getSystem(ofType: UpgradeSystem.self) else {
+        guard let gridSystem = context.getSystem(ofType: GridSystem.self) else {
             return nil
         }
 
         let isSuccessfullyRazed = gridSystem.razePlot(row: row, column: column)
-        upgradeSystem.addUpgradePoint()
 
         return RazePlotEventData(row: row, column: column, isSuccessfullyRazed: isSuccessfullyRazed)
     }

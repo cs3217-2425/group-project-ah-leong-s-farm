@@ -33,6 +33,7 @@ struct PlaceSolarPanelEvent: GameEvent {
 
         let isSuccessfullyPlaced = solarPanelSystem.placeSolarPanel(solarPanel: solarPanel, row: row, column: column)
 
+        print(isSuccessfullyPlaced)
         if isSuccessfullyPlaced {
             inventorySystem.removeItemFromInventory(solarPanel)
             energySystem.increaseMaxEnergy(of: energyCapBoostComponent.type, by: energyCapBoostComponent.boost)

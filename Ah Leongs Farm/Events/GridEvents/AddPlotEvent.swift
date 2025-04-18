@@ -12,20 +12,14 @@ struct AddPlotEvent: GameEvent {
     let column: Int
 
     func execute(in context: any EventContext, queueable: any EventQueueable) -> (any EventData)? {
-        guard let gridSystem = context.getSystem(ofType: GridSystem.self),
-              let upgradeSystem = context.getSystem(ofType: UpgradeSystem.self),
-              let energySystem = context.getSystem(ofType: EnergySystem.self),
-              upgradeSystem.getUpgradePoints() > 0 else {
+        guard let gridSystem = context.getSystem(ofType: GridSystem.self) else {
             return nil
         }
 
         let plot = Plot(position: CGPoint(x: row, y: column))
 
         let isSuccessfullyAdded = gridSystem.addPlot(plot)
-        if isSuccessfullyAdded {
-            energySystem.useEnergy(of: .base, amount: 1)
-            upgradeSystem.useUpgradePoint()
-        }
+
         return AddPlotEventData(row: row, column: column, isSuccessfullyAdded: isSuccessfullyAdded)
     }
 }

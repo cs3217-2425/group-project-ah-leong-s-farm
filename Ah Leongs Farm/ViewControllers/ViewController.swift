@@ -12,26 +12,16 @@ class ViewController: UIViewController {
     let gameManager: GameManager
     let gameRenderer: GameRenderer
 
+    private var gameScene: GameScene?
     private var gameControlsView: GameControlsView?
     private var gameStatisticsView: GameStatisticsView?
     private var gameOverViewController = GameOverViewController()
 
-    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    init(sessionId: UUID) {
-        gameManager = GameManager(sessionId: sessionId)
+        gameManager = GameManager()
         gameRenderer = GameRenderer()
-        super.init(nibName: nil, bundle: nil)
-
-        modalPresentationStyle = .fullScreen
+        super.init(coder: coder)
         setUpGameObservers()
-    }
-
-    convenience init() {
-        self.init(sessionId: UUID())
     }
 
     override func viewDidLoad() {
@@ -39,7 +29,7 @@ class ViewController: UIViewController {
         setUpGameScene()
         setUpGameControls()
         setUpGameStatistics()
-        setupNotificationSystem()
+        setupQuestNotificationSystem()
         gameManager.addGameObserver(self)
         gameManager.registerEventObserver(gameOverViewController)
     }
@@ -73,18 +63,17 @@ class ViewController: UIViewController {
     }
 
     private func setUpGameScene() {
-        loadViewIfNeeded()
+        guard let skView = self.view as? SKView else {
+            return
+        }
 
-        let skView = SKView(frame: view.bounds)
-        self.view = skView
-
-        let gameScene = GameScene(view: skView)
-        gameScene.setGameSceneUpdateDelegate(self)
-        gameScene.setUIPositionProvider(gameRenderer)
-        gameScene.setGridInteractionHandler(self)
+        self.gameScene = GameScene(view: skView)
+        gameScene?.setGameSceneUpdateDelegate(self)
+        gameScene?.setUIPositionProvider(gameRenderer)
+        gameScene?.setGridInteractionHandler(self)
         gameRenderer.setScene(gameScene)
 
-        gameScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        gameScene?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         skView.presentScene(gameScene)
     }
 
@@ -188,18 +177,12 @@ extension ViewController: IGameObserver {
         gameStatisticsView?.updateXPLabel(currentXP: currentXP, levelXP: currentLevelXP)
     }
 
-    private func updateUpgradePointsLabel() {
-        let upgradePoints = gameManager.getCurrentUpgradePoints()
-        gameStatisticsView?.updateUpgradePointsLabel(points: upgradePoints)
-    }
-
     func observe(entities: [Entity]) {
         updateDayLabel()
         updateCurrencyLabel()
         updateEnergyLabel()
         updateLevelLabel()
         updateXPLabel()
-        updateUpgradePointsLabel()
     }
 }
 
@@ -216,21 +199,16 @@ extension ViewController: GameSceneUpdateDelegate {
 
 // MARK: Add Notification functionalities
 extension ViewController {
-    func setupNotificationSystem() {
+    func setupQuestNotificationSystem() {
         let notificationManager = NotificationStackManager(
             containerView: self.view,
             topOffset: 100 // Position below the game controls
         )
 
-        let questNotificationController = QuestCompletionNotificationController(
+        let notificationController = QuestCompletionNotificationController(
             notificationManager: notificationManager
         )
 
-        let levelUpNotificationController = LevelUpNotificationController(
-            notificationManager: notificationManager
-        )
-
-        gameManager.registerEventObserver(questNotificationController)
-        gameManager.registerEventObserver(levelUpNotificationController)
+        gameManager.registerEventObserver(notificationController)
     }
 }

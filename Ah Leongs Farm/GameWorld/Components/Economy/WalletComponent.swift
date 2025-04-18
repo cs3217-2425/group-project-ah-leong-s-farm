@@ -22,14 +22,6 @@ class WalletComponent: ComponentAdapter {
         super.init()
     }
 
-    init(coinAmount: Double) {
-        self.wallet = [
-            .coin: coinAmount
-        ]
-
-        super.init()
-    }
-
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")

@@ -5,16 +5,11 @@ class GridActionViewController: UIViewController {
     private weak var gameRenderer: GameRenderer?
     private weak var gridDataProvider: GridDataProvider?
     private var actionButtons: [UIButton] = []
-    private var upgradePoints: Int = 0
 
-    init(gridViewModel: GridViewModel,
-         renderer: GameRenderer,
-         gridDataProvider: GridDataProvider,
-         upgradePoints: Int) {
+    init(gridViewModel: GridViewModel, renderer: GameRenderer, gridDataProvider: GridDataProvider) {
         self.gridViewModel = gridViewModel
         self.gameRenderer = renderer
         self.gridDataProvider = gridDataProvider
-        self.upgradePoints = upgradePoints
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overFullScreen
         modalTransitionStyle = .crossDissolve
@@ -65,13 +60,6 @@ class GridActionViewController: UIViewController {
             addButton.setTitleColor(.white, for: .normal)
             addButton.layer.cornerRadius = 10
             addButton.addTarget(self, action: #selector(addPlotTapped), for: .touchUpInside)
-
-            // Disable the button if there are no upgrade points
-            if upgradePoints <= 0 {
-                addButton.isEnabled = false
-                addButton.backgroundColor = .systemGray
-            }
-
             stackView.addArrangedSubview(addButton)
             actionButtons.append(addButton)
         }
@@ -117,10 +105,8 @@ class GridActionViewController: UIViewController {
     }
 
     @objc private func addPlotTapped() {
-        if upgradePoints > 0 {
-            gridDataProvider?.addPlot(row: gridViewModel.row, column: gridViewModel.column)
-            dismiss(animated: true)
-        }
+        gridDataProvider?.addPlot(row: gridViewModel.row, column: gridViewModel.column)
+        dismiss(animated: true)
     }
 
     @objc private func razePlotTapped() {

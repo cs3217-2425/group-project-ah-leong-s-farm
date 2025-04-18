@@ -10,12 +10,10 @@ import UIKit
 extension ViewController: GridInteractionHandler {
     func handleGridInteraction(row: Int, column: Int) {
         let gridViewModel = gameManager.getGridViewModel(row: row, column: column)
-        let upgradePoints = gameManager.getCurrentUpgradePoints()
         let gridActionVC = GridActionViewController(
             gridViewModel: gridViewModel,
             renderer: gameRenderer,
-            gridDataProvider: gameManager,
-            upgradePoints: upgradePoints
+            gridDataProvider: gameManager
         )
 
         gameRenderer.lightUpTile(at: row, column: column)

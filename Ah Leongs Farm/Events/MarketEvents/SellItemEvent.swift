@@ -28,12 +28,7 @@ class SellItemEvent: GameEvent {
 
         let totalProfit = price * Double(quantity)
 
-        let sellableEntities = context
-            .getEntities(withComponentType: SellComponent.self)
-            .filter { entity in
-                entity.getComponentByType(ofType: ItemComponent.self) != nil
-            }
-
+        let sellableEntities = context.getEntities(withComponentType: SellComponent.self)
         let filteredEntities = sellableEntities.filter {
             $0.type == itemType
         }

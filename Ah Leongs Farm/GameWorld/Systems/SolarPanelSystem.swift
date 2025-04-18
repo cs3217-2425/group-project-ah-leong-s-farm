@@ -27,7 +27,8 @@ class SolarPanelSystem: ISystem {
         guard let plotOccupantSlot = plotEntity.getComponentByType(ofType: PlotOccupantSlotComponent.self) else {
             return false
         }
-
+        
+        print("hello")
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: solarPanel)
         manager?.addComponent(SpriteComponent(visitor: solarPanel), to: solarPanel)
         plotOccupantSlot.plotOccupant = solarPanel
