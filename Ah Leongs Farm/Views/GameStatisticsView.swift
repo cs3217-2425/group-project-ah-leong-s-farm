@@ -11,6 +11,7 @@ class GameStatisticsView: UIView {
     private var dayLabel: UILabel?
     private var currencyLabel: UILabel?
     private var energyLabel: UILabel?
+    private var upgradePointsLabel: UILabel?
     private var levelLabel: UILabel?
     private var progressBar: ProgressBar?
     private let XP_BAR_WIDTH = 280.0
@@ -31,6 +32,7 @@ class GameStatisticsView: UIView {
         let dayLabel = createDayLabel()
         let currencyLabel = createCurrencyLabel()
         let energyLabel = createEnergyLabel()
+        let upgradePointsLabel = createUpgradePointsLabel()
         let levelLabel = createLevelLabel()
         let xpBar = createXPBar()
 
@@ -39,7 +41,7 @@ class GameStatisticsView: UIView {
         levelView.alignment = .center
         levelView.translatesAutoresizingMaskIntoConstraints = false
 
-        let usableItemsView = UIStackView(arrangedSubviews: [currencyLabel, energyLabel])
+        let usableItemsView = UIStackView(arrangedSubviews: [currencyLabel, energyLabel, upgradePointsLabel])
         usableItemsView.axis = .vertical
         usableItemsView.spacing = 8
         usableItemsView.alignment = .leading
@@ -122,6 +124,32 @@ class GameStatisticsView: UIView {
         return stackView
     }
 
+    private func createUpgradePointsLabel() -> UIView {
+        let label = UILabel()
+        label.textColor = .white
+        label.font = UIFont(name: "Press Start 2P", size: 20)
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        let imageName = "upgrade"
+        let imageView = UIImageView(image: UIImage(named: imageName))
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(equalToConstant: 24),
+            imageView.heightAnchor.constraint(equalToConstant: 24)
+        ])
+
+        let stackView = UIStackView(arrangedSubviews: [imageView, label])
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        self.upgradePointsLabel = label
+
+        return stackView
+    }
+
     private func createLevelLabel() -> UIView {
         let label = UILabel()
         label.textColor = .white
@@ -150,6 +178,13 @@ class GameStatisticsView: UIView {
 
     func updateEnergyLabel(currentEnergy: Int, maxEnergy: Int) {
         energyLabel?.text = "\(currentEnergy)/\(maxEnergy)"
+    }
+
+    func updateUpgradePointsLabel(points: Int) {
+        if let label = upgradePointsLabel, let stackView = label.superview as? UIStackView {
+                label.text = "\(points)"
+                stackView.isHidden = false
+            }
     }
 
     func updateLevelLabel(level: Int) {

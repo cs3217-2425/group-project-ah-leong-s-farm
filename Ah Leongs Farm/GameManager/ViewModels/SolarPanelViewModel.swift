@@ -5,7 +5,6 @@
 //  Created by proglab on 17/4/25.
 //
 
-
 struct SolarPanelViewModel: PlotOccupantViewModel {
     let boost: Int
 
