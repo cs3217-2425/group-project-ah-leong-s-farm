@@ -99,7 +99,6 @@ class SpriteRenderManager: IRenderManager {
             return nil
         }
         let growthStage = growthComponent.currentGrowthStage
-        print("Rendering crop with growthStage \(growthStage)")
         guard growthStage < textureMap.count else {
             return nil
         }
