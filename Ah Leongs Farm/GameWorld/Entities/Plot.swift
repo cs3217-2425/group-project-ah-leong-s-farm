@@ -62,7 +62,11 @@ extension Plot: GamePersistenceObject {
 }
 
 extension Plot: SpriteRenderManagerVisitor {
-    func visit(manager: SpriteRenderManager, renderer: GameRenderer) {
+    func createNode(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(plot: self, in: renderer)
+    }
+
+    func transformNode(_ node: any IRenderNode, manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.transformNodeForEntity(node, plot: self, in: renderer)
     }
 }

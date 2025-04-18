@@ -27,7 +27,11 @@ class PotatoSeed: EntityAdapter, Seed {
         Potato()
     }
 
-    func visit(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(seed: self, in: renderer)
+    func createNode(manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.createNodeForEntity(potatoSeed: self, in: renderer)
+    }
+
+    func transformNode(_ node: any IRenderNode, manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.transformNodeForEntity(node, potatoSeed: self, in: renderer)
     }
 }
