@@ -27,7 +27,11 @@ class AppleSeed: EntityAdapter, Seed {
         Apple()
     }
 
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
+    func createNode(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(appleSeed: self, in: renderer)
+    }
+
+    func transformNode(_ node: any IRenderNode, manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.transformNodeForEntity(node, appleSeed: self, in: renderer)
     }
 }

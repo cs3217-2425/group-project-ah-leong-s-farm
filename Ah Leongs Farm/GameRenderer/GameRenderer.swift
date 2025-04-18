@@ -97,6 +97,17 @@ class GameRenderer {
         for entityID in entityIDsToRemove {
             removeRenderNode(for: entityID)
         }
+
+        let entitiesToUpdateFor = getEntitiesForUpdate(allEntities: allEntities)
+
+        for renderManager in renderPipeline.iterable {
+            for entity in entitiesToUpdateFor {
+                guard let node = entityNodeMap[entity.id] else {
+                    continue
+                }
+                renderManager.transformNode(node, for: entity, in: self)
+            }
+        }
     }
 
     private func getEntitiesForCreation(allEntities: [Entity]) -> [Entity] {
@@ -124,6 +135,12 @@ class GameRenderer {
             .union(entityIDsWithSpriteComponentRemoved)
 
         return entityIDsForRemoval
+    }
+
+    private func getEntitiesForUpdate(allEntities: [Entity]) -> [Entity] {
+        allEntities.filter { entity in
+            entityNodeMap[entity.id] != nil
+        }
     }
 }
 

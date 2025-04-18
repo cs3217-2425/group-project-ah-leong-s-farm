@@ -8,6 +8,8 @@
 import SpriteKit
 
 protocol IRenderNode: AnyObject {
+    var size: CGSize { get set }
+
     func visitTouchHandlerRegistry(registry: TouchHandlerRegistry)
 
     func getSKNode() -> SKNode

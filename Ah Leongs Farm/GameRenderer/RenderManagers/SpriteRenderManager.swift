@@ -36,7 +36,16 @@ class SpriteRenderManager: IRenderManager {
         }
 
         let visitor = spriteComponent.spriteRenderManagerVisitor
-        visitor.visitSpriteRenderManager(manager: self, renderer: renderer)
+        visitor.createNode(manager: self, renderer: renderer)
+    }
+
+    func transformNode(_ node: any IRenderNode, for entity: any Entity, in renderer: GameRenderer) {
+        guard let spriteComponent = entity.getComponentByType(ofType: SpriteComponent.self) else {
+            return
+        }
+
+        let visitor = spriteComponent.spriteRenderManagerVisitor
+        visitor.transformNode(node, manager: self, renderer: renderer)
     }
 
     func createNodeForEntity(plot: Plot, in renderer: GameRenderer) {
@@ -56,12 +65,18 @@ class SpriteRenderManager: IRenderManager {
         renderer.setRenderNode(for: ObjectIdentifier(plot), node: spriteNode)
     }
 
+    func transformNodeForEntity(_ node: any IRenderNode, plot: Plot, in renderer: GameRenderer) {
+    }
+
     func createNodeForEntity(apple: Apple, in renderer: GameRenderer) {
         guard let textureName = Self.CropTypeTextureMap[Apple.type] else {
             return
         }
 
         createCropNode(for: apple, in: renderer, textureName: textureName)
+    }
+
+    func transformNodeForEntity(_ node: any IRenderNode, apple: Apple, in renderer: GameRenderer) {
     }
 
     func createNodeForEntity(appleSeed: AppleSeed, in renderer: GameRenderer) {
@@ -72,12 +87,18 @@ class SpriteRenderManager: IRenderManager {
         createSeedNode(for: appleSeed, in: renderer, textureName: textureName)
     }
 
+    func transformNodeForEntity(_ node: any IRenderNode, appleSeed: AppleSeed, in renderer: GameRenderer) {
+    }
+
     func createNodeForEntity(bokChoy: BokChoy, in renderer: GameRenderer) {
         guard let textureName = Self.CropTypeTextureMap[BokChoy.type] else {
             return
         }
 
         createCropNode(for: bokChoy, in: renderer, textureName: textureName)
+    }
+
+    func transformNodeForEntity(_ node: any IRenderNode, bokChoy: BokChoy, in renderer: GameRenderer) {
     }
 
     func createNodeForEntity(bokChoySeed: BokChoySeed, in renderer: GameRenderer) {
@@ -88,6 +109,9 @@ class SpriteRenderManager: IRenderManager {
         createSeedNode(for: bokChoySeed, in: renderer, textureName: textureName)
     }
 
+    func transformNodeForEntity(_ node: any IRenderNode, bokChoySeed: BokChoySeed, in renderer: GameRenderer) {
+    }
+
     func createNodeForEntity(potato: Potato, in renderer: GameRenderer) {
         guard let textureName = Self.CropTypeTextureMap[Potato.type] else {
             return
@@ -96,12 +120,18 @@ class SpriteRenderManager: IRenderManager {
         createCropNode(for: potato, in: renderer, textureName: textureName)
     }
 
+    func transformNodeForEntity(_ node: any IRenderNode, potato: Potato, in renderer: GameRenderer) {
+    }
+
     func createNodeForEntity(potatoSeed: PotatoSeed, in renderer: GameRenderer) {
         guard let textureName = Self.SeedTypeTextureMap[PotatoSeed.type] else {
             return
         }
 
         createSeedNode(for: potatoSeed, in: renderer, textureName: textureName)
+    }
+
+    func transformNodeForEntity(_ node: any IRenderNode, potatoSeed: PotatoSeed, in renderer: GameRenderer) {
     }
 
     private func createCropNode(for crop: Crop, in renderer: GameRenderer, textureName: String) {

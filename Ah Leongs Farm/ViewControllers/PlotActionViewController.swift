@@ -2,7 +2,7 @@ import UIKit
 import SpriteKit
 
 // TODO: Refactor this class as it's too bloated
-class PlotActionViewController: UIViewController {
+class PlotActionViewController: UIViewController { // swiftlint:disable:this all
     private let plotViewModel: PlotViewModel
     private weak var spriteNode: SpriteNode?
     private weak var inventoryDataProvider: InventoryDataProvider?
