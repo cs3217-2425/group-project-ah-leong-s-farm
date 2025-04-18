@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24C101" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CropPersistenceComponent" representedClassName="CropPersistenceComponent" syncable="YES" codeGenerationType="class">
+        <attribute name="cropType" attributeType="String"/>
+    </entity>
+    <entity name="CropPersistenceEntity" representedClassName="CropPersistenceEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="cropComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="CropPersistenceComponent"/>
+    </entity>
     <entity name="EnergyPersistenceComponent" representedClassName="EnergyPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="currentBaseEnergy" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="maxBaseEnergy" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
