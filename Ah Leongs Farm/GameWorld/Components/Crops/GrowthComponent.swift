@@ -20,8 +20,8 @@ class GrowthComponent: ComponentAdapter {
     }
 
     init(totalGrowthTurns: Int, currentGrowthTurn: Float) {
-        self.totalGrowthTurns = totalGrowthTurns
-        self.currentGrowthTurn = currentGrowthTurn
+        self.totalGrowthTurns = max(0, totalGrowthTurns)
+        self.currentGrowthTurn = min(currentGrowthTurn, Float(self.totalGrowthTurns))
         super.init()
     }
 

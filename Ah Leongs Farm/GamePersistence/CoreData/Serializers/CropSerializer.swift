@@ -95,7 +95,7 @@ class CropSerializer<T: Crop, S: AbstractCropPersistenceEntity> {
     }
 
     private func updateHarvestedAttribute(persistenceEntity: S, crop: T) {
-        guard let harvestedComponent = crop.getComponentByType(ofType: HarvestedComponent.self) else {
+        guard crop.getComponentByType(ofType: HarvestedComponent.self) != nil else {
             persistenceEntity.harvestedComponent = nil
             return
         }
@@ -107,7 +107,7 @@ class CropSerializer<T: Crop, S: AbstractCropPersistenceEntity> {
     }
 
     private func updateItemAttribute(persistenceEntity: S, crop: T) {
-        guard let itemComponent = crop.getComponentByType(ofType: HarvestedComponent.self) else {
+        guard crop.getComponentByType(ofType: HarvestedComponent.self) != nil else {
             persistenceEntity.itemComponent = nil
             return
         }

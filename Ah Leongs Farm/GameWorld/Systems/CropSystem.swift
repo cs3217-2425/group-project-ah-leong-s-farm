@@ -46,7 +46,7 @@ class CropSystem: ISystem {
     /// - The CropSlotComponent must not have any crops on it.
     /// - The entity to add `crop`, must have a `SeedComponent` and a `CropComponent`.
     @discardableResult
-    func plantCrop(crop: Crop, row: Int, column: Int) -> Bool {
+    func plantCrop(crop: Crop, row: Int, column: Int, currentGrowthTurn: Float = 0) -> Bool {
         guard let plotEntity = grid?.getEntity(row: row, column: column) else {
             return false
         }
@@ -60,7 +60,8 @@ class CropSystem: ISystem {
             return false
         }
         manager?.addComponent(GrowthComponent(
-            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: crop)
+            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType),
+            currentGrowthTurn: currentGrowthTurn), to: crop)
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
         manager?.addComponent(SpriteComponent(visitor: crop), to: crop)
         cropSlot.crop = crop

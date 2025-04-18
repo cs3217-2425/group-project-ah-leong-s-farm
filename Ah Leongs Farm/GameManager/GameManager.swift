@@ -177,8 +177,14 @@ class GameManager {
 
         for crop in crops {
             if let positionComponent = crop.getComponentByType(ofType: PositionComponent.self) {
-                cropSystem.plantCrop(crop: crop, row: Int(positionComponent.x),
-                                     column: Int(positionComponent.y))
+                let currentGrowthTurn = crop
+                    .getComponentByType(ofType: GrowthComponent.self)?.currentGrowthTurn ?? 0
+                cropSystem.plantCrop(
+                    crop: crop,
+                    row: Int(positionComponent.x),
+                    column: Int(positionComponent.y),
+                    currentGrowthTurn: currentGrowthTurn
+                )
             }
         }
     }

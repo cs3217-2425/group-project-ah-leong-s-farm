@@ -13,8 +13,8 @@ extension PotatoPersistenceEntity: CropDeserializable {
         let isHarvested = harvestedComponent != nil
         let isItem = itemComponent != nil
 
-        var position: CGPoint? = nil
-        var growthConfig: GrowthConfig? = nil
+        var position: CGPoint?
+        var growthConfig: GrowthConfig?
 
         if let positionComponent = positionComponent {
             position = CGPoint(x: CGFloat(positionComponent.x), y: CGFloat(positionComponent.y))
