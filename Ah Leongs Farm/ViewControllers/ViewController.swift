@@ -39,7 +39,7 @@ class ViewController: UIViewController {
         setUpGameScene()
         setUpGameControls()
         setUpGameStatistics()
-        setupQuestNotificationSystem()
+        setupNotificationSystem()
         gameManager.addGameObserver(self)
         gameManager.registerEventObserver(gameOverViewController)
     }
@@ -188,12 +188,18 @@ extension ViewController: IGameObserver {
         gameStatisticsView?.updateXPLabel(currentXP: currentXP, levelXP: currentLevelXP)
     }
 
+    private func updateUpgradePointsLabel() {
+        let upgradePoints = gameManager.getCurrentUpgradePoints()
+        gameStatisticsView?.updateUpgradePointsLabel(points: upgradePoints)
+    }
+
     func observe(entities: [Entity]) {
         updateDayLabel()
         updateCurrencyLabel()
         updateEnergyLabel()
         updateLevelLabel()
         updateXPLabel()
+        updateUpgradePointsLabel()
     }
 }
 
@@ -210,16 +216,21 @@ extension ViewController: GameSceneUpdateDelegate {
 
 // MARK: Add Notification functionalities
 extension ViewController {
-    func setupQuestNotificationSystem() {
+    func setupNotificationSystem() {
         let notificationManager = NotificationStackManager(
             containerView: self.view,
             topOffset: 100 // Position below the game controls
         )
 
-        let notificationController = QuestCompletionNotificationController(
+        let questNotificationController = QuestCompletionNotificationController(
             notificationManager: notificationManager
         )
 
-        gameManager.registerEventObserver(notificationController)
+        let levelUpNotificationController = LevelUpNotificationController(
+            notificationManager: notificationManager
+        )
+
+        gameManager.registerEventObserver(questNotificationController)
+        gameManager.registerEventObserver(levelUpNotificationController)
     }
 }
