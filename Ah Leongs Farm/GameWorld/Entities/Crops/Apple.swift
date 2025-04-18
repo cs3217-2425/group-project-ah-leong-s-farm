@@ -31,6 +31,6 @@ class Apple: EntityAdapter, Crop {
     }
 
     func transformNode(_ node: any IRenderNode, manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.transformNode(node, for: self, in: renderer)
+        manager.transformNodeForEntity(node, apple: self, in: renderer)
     }
 }
