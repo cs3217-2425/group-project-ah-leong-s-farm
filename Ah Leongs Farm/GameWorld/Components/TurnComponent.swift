@@ -34,9 +34,13 @@ class TurnComponent: ComponentAdapter {
         fatalError("init(coder:) not implemented")
     }
 
-    init(maxTurns: Int) {
+    init(maxTurns: Int, currentTurn: Int) {
         self._maxTurns = max(1, maxTurns)
-        self._currentTurn = 1
+        self._currentTurn = max(1, currentTurn)
         super.init()
+    }
+
+    convenience init(maxTurns: Int) {
+        self.init(maxTurns: maxTurns, currentTurn: 1)
     }
 }
