@@ -15,6 +15,7 @@ struct GameStateConfig {
     let level: Int
     let currentXP: Float
     let coinAmount: Double
+    let upgradePoints: Int
 }
 
 class GameState: EntityAdapter {
@@ -58,6 +59,7 @@ class GameState: EntityAdapter {
         attachComponent(EnergyBankComponent(initialEnergies: energies))
         attachComponent(LevelComponent(level: config.level, currentXP: config.currentXP))
         attachComponent(WalletComponent(coinAmount: config.coinAmount))
+        attachComponent(UpgradeComponent(points: config.upgradePoints))
         attachComponent(PersistenceComponent(persistenceObject: self))
     }
 }

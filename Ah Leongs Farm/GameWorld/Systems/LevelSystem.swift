@@ -52,7 +52,6 @@ class LevelSystem: ISystem {
         return component.thresholdXP
     }
 
-
     func getXPForNextLevel() -> Float {
         levelComponent.map { LevelComponent.calculateXPThreshold(for: $0.level + 1) } ?? 0
     }
