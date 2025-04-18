@@ -10,9 +10,13 @@ import Foundation
 class HealthComponent: ComponentAdapter {
     var health: Double
 
-    override init() {
-        self.health = 1.0
+    init(health: Double) {
+        self.health = health
         super.init()
+    }
+
+    override convenience init() {
+        self.init(health: 1.0)
     }
 
     @available(*, unavailable)
