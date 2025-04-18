@@ -12,16 +12,26 @@ class ViewController: UIViewController {
     let gameManager: GameManager
     let gameRenderer: GameRenderer
 
-    private var gameScene: GameScene?
     private var gameControlsView: GameControlsView?
     private var gameStatisticsView: GameStatisticsView?
     private var gameOverViewController = GameOverViewController()
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        gameManager = GameManager()
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    init(sessionId: UUID) {
+        gameManager = GameManager(sessionId: sessionId)
         gameRenderer = GameRenderer()
-        super.init(coder: coder)
+        super.init(nibName: nil, bundle: nil)
+
+        modalPresentationStyle = .fullScreen
         setUpGameObservers()
+    }
+
+    convenience init() {
+        self.init(sessionId: UUID())
     }
 
     override func viewDidLoad() {
@@ -63,17 +73,18 @@ class ViewController: UIViewController {
     }
 
     private func setUpGameScene() {
-        guard let skView = self.view as? SKView else {
-            return
-        }
+        loadViewIfNeeded()
 
-        self.gameScene = GameScene(view: skView)
-        gameScene?.setGameSceneUpdateDelegate(self)
-        gameScene?.setUIPositionProvider(gameRenderer)
-        gameScene?.setGridInteractionHandler(self)
+        let skView = SKView(frame: view.bounds)
+        self.view = skView
+
+        let gameScene = GameScene(view: skView)
+        gameScene.setGameSceneUpdateDelegate(self)
+        gameScene.setUIPositionProvider(gameRenderer)
+        gameScene.setGridInteractionHandler(self)
         gameRenderer.setScene(gameScene)
 
-        gameScene?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        gameScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         skView.presentScene(gameScene)
     }
 
