@@ -26,7 +26,7 @@ class Potato: EntityAdapter, Crop {
         attachComponent(healthComponent)
     }
 
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(potato: self, in: renderer)
+    func visit(manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.createNodeForEntity(crop: self, in: renderer)
     }
 }

@@ -27,7 +27,7 @@ class BokChoySeed: EntityAdapter, Seed {
         BokChoy()
     }
 
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(bokChoySeed: self, in: renderer)
+    func visit(manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.createNodeForEntity(seed: self, in: renderer)
     }
 }

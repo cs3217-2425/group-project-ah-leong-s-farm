@@ -6,5 +6,5 @@
 //
 
 protocol SpriteRenderManagerVisitor {
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer)
+    func visit(manager: SpriteRenderManager, renderer: GameRenderer)
 }

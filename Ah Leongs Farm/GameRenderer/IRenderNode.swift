@@ -9,6 +9,6 @@ import SpriteKit
 
 protocol IRenderNode: AnyObject {
     func visitTouchHandlerRegistry(registry: TouchHandlerRegistry)
-
+    func updateTexture(image: String)
     func getSKNode() -> SKNode
 }
