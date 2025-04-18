@@ -2,13 +2,21 @@ import Foundation
 
 class GameManager {
     let gameWorld: GameWorld
+    let persistenceManager: PersistenceManager
     private var gameObservers: [any IGameObserver] = []
     private var previousTime: TimeInterval = 0
 
-    init() {
+    init(sessionId: UUID) {
         gameWorld = GameWorld()
+        persistenceManager = PersistenceManager(sessionId: sessionId)
         setUpBaseEntities()
         setUpQuests()
+
+        addGameObserver(persistenceManager)
+    }
+
+    convenience init() {
+        self.init(sessionId: UUID())
     }
 
     func update(_ currentTime: TimeInterval) {
@@ -72,6 +80,14 @@ class GameManager {
         return energySystem.getCurrentEnergy(of: type)
     }
 
+    func getCurrentUpgradePoints() -> Int {
+        guard let upgradeSystem = gameWorld.getSystem(ofType: UpgradeSystem.self) else {
+            return 0
+        }
+
+        return upgradeSystem.getUpgradePoints()
+    }
+
     func ensureTargetActiveQuestCount(target: Int = 3) {
         guard let questSystem = gameWorld.getSystem(ofType: QuestSystem.self) else {
             return
@@ -107,20 +123,44 @@ class GameManager {
         gameWorld.registerEventObserver(observer)
     }
 
-    private func setUpEntities() {
-        gameWorld.addEntity(GameState(maxTurns: 30))
-    }
-
     // MARK: - Setup Methods
 
     private func setUpBaseEntities() {
-
-        gameWorld.addEntity(GameState(maxTurns: 30))
+        setUpGameStateEntity()
 
         addStartingItems()
 
+        setUpFarmLandEntity()
+    }
+
+    private func setUpGameStateEntity() {
+        let defaultGameState = GameState(maxTurns: 30)
+        let gameState = persistenceManager.loadGameState() ?? defaultGameState
+
+        gameWorld.addEntity(gameState)
+    }
+
+    private func setUpFarmLandEntity() {
         let farmLand = FarmLand(rows: 10, columns: 10)
         gameWorld.addEntity(farmLand)
+
+        let plots = persistenceManager.loadPlots()
+
+        guard let gridComponent = farmLand.getComponentByType(ofType: GridComponent.self) else {
+            return
+        }
+
+        for plot in plots {
+            guard let position = plot.getComponentByType(ofType: PositionComponent.self) else {
+                continue
+            }
+
+            let row = Int(position.x)
+            let column = Int(position.y)
+
+            gridComponent.setEntity(plot, row: row, column: column)
+            gameWorld.addEntity(plot)
+        }
     }
 
     private func setUpQuests() {
