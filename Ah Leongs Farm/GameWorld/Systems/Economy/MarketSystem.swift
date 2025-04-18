@@ -15,7 +15,7 @@ class MarketSystem: ISystem {
     private var recentBuyVolumes: [EntityType: Int] = [:]
     private var recentSellVolumes: [EntityType: Int] = [:]
     private var netVolumeWindow: [EntityType: [Int]] = [:]
-    private let windowSize = 1
+    private let windowSize = 3
 
     required init(for manager: EntityManager) {
         self.manager = manager
