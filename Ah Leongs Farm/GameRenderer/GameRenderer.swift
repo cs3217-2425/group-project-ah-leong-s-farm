@@ -140,6 +140,8 @@ class GameRenderer {
     private func getEntitiesForUpdate(allEntities: [Entity]) -> [Entity] {
         allEntities.filter { entity in
             entityNodeMap[entity.id] != nil
+        }.filter {
+            $0.getComponentByType(ofType: RenderComponent.self)?.updatable == true
         }
     }
 }
@@ -149,8 +151,11 @@ extension GameRenderer: IGameObserver {
         guard let scene = gameScene else {
             return
         }
+        let renderEntities = entities.filter {
+            $0.getComponentByType(ofType: RenderComponent.self) != nil
+        }
 
-        executeRenderPipeline(allEntities: entities, in: scene)
+        executeRenderPipeline(allEntities: renderEntities, in: scene)
     }
 }
 

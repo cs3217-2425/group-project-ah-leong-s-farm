@@ -75,6 +75,7 @@ class CropSystem: ISystem {
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
         manager?.addComponent(SpriteComponent(visitor: crop,
                                               updateVisitor: crop), to: crop)
+        manager?.addComponent(RenderComponent(updatable: true), to: crop)
         cropSlot.crop = crop
         return true
     }
@@ -103,6 +104,7 @@ class CropSystem: ISystem {
         manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
         manager?.removeComponent(ofType: PositionComponent.self, from: crop)
         manager?.removeComponent(ofType: SpriteComponent.self, from: crop)
+        manager?.removeComponent(ofType: RenderComponent.self, from: crop)
         manager?.addComponent(HarvestedComponent(), to: crop)
         cropSlot.crop = nil
         return crop
