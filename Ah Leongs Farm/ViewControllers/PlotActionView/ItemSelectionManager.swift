@@ -22,20 +22,22 @@ class ItemSelectionManager: NSObject {
     private var onSeedSelected: ((EntityType) -> Void)?
     private var onFertiliserSelected: ((EntityType) -> Void)?
 
-    // Item providers mapped by mode
     private lazy var itemProviders: [SelectionMode: () -> [PlotDisplayItemViewModel]] = [
-        .seeds: { return self.seedItems },
-        .fertilisers: { return self.fertiliserItems }
+        .seeds: { self.seedItems },
+        .fertilisers: { self.fertiliserItems }
     ]
 
-    // Selection handlers mapped by mode
     private lazy var selectionHandlers: [SelectionMode: (Int) -> Void] = [
         .seeds: { [weak self] index in
-            guard let self = self, index < self.seedItems.count else { return }
+            guard let self = self, index < self.seedItems.count else {
+                return
+            }
             self.onSeedSelected?(self.seedItems[index].type)
         },
         .fertilisers: { [weak self] index in
-            guard let self = self, index < self.fertiliserItems.count else { return }
+            guard let self = self, index < self.fertiliserItems.count else {
+                return
+            }
             self.onFertiliserSelected?(self.fertiliserItems[index].type)
         }
     ]

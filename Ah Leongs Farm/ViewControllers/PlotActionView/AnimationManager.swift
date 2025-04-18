@@ -20,7 +20,9 @@ class AnimationManager {
 
     // MARK: - Animation Methods
     func runWaterAnimation() {
-        guard let spriteNode = spriteNode else { return }
+        guard let spriteNode = spriteNode else {
+            return
+        }
 
         let referenceSize = spriteNode.size
 
@@ -64,10 +66,4 @@ class AnimationManager {
         ])
         droplets.run(drip)
     }
-
-    // Additional animation methods can be added here:
-    // - runFertilizeAnimation()
-    // - runHarvestAnimation()
-    // - runPlantAnimation()
-    // etc.
 }
