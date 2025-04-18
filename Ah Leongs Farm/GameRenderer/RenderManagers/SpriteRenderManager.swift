@@ -20,14 +20,14 @@ class SpriteRenderManager: IRenderManager {
 
     private static let CropTypeTextureMap: [EntityType: [String]] = [
         Apple.type: ["apple_seed",
+                     "apple_stage_1",
                      "apple_stage_2",
-                     "apple_stage_3",
-                     "apple_stage_4"],
+                     "apple_stage_3"],
         BokChoy.type: ["bokchoy_seed",
-                       "bokchoy_stage_2",
-                       "bokchoy_stage_3"],
+                       "bokchoy_stage_1",
+                       "bokchoy_stage_2"],
         Potato.type: ["potato_seed",
-                      "potato_stage_2"]
+                      "potato_stage_1"]
     ]
 
     private weak var uiPositionProvider: UIPositionProvider?
@@ -42,15 +42,21 @@ class SpriteRenderManager: IRenderManager {
         }
 
         let visitor = spriteComponent.spriteRenderManagerVisitor
-        visitor.visit(manager: self, renderer: renderer)
+        visitor.createNode(manager: self, renderer: renderer)
     }
 
-    func updateNodeForEntity(crop: Crop, in renderer: GameRenderer) {
-        guard let node = renderer.getRenderNode(for: crop.id),
-              let textureName = getTextureFromEntity(crop: crop) else {
+    func transformNode(_ node: IRenderNode, for entity: Entity, in renderer: GameRenderer) {
+        guard let spriteComponent = entity.getComponentByType(ofType: SpriteComponent.self),
+              let visitor = spriteComponent.spriteRenderManagerUpdateVisitor else {
             return
         }
+        visitor.transformNode(node, manager: self, renderer: renderer)
+    }
 
+    func transformNodeForEntity(_ node: IRenderNode, crop: Crop, in renderer: GameRenderer) {
+        guard let textureName = getTextureFromEntity(crop: crop) else {
+            return
+        }
         node.updateTexture(image: textureName)
     }
 

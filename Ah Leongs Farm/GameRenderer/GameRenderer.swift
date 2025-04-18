@@ -30,10 +30,6 @@ class GameRenderer {
         gameScene = scene
     }
 
-    func getRenderNode(for entityID: EntityID) -> IRenderNode? {
-        entityNodeMap[entityID]
-    }
-
     func setRenderNode(for entityID: EntityID, node: TileMapNode) {
         tileMapNode = node
 

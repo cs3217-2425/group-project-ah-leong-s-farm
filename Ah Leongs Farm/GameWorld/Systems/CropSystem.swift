@@ -73,7 +73,8 @@ class CropSystem: ISystem {
             totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType),
             totalGrowthStages: CropSystem.getTotalGrowthStages(for: cropComponent.cropType)), to: crop)
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
-        manager?.addComponent(SpriteComponent(visitor: crop), to: crop)
+        manager?.addComponent(SpriteComponent(visitor: crop,
+                                              updateVisitor: crop), to: crop)
         cropSlot.crop = crop
         return true
     }
@@ -134,8 +135,6 @@ class CropSystem: ISystem {
             return
         }
 
-        var cropsWithChangedStages: [Crop] = []
-
         for r in 0..<grid.numberOfRows {
             for c in 0..<grid.numberOfColumns {
                 guard let plot = grid.getEntity(row: r, column: c) else {
@@ -158,24 +157,7 @@ class CropSystem: ISystem {
                 if soil.hasWater {
                     growthComponent.currentGrowthTurn += soil.quality
                 }
-
-                if growthComponent.updateGrowthStage() {
-                    cropsWithChangedStages.append(crop)
-                }
             }
-        }
-
-        if !cropsWithChangedStages.isEmpty {
-            notifyCropAppearanceChanged(crops: cropsWithChangedStages)
-        }
-    }
-
-    private func notifyCropAppearanceChanged(crops: [Crop]) {
-        for crop in crops {
-            print("Notifying \(crop) sprite changed!")
-            manager?.removeComponent(ofType: SpriteComponent.self, from: crop)
-
-            manager?.addComponent(SpriteComponent(visitor: crop), to: crop)
         }
     }
 }

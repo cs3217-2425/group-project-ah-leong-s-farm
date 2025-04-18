@@ -7,6 +7,8 @@
 
 protocol SpriteRenderManagerVisitor {
     func createNode(manager: SpriteRenderManager, renderer: GameRenderer)
+}
 
+protocol SpriteRenderManagerUpdateVisitor {
     func transformNode(_ node: any IRenderNode, manager: SpriteRenderManager, renderer: GameRenderer)
 }

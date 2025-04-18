@@ -26,12 +26,4 @@ class AppleSeed: EntityAdapter, Seed {
     func toCrop() -> Crop {
         Apple()
     }
-
-    func createNode(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(appleSeed: self, in: renderer)
-    }
-
-    func transformNode(_ node: any IRenderNode, manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.transformNodeForEntity(node, appleSeed: self, in: renderer)
-    }
 }

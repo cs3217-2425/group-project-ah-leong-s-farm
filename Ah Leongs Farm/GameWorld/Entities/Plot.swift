@@ -65,8 +65,4 @@ extension Plot: SpriteRenderManagerVisitor {
     func createNode(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(plot: self, in: renderer)
     }
-
-    func transformNode(_ node: any IRenderNode, manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.transformNodeForEntity(node, plot: self, in: renderer)
-    }
 }

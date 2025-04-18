@@ -14,3 +14,7 @@ protocol IRenderNode: AnyObject {
     func updateTexture(image: String)
     func getSKNode() -> SKNode
 }
+
+extension IRenderNode {
+    func updateTexture(image: String) {}
+}

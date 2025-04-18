@@ -11,20 +11,13 @@ class GrowthComponent: ComponentAdapter {
     let totalGrowthTurns: Int
     let totalGrowthStages: Int
     var currentGrowthTurn: Float = 0
-    var currentGrowthStage: Int = 0
+    var currentGrowthStage: Int {
+        let growthProgress = min(currentGrowthTurn / Float(totalGrowthTurns), 1.0)
+        return Int(growthProgress * Float(totalGrowthStages))
+    }
 
     var canHarvest: Bool {
         currentGrowthTurn >= Float(totalGrowthTurns)
-    }
-
-    var growthProgress: Float {
-        min(currentGrowthTurn / Float(totalGrowthTurns), 1.0)
-    }
-
-    func updateGrowthStage() -> Bool {
-        let previousStage = currentGrowthStage
-        currentGrowthStage = Int(growthProgress * Float(totalGrowthStages))
-        return previousStage != currentGrowthStage
     }
 
     init(totalGrowthTurns: Int, totalGrowthStages: Int) {

@@ -26,12 +26,4 @@ class PotatoSeed: EntityAdapter, Seed {
     func toCrop() -> Crop {
         Potato()
     }
-
-    func createNode(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(potatoSeed: self, in: renderer)
-    }
-
-    func transformNode(_ node: any IRenderNode, manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.transformNodeForEntity(node, potatoSeed: self, in: renderer)
-    }
 }
