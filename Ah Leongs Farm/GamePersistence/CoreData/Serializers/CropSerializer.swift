@@ -70,9 +70,11 @@ class CropSerializer<T: Crop, S: AbstractCropPersistenceEntity> {
 
         if let healthPersistenceComponent = persistenceEntity.healthComponent {
             healthPersistenceComponent.health = healthComponent?.health ?? 0
+            healthPersistenceComponent.maxHealth = healthComponent?.maxHealth ?? 0
         } else {
             let newComponent = HealthPersistenceComponent(context: store.managedContext)
             newComponent.health = healthComponent?.health ?? 0
+            newComponent.maxHealth = healthComponent?.maxHealth ?? 0
             persistenceEntity.healthComponent = newComponent
         }
     }

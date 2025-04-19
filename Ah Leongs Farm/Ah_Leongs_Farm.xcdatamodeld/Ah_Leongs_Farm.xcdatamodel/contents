@@ -20,6 +20,7 @@
         <relationship name="levelComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="LevelPersistenceComponent"/>
         <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="gameState" inverseEntity="Session"/>
         <relationship name="turnComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="TurnPersistenceComponent"/>
+        <relationship name="upgradeComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UpgradePersistenceComponent"/>
         <relationship name="walletComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WalletPersistenceComponent"/>
     </entity>
     <entity name="GrowthPersistenceComponent" representedClassName="GrowthPersistenceComponent" syncable="YES" codeGenerationType="class">
@@ -29,6 +30,7 @@
     <entity name="HarvestedPersistenceComponent" representedClassName="HarvestedPersistenceComponent" syncable="YES" codeGenerationType="class"/>
     <entity name="HealthPersistenceComponent" representedClassName="HealthPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="health" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="maxHealth" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <entity name="ItemPersistenceComponent" representedClassName="ItemPersistenceComponent" syncable="YES" codeGenerationType="class"/>
     <entity name="LevelPersistenceComponent" representedClassName="LevelPersistenceComponent" syncable="YES" codeGenerationType="class">
@@ -59,6 +61,9 @@
     <entity name="TurnPersistenceComponent" representedClassName="TurnPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="currentTurn" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="maxTurns" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="UpgradePersistenceComponent" representedClassName="UpgradePersistenceComponent" syncable="YES" codeGenerationType="class">
+        <attribute name="points" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <entity name="WalletPersistenceComponent" representedClassName="WalletPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="coinAmount" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

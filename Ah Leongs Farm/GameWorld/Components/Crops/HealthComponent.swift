@@ -9,14 +9,16 @@ import Foundation
 
 class HealthComponent: ComponentAdapter {
     var health: Double
+    let maxHealth: Double
 
-    init(health: Double) {
-        self.health = health
+    init(health: Double, maxHealth: Double) {
+        self.health = min(health, maxHealth)
+        self.maxHealth = maxHealth
         super.init()
     }
 
     override convenience init() {
-        self.init(health: 1.0)
+        self.init(health: 1.0, maxHealth: 1.0)
     }
 
     @available(*, unavailable)

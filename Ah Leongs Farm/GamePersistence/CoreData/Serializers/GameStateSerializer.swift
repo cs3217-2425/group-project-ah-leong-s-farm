@@ -50,6 +50,7 @@ class GameStateSerializer {
         let turnComponent = gameState.getComponentByType(ofType: TurnComponent.self)
         let levelComponent = gameState.getComponentByType(ofType: LevelComponent.self)
         let walletComponent = gameState.getComponentByType(ofType: WalletComponent.self)
+        let upgradeComponent = gameState.getComponentByType(ofType: UpgradeComponent.self)
 
         if let energyPersistenceComponent = persistenceEntity.energyComponent {
             energyPersistenceComponent.currentBaseEnergy = Int64(energyComponent?.getCurrentEnergy(
@@ -95,6 +96,13 @@ class GameStateSerializer {
             persistenceEntity.walletComponent = newComponent
         }
 
+        if let upgradePersistenceComponent = persistenceEntity.upgradeComponent {
+            upgradePersistenceComponent.points = Int64(upgradeComponent?.points ?? 0)
+        } else {
+            let newComponent = UpgradePersistenceComponent(context: store.managedContext)
+            newComponent.points = Int64(upgradeComponent?.points ?? 0)
+            persistenceEntity.upgradeComponent = newComponent
+        }
     }
 
     private func fetchGameStatePersistenceEntity(sessionId: UUID) -> GameStatePersistenceEntity? {

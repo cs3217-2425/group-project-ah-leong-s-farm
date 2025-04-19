@@ -80,6 +80,14 @@ class GameManager {
         return energySystem.getCurrentEnergy(of: type)
     }
 
+    func getCurrentUpgradePoints() -> Int {
+        guard let upgradeSystem = gameWorld.getSystem(ofType: UpgradeSystem.self) else {
+            return 0
+        }
+
+        return upgradeSystem.getUpgradePoints()
+    }
+
     func ensureTargetActiveQuestCount(target: Int = 3) {
         guard let questSystem = gameWorld.getSystem(ofType: QuestSystem.self) else {
             return

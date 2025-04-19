@@ -14,7 +14,8 @@ extension GameStatePersistenceEntity {
             currentBaseEnergy: Int(energyComponent?.currentBaseEnergy ?? 0),
             level: Int(levelComponent?.level ?? 0),
             currentXP: levelComponent?.currentXP ?? 0,
-            coinAmount: walletComponent?.coinAmount ?? 0
+            coinAmount: walletComponent?.coinAmount ?? 0,
+            upgradePoints: Int(upgradeComponent?.points ?? 0)
         )
         return GameState(config: config)
     }

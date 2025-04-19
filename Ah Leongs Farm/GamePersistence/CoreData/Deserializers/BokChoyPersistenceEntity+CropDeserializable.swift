@@ -9,9 +9,12 @@ import Foundation
 
 extension BokChoyPersistenceEntity: CropDeserializable {
     func deserialize() -> Crop {
-        let health = healthComponent?.health ?? 0
         let isHarvested = harvestedComponent != nil
         let isItem = itemComponent != nil
+        let healthConfig = HealthConfig(
+            health: healthComponent?.health ?? 0,
+            maxHealth: healthComponent?.maxHealth ?? 0
+        )
 
         var position: CGPoint?
         var growthConfig: GrowthConfig?
@@ -33,7 +36,7 @@ extension BokChoyPersistenceEntity: CropDeserializable {
 
             let config = CropConfig(
                 persistenceID: newPersistenceID,
-                health: health,
+                healthConfig: healthConfig,
                 position: position,
                 growthConfig: growthConfig,
                 isHarvested: isHarvested,
@@ -45,7 +48,7 @@ extension BokChoyPersistenceEntity: CropDeserializable {
 
         let config = CropConfig(
             persistenceID: persistenceID,
-            health: health,
+            healthConfig: healthConfig,
             position: position,
             growthConfig: growthConfig,
             isHarvested: isHarvested,

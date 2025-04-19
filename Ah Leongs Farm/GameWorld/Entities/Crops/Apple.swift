@@ -38,7 +38,10 @@ class Apple: EntityAdapter, Crop {
         let cropComponent = CropComponent(cropType: .apple)
         attachComponent(cropComponent)
 
-        let healthComponent = HealthComponent(health: config.health)
+        let healthComponent = HealthComponent(
+            health: config.healthConfig.health,
+            maxHealth: config.healthConfig.maxHealth
+        )
         attachComponent(healthComponent)
 
         let persistenceComponent = PersistenceComponent(
