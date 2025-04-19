@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class CoreDataSolarPanelMutation: SolarPanelMutation{
+class CoreDataSolarPanelMutation: SolarPanelMutation {
     private let store: Store
     private let serializer: SolarPanelSerializer
 

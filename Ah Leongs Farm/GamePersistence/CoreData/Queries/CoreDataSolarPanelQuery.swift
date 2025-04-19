@@ -28,7 +28,8 @@ class CoreDataSolarPanelQuery: SolarPanelQuery {
             return []
         }
 
-        guard let solarPanelPersistenceEntities = session.solarPanels?.allObjects as? [SolarPanelPersistenceEntity] else {
+        guard let solarPanelPersistenceEntities = session.solarPanels?.allObjects as?
+                [SolarPanelPersistenceEntity] else {
             return []
         }
 

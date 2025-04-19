@@ -47,7 +47,6 @@ class SolarPanelSerializer {
         persistenceEntity.isItem = solarPanel.getComponentByType(ofType: ItemComponent.self) != nil
     }
 
-
     private func updatePositionAttribute(solarPanel: SolarPanel, persistenceEntity: SolarPanelPersistenceEntity) {
         guard let positionComponent = solarPanel.getComponentByType(ofType: PositionComponent.self) else {
             persistenceEntity.positionComponent = nil

@@ -12,4 +12,3 @@ protocol SolarPanelMutation {
 
     func deleteSolarPanel(id: UUID, solarPanel: SolarPanel) -> Bool
 }
-
