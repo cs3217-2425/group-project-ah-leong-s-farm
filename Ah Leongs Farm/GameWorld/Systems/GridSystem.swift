@@ -77,8 +77,8 @@ class GridSystem: ISystem {
                 continue
             }
 
-            guard let cropSlot = plot.getComponentByType(ofType: CropSlotComponent.self),
-                  let crop = cropSlot.crop,
+            guard let plotOccupantSlot = plot.getComponentByType(ofType: PlotOccupantSlotComponent.self),
+                  let crop = plotOccupantSlot.plotOccupant as? Crop,
                   let healthComponent = crop.getComponentByType(ofType: HealthComponent.self) else {
                 continue
             }
@@ -103,7 +103,7 @@ class GridSystem: ISystem {
             // Remove dead crops
             if healthComponent.health <= 0 {
                 manager.removeEntity(crop)
-                cropSlot.crop = nil
+                plotOccupantSlot.plotOccupant = nil
             }
         }
     }
@@ -151,9 +151,9 @@ class GridSystem: ISystem {
         manager?.removeEntity(plot)
 
         // Remove the crop from the entity manager if it exists
-        if let cropSlotComponent = plot.getComponentByType(ofType: CropSlotComponent.self),
-           let crop = cropSlotComponent.crop {
-            manager?.removeEntity(crop)
+        if let plotOccupantSlotComponent = plot.getComponentByType(ofType: PlotOccupantSlotComponent.self),
+           let plotOccupant = plotOccupantSlotComponent.plotOccupant {
+            manager?.removeEntity(plotOccupant)
         }
 
         return true

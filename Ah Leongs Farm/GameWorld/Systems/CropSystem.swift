@@ -31,12 +31,12 @@ class CropSystem: ISystem {
         }
 
         // Must have a crop slot
-        guard let cropSlot = plotEntity.getComponentByType(ofType: CropSlotComponent.self) else {
+        guard let plotOccupantSlot = plotEntity.getComponentByType(ofType: PlotOccupantSlotComponent.self) else {
             return false
         }
 
         // Disallow planting on entity with an existing crop
-        return cropSlot.crop != nil
+        return plotOccupantSlot.plotOccupant != nil
     }
 
     /// Adds a crop entity to the `CropSlotComponent` of the entity at the specified row and column.
@@ -51,7 +51,7 @@ class CropSystem: ISystem {
             return false
         }
 
-        guard let cropSlot = plotEntity.getComponentByType(ofType: CropSlotComponent.self) else {
+        guard let plotOccupantSlot = plotEntity.getComponentByType(ofType: PlotOccupantSlotComponent.self) else {
             return false
         }
 
@@ -63,7 +63,7 @@ class CropSystem: ISystem {
             totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: crop)
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
         manager?.addComponent(SpriteComponent(visitor: crop), to: crop)
-        cropSlot.crop = crop
+        plotOccupantSlot.plotOccupant = crop
         return true
     }
 
@@ -75,8 +75,8 @@ class CropSystem: ISystem {
             return nil
         }
 
-        guard let cropSlot = plotEntity.getComponentByType(ofType: CropSlotComponent.self),
-              let crop = cropSlot.crop else {
+        guard let plotOccupantSlot = plotEntity.getComponentByType(ofType: PlotOccupantSlotComponent.self),
+              let crop = plotOccupantSlot.plotOccupant as? Crop else {
             return nil
         }
 
@@ -92,7 +92,7 @@ class CropSystem: ISystem {
         manager?.removeComponent(ofType: PositionComponent.self, from: crop)
         manager?.removeComponent(ofType: SpriteComponent.self, from: crop)
         manager?.addComponent(HarvestedComponent(), to: crop)
-        cropSlot.crop = nil
+        plotOccupantSlot.plotOccupant = nil
         return crop
     }
 
@@ -107,13 +107,13 @@ class CropSystem: ISystem {
             return false
         }
 
-        guard let cropSlot = plotEntity.getComponentByType(ofType: CropSlotComponent.self),
-              let crop = cropSlot.crop else {
+        guard let plotOccupantSlot = plotEntity.getComponentByType(ofType: PlotOccupantSlotComponent.self),
+              let crop = plotOccupantSlot.plotOccupant as? Crop else {
             return false
         }
 
         manager.removeEntity(crop)
-        cropSlot.crop = nil
+        plotOccupantSlot.plotOccupant = nil
 
         return true
     }
@@ -129,8 +129,8 @@ class CropSystem: ISystem {
                     continue
                 }
 
-                guard let cropSlot = plot.getComponentByType(ofType: CropSlotComponent.self),
-                      let crop = cropSlot.crop else {
+                guard let plotOccupantSlot = plot.getComponentByType(ofType: PlotOccupantSlotComponent.self),
+                      let crop = plotOccupantSlot.plotOccupant as? Crop else {
                     continue
                 }
 

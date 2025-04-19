@@ -1,5 +1,5 @@
 //
-//  CropSlotComponent.swift
+//  PlotOccupantComponent.swift
 //  Ah Leongs Farm
 //
 //  Created by Lester Ong on 25/3/25.
@@ -7,17 +7,17 @@
 
 import Foundation
 
-class CropSlotComponent: ComponentAdapter {
-    var crop: Crop?
+class PlotOccupantSlotComponent: ComponentAdapter {
+    var plotOccupant: PlotOccupant?
 
-    init(crop: Crop? = nil) {
-        guard let crop = crop, crop.getComponentByType(ofType: CropComponent.self) != nil else {
-            self.crop = nil
+    init(plotOccupant: PlotOccupant? = nil) {
+        guard let plotOccupant = plotOccupant else {
+            self.plotOccupant = nil
             super.init()
             return
         }
 
-        self.crop = crop
+        self.plotOccupant = plotOccupant
         super.init()
     }
 

@@ -102,8 +102,9 @@ class MarketSystem: ISystem {
             return []
         }
         return manager.getEntities(withComponentType: SellComponent.self)
-            .filter({
-                $0.type == type
+            .filter({ entity in
+                entity.getComponentByType(ofType: ItemComponent.self) != nil &&
+                entity.type == type
             })
     }
 }

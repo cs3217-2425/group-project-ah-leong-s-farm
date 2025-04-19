@@ -16,21 +16,14 @@ extension GameManager: PlotDataProvider {
             return nil
         }
 
-        guard let crop = plot.getComponentByType(ofType: CropSlotComponent.self)?.crop else {
-            return PlotViewModel(row: row,
-                                 column: column,
-                                 crop: nil,
-                                 soilQuality: soilComponent.quality,
-                                 maxSoilQuality: soilComponent.maxQuality)
+        let occupant = plot.getComponentByType(ofType: PlotOccupantSlotComponent.self)?.plotOccupant
+        let occupantViewModel = occupant.flatMap {
+            PlotOccupantViewModelFactory.makeViewModel(from: $0)
         }
 
-        let cropViewModel = CropViewModel(crop: crop)
-
-        return PlotViewModel(row: row,
-                             column: column,
-                             crop: cropViewModel,
-                             soilQuality: soilComponent.quality,
+        return PlotViewModel(row: row, column: column, occupant: occupantViewModel, soilQuality: soilComponent.quality,
                              maxSoilQuality: soilComponent.maxQuality)
+
     }
 
     func plantCrop(row: Int, column: Int, seedType: EntityType) {
@@ -50,6 +43,16 @@ extension GameManager: PlotDataProvider {
 
     func waterPlot(row: Int, column: Int) {
         let event = WaterPlotEvent(row: row, column: column)
+        gameWorld.queueEvent(event)
+    }
+
+    func placeSolarPanel(row: Int, column: Int) {
+        let event = PlaceSolarPanelEvent(row: row, column: column)
+        gameWorld.queueEvent(event)
+    }
+
+    func removeSolarPanel(row: Int, column: Int) {
+        let event = RemoveSolarPanelEvent(row: row, column: column)
         gameWorld.queueEvent(event)
     }
 
