@@ -23,6 +23,15 @@ class PersistenceManager {
     private(set) var gameStateMutation: (any GameStateMutation)? = CoreDataGameStateMutation()
     private(set) var gameStateQuery: (any GameStateQuery)? = CoreDataGameStateQuery()
 
+    // MARK: - AbstractSeedPersistenceManager
+    private(set) var seedQuery: (any SeedQuery)? = CoreDataSeedQuery()
+    private(set) var appleSeedMutation: (any SeedMutation<AppleSeed>)? =
+        CoreDataSeedMutation<AppleSeed, AppleSeedPersistenceEntity>()
+    private(set) var bokChoySeedMutation: (any SeedMutation<BokChoySeed>)? =
+        CoreDataSeedMutation<BokChoySeed, BokChoySeedPersistenceEntity>()
+    private(set) var potatoSeedMutation: (any SeedMutation<PotatoSeed>)? =
+        CoreDataSeedMutation<PotatoSeed, PotatoSeedPersistenceEntity>()
+
     init(sessionId: UUID) {
         self.sessionId = sessionId
     }
@@ -44,6 +53,14 @@ class PersistenceManager {
         if isSuccessfullyDeleted {
             persistenceMap.removeValue(forKey: visitor.id)
         }
+    }
+
+    func hasSessionPersisted() -> Bool {
+        guard let sessionQuery = sessionQuery else {
+            return false
+        }
+
+        return sessionQuery.doesSessionExist(sessionId: sessionId)
     }
 
     private func createSessionIfNeeded() -> Bool {
@@ -91,4 +108,8 @@ extension PersistenceManager: AbstractPlotPersistenceManager {
 
 // MARK: - AbstractGameStatePersistenceManager
 extension PersistenceManager: AbstractGameStatePersistenceManager {
+}
+
+// MARK: - AbstractSeedPersistenceManager
+extension PersistenceManager: AbstractSeedPersistenceManager {
 }

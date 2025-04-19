@@ -7,10 +7,15 @@
 
 import Foundation
 
-class BokChoySeed: EntityAdapter, Seed {
-    override init() {
+class BokChoySeed: EntityAdapter, Seed, GamePersistenceObject {
+
+    init(persistenceId: UUID) {
         super.init()
-        setUpComponents()
+        setUpComponents(persistenceId: persistenceId)
+    }
+
+    convenience override init() {
+        self.init(persistenceId: UUID())
     }
 
     @available(*, unavailable)
@@ -18,9 +23,15 @@ class BokChoySeed: EntityAdapter, Seed {
         fatalError("init(coder:) not implemented")
     }
 
-    private func setUpComponents() {
+    private func setUpComponents(persistenceId: UUID) {
         let seedComponent = SeedComponent()
         attachComponent(seedComponent)
+
+        let persistenceComponent = PersistenceComponent(
+            persistenceObject: self,
+            persistenceId: persistenceId
+        )
+        attachComponent(persistenceComponent)
     }
 
     func toCrop() -> Crop {
@@ -29,5 +40,13 @@ class BokChoySeed: EntityAdapter, Seed {
 
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(bokChoySeed: self, in: renderer)
+    }
+
+    func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {
+        manager.save(bokChoySeed: self, persistenceId: persistenceId)
+    }
+
+    func delete(manager: PersistenceManager, persistenceId: UUID) -> Bool {
+        manager.delete(bokChoySeed: self, persistenceId: persistenceId)
     }
 }

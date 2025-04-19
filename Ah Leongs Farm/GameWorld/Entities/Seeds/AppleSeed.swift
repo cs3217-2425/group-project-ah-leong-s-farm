@@ -7,7 +7,7 @@
 
 import Foundation
 
-class AppleSeed: EntityAdapter, Seed {
+class AppleSeed: EntityAdapter, Seed, GamePersistenceObject {
 
     init(persistenceId: UUID) {
         super.init()
@@ -38,15 +38,15 @@ class AppleSeed: EntityAdapter, Seed {
         Apple()
     }
 
+    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.createNodeForEntity(appleSeed: self, in: renderer)
+    }
+
     func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {
-        false
+        manager.save(appleSeed: self, persistenceId: persistenceId)
     }
 
     func delete(manager: PersistenceManager, persistenceId: UUID) -> Bool {
-        false
-    }
-
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(appleSeed: self, in: renderer)
+        manager.delete(appleSeed: self, persistenceId: persistenceId)
     }
 }
