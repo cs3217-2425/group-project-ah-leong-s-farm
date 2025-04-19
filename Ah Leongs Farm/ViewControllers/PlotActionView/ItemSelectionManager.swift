@@ -11,32 +11,45 @@ import UIKit
 class ItemSelectionManager: NSObject {
 
     enum SelectionMode {
-        case seeds, fertilisers
+        case seeds, fertilisers, solarPanels
     }
 
     // MARK: - Properties
     let collectionView: UICollectionView
     private let seedItems: [PlotDisplayItemViewModel]
     private let fertiliserItems: [PlotDisplayItemViewModel]
+    private let solarPanelItems: [PlotDisplayItemViewModel]
     private var currentMode: SelectionMode = .seeds
     private var onSeedSelected: ((EntityType) -> Void)?
     private var onFertiliserSelected: ((EntityType) -> Void)?
+    private var onSolarPanelSelected: ((EntityType) -> Void)?
 
     // Item providers mapped by mode
     private lazy var itemProviders: [SelectionMode: () -> [PlotDisplayItemViewModel]] = [
-        .seeds: { return self.seedItems },
-        .fertilisers: { return self.fertiliserItems }
+        .seeds: { self.seedItems },
+        .fertilisers: { self.fertiliserItems },
+        .solarPanels: { self.solarPanelItems }
     ]
 
     // Selection handlers mapped by mode
     private lazy var selectionHandlers: [SelectionMode: (Int) -> Void] = [
         .seeds: { [weak self] index in
-            guard let self = self, index < self.seedItems.count else { return }
+            guard let self = self, index < self.seedItems.count else {
+                return
+            }
             self.onSeedSelected?(self.seedItems[index].type)
         },
         .fertilisers: { [weak self] index in
-            guard let self = self, index < self.fertiliserItems.count else { return }
+            guard let self = self, index < self.fertiliserItems.count else {
+                return
+            }
             self.onFertiliserSelected?(self.fertiliserItems[index].type)
+        },
+        .solarPanels: { [weak self] index in
+            guard let self = self, index < self.solarPanelItems.count else {
+                return
+            }
+            self.onSolarPanelSelected?(self.solarPanelItems[index].type)
         }
     ]
 
@@ -44,15 +57,18 @@ class ItemSelectionManager: NSObject {
     init(collectionView: UICollectionView,
          seedItems: [PlotDisplayItemViewModel],
          fertiliserItems: [PlotDisplayItemViewModel],
+         solarPanelItems: [PlotDisplayItemViewModel],
          onSeedSelected: @escaping (EntityType) -> Void,
-         onFertiliserSelected: @escaping (EntityType) -> Void) {
+         onFertiliserSelected: @escaping (EntityType) -> Void,
+         onSolarPanelSelected: @escaping (EntityType) -> Void) {
 
         self.collectionView = collectionView
         self.seedItems = seedItems
         self.fertiliserItems = fertiliserItems
+        self.solarPanelItems = solarPanelItems
         self.onSeedSelected = onSeedSelected
         self.onFertiliserSelected = onFertiliserSelected
-
+        self.onSolarPanelSelected = onSolarPanelSelected
         super.init()
 
         setupCollectionView()

@@ -7,6 +7,5 @@
 
 import Foundation
 
-protocol Crop: SpriteRenderManagerVisitor, GamePersistenceObject where Self: EntityAdapter {
-
+protocol Crop: SpriteRenderManagerVisitor, PlotOccupant, GamePersistenceObject where Self: EntityAdapter {
 }

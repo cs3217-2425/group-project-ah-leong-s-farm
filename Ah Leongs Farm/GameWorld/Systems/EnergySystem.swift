@@ -46,7 +46,15 @@ class EnergySystem: ISystem {
             return
         }
 
-        energyBankComponent.setCurrentEnergy(of: type, to: energyBankComponent.getMaxEnergy(of: type) + amount)
+        energyBankComponent.setMaxEnergy(of: type, to: energyBankComponent.getMaxEnergy(of: type) + amount)
+    }
+
+    func decreaseMaxEnergy(of type: EnergyType, by amount: Int) {
+        guard let energyBankComponent = energyBankComponent else {
+            return
+        }
+
+        energyBankComponent.setMaxEnergy(of: type, to: energyBankComponent.getMaxEnergy(of: type) - amount)
     }
 
     func getCurrentEnergy(of type: EnergyType) -> Int {
@@ -61,5 +69,9 @@ class EnergySystem: ISystem {
             return 0
         }
         return energyBankComponent.getMaxEnergy(of: type)
+    }
+
+    func getEnergyCapBoostComponents(of type: EnergyType) -> [EnergyCapBoostComponent] {
+        manager?.getAllComponents(ofType: EnergyCapBoostComponent.self).filter { $0.type == type } ?? []
     }
 }

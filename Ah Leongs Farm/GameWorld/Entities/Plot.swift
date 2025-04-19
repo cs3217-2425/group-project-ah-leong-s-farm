@@ -15,24 +15,28 @@ class Plot: EntityAdapter {
         fatalError("init(coder:) not implemented")
     }
 
-    init(position: CGPoint, soilQuality: Float, soilHasWater: Bool, persistenceID: UUID, crop: Crop? = nil) {
+    init(position: CGPoint,
+         soilQuality: Float,
+         soilHasWater: Bool,
+         persistenceID: UUID,
+         plotOccupant: PlotOccupant? = nil) {
         super.init()
         setUpComponents(
             position: position,
             soilQuality: soilQuality,
             soilHasWater: soilHasWater,
             persistenceID: persistenceID,
-            crop: crop
+            plotOccupant: plotOccupant
         )
     }
 
-    convenience init(position: CGPoint, crop: Crop? = nil) {
+    convenience init(position: CGPoint, plotOccupant: PlotOccupant? = nil) {
         self.init(
             position: position,
             soilQuality: Plot.DefaultSoilQuality,
             soilHasWater: false,
             persistenceID: UUID(),
-            crop: crop
+            plotOccupant: plotOccupant
         )
     }
 
@@ -41,9 +45,9 @@ class Plot: EntityAdapter {
         soilQuality: Float,
         soilHasWater: Bool,
         persistenceID: UUID,
-        crop: Crop? = nil
+        plotOccupant: PlotOccupant? = nil
     ) {
-        attachComponent(CropSlotComponent(crop: crop))
+        attachComponent(PlotOccupantSlotComponent(plotOccupant: plotOccupant))
         attachComponent(PositionComponent(x: position.x, y: position.y))
         attachComponent(SoilComponent(quality: soilQuality, hasWater: soilHasWater))
         attachComponent(SpriteComponent(visitor: self))

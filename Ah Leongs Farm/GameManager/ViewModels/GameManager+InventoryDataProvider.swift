@@ -60,6 +60,14 @@ extension GameManager: InventoryDataProvider {
         return entitiesToPlotDisplayViewModel(fertiliserItems)
     }
 
+    func getSolarPanelItemViewModels() -> [PlotDisplayItemViewModel] {
+        let solarPanelItems = gameWorld.getAllEntities()
+            .filter {
+                $0 is SolarPanel && $0.getComponentByType(ofType: ItemComponent.self) != nil
+            }
+        return entitiesToPlotDisplayViewModel(solarPanelItems)
+    }
+
     private func entitiesToPlotDisplayViewModel(_ entities: [Entity]) -> [PlotDisplayItemViewModel] {
         var viewModels: [String: PlotDisplayItemViewModel] = [:]
         for entity in entities {

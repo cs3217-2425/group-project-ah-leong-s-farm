@@ -20,7 +20,9 @@ class AnimationManager {
 
     // MARK: - Animation Methods
     func runWaterAnimation() {
-        guard let spriteNode = spriteNode else { return }
+        guard let spriteNode = spriteNode else {
+            return
+        }
 
         let referenceSize = spriteNode.size
 
