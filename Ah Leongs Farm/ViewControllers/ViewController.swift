@@ -42,6 +42,7 @@ class ViewController: UIViewController {
         setupNotificationSystem()
         gameManager.addGameObserver(self)
         gameManager.registerEventObserver(gameOverViewController)
+        gameManager.playBackgroundSound()
     }
 
     private func setUpGameStatistics() {
@@ -121,6 +122,7 @@ extension ViewController: GameControlsViewDelegate {
         alert.addAction(UIAlertAction(title: "Quit", style: .destructive, handler: { _ in
             // removes strong cyclic reference between game manager and view controller
             self.gameManager.removeGameObserver(self)
+            self.gameManager.stopSounds()
             self.dismiss(animated: true, completion: nil)
         }))
 
