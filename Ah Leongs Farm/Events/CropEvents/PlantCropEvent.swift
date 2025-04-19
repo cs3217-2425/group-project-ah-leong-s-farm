@@ -34,7 +34,7 @@ struct PlantCropEvent: GameEvent {
         }
 
         guard energySystem.getCurrentEnergy(of: .base) >= ENERGY_USAGE else {
-            return NotEnoughEnergyErrorEventData(message: "Not enough energy to plant!")
+            return InsufficientEnergyErrorEventData(message: "Not enough energy to plant!")
         }
 
         if cropSystem.isOccupied(row: row, column: column) {

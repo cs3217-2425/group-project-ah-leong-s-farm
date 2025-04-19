@@ -21,7 +21,7 @@ struct PlaceSolarPanelEvent: GameEvent {
         }
 
         guard energySystem.getCurrentEnergy(of: .base) >= ENERGY_USAGE else {
-            return NotEnoughEnergyErrorEventData(message: "Not enough energy to place solar panel!")
+            return InsufficientEnergyErrorEventData(message: "Not enough energy to place solar panel!")
         }
 
         guard let solarPanel = context

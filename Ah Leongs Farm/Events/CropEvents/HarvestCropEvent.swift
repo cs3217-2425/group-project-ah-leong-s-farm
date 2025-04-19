@@ -22,7 +22,7 @@ struct HarvestCropEvent: GameEvent {
         }
 
         guard energySystem.getCurrentEnergy(of: .base) >= ENERGY_USAGE else {
-            return NotEnoughEnergyErrorEventData(message: "Not enough energy for harvest!")
+            return InsufficientEnergyErrorEventData(message: "Not enough energy for harvest!")
         }
 
         guard let harvestedCrop = cropSystem.harvestCrop(row: row, column: column),

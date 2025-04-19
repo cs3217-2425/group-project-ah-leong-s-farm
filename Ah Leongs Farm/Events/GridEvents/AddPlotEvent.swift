@@ -22,7 +22,7 @@ struct AddPlotEvent: GameEvent {
         }
 
         guard energySystem.getCurrentEnergy(of: .base) >= ENERGY_USAGE else {
-            return NotEnoughEnergyErrorEventData(message: "Not enough energy to add plot!")
+            return InsufficientEnergyErrorEventData(message: "Not enough energy to add plot!")
         }
 
         let plot = Plot(position: CGPoint(x: row, y: column))

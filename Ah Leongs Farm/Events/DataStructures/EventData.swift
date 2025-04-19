@@ -95,7 +95,7 @@ struct LevelUpEventData: EventData {
     var newLevel: Int
 }
 
-struct NotEnoughEnergyErrorEventData: ErrorEventData, EventData {
+struct InsufficientEnergyErrorEventData: ErrorEventData, EventData {
     var title: String = "No Energy"
     var message: String
 }
