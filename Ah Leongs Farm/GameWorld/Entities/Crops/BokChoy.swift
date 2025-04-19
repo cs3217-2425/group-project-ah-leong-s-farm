@@ -78,7 +78,9 @@ class BokChoy: EntityAdapter, Crop {
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(bokChoy: self, in: renderer)
     }
+}
 
+extension BokChoy: GamePersistenceObject {
     func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {
         manager.save(bokChoy: self, persistenceId: persistenceId)
     }

@@ -78,7 +78,9 @@ class Apple: EntityAdapter, Crop {
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(apple: self, in: renderer)
     }
+}
 
+extension Apple: GamePersistenceObject {
     func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {
         manager.save(apple: self, persistenceId: persistenceId)
     }

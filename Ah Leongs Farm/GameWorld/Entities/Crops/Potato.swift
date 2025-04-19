@@ -78,7 +78,9 @@ class Potato: EntityAdapter, Crop {
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(potato: self, in: renderer)
     }
+}
 
+extension Potato: GamePersistenceObject {
     func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {
         manager.save(potato: self, persistenceId: persistenceId)
     }
