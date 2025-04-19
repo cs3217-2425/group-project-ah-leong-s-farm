@@ -1,5 +1,5 @@
 //
-//  GrowthComponent.swift
+//  YieldComponent.swift
 //  Ah Leongs Farm
 //
 //  Created by Lester Ong on 25/3/25.
