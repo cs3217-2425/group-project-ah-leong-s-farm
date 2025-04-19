@@ -9,7 +9,8 @@ import Foundation
 
 class SpriteRenderManager: IRenderManager {
     private static let EntityTypeTextureMap: [EntityType: String] = [
-        Plot.type: "dirt"
+        Plot.type: "dirt",
+        SolarPanel.type: "solar_panel"
     ]
 
     private static let SeedTypeTextureMap: [EntityType: String] = [
@@ -54,6 +55,22 @@ class SpriteRenderManager: IRenderManager {
 
         setRelativeSize(spriteNode: spriteNode, scaleFactor: 1.0)
         renderer.setRenderNode(for: ObjectIdentifier(plot), node: spriteNode)
+    }
+
+    func createNodeForEntity(solarPanel: SolarPanel, in renderer: GameRenderer) {
+        guard let textureName = Self.EntityTypeTextureMap[SolarPanel.type] else {
+            return
+        }
+
+        guard let positionComponent = solarPanel.getComponentByType(ofType: PositionComponent.self) else {
+            return
+        }
+
+        let spriteNode = SolarPanelSpriteNode(imageNamed: textureName)
+
+        setSpritePosition(spriteNode: spriteNode, using: positionComponent)
+        setRelativeSize(spriteNode: spriteNode, scaleFactor: 1.0)
+        renderer.setRenderNode(for: ObjectIdentifier(solarPanel), node: spriteNode)
     }
 
     func createNodeForEntity(apple: Apple, in renderer: GameRenderer) {

@@ -22,7 +22,7 @@ extension PlotPersistenceEntity {
                 soilQuality: soilQuality,
                 soilHasWater: soilHasWater,
                 persistenceID: newPersistenceID,
-                crop: nil
+                plotOccupant: nil
             )
         }
 
@@ -31,7 +31,7 @@ extension PlotPersistenceEntity {
             soilQuality: soilQuality,
             soilHasWater: soilHasWater,
             persistenceID: persistenceID,
-            crop: nil
+            plotOccupant: nil
         )
     }
 }

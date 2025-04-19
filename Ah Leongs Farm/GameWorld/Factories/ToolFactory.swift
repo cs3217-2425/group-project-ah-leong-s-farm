@@ -8,7 +8,8 @@
 class ToolFactory: EntityFactory {
     private static let initializers: [EntityType: () -> Entity] = [
         Fertiliser.type: { Fertiliser() },
-        PremiumFertiliser.type: { PremiumFertiliser() }
+        PremiumFertiliser.type: { PremiumFertiliser() },
+        SolarPanel.type: { SolarPanel() }
     ]
 
     static func canCreate(type: EntityType) -> Bool {

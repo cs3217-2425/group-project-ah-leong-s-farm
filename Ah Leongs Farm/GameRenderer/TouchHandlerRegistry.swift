@@ -9,6 +9,8 @@ protocol TouchHandlerRegistry {
     func setTouchHandler(for node: PlotSpriteNode)
 
     func setTouchHandler(for node: CropSpriteNode)
+
+    func setTouchHandler(for node: SolarPanelSpriteNode)
 }
 
 extension TouchHandlerRegistry {

@@ -31,6 +31,10 @@ class EnergyBankComponent: ComponentAdapter {
         if var stat = energyBank[type] {
             stat.max = value
             energyBank[type] = stat
+
+            if value < stat.current {
+                setCurrentEnergy(of: type, to: value)
+            }
         }
     }
 
