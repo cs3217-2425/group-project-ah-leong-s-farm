@@ -48,7 +48,7 @@ class SoundSystem: ISystem {
         backgroundMusicPlayer = nil
     }
 
-    func playSoundEffect(named filename: String, fileExtension: String = "mp3") {
+    func playSoundEffect(named filename: String, fileExtension: String = "wav") {
         guard !isMuted else {
             return
         }
