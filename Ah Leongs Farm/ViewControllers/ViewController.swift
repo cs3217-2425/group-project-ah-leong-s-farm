@@ -230,7 +230,13 @@ extension ViewController {
             notificationManager: notificationManager
         )
 
+        let errorNotificationController = ErrorNotificationController(
+            notificationManager: notificationManager
+        )
+
         gameManager.registerEventObserver(questNotificationController)
         gameManager.registerEventObserver(levelUpNotificationController)
+        gameManager.registerEventObserver(errorNotificationController)
     }
 }
+
