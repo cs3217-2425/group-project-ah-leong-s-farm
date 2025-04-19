@@ -131,6 +131,8 @@ class GameManager {
         addStartingItems()
 
         setUpFarmLandEntity()
+
+        setUpSolarPanels()
     }
 
     private func setUpGameStateEntity() {
@@ -160,6 +162,28 @@ class GameManager {
 
             gridComponent.setEntity(plot, row: row, column: column)
             gameWorld.addEntity(plot)
+        }
+    }
+
+    private func setUpSolarPanels() {
+        guard let solarPanelSystem = gameWorld.getSystem(ofType: SolarPanelSystem.self) else {
+            return
+        }
+
+        let solarPanels = persistenceManager.loadSolarPanels()
+
+        for solarPanel in solarPanels {
+            gameWorld.addEntity(solarPanel)
+
+            guard let positionComponent = solarPanel.getComponentByType(
+                ofType: PositionComponent.self) else {
+                continue
+            }
+
+            let row = Int(positionComponent.x)
+            let column = Int(positionComponent.y)
+
+            solarPanelSystem.placeSolarPanel(solarPanel: solarPanel, row: row, column: column)
         }
     }
 
