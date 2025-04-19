@@ -92,10 +92,6 @@ class CropSystem: ISystem {
 
         let concreteType = type(of: crop).type
 
-        manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
-        manager?.removeComponent(ofType: PositionComponent.self, from: crop)
-        manager?.removeComponent(ofType: SpriteComponent.self, from: crop)
-
         plotOccupantSlot.plotOccupant = nil
 
         let crops = CropFactory.createMultiple(type: crop.type, quantity: yield).compactMap { $0 as? Crop }
