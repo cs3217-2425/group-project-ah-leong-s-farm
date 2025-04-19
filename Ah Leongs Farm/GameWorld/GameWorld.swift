@@ -29,6 +29,7 @@ class GameWorld {
         addSystem(MarketSystem(for: entityManager))
         addSystem(SoilSystem(for: entityManager))
         addSystem(UpgradeSystem(for: entityManager))
+        addSystem(SoundSystem(for: entityManager))
 
         let questSystem = QuestSystem(for: entityManager, eventQueueable: self)
         addSystem(questSystem)
