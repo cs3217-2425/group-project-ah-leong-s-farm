@@ -16,6 +16,7 @@ class ProgressBarManager {
     private var soilQualityProgressBar: ProgressBar?
     private var growthProgressBar: ProgressBar?
     private var healthProgressBar: ProgressBar?
+    private var yieldProgressBar: ProgressBar?
 
     // Track all bottom constraints so we can manage them
     private var bottomConstraints: [NSLayoutConstraint] = []
@@ -60,6 +61,13 @@ class ProgressBarManager {
                 health: crop.currentHealth
             )
             lastBar = healthBar
+            
+            let yieldBar = setupYieldBar(
+                after: healthBar,
+                current: Float(crop.currentYield),
+                max: Float(crop.maxYield)
+            )
+            lastBar = yieldBar
         }
 
         // Add bottom constraint only to the last bar
@@ -139,6 +147,34 @@ class ProgressBarManager {
         )
         containerView.addSubview(progressBar)
         self.healthProgressBar = progressBar
+
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: previousBar.bottomAnchor, constant: 15),
+            titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+
+            progressBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
+            progressBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            progressBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            progressBar.heightAnchor.constraint(equalToConstant: 30)
+        ])
+
+        return progressBar
+    }
+    
+    private func setupYieldBar(after previousBar: ProgressBar, current: Float, max: Float) -> ProgressBar {
+        let titleLabel = createTitleLabel(title: "Yield:")
+        containerView.addSubview(titleLabel)
+
+        let progressBar = ProgressBar(frame: .zero)
+        progressBar.translatesAutoresizingMaskIntoConstraints = false
+        progressBar.setProgress(
+            current: current,
+            max: max,
+            label: ""
+        )
+        containerView.addSubview(progressBar)
+        self.yieldProgressBar = progressBar
 
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: previousBar.bottomAnchor, constant: 15),

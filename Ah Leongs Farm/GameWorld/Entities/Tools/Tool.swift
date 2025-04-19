@@ -5,6 +5,6 @@
 //  Created by proglab on 14/4/25.
 //
 
-protocol Tool {
+protocol Tool: EntityAdapter {
 
 }

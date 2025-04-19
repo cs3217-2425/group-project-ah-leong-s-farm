@@ -24,6 +24,9 @@ class Apple: EntityAdapter, Crop {
 
         let healthComponent = HealthComponent()
         attachComponent(healthComponent)
+
+        let yieldComponent = YieldComponent(maxYield: 3)
+        attachComponent(yieldComponent)
     }
 
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {

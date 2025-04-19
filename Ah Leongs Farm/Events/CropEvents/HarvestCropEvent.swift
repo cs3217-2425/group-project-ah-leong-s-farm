@@ -25,19 +25,23 @@ struct HarvestCropEvent: GameEvent {
             return nil
         }
 
-        guard let harvestedCrop = cropSystem.harvestCrop(row: row, column: column),
-              let cropComponent = harvestedCrop.getComponentByType(ofType: CropComponent.self) else {
+        guard let result = cropSystem.harvestCrop(row: row, column: column) else {
             return nil
         }
 
-        // Set harvested quantity to 1 for now
-        let harvestedQuantity = 1
+        let cropType = result.type
+        let harvestedCrops = result.crops
 
         energySystem.useEnergy(of: .base, amount: ENERGY_USAGE)
         levelSystem.addXP(XP_AMOUNT)
-        inventorySystem.addItemToInventory(harvestedCrop)
-        marketSystem.addEntityToSellMarket(entity: harvestedCrop)
+        inventorySystem.addItemsToInventory(harvestedCrops)
+        marketSystem.addEntitiesToSellMarket(entities: harvestedCrops)
 
-        return HarvestCropEventData(type: cropComponent.cropType, quantity: harvestedQuantity)
+        // remove this after crop type is removed!!
+        guard let cropComponent = harvestedCrops.first?.component(ofType: CropComponent.self) else {
+            fatalError("Cannot get crop component from harvested crops")
+        }
+
+        return HarvestCropEventData(type: cropComponent.cropType, quantity: harvestedCrops.count)
     }
 }

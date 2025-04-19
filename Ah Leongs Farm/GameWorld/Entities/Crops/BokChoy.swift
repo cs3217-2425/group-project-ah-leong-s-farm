@@ -24,6 +24,9 @@ class BokChoy: EntityAdapter, Crop {
 
         let healthComponent = HealthComponent()
         attachComponent(healthComponent)
+
+        let yieldComponent = YieldComponent(maxYield: 5)
+        attachComponent(yieldComponent)
     }
 
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {

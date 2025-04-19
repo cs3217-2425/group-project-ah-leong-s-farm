@@ -24,6 +24,9 @@ class Potato: EntityAdapter, Crop {
 
         let healthComponent = HealthComponent()
         attachComponent(healthComponent)
+
+        let yieldComponent = YieldComponent(maxYield: 4)
+        attachComponent(yieldComponent)
     }
 
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
