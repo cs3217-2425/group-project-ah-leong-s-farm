@@ -42,7 +42,6 @@ class ViewController: UIViewController {
         setupNotificationSystem()
         gameManager.addGameObserver(self)
         gameManager.registerEventObserver(gameOverViewController)
-        gameManager.playBackgroundSound()
     }
 
     private func setUpGameStatistics() {

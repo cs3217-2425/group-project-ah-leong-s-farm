@@ -123,11 +123,6 @@ class GameManager {
         gameWorld.registerEventObserver(observer)
     }
 
-    func playBackgroundSound() {
-        let soundSystem = gameWorld.getSystem(ofType: SoundSystem.self)
-        soundSystem?.playBackgroundMusic()
-    }
-
     func stopSounds() {
         let soundSystem = gameWorld.getSystem(ofType: SoundSystem.self)
         soundSystem?.stopAllSoundEffects()
