@@ -7,7 +7,7 @@ class MainMenuViewController: UIViewController {
         setupBackground()
         setupUI()
     }
-    
+
     private func setupBackground() {
         let backgroundImageView = UIImageView(frame: view.bounds)
         backgroundImageView.image = UIImage(imageLiteralResourceName: "background")
