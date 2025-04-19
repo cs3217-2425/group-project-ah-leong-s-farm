@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol Seed: SpriteRenderManagerVisitor where Self: EntityAdapter {
+protocol Seed: SpriteRenderManagerVisitor, GamePersistenceObject where Self: EntityAdapter {
     func toCrop() -> Crop
 }
