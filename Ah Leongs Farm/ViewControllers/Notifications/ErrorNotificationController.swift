@@ -1,5 +1,5 @@
 //
-//  LevelUpNotificationController 2.swift
+//  ErrorNotificationController.swift
 //  Ah Leongs Farm
 //
 //  Created by proglab on 19/4/25.
