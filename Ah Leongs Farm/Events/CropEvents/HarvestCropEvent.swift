@@ -38,6 +38,6 @@ struct HarvestCropEvent: GameEvent {
         inventorySystem.addItemToInventory(harvestedCrop)
         marketSystem.addEntityToSellMarket(entity: harvestedCrop)
 
-        return HarvestCropEventData(type: cropComponent.cropType, quantity: harvestedQuantity)
+        return HarvestCropEventData(cropType: harvestedCrop.type, quantity: harvestedQuantity)
     }
 }

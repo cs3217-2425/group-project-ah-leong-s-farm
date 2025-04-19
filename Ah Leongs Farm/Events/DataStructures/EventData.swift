@@ -23,7 +23,7 @@ struct GameOverEventData: EventData {
 }
 
 struct HarvestCropEventData: EventData {
-    var type: CropType
+    var cropType: EntityType
     var quantity: Int
 }
 
@@ -52,7 +52,7 @@ struct SellItemEventData: EventData {
 struct PlantCropEventData: EventData {
     var row: Int
     var column: Int
-    var cropType: CropType
+    var cropType: EntityType
     var isSuccessfullyPlanted: Bool
 }
 

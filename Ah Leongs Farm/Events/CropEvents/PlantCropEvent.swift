@@ -55,8 +55,7 @@ struct PlantCropEvent: GameEvent {
         return PlantCropEventData(
             row: row,
             column: column,
-            // TODO: CHANGE LOGIC after getting rid of CropType!!!
-            cropType: .apple,
+            cropType: crop.type,
             isSuccessfullyPlanted: isSuccessfullyPlanted
         )
     }

@@ -19,7 +19,7 @@ class Apple: EntityAdapter, Crop {
     }
 
     private func setUpComponents() {
-        let cropComponent = CropComponent(cropType: .apple)
+        let cropComponent = CropComponent()
         attachComponent(cropComponent)
 
         let healthComponent = HealthComponent()
