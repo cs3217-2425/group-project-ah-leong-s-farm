@@ -25,11 +25,9 @@ struct PlantCropEvent: GameEvent {
             return nil
         }
 
-        guard let energySystem = context.getSystem(ofType: EnergySystem.self) else {
-            return nil
-        }
-
-        guard let levelSystem = context.getSystem(ofType: LevelSystem.self) else {
+        guard let energySystem = context.getSystem(ofType: EnergySystem.self),
+              let levelSystem = context.getSystem(ofType: LevelSystem.self),
+              let soundSystem = context.getSystem(ofType: SoundSystem.self) else {
             return nil
         }
 
@@ -50,6 +48,7 @@ struct PlantCropEvent: GameEvent {
         if isSuccessfullyPlanted {
             energySystem.useEnergy(of: .base, amount: ENERGY_USAGE)
             levelSystem.addXP(XP_AMOUNT)
+            soundSystem.playSoundEffect(named: "plant-crop")
         }
 
         return PlantCropEventData(
