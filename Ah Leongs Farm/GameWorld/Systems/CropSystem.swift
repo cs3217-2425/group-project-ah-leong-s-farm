@@ -39,11 +39,11 @@ class CropSystem: ISystem {
         return plotOccupantSlot.plotOccupant != nil
     }
 
-    /// Adds a crop entity to the `CropSlotComponent` of the entity at the specified row and column.
+    /// Adds a crop entity to the `PlotOccupantSlotComponent` of the entity at the specified row and column.
     /// - Returns: True if the crop is successfully added, false otherwise.
     /// Crop is only planted if the following conditions are fulfilled:
-    /// - The entity at the specified row and column must have a `CropSlotComponent`.
-    /// - The CropSlotComponent must not have any crops on it.
+    /// - The entity at the specified row and column must have a `PlotOccupantSlotComponent`.
+    /// - The PlotOccupantSlotComponent must not have any crops on it.
     /// - The entity to add `crop`, must have a `SeedComponent` and a `CropComponent`.
     @discardableResult
     func plantCrop(crop: Crop, row: Int, column: Int) -> Bool {
