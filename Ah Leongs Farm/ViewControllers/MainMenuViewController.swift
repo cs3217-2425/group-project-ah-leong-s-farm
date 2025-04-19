@@ -4,51 +4,66 @@ class MainMenuViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupBackground()
+        setupUI()
+    }
+    
+    private func setupBackground() {
+        let backgroundImageView = UIImageView(frame: view.bounds)
+        backgroundImageView.image = UIImage(imageLiteralResourceName: "background")
+        backgroundImageView.contentMode = .scaleAspectFill
+        backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(backgroundImageView)
+        view.sendSubviewToBack(backgroundImageView)
 
+        NSLayoutConstraint.activate([
+            backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+
+    private func setupUI() {
         let titleLabel = UILabel()
         titleLabel.text = "Ah Leong's Farm"
         titleLabel.textAlignment = .center
         titleLabel.font = UIFont(name: "Press Start 2P", size: 24)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        let newGameButton = UIButton(type: .system)
-        newGameButton.setTitle("New Game", for: .normal)
-        newGameButton.backgroundColor = .systemGreen
-        newGameButton.setTitleColor(.white, for: .normal)
-        newGameButton.layer.cornerRadius = 10
-        newGameButton.translatesAutoresizingMaskIntoConstraints = false
-        newGameButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
+        let newGameButton = createButton(title: "New Game", color: .systemGreen, action: #selector(startButtonTapped))
+        let loadGameButton = createButton(title: "Load Game", color: .systemBlue, action: #selector(loadButtonTapped))
 
         view.addSubview(titleLabel)
         view.addSubview(newGameButton)
-        NSLayoutConstraint.activate([
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: newGameButton.topAnchor, constant: -20),
-            newGameButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            newGameButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 20),
-            newGameButton.widthAnchor.constraint(equalToConstant: 200),
-            newGameButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
-
-        newGameButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
-
-        let loadGameButton = UIButton(type: .system)
-        loadGameButton.setTitle("Load Game", for: .normal)
-        loadGameButton.backgroundColor = .systemBlue
-        loadGameButton.setTitleColor(.white, for: .normal)
-        loadGameButton.layer.cornerRadius = 10
-        loadGameButton.translatesAutoresizingMaskIntoConstraints = false
-        loadGameButton.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
         view.addSubview(loadGameButton)
 
         NSLayoutConstraint.activate([
+            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.bottomAnchor.constraint(equalTo: newGameButton.topAnchor, constant: -20),
+
+            newGameButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            newGameButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 20),
+            newGameButton.widthAnchor.constraint(equalToConstant: 200),
+            newGameButton.heightAnchor.constraint(equalToConstant: 50),
+
             loadGameButton.topAnchor.constraint(equalTo: newGameButton.bottomAnchor, constant: 20),
             loadGameButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadGameButton.widthAnchor.constraint(equalToConstant: 200),
             loadGameButton.heightAnchor.constraint(equalToConstant: 50)
         ])
+    }
 
-        loadGameButton.addTarget(self, action: #selector(loadButtonTapped), for: .touchUpInside)
+    private func createButton(title: String, color: UIColor, action: Selector) -> UIButton {
+        let button = UIButton(type: .system)
+        button.setTitle(title, for: .normal)
+        button.backgroundColor = color
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel?.font = UIFont(name: "Press Start 2P", size: 12)
+        button.addTarget(self, action: action, for: .touchUpInside)
+        return button
     }
 
     @objc func startButtonTapped() {
