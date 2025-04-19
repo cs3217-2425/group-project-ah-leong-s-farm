@@ -5,7 +5,6 @@
 //  Created by proglab on 20/4/25.
 //
 
-
 class HarvestCropNotificationController {
 
     private let notificationManager: NotificationManager
@@ -14,7 +13,7 @@ class HarvestCropNotificationController {
         self.notificationManager = notificationManager
     }
 
-    func onHarvest(_ type: CropType,_ quantity: Int) {
+    func onHarvest(_ type: CropType, _ quantity: Int) {
         notificationManager.showNotification(
             title: "Crop Harvested",
             message: "Added \(quantity) \(type.rawValue)!"

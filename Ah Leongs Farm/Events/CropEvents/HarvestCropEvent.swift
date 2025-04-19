@@ -29,6 +29,7 @@ struct HarvestCropEvent: GameEvent {
             return nil
         }
 
+        // use later when croptype is removed
         let cropType = result.type
         let harvestedCrops = result.crops
 
