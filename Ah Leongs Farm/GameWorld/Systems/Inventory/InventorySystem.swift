@@ -21,7 +21,6 @@ class InventorySystem: ISystem {
     func addItemToInventory(_ itemToAdd: Entity) {
 
         guard isAllowedInInventory(itemToAdd) else {
-            print("Entity of type \(itemToAdd.type) is not allowed in inventory.")
             return
         }
 

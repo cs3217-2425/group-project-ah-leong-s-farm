@@ -137,7 +137,6 @@ extension MarketViewController: BuyPopupDelegate {
     func didConfirmPurchase(item: EntityType, quantity: Int) {
         marketDataHandler.buyItem(itemType: item, quantity: quantity, currency: .coin)
         collectionView.reloadData()
-        print("Confirm purchase: \(item), \(quantity)")
     }
 }
 
@@ -145,7 +144,6 @@ extension MarketViewController: SellPopupDelegate {
     func didConfirmSale(item: EntityType, quantity: Int) {
         marketDataHandler.sellItem(itemType: item, quantity: quantity, currency: .coin)
         collectionView.reloadData()
-        print("Confirm selling: \(item), \(quantity)")
     }
 }
 

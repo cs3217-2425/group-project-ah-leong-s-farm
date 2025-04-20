@@ -55,7 +55,6 @@ class WalletSystem: ISystem {
         }
 
         guard amount >= 0 else {
-            print("The amount to add must be positive.")
             return
         }
 
@@ -75,12 +74,10 @@ class WalletSystem: ISystem {
         }
 
         guard amount >= 0 else {
-            print("The amount to remove must be positive.")
             return
         }
 
         guard currentAmount >= amount else {
-            print("Insufficient currency.")
             return
         }
 

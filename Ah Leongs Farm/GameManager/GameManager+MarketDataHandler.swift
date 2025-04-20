@@ -9,7 +9,6 @@ extension GameManager: MarketDataHandler {
     func getBuyItemViewModels() -> [BuyItemViewModel] {
 
         guard let marketSystem = gameWorld.getSystem(ofType: MarketSystem.self) else {
-            print("MarketSystem not found.")
             return []
         }
 
@@ -18,7 +17,6 @@ extension GameManager: MarketDataHandler {
         let itemPrices = marketSystem.getItemPrices()
         for (itemType, price) in itemPrices {
             guard let buyPrice = price.buyPrice[.coin] else {
-                print("Buy price missing for \(itemType)")
                 continue
             }
 
@@ -50,7 +48,6 @@ extension GameManager: MarketDataHandler {
         for itemType in MarketInformation.sellableItems {
 
             guard let sellPrice = marketSystem.getSellPrice(for: itemType, currency: .coin) else {
-                print("Sell price missing for \(itemType)")
                 continue
             }
 

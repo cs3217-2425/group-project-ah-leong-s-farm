@@ -2,8 +2,6 @@ import Foundation
 
 protocol ISystem: AnyObject {
     var manager: EntityManager? { get set }
-    // TODO: For systems to be able to queue events.
-    // var eventQueueable: EventQueueable? { get set }
 
     init(for manager: EntityManager)
     func update(deltaTime: CGFloat)
