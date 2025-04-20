@@ -182,7 +182,6 @@ extension GameRenderer: UIPositionProvider {
 
         let tileSize = tileMapNode.tileSize
 
-        // TODO: Investigate why deduction of half the tile size is needed
         let xPosition = CGFloat(column) * tileSize.width + tileSize.width / 2
             - tileMapNode.mapSize.width / 2
         let yPosition = CGFloat(row) * tileSize.height + tileSize.height / 2

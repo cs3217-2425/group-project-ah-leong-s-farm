@@ -243,8 +243,8 @@ class GameManager {
 
     private func addStartingItems() {
         let seeds = loadSeeds()
-        let fertilisers = ToolFactory.createMultiple(type: Fertiliser.type, quantity: 3)
-        let premiumFertilisers = ToolFactory.createMultiple(type: PremiumFertiliser.type, quantity: 6)
+        let fertilisers = ToolFactory.createMultiple(type: Fertiliser.type, quantity: 2)
+        let premiumFertilisers = ToolFactory.createMultiple(type: PremiumFertiliser.type, quantity: 1)
 
         let allItems = seeds + fertilisers + premiumFertilisers
 
@@ -260,7 +260,7 @@ class GameManager {
     }
 
     private func loadSeeds() -> [any Entity] {
-        let startingSeeds = SeedFactory.createMultiple(type: BokChoySeed.type, quantity: 8) +
+        let startingSeeds = SeedFactory.createMultiple(type: BokChoySeed.type, quantity: 3) +
             SeedFactory.createMultiple(type: AppleSeed.type, quantity: 3)
 
         if persistenceManager.hasSessionPersisted() {

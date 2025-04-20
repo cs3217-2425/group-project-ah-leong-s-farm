@@ -17,7 +17,6 @@ class SoundSystem: ISystem {
             try AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
-            print("Failed to set up audio session: \(error)")
         }
     }
 
@@ -29,7 +28,6 @@ class SoundSystem: ISystem {
         stopBackgroundMusic()
 
         guard let url = Bundle.main.url(forResource: filename, withExtension: fileExtension) else {
-            print("Could not find background music file: \(filename)")
             return
         }
 
@@ -39,7 +37,6 @@ class SoundSystem: ISystem {
             backgroundMusicPlayer?.volume = 0.5
             backgroundMusicPlayer?.play()
         } catch {
-            print("Failed to play background music: \(error)")
         }
     }
 
@@ -57,7 +54,6 @@ class SoundSystem: ISystem {
             let player = try AVAudioPlayer(contentsOf: url)
             player.prepareToPlay()
         } catch {
-            print("Failed to play sound effect: \(error)")
         }
     }
 
@@ -67,7 +63,6 @@ class SoundSystem: ISystem {
         }
 
         guard let url = Bundle.main.url(forResource: filename, withExtension: fileExtension) else {
-            print("Could not find sound effect file: \(filename)")
             return
         }
 
@@ -83,7 +78,6 @@ class SoundSystem: ISystem {
                 self?.soundEffectPlayers.removeValue(forKey: filename)
             }
         } catch {
-            print("Failed to play sound effect: \(error)")
         }
     }
 

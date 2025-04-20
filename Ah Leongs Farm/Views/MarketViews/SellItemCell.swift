@@ -100,6 +100,5 @@ class SellItemCell: UICollectionViewCell {
     }
 
     @objc private func sellButtonTapped() {
-        print("Sell button tapped!")
     }
 }

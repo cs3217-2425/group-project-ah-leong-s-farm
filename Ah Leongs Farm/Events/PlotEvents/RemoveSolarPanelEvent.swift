@@ -22,7 +22,6 @@ struct RemoveSolarPanelEvent: GameEvent {
         }
 
         guard let energyCapBoostComponent = solarPanel.getComponentByType(ofType: EnergyCapBoostComponent.self) else {
-            print("SolarPanel should have a EnergyCapBoostComponent")
             return nil
         }
 

@@ -8,7 +8,6 @@
 import Foundation
 
 class Fertiliser: EntityAdapter, Tool {
-    // TODO: Consider FertiliserComponent once we implement fertiliser logic
     let soilImprovementAmount: Float
 
     init(soilImprovementAmount: Float = 1) {

@@ -35,7 +35,6 @@ class MarketSystem: ISystem {
 
     func getBuyPrice(for type: EntityType, currency: CurrencyType) -> Double? {
         guard let price = itemPrices[type] else {
-            print("Item not found in the market!")
             return nil
         }
         return price.buyPrice[currency]
@@ -43,7 +42,6 @@ class MarketSystem: ISystem {
 
     func getSellPrice(for type: EntityType, currency: CurrencyType) -> Double? {
         guard let price = itemPrices[type] else {
-            print("Item not found in the market!")
             return nil
         }
         return price.sellPrice[currency]
@@ -51,7 +49,6 @@ class MarketSystem: ISystem {
 
     func getBuyQuantity(for type: EntityType) -> Int? {
         guard let stock = itemStocks[type] else {
-            print("Item not found in the market!")
             return nil
         }
         return stock
@@ -61,7 +58,6 @@ class MarketSystem: ISystem {
     func decreaseStock(type: EntityType, quantity: Int) -> Bool {
         // Check if the item exists in the market and if there's enough stock
         guard let currentStock = itemStocks[type], currentStock >= quantity else {
-            print("Not enough stock for \(type).")
             return false
         }
 
