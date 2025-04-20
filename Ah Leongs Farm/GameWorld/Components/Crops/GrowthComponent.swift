@@ -8,14 +8,21 @@
 import Foundation
 
 class GrowthComponent: ComponentAdapter {
-    var totalGrowthTurns: Int
+    let totalGrowthTurns: Int
+    let totalGrowthStages: Int
     var currentGrowthTurn: Float = 0
+    var currentGrowthStage: Int {
+        let growthProgress = min(currentGrowthTurn / Float(totalGrowthTurns), 1.0)
+        return Int(growthProgress * Float(totalGrowthStages))
+    }
+
     var canHarvest: Bool {
         currentGrowthTurn >= Float(totalGrowthTurns)
     }
 
-    init(totalGrowthTurns: Int) {
+    init(totalGrowthTurns: Int, totalGrowthStages: Int) {
         self.totalGrowthTurns = totalGrowthTurns
+        self.totalGrowthStages = totalGrowthStages
         super.init()
     }
 
