@@ -7,10 +7,15 @@
 
 import Foundation
 
-class AppleSeed: EntityAdapter, Seed {
-    override init() {
+class AppleSeed: EntityAdapter, Seed, GamePersistenceObject {
+
+    init(persistenceId: UUID) {
         super.init()
-        setUpComponents()
+        setUpComponents(persistenceId: persistenceId)
+    }
+
+    convenience override init() {
+        self.init(persistenceId: UUID())
     }
 
     @available(*, unavailable)
@@ -18,9 +23,15 @@ class AppleSeed: EntityAdapter, Seed {
         fatalError("init(coder:) not implemented")
     }
 
-    private func setUpComponents() {
+    private func setUpComponents(persistenceId: UUID) {
         let seedComponent = SeedComponent()
         attachComponent(seedComponent)
+
+        let persistenceComponent = PersistenceComponent(
+            persistenceObject: self,
+            persistenceId: persistenceId
+        )
+        attachComponent(persistenceComponent)
     }
 
     func toCrop() -> Crop {
@@ -28,6 +39,14 @@ class AppleSeed: EntityAdapter, Seed {
     }
 
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(appleSeed: self, in: renderer)
+        manager.createNodeForEntity(seed: self, in: renderer)
+    }
+
+    func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {
+        manager.save(appleSeed: self, persistenceId: persistenceId)
+    }
+
+    func delete(manager: PersistenceManager, persistenceId: UUID) -> Bool {
+        manager.delete(appleSeed: self, persistenceId: persistenceId)
     }
 }

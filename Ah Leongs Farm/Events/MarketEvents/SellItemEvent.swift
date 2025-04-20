@@ -21,6 +21,7 @@ class SellItemEvent: GameEvent {
 
         guard let marketSystem = context.getSystem(ofType: MarketSystem.self),
               let walletSystem = context.getSystem(ofType: WalletSystem.self),
+              let soundSystem = context.getSystem(ofType: SoundSystem.self),
               let price = marketSystem.getSellPrice(for: itemType, currency: currencyType)
         else {
             return nil
@@ -48,7 +49,7 @@ class SellItemEvent: GameEvent {
         }
 
         marketSystem.increaseStock(type: itemType, quantity: quantity)
-
+        soundSystem.playSoundEffect(named: "money")
         walletSystem.addCurrencyToAll(currencyType, amount: totalProfit)
 
         return SellItemEventData(itemType: itemType, quantity: quantity)

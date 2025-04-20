@@ -103,7 +103,6 @@ class GameStateSerializer {
             newComponent.points = Int64(upgradeComponent?.points ?? 0)
             persistenceEntity.upgradeComponent = newComponent
         }
-
     }
 
     private func fetchGameStatePersistenceEntity(sessionId: UUID) -> GameStatePersistenceEntity? {

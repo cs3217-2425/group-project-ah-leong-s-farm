@@ -8,6 +8,11 @@
 protocol EventData {
 }
 
+protocol ErrorEventData {
+    var title: String { get }
+    var message: String { get }
+}
+
 struct EndTurnEventData: EventData {
     var endTurnCount: Int = 1
 }
@@ -18,7 +23,7 @@ struct GameOverEventData: EventData {
 }
 
 struct HarvestCropEventData: EventData {
-    var type: CropType
+    var cropType: EntityType
     var quantity: Int
 }
 
@@ -47,7 +52,7 @@ struct SellItemEventData: EventData {
 struct PlantCropEventData: EventData {
     var row: Int
     var column: Int
-    var cropType: CropType
+    var cropType: EntityType
     var isSuccessfullyPlanted: Bool
 }
 
@@ -88,4 +93,9 @@ struct UseFertiliserEventData: EventData {
 
 struct LevelUpEventData: EventData {
     var newLevel: Int
+}
+
+struct InsufficientEnergyErrorEventData: ErrorEventData, EventData {
+    var title: String = "No Energy"
+    var message: String
 }

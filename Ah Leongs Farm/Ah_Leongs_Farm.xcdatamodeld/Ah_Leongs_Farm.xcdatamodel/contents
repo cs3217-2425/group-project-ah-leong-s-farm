@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24C101" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="AbstractSeedPersistenceEntity" representedClassName="AbstractSeedPersistenceEntity" isAbstract="YES" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="seeds" inverseEntity="Session"/>
+    </entity>
+    <entity name="AppleSeedPersistenceEntity" representedClassName="AppleSeedPersistenceEntity" parentEntity="AbstractSeedPersistenceEntity" syncable="YES" codeGenerationType="class"/>
+    <entity name="BokChoySeedPersistenceEntity" representedClassName="BokChoySeedPersistenceEntity" parentEntity="AbstractSeedPersistenceEntity" syncable="YES" codeGenerationType="class"/>
+    <entity name="AbstractCropPersistenceEntity" representedClassName="AbstractCropPersistenceEntity" isAbstract="YES" syncable="YES" codeGenerationType="class">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="growthComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="GrowthPersistenceComponent"/>
+        <relationship name="harvestedComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="HarvestedPersistenceComponent"/>
+        <relationship name="healthComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="HealthPersistenceComponent"/>
+        <relationship name="itemComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ItemPersistenceComponent"/>
+        <relationship name="positionComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PositionPersistenceComponent"/>
+        <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="crops" inverseEntity="Session"/>
+    </entity>
+    <entity name="ApplePersistenceEntity" representedClassName="ApplePersistenceEntity" parentEntity="AbstractCropPersistenceEntity" syncable="YES" codeGenerationType="class"/>
+    <entity name="BokChoyPersistenceEntity" representedClassName="BokChoyPersistenceEntity" parentEntity="AbstractCropPersistenceEntity" syncable="YES" codeGenerationType="class"/>
     <entity name="EnergyPersistenceComponent" representedClassName="EnergyPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="currentBaseEnergy" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="maxBaseEnergy" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -9,9 +26,20 @@
         <relationship name="levelComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="LevelPersistenceComponent"/>
         <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="gameState" inverseEntity="Session"/>
         <relationship name="turnComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="TurnPersistenceComponent"/>
-        <relationship name="upgradeComponent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UpgradePersistenceComponent"/>
+        <relationship name="upgradeComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UpgradePersistenceComponent"/>
         <relationship name="walletComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WalletPersistenceComponent"/>
     </entity>
+    <entity name="GrowthPersistenceComponent" representedClassName="GrowthPersistenceComponent" syncable="YES" codeGenerationType="class">
+        <attribute name="currentGrowthTurn" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="totalGrowthStages" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="totalGrowthTurns" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="HarvestedPersistenceComponent" representedClassName="HarvestedPersistenceComponent" syncable="YES" codeGenerationType="class"/>
+    <entity name="HealthPersistenceComponent" representedClassName="HealthPersistenceComponent" syncable="YES" codeGenerationType="class">
+        <attribute name="health" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="maxHealth" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="ItemPersistenceComponent" representedClassName="ItemPersistenceComponent" syncable="YES" codeGenerationType="class"/>
     <entity name="LevelPersistenceComponent" representedClassName="LevelPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="currentXP" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="level" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -26,11 +54,15 @@
         <attribute name="x" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="y" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
+    <entity name="PotatoSeedPersistenceEntity" representedClassName="PotatoSeedPersistenceEntity" parentEntity="AbstractSeedPersistenceEntity" syncable="YES" codeGenerationType="class"/>
+    <entity name="PotatoPersistenceEntity" representedClassName="PotatoPersistenceEntity" parentEntity="AbstractCropPersistenceEntity" syncable="YES" codeGenerationType="class"/>
     <entity name="Session" representedClassName="Session" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="crops" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AbstractCropPersistenceEntity" inverseName="session" inverseEntity="AbstractCropPersistenceEntity"/>
         <relationship name="gameState" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="GameStatePersistenceEntity" inverseName="session" inverseEntity="GameStatePersistenceEntity"/>
         <relationship name="plots" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PlotPersistenceEntity" inverseName="session" inverseEntity="PlotPersistenceEntity"/>
         <relationship name="solarPanels" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SolarPanelPersistenceEntity" inverseName="session" inverseEntity="SolarPanelPersistenceEntity"/>
+        <relationship name="seeds" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AbstractSeedPersistenceEntity" inverseName="session" inverseEntity="AbstractSeedPersistenceEntity"/>
     </entity>
     <entity name="SoilPersistenceComponent" representedClassName="SoilPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="hasWater" optional="YES" attributeType="Boolean" defaultValueString="0.0" usesScalarValueType="YES"/>

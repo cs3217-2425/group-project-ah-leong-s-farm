@@ -7,14 +7,24 @@ class CropSystem: ISystem {
         self.manager = manager
     }
 
-    static let cropsToGrowthMap: [CropType: Int] = [
-        .bokChoy: 5,
-        .apple: 10,
-        .potato: 6
+    static let cropsToGrowthTurnsMap: [EntityType: Int] = [
+        BokChoy.type: 5,
+        Apple.type: 10,
+        Potato.type: 6
     ]
 
-    static func getTotalGrowthTurns(for type: CropType) -> Int {
-        cropsToGrowthMap[type] ?? 0
+    static let cropsToGrowthStagesMap: [EntityType: Int] = [
+        BokChoy.type: 2,
+        Apple.type: 3,
+        Potato.type: 1
+    ]
+
+    static func getTotalGrowthTurns(for type: EntityType) -> Int {
+        cropsToGrowthTurnsMap[type] ?? 0
+    }
+
+    static func getTotalGrowthStages(for type: EntityType) -> Int {
+        cropsToGrowthStagesMap[type] ?? 0
     }
 
     private var grid: GridComponent? {
@@ -39,14 +49,14 @@ class CropSystem: ISystem {
         return plotOccupantSlot.plotOccupant != nil
     }
 
-    /// Adds a crop entity to the `CropSlotComponent` of the entity at the specified row and column.
+    /// Adds a crop entity to the `PlotOccupantSlotComponent` of the entity at the specified row and column.
     /// - Returns: True if the crop is successfully added, false otherwise.
     /// Crop is only planted if the following conditions are fulfilled:
-    /// - The entity at the specified row and column must have a `CropSlotComponent`.
-    /// - The CropSlotComponent must not have any crops on it.
+    /// - The entity at the specified row and column must have a `PlotOccupantSlotComponent`.
+    /// - The PlotOccupantSlotComponent must not have any crops on it.
     /// - The entity to add `crop`, must have a `SeedComponent` and a `CropComponent`.
     @discardableResult
-    func plantCrop(crop: Crop, row: Int, column: Int) -> Bool {
+    func plantCrop(crop: Crop, row: Int, column: Int, currentGrowthTurn: Float = 0) -> Bool {
         guard let plotEntity = grid?.getEntity(row: row, column: column) else {
             return false
         }
@@ -55,14 +65,16 @@ class CropSystem: ISystem {
             return false
         }
 
-        // TODO: Shouldn't need to access cropComponent.cropType after removing CropType
-        guard let cropComponent = crop.component(ofType: CropComponent.self) else {
+        guard crop.component(ofType: CropComponent.self) != nil else {
             return false
         }
         manager?.addComponent(GrowthComponent(
-            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: crop)
+            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: crop.type),
+            totalGrowthStages: CropSystem.getTotalGrowthStages(for: crop.type)), to: crop)
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
-        manager?.addComponent(SpriteComponent(visitor: crop), to: crop)
+        manager?.addComponent(SpriteComponent(visitor: crop,
+                                              updateVisitor: crop), to: crop)
+        manager?.addComponent(RenderComponent(updatable: true), to: crop)
         plotOccupantSlot.plotOccupant = crop
         return true
     }
@@ -91,6 +103,7 @@ class CropSystem: ISystem {
         manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
         manager?.removeComponent(ofType: PositionComponent.self, from: crop)
         manager?.removeComponent(ofType: SpriteComponent.self, from: crop)
+        manager?.removeComponent(ofType: RenderComponent.self, from: crop)
         manager?.addComponent(HarvestedComponent(), to: crop)
         plotOccupantSlot.plotOccupant = nil
         return crop

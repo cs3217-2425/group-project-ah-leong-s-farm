@@ -66,10 +66,4 @@ class AnimationManager {
         ])
         droplets.run(drip)
     }
-
-    // Additional animation methods can be added here:
-    // - runFertilizeAnimation()
-    // - runHarvestAnimation()
-    // - runPlantAnimation()
-    // etc.
 }

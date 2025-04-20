@@ -27,6 +27,8 @@ class SolarPanel: EntityAdapter, PlotOccupant, Tool, GamePersistenceObject {
         let energyCapBoostComponent = EnergyCapBoostComponent()
         attachComponent(energyCapBoostComponent)
 
+        attachComponent(RenderComponent(updatable: false))
+
         let persistenceComponent = PersistenceComponent(persistenceObject: self)
         attachComponent(persistenceComponent)
     }
@@ -34,6 +36,8 @@ class SolarPanel: EntityAdapter, PlotOccupant, Tool, GamePersistenceObject {
     private func setUpComponents(config: SolarPanelConfig) {
         let energyCapBoostComponent = EnergyCapBoostComponent()
         attachComponent(energyCapBoostComponent)
+
+        attachComponent(RenderComponent(updatable: false))
 
         let persistenceComponent = PersistenceComponent(
             persistenceObject: self,
@@ -62,7 +66,7 @@ class SolarPanel: EntityAdapter, PlotOccupant, Tool, GamePersistenceObject {
 }
 
 extension SolarPanel: SpriteRenderManagerVisitor {
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
+    func createNode(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(solarPanel: self, in: renderer)
     }
 }
