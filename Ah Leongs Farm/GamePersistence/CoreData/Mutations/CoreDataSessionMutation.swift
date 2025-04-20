@@ -30,13 +30,6 @@ class CoreDataSessionMutation: SessionMutation {
         let newSession = Session(context: store.managedContext)
         newSession.id = session.id
 
-        do {
-            try store.save()
-        } catch {
-            store.rollback()
-            return false
-        }
-
         return true
     }
 
@@ -46,13 +39,6 @@ class CoreDataSessionMutation: SessionMutation {
         }
 
         store.managedContext.delete(session)
-
-        do {
-            try store.save()
-        } catch {
-            store.rollback()
-            return false
-        }
 
         return true
     }

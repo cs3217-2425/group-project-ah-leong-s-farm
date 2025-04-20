@@ -30,13 +30,6 @@ class CoreDataCropMutation<T: Crop, S: AbstractCropPersistenceEntity>: CropMutat
             return false
         }
 
-        do {
-            try store.save()
-        } catch {
-            store.rollback()
-            return false
-        }
-
         return true
     }
 
@@ -46,13 +39,6 @@ class CoreDataCropMutation<T: Crop, S: AbstractCropPersistenceEntity>: CropMutat
         }
 
         store.managedContext.delete(persistenceEntity)
-
-        do {
-            try store.save()
-        } catch {
-            store.rollback()
-            return false
-        }
 
         return false
     }

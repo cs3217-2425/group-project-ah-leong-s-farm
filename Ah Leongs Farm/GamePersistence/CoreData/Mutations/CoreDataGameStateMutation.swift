@@ -30,13 +30,6 @@ class CoreDataGameStateMutation: GameStateMutation {
             return false
         }
 
-        do {
-            try store.save()
-        } catch {
-            store.rollback()
-            return false
-        }
-
         return true
     }
 
@@ -46,13 +39,6 @@ class CoreDataGameStateMutation: GameStateMutation {
         }
 
         store.managedContext.delete(gameState)
-
-        do {
-            try store.save()
-        } catch {
-            store.rollback()
-            return false
-        }
 
         return true
     }

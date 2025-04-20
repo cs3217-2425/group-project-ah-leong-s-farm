@@ -31,13 +31,6 @@ class CoreDataSolarPanelMutation: SolarPanelMutation {
             return false
         }
 
-        do {
-            try store.save()
-        } catch {
-            store.rollback()
-            return false
-        }
-
         return true
     }
 
@@ -47,13 +40,6 @@ class CoreDataSolarPanelMutation: SolarPanelMutation {
         }
 
         store.managedContext.delete(persistenceEntity)
-
-        do {
-            try store.save()
-        } catch {
-            store.rollback()
-            return false
-        }
 
         return true
     }

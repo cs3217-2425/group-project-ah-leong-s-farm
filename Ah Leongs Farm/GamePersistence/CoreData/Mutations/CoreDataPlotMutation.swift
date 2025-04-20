@@ -30,13 +30,6 @@ class CoreDataPlotMutation: PlotMutation {
             return false
         }
 
-        do {
-            try store.save()
-        } catch {
-            store.rollback()
-            return false
-        }
-
         return true
     }
 
@@ -46,13 +39,6 @@ class CoreDataPlotMutation: PlotMutation {
         }
 
         store.managedContext.delete(plotPersistenceEntity)
-
-        do {
-            try store.save()
-        } catch {
-            store.rollback()
-            return false
-        }
 
         return true
     }
