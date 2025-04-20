@@ -15,6 +15,7 @@ struct PlaceSolarPanelEvent: GameEvent {
     func execute(in context: any EventContext, queueable: any EventQueueable) -> (any EventData)? {
         guard let solarPanelSystem = context.getSystem(ofType: SolarPanelSystem.self),
               let energySystem = context.getSystem(ofType: EnergySystem.self),
+              let soundSystem = context.getSystem(ofType: SoundSystem.self),
               let inventorySystem = context.getSystem(ofType: InventorySystem.self),
               let levelSystem = context.getSystem(ofType: LevelSystem.self) else {
             return nil
@@ -44,6 +45,7 @@ struct PlaceSolarPanelEvent: GameEvent {
         if isSuccessfullyPlaced {
             inventorySystem.removeItemFromInventory(solarPanel)
             energySystem.increaseMaxEnergy(of: energyCapBoostComponent.type, by: energyCapBoostComponent.boost)
+            soundSystem.playSoundEffect(named: "add-solar")
             energySystem.useEnergy(of: .base, amount: ENERGY_USAGE)
             levelSystem.addXP(XP_AMOUNT)
         }

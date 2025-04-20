@@ -17,6 +17,7 @@ struct AddPlotEvent: GameEvent {
         guard let gridSystem = context.getSystem(ofType: GridSystem.self),
               let upgradeSystem = context.getSystem(ofType: UpgradeSystem.self),
               let energySystem = context.getSystem(ofType: EnergySystem.self),
+              let soundSystem = context.getSystem(ofType: SoundSystem.self),
               upgradeSystem.getUpgradePoints() > 0 else {
             return nil
         }
@@ -31,6 +32,7 @@ struct AddPlotEvent: GameEvent {
         if isSuccessfullyAdded {
             energySystem.useEnergy(of: .base, amount: 1)
             upgradeSystem.useUpgradePoint()
+            soundSystem.playSoundEffect(named: "add-plot")
         }
         return AddPlotEventData(row: row, column: column, isSuccessfullyAdded: isSuccessfullyAdded)
     }

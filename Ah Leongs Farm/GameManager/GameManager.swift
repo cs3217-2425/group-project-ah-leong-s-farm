@@ -123,6 +123,12 @@ class GameManager {
         gameWorld.registerEventObserver(observer)
     }
 
+    func stopSounds() {
+        let soundSystem = gameWorld.getSystem(ofType: SoundSystem.self)
+        soundSystem?.stopAllSoundEffects()
+        soundSystem?.stopBackgroundMusic()
+    }
+
     // MARK: - Setup Methods
 
     private func setUpBaseEntities() {
@@ -191,5 +197,4 @@ class GameManager {
             inventorySystem.addItemsToInventory(allItems)
         }
     }
-
 }

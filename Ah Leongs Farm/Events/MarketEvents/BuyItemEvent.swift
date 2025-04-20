@@ -21,6 +21,7 @@ class BuyItemEvent: GameEvent {
         guard let marketSystem = context.getSystem(ofType: MarketSystem.self),
                   let walletSystem = context.getSystem(ofType: WalletSystem.self),
                   let inventorySystem = context.getSystem(ofType: InventorySystem.self),
+                  let soundSystem = context.getSystem(ofType: SoundSystem.self),
                   let price = marketSystem.getBuyPrice(for: itemType, currency: currencyType),
                   let stock = marketSystem.getBuyQuantity(for: itemType), stock >= quantity
         else {
@@ -41,6 +42,7 @@ class BuyItemEvent: GameEvent {
         context.addEntities(purchasedItems)
         marketSystem.decreaseStock(type: itemType, quantity: quantity)
         marketSystem.addEntitiesToSellMarket(entities: purchasedItems)
+        soundSystem.playSoundEffect(named: "money")
 
         inventorySystem.addItemsToInventory(purchasedItems)
         walletSystem.removeCurrencyFromAll(currencyType, amount: totalCost)
