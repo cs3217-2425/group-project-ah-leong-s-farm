@@ -7,23 +7,23 @@ class CropSystem: ISystem {
         self.manager = manager
     }
 
-    static let cropsToGrowthTurnsMap: [CropType: Int] = [
-        .bokChoy: 5,
-        .apple: 10,
-        .potato: 6
+    static let cropsToGrowthTurnsMap: [EntityType: Int] = [
+        BokChoy.type: 5,
+        Apple.type: 10,
+        Potato.type: 6
     ]
 
-    static let cropsToGrowthStagesMap: [CropType: Int] = [
-        .bokChoy: 2,
-        .apple: 3,
-        .potato: 1
+    static let cropsToGrowthStagesMap: [EntityType: Int] = [
+        BokChoy.type: 2,
+        Apple.type: 3,
+        Potato.type: 1
     ]
 
-    static func getTotalGrowthTurns(for type: CropType) -> Int {
+    static func getTotalGrowthTurns(for type: EntityType) -> Int {
         cropsToGrowthTurnsMap[type] ?? 0
     }
 
-    static func getTotalGrowthStages(for type: CropType) -> Int {
+    static func getTotalGrowthStages(for type: EntityType) -> Int {
         cropsToGrowthStagesMap[type] ?? 0
     }
 
@@ -65,13 +65,12 @@ class CropSystem: ISystem {
             return false
         }
 
-        // TODO: Shouldn't need to access cropComponent.cropType after removing CropType
-        guard let cropComponent = crop.component(ofType: CropComponent.self) else {
+        guard crop.component(ofType: CropComponent.self) != nil else {
             return false
         }
         manager?.addComponent(GrowthComponent(
-            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType),
-            totalGrowthStages: CropSystem.getTotalGrowthStages(for: cropComponent.cropType)), to: crop)
+            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: crop.type),
+            totalGrowthStages: CropSystem.getTotalGrowthStages(for: crop.type)), to: crop)
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
         manager?.addComponent(SpriteComponent(visitor: crop,
                                               updateVisitor: crop), to: crop)

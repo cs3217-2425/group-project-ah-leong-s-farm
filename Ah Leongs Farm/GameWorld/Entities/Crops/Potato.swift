@@ -19,7 +19,7 @@ class Potato: EntityAdapter, Crop {
     }
 
     private func setUpComponents() {
-        let cropComponent = CropComponent(cropType: .potato)
+        let cropComponent = CropComponent()
         attachComponent(cropComponent)
 
         let healthComponent = HealthComponent()

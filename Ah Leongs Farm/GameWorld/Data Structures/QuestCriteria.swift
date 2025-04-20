@@ -14,7 +14,7 @@ protocol QuestCriteria {
  ensuring the event data matches the required crop type.
  */
 struct PlantCropCriteria: QuestCriteria {
-    let cropType: CropType
+    let cropType: EntityType
 
     func calculateValue(from eventData: EventData) -> Float {
 
@@ -35,7 +35,7 @@ struct PlantCropCriteria: QuestCriteria {
  ensuring the event data matches the required crop type.
  */
 struct HarvestCropCriteria: QuestCriteria {
-    let cropType: CropType
+    let cropType: EntityType
 
     func calculateValue(from eventData: EventData) -> Float {
 
@@ -43,7 +43,7 @@ struct HarvestCropCriteria: QuestCriteria {
             return 0
         }
 
-        guard harvestData.type == cropType else {
+        guard harvestData.cropType == cropType else {
             return 0
         }
 

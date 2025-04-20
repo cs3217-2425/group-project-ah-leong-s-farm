@@ -40,6 +40,6 @@ struct HarvestCropEvent: GameEvent {
         marketSystem.addEntityToSellMarket(entity: harvestedCrop)
         soundSystem.playSoundEffect(named: "remove-crop")
 
-        return HarvestCropEventData(type: cropComponent.cropType, quantity: harvestedQuantity)
+        return HarvestCropEventData(cropType: harvestedCrop.type, quantity: harvestedQuantity)
     }
 }
