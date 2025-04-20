@@ -10,6 +10,7 @@ import Foundation
 struct CropConfig {
     let persistenceID: UUID
     let healthConfig: HealthConfig
+    let yieldConfig: YieldConfig
     let position: CGPoint?
     let growthConfig: GrowthConfig?
     let isHarvested: Bool
@@ -25,4 +26,9 @@ struct GrowthConfig {
 struct HealthConfig {
     let health: Double
     let maxHealth: Double
+}
+
+struct YieldConfig {
+    let yield: Int
+    let maxYield: Int
 }

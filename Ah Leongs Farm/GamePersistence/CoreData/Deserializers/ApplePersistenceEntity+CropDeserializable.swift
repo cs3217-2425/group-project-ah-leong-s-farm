@@ -15,6 +15,10 @@ extension ApplePersistenceEntity: CropDeserializable {
             health: healthComponent?.health ?? 0,
             maxHealth: healthComponent?.maxHealth ?? 0
         )
+        let yieldConfig = YieldConfig(
+            yield: Int(yieldComponent?.yield ?? 0),
+            maxYield: Int(yieldComponent?.maxYield ?? 0)
+        )
 
         var position: CGPoint?
         var growthConfig: GrowthConfig?
@@ -38,6 +42,7 @@ extension ApplePersistenceEntity: CropDeserializable {
             let config = CropConfig(
                 persistenceID: newPersistenceID,
                 healthConfig: healthConfig,
+                yieldConfig: yieldConfig,
                 position: position,
                 growthConfig: growthConfig,
                 isHarvested: isHarvested,
@@ -50,6 +55,7 @@ extension ApplePersistenceEntity: CropDeserializable {
         let config = CropConfig(
             persistenceID: persistenceID,
             healthConfig: healthConfig,
+            yieldConfig: yieldConfig,
             position: position,
             growthConfig: growthConfig,
             isHarvested: isHarvested,
