@@ -38,7 +38,7 @@ class CoreDataSessionQuery: SessionQuery {
         let predicate = NSPredicate(format: "id == %@", sessionId as CVarArg)
         request.predicate = predicate
 
-        guard let session = store.fetch(request: request).first else {
+        guard store.fetch(request: request).first != nil else {
             return nil
         }
 
