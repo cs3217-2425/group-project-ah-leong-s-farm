@@ -6,27 +6,32 @@
 //
 
 import XCTest
-import GameplayKit
 @testable import Ah_Leongs_Farm
 
 final class QuestTests: XCTestCase {
 
     func testQuestInitialization() {
-            let questComponent = QuestComponent(title: "Test Quest", objectives: [], order: 1)
-            let rewardComponent = MockRewardComponent()
+        let questComponent = QuestComponent(
+            title: "Test Quest",
+            objectives: [],
+            prerequisites: [],
+            order: 1
+        )
+        let rewardComponent = MockRewardComponent()
 
-            let quest = Quest(questComponent: questComponent, rewardComponents: [rewardComponent])
+        let quest = Quest(questComponent: questComponent, rewardComponents: [rewardComponent])
 
-            XCTAssertNotNil(quest.component(ofType: QuestComponent.self))
-            XCTAssertNotNil(quest.component(ofType: MockRewardComponent.self))
+        XCTAssertNotNil(quest.component(ofType: QuestComponent.self))
+        XCTAssertNotNil(quest.component(ofType: MockRewardComponent.self))
     }
 }
 
 class MockRewardComponent: ComponentAdapter, RewardComponent {
-    func processReward(with queuer: any Ah_Leongs_Farm.RewardEventQueuer) {
+    func processReward(with queuer: RewardEventQueuer) {
+        // Mock implementation
     }
 
-    func accept(visitor: any Ah_Leongs_Farm.RewardDataRetrievalVisitor) -> [any Ah_Leongs_Farm.RewardViewModel] {
-        []
+    func accept(visitor: RewardDataRetrievalVisitor) -> [RewardViewModel] {
+        return []
     }
 }

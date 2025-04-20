@@ -11,7 +11,7 @@ class GameRenderer {
     private var entityNodeMap: [EntityID: any IRenderNode] = [:]
 
     private static let PriorityMap: [EntityType: CGFloat] = [
-        ObjectIdentifier(Plot.self): CGFloat.greatestFiniteMagnitude
+        Plot.type: CGFloat.greatestFiniteMagnitude
     ]
 
     var allRenderNodes: [any IRenderNode] {
@@ -119,11 +119,8 @@ class GameRenderer {
         allEntities.filter { entity in
             entityNodeMap[entity.id] == nil
         }.sorted { a, b in
-            let aType = ObjectIdentifier(type(of: a))
-            let bType = ObjectIdentifier(type(of: b))
-
-            let aPriority = Self.PriorityMap[aType] ?? 0
-            let bPriority = Self.PriorityMap[bType] ?? 0
+            let aPriority = Self.PriorityMap[a.type] ?? 0
+            let bPriority = Self.PriorityMap[b.type] ?? 0
 
             return aPriority > bPriority
         }
@@ -134,11 +131,11 @@ class GameRenderer {
         let entityIDsWithRenderNodes = Set(entityNodeMap.keys)
 
         let entityIDsWithSpriteComponentRemoved = Set(
-            allEntities.filter { entityNodeMap.keys.contains(ObjectIdentifier($0)) }
+            allEntities.filter { entityNodeMap.keys.contains($0.id) }
                 .filter { $0.getComponentByType(ofType: SpriteComponent.self) == nil }
                 .filter {
                     // exclude entity with tile map node
-                    entityNodeMap[ObjectIdentifier($0)] !== tileMapNode
+                    entityNodeMap[$0.id] !== tileMapNode
                 }
                 .map { ObjectIdentifier($0) }
         )

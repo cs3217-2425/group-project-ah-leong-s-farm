@@ -54,7 +54,7 @@ extension QuestFactory {
         return Quest(questComponent: component, rewardComponents: rewards)
     }
 
-    static func createVegetableMasterQuest(id: QuestID, prereqs: [QuestID]) -> Quest {
+    static func createVegetableProQuest(id: QuestID, prereqs: [QuestID]) -> Quest {
         let component = QuestComponent(
             title: "Vegetable Master",
             objectives: [

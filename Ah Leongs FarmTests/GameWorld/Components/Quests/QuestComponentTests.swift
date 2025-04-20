@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import GameplayKit
 @testable import Ah_Leongs_Farm
 
 final class QuestComponentTests: XCTestCase {
@@ -22,11 +21,14 @@ final class QuestComponentTests: XCTestCase {
     func testQuestComponent_initialState() {
         let objective = QuestObjective(description: "Plant 5 crops",
                                        criteria: MockQuestCriteria(value: 5.0), target: 10.0)
-        let quest = QuestComponent(title: "Farming Quest", objectives: [objective], order: 1)
+        let prerequisites: [QuestID] = []
+        let quest = QuestComponent(title: "Farming Quest", objectives: [objective],
+                                  prerequisites: prerequisites, order: 1)
 
         XCTAssertEqual(quest.title, "Farming Quest")
         XCTAssertEqual(quest.status, .inactive)
         XCTAssertEqual(quest.objectives.count, 1)
+        XCTAssertEqual(quest.prerequisites.count, 0)
         XCTAssertFalse(quest.isCompleted)
     }
 
@@ -35,8 +37,10 @@ final class QuestComponentTests: XCTestCase {
                                        criteria: MockQuestCriteria(value: 5.0),
                                        target: 10.0)
         objective.progress += 5.0
+        let prerequisites: [QuestID] = []
 
-        let quest = QuestComponent(title: "Farming Quest", objectives: [objective], order: 1)
+        let quest = QuestComponent(title: "Farming Quest", objectives: [objective],
+                                  prerequisites: prerequisites, order: 1)
         XCTAssertFalse(quest.isCompleted)
     }
 
@@ -49,8 +53,35 @@ final class QuestComponentTests: XCTestCase {
 
         objective1.progress = 5.0
         objective2.progress = 3.0
+        let prerequisites: [QuestID] = []
 
-        let quest = QuestComponent(title: "Farming Quest", objectives: [objective1, objective2], order: 1)
+        let quest = QuestComponent(title: "Farming Quest", objectives: [objective1, objective2],
+                                  prerequisites: prerequisites, order: 1)
         XCTAssertTrue(quest.isCompleted)
+    }
+
+    func testQuestComponent_withPrerequisites() {
+        let objective = QuestObjective(description: "Plant 5 crops",
+                                       criteria: MockQuestCriteria(value: 5.0), target: 10.0)
+        let prerequisiteId = UUID()
+        let prerequisites: [QuestID] = [prerequisiteId]
+
+        let quest = QuestComponent(title: "Farming Quest", objectives: [objective],
+                                  prerequisites: prerequisites, order: 1)
+
+        XCTAssertEqual(quest.prerequisites.count, 1)
+        XCTAssertEqual(quest.prerequisites.first, prerequisiteId)
+    }
+
+    func testQuestComponent_withCustomId() {
+        let objective = QuestObjective(description: "Plant 5 crops",
+                                      criteria: MockQuestCriteria(value: 5.0), target: 10.0)
+        let prerequisites: [QuestID] = []
+        let customId = UUID()
+
+        let quest = QuestComponent(title: "Farming Quest", objectives: [objective],
+                                  prerequisites: prerequisites, order: 1, id: customId)
+
+        XCTAssertEqual(quest.id, customId)
     }
 }

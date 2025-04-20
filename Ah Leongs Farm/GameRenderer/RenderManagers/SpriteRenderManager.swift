@@ -99,7 +99,7 @@ class SpriteRenderManager: IRenderManager {
 
         setSpritePosition(spriteNode: spriteNode, using: positionComponent)
         setRelativeSize(spriteNode: spriteNode, scaleFactor: 1.0)
-        renderer.setRenderNode(for: ObjectIdentifier(solarPanel), node: spriteNode)
+        renderer.setRenderNode(for: solarPanel.id, node: spriteNode)
     }
 
     func createNodeForEntity(seed: Seed, in renderer: GameRenderer) {
