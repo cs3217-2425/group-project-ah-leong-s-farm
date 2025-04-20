@@ -21,5 +21,6 @@ class FarmLand: EntityAdapter {
     private func setUpComponents(rows: Int, columns: Int) {
         let gridComponent = GridComponent(rows: rows, columns: columns)
         attachComponent(gridComponent)
+        attachComponent(RenderComponent(updatable: false))
     }
 }

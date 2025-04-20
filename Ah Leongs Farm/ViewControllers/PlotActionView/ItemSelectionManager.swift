@@ -24,14 +24,12 @@ class ItemSelectionManager: NSObject {
     private var onFertiliserSelected: ((EntityType) -> Void)?
     private var onSolarPanelSelected: ((EntityType) -> Void)?
 
-    // Item providers mapped by mode
     private lazy var itemProviders: [SelectionMode: () -> [PlotDisplayItemViewModel]] = [
         .seeds: { self.seedItems },
         .fertilisers: { self.fertiliserItems },
         .solarPanels: { self.solarPanelItems }
     ]
 
-    // Selection handlers mapped by mode
     private lazy var selectionHandlers: [SelectionMode: (Int) -> Void] = [
         .seeds: { [weak self] index in
             guard let self = self, index < self.seedItems.count else {
