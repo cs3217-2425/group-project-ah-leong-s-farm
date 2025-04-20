@@ -7,17 +7,8 @@
 
 import Foundation
 
-enum CropType: String, Hashable {
-    case potato
-    case apple
-    case bokChoy
-}
-
 class CropComponent: ComponentAdapter {
-    var cropType: CropType
-
-    init(cropType: CropType) {
-        self.cropType = cropType
+    override init() {
         super.init()
     }
 

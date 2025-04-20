@@ -16,8 +16,8 @@ class GameCamera: SKCameraNode {
     // MARK: - Camera zoom
 
     /// zoom settings
-    private var cameraMaxScale: CGFloat = 100
-    private var cameraMinScale: CGFloat = 0.01
+    private var cameraMaxScale: CGFloat = 5
+    private var cameraMinScale: CGFloat = 0.20
     private var cameraScaleInertia: CGFloat = 0.75
 
     /// zoom state

@@ -23,6 +23,7 @@ struct EndTurnEvent: GameEvent {
         soilSystem.degradeSoilQuality()
         marketSystem.resetItemStocks()
         gridSystem.unwaterPlots()
+        marketSystem.updateMarketPrices()
 
         if !shouldContinue {
             queueable.queueEvent(GameOverEvent())

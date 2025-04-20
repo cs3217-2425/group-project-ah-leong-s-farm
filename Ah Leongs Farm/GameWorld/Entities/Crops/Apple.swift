@@ -19,7 +19,7 @@ class Apple: EntityAdapter, Crop {
     }
 
     private func setUpComponents() {
-        let cropComponent = CropComponent(cropType: .apple)
+        let cropComponent = CropComponent()
         attachComponent(cropComponent)
 
         let healthComponent = HealthComponent()
@@ -27,9 +27,5 @@ class Apple: EntityAdapter, Crop {
 
         let yieldComponent = YieldComponent(maxYield: 3)
         attachComponent(yieldComponent)
-    }
-
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(apple: self, in: renderer)
     }
 }

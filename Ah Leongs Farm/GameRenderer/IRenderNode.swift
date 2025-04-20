@@ -8,7 +8,13 @@
 import SpriteKit
 
 protocol IRenderNode: AnyObject {
-    func visitTouchHandlerRegistry(registry: TouchHandlerRegistry)
+    var size: CGSize { get set }
 
+    func visitTouchHandlerRegistry(registry: TouchHandlerRegistry)
+    func updateTexture(image: String)
     func getSKNode() -> SKNode
+}
+
+extension IRenderNode {
+    func updateTexture(image: String) {}
 }

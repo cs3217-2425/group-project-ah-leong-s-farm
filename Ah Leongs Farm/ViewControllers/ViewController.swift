@@ -121,6 +121,7 @@ extension ViewController: GameControlsViewDelegate {
         alert.addAction(UIAlertAction(title: "Quit", style: .destructive, handler: { _ in
             // removes strong cyclic reference between game manager and view controller
             self.gameManager.removeGameObserver(self)
+            self.gameManager.stopSounds()
             self.dismiss(animated: true, completion: nil)
         }))
 
@@ -234,8 +235,13 @@ extension ViewController {
             notificationManager: notificationManager
         )
 
+        let errorNotificationController = ErrorNotificationController(
+            notificationManager: notificationManager
+        )
+
         gameManager.registerEventObserver(questNotificationController)
         gameManager.registerEventObserver(levelUpNotificationController)
         gameManager.registerEventObserver(harvestNotificationController)
+        gameManager.registerEventObserver(errorNotificationController)
     }
 }

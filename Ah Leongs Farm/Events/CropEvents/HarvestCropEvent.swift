@@ -17,19 +17,19 @@ struct HarvestCropEvent: GameEvent {
               let energySystem = context.getSystem(ofType: EnergySystem.self),
               let levelSystem = context.getSystem(ofType: LevelSystem.self),
               let inventorySystem = context.getSystem(ofType: InventorySystem.self),
+              let soundSystem = context.getSystem(ofType: SoundSystem.self),
               let marketSystem = context.getSystem(ofType: MarketSystem.self) else {
             return nil
         }
 
         guard energySystem.getCurrentEnergy(of: .base) >= ENERGY_USAGE else {
-            return nil
+            return InsufficientEnergyErrorEventData(message: "Not enough energy for harvest!")
         }
 
         guard let result = cropSystem.harvestCrop(row: row, column: column) else {
             return nil
         }
 
-        // use later when croptype is removed
         let cropType = result.type
         let harvestedCrops = result.crops
 
@@ -37,12 +37,11 @@ struct HarvestCropEvent: GameEvent {
         levelSystem.addXP(XP_AMOUNT)
         inventorySystem.addItemsToInventory(harvestedCrops)
         marketSystem.addEntitiesToSellMarket(entities: harvestedCrops)
+        soundSystem.playSoundEffect(named: "remove-crop")
 
-        // remove this after crop type is removed!!
-        guard let cropComponent = harvestedCrops.first?.component(ofType: CropComponent.self) else {
-            fatalError("Cannot get crop component from harvested crops")
-        }
+        let harvestedQuantity = harvestedCrops.count
 
-        return HarvestCropEventData(type: cropComponent.cropType, quantity: harvestedCrops.count)
+        return HarvestCropEventData(cropType: cropType, quantity: harvestedQuantity)
+
     }
 }

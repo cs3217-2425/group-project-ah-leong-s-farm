@@ -13,10 +13,10 @@ class HarvestCropNotificationController {
         self.notificationManager = notificationManager
     }
 
-    func onHarvest(_ type: CropType, _ quantity: Int) {
+    func onHarvest(_ type: EntityType, _ quantity: Int) {
         notificationManager.showNotification(
-            title: "Crop Harvested",
-            message: "Added \(quantity) \(type.rawValue)!"
+            title: "Crop Harvested!",
+            message: "Added \(quantity) \(ItemToViewDataMap.itemTypeToDisplayName[type] ?? "Crops")"
         )
     }
 }
@@ -24,7 +24,7 @@ class HarvestCropNotificationController {
 extension HarvestCropNotificationController: IEventObserver {
     func onEvent(_ eventData: EventData) {
         if let harvestData = eventData as? HarvestCropEventData {
-            onHarvest(harvestData.type, harvestData.quantity)
+            onHarvest(harvestData.cropType, harvestData.quantity)
         }
     }
 }

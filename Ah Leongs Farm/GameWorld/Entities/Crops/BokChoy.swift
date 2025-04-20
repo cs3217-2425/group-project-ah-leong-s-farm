@@ -19,7 +19,7 @@ class BokChoy: EntityAdapter, Crop {
     }
 
     private func setUpComponents() {
-        let cropComponent = CropComponent(cropType: .bokChoy)
+        let cropComponent = CropComponent()
         attachComponent(cropComponent)
 
         let healthComponent = HealthComponent()
@@ -27,9 +27,5 @@ class BokChoy: EntityAdapter, Crop {
 
         let yieldComponent = YieldComponent(maxYield: 5)
         attachComponent(yieldComponent)
-    }
-
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(bokChoy: self, in: renderer)
     }
 }
