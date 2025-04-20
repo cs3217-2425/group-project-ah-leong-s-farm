@@ -26,20 +26,22 @@ struct HarvestCropEvent: GameEvent {
             return InsufficientEnergyErrorEventData(message: "Not enough energy for harvest!")
         }
 
-        guard let harvestedCrop = cropSystem.harvestCrop(row: row, column: column),
-              let cropComponent = harvestedCrop.getComponentByType(ofType: CropComponent.self) else {
+        guard let result = cropSystem.harvestCrop(row: row, column: column) else {
             return nil
         }
 
-        // Set harvested quantity to 1 for now
-        let harvestedQuantity = 1
+        let cropType = result.type
+        let harvestedCrops = result.crops
 
         energySystem.useEnergy(of: .base, amount: ENERGY_USAGE)
         levelSystem.addXP(XP_AMOUNT)
-        inventorySystem.addItemToInventory(harvestedCrop)
-        marketSystem.addEntityToSellMarket(entity: harvestedCrop)
+        inventorySystem.addItemsToInventory(harvestedCrops)
+        marketSystem.addEntitiesToSellMarket(entities: harvestedCrops)
         soundSystem.playSoundEffect(named: "remove-crop")
 
-        return HarvestCropEventData(cropType: harvestedCrop.type, quantity: harvestedQuantity)
+        let harvestedQuantity = harvestedCrops.count
+
+        return HarvestCropEventData(cropType: cropType, quantity: harvestedQuantity)
+
     }
 }

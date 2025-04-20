@@ -231,13 +231,17 @@ extension ViewController {
             notificationManager: notificationManager
         )
 
+        let harvestNotificationController = HarvestCropNotificationController(
+            notificationManager: notificationManager
+        )
+
         let errorNotificationController = ErrorNotificationController(
             notificationManager: notificationManager
         )
 
         gameManager.registerEventObserver(questNotificationController)
         gameManager.registerEventObserver(levelUpNotificationController)
+        gameManager.registerEventObserver(harvestNotificationController)
         gameManager.registerEventObserver(errorNotificationController)
     }
 }
-
