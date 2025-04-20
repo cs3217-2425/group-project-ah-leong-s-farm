@@ -20,7 +20,7 @@ struct UseFertiliserEvent: GameEvent {
         }
 
         guard energySystem.getCurrentEnergy(of: .base) >= ENERGY_USAGE else {
-            return nil
+            return InsufficientEnergyErrorEventData(message: "Not enough energy to fertilise!")
         }
 
         let fertilisers = context.getEntitiesOfType(fertiliserType)

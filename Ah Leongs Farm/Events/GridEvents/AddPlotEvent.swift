@@ -11,12 +11,18 @@ struct AddPlotEvent: GameEvent {
     let row: Int
     let column: Int
 
+    private let ENERGY_USAGE = 1
+
     func execute(in context: any EventContext, queueable: any EventQueueable) -> (any EventData)? {
         guard let gridSystem = context.getSystem(ofType: GridSystem.self),
               let upgradeSystem = context.getSystem(ofType: UpgradeSystem.self),
               let energySystem = context.getSystem(ofType: EnergySystem.self),
               upgradeSystem.getUpgradePoints() > 0 else {
             return nil
+        }
+
+        guard energySystem.getCurrentEnergy(of: .base) >= ENERGY_USAGE else {
+            return InsufficientEnergyErrorEventData(message: "Not enough energy to add plot!")
         }
 
         let plot = Plot(position: CGPoint(x: row, y: column))
