@@ -9,6 +9,16 @@ import SpriteKit
 
 class TileMapNode: SKTileMapNode, IRenderNode {
 
+    var size: CGSize {
+        get {
+            mapSize
+        }
+        // swiftlint:disable:next unused_setter_value
+        set {
+           // ignore
+        }
+    }
+
     private(set) var lightUpNodes: [SKSpriteNode] = []
 
     func isRowValid(_ row: Int) -> Bool {

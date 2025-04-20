@@ -51,6 +51,7 @@ class Plot: EntityAdapter {
         attachComponent(PositionComponent(x: position.x, y: position.y))
         attachComponent(SoilComponent(quality: soilQuality, hasWater: soilHasWater))
         attachComponent(SpriteComponent(visitor: self))
+        attachComponent(RenderComponent(updatable: false))
         attachComponent(PersistenceComponent(persistenceObject: self, persistenceId: persistenceID))
     }
 }
@@ -66,7 +67,7 @@ extension Plot: GamePersistenceObject {
 }
 
 extension Plot: SpriteRenderManagerVisitor {
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
+    func createNode(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(plot: self, in: renderer)
     }
 }

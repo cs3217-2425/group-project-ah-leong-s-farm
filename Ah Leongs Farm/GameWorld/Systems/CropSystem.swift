@@ -7,14 +7,24 @@ class CropSystem: ISystem {
         self.manager = manager
     }
 
-    static let cropsToGrowthMap: [CropType: Int] = [
+    static let cropsToGrowthTurnsMap: [CropType: Int] = [
         .bokChoy: 5,
         .apple: 10,
         .potato: 6
     ]
 
+    static let cropsToGrowthStagesMap: [CropType: Int] = [
+        .bokChoy: 2,
+        .apple: 3,
+        .potato: 1
+    ]
+
     static func getTotalGrowthTurns(for type: CropType) -> Int {
-        cropsToGrowthMap[type] ?? 0
+        cropsToGrowthTurnsMap[type] ?? 0
+    }
+
+    static func getTotalGrowthStages(for type: CropType) -> Int {
+        cropsToGrowthStagesMap[type] ?? 0
     }
 
     private var grid: GridComponent? {
@@ -60,9 +70,12 @@ class CropSystem: ISystem {
             return false
         }
         manager?.addComponent(GrowthComponent(
-            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType)), to: crop)
+            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: cropComponent.cropType),
+            totalGrowthStages: CropSystem.getTotalGrowthStages(for: cropComponent.cropType)), to: crop)
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
-        manager?.addComponent(SpriteComponent(visitor: crop), to: crop)
+        manager?.addComponent(SpriteComponent(visitor: crop,
+                                              updateVisitor: crop), to: crop)
+        manager?.addComponent(RenderComponent(updatable: true), to: crop)
         plotOccupantSlot.plotOccupant = crop
         return true
     }
@@ -91,6 +104,7 @@ class CropSystem: ISystem {
         manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
         manager?.removeComponent(ofType: PositionComponent.self, from: crop)
         manager?.removeComponent(ofType: SpriteComponent.self, from: crop)
+        manager?.removeComponent(ofType: RenderComponent.self, from: crop)
         manager?.addComponent(HarvestedComponent(), to: crop)
         plotOccupantSlot.plotOccupant = nil
         return crop
