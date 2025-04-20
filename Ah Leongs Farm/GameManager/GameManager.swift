@@ -137,6 +137,8 @@ class GameManager {
         addStartingItems()
 
         setUpFarmLandEntity()
+
+        setUpCrops()
     }
 
     private func setUpGameStateEntity() {
@@ -166,6 +168,38 @@ class GameManager {
 
             gridComponent.setEntity(plot, row: row, column: column)
             gameWorld.addEntity(plot)
+        }
+    }
+
+    /**
+        Sets up the crops in the game world.
+        **Note**: `CropSystem` will add `PositionComponent` to the crops when they are planted.
+        As long as the entity replaces as the existent `PositionComponent`, there will be no duplicate
+        `PositionComponent`.
+        Assuming that we are using `GKComponent` for components, `GKComponent::addComponent` will ensure this.
+     */
+    private func setUpCrops() {
+        let crops = persistenceManager.loadCrops()
+
+        for crop in crops {
+            gameWorld.addEntity(crop)
+        }
+
+        guard let cropSystem = gameWorld.getSystem(ofType: CropSystem.self) else {
+            return
+        }
+
+        for crop in crops {
+            if let positionComponent = crop.getComponentByType(ofType: PositionComponent.self) {
+                let currentGrowthTurn = crop
+                    .getComponentByType(ofType: GrowthComponent.self)?.currentGrowthTurn ?? 0
+                cropSystem.plantCrop(
+                    crop: crop,
+                    row: Int(positionComponent.x),
+                    column: Int(positionComponent.y),
+                    currentGrowthTurn: currentGrowthTurn
+                )
+            }
         }
     }
 

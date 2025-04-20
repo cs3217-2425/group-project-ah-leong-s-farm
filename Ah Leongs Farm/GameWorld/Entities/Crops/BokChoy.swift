@@ -13,6 +13,11 @@ class BokChoy: EntityAdapter, Crop {
         setUpComponents()
     }
 
+    init(config: CropConfig) {
+        super.init()
+        setUpComponents(config: config)
+    }
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")
@@ -24,5 +29,60 @@ class BokChoy: EntityAdapter, Crop {
 
         let healthComponent = HealthComponent()
         attachComponent(healthComponent)
+
+        let persistenceComponent = PersistenceComponent(persistenceObject: self)
+        attachComponent(persistenceComponent)
+    }
+
+    private func setUpComponents(config: CropConfig) {
+        let cropComponent = CropComponent()
+        attachComponent(cropComponent)
+
+        let healthComponent = HealthComponent(
+            health: config.healthConfig.health,
+            maxHealth: config.healthConfig.maxHealth
+        )
+        attachComponent(healthComponent)
+
+        let persistenceComponent = PersistenceComponent(
+            persistenceObject: self,
+            persistenceId: config.persistenceID
+        )
+        attachComponent(persistenceComponent)
+
+        if let position = config.position {
+            let positionComponent = PositionComponent(x: position.x, y: position.y)
+            attachComponent(positionComponent)
+        }
+
+        if let growthConfig = config.growthConfig {
+            let growthComponent = GrowthComponent(
+                totalGrowthTurns: growthConfig.totalGrowthTurns,
+                totalGrowthStages: growthConfig.totalGrowthStages,
+                currentGrowthTurn: growthConfig.currentGrowthTurn
+            )
+
+            attachComponent(growthComponent)
+        }
+
+        if config.isHarvested {
+            let harvestedComponent = HarvestedComponent()
+            attachComponent(harvestedComponent)
+        }
+
+        if config.isItem {
+            let itemComponent = ItemComponent()
+            attachComponent(itemComponent)
+        }
+    }
+}
+
+extension BokChoy: GamePersistenceObject {
+    func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {
+        manager.save(bokChoy: self, persistenceId: persistenceId)
+    }
+
+    func delete(manager: PersistenceManager, persistenceId: UUID) -> Bool {
+        manager.delete(bokChoy: self, persistenceId: persistenceId)
     }
 }
