@@ -32,9 +32,7 @@ class PlotSerializer {
 
         let plotPersistenceEntity = PlotPersistenceEntity(context: store.managedContext)
         plotPersistenceEntity.id = id
-
-        let plots = session.plots ?? NSSet()
-        session.plots = NSSet(set: plots.adding(plotPersistenceEntity))
+        plotPersistenceEntity.session = session
 
         updateAttributes(plotPersistenceEntity: plotPersistenceEntity, plot: plot)
 

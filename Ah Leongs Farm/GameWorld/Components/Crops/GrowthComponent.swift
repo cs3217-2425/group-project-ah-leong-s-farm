@@ -26,6 +26,13 @@ class GrowthComponent: ComponentAdapter {
         super.init()
     }
 
+    init(totalGrowthTurns: Int, totalGrowthStages: Int, currentGrowthTurn: Float) {
+        self.totalGrowthTurns = max(0, totalGrowthTurns)
+        self.currentGrowthTurn = min(currentGrowthTurn, Float(self.totalGrowthTurns))
+        self.totalGrowthStages = totalGrowthStages
+        super.init()
+    }
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")

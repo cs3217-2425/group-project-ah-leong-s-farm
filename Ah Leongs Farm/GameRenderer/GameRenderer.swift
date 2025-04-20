@@ -10,6 +10,10 @@ class GameRenderer {
     private var tileMapNode: TileMapNode?
     private var entityNodeMap: [EntityID: any IRenderNode] = [:]
 
+    private static let PriorityMap: [EntityType: CGFloat] = [
+        ObjectIdentifier(Plot.self): CGFloat.greatestFiniteMagnitude
+    ]
+
     var allRenderNodes: [any IRenderNode] {
         Array(entityNodeMap.values)
     }
@@ -110,9 +114,18 @@ class GameRenderer {
         }
     }
 
+    /// Get render nodes to create, sorted from highest to lowest priority.
     private func getEntitiesForCreation(allEntities: [Entity]) -> [Entity] {
         allEntities.filter { entity in
             entityNodeMap[entity.id] == nil
+        }.sorted { a, b in
+            let aType = ObjectIdentifier(type(of: a))
+            let bType = ObjectIdentifier(type(of: b))
+
+            let aPriority = Self.PriorityMap[aType] ?? 0
+            let bPriority = Self.PriorityMap[bType] ?? 0
+
+            return aPriority > bPriority
         }
     }
 

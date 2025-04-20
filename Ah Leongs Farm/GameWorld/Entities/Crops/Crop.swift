@@ -10,7 +10,6 @@ import Foundation
 protocol Crop: SpriteRenderManagerVisitor,
                SpriteRenderManagerUpdateVisitor,
                PlotOccupant where Self: EntityAdapter {
-
 }
 
 extension Crop {
