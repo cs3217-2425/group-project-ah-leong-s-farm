@@ -42,7 +42,6 @@ class SeedSerializer<T: Seed, S: AbstractSeedPersistenceEntity> {
         return store.fetch(request: fetchRequest).first
     }
 
-
     private func fetchSeedById(id: UUID) -> S? {
         let predicate = NSPredicate(format: "id == %@", id as CVarArg)
         let fetchRequest = S.fetchRequest()

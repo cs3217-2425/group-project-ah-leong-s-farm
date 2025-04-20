@@ -7,10 +7,15 @@
 
 import Foundation
 
-class SolarPanel: EntityAdapter, PlotOccupant, Tool {
+class SolarPanel: EntityAdapter, PlotOccupant, Tool, GamePersistenceObject {
     override init() {
         super.init()
         setUpComponents()
+    }
+
+    init(config: SolarPanelConfig) {
+        super.init()
+        setUpComponents(config: config)
     }
 
     @available(*, unavailable)
@@ -21,7 +26,42 @@ class SolarPanel: EntityAdapter, PlotOccupant, Tool {
     private func setUpComponents() {
         let energyCapBoostComponent = EnergyCapBoostComponent()
         attachComponent(energyCapBoostComponent)
+
         attachComponent(RenderComponent(updatable: false))
+
+        let persistenceComponent = PersistenceComponent(persistenceObject: self)
+        attachComponent(persistenceComponent)
+    }
+
+    private func setUpComponents(config: SolarPanelConfig) {
+        let energyCapBoostComponent = EnergyCapBoostComponent()
+        attachComponent(energyCapBoostComponent)
+
+        attachComponent(RenderComponent(updatable: false))
+
+        let persistenceComponent = PersistenceComponent(
+            persistenceObject: self,
+            persistenceId: config.persistenceId
+        )
+        attachComponent(persistenceComponent)
+
+        if config.isItem {
+            let itemComponent = ItemComponent()
+            attachComponent(itemComponent)
+        }
+
+        if let position = config.position {
+            let positionComponent = PositionComponent(x: position.x, y: position.y)
+            attachComponent(positionComponent)
+        }
+    }
+
+    func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {
+        manager.save(solarPanel: self, persistenceId: persistenceId)
+    }
+
+    func delete(manager: PersistenceManager, persistenceId: UUID) -> Bool {
+        manager.delete(solarPanel: self, persistenceId: persistenceId)
     }
 }
 
