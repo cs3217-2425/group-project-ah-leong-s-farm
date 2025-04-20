@@ -21,11 +21,12 @@ class SolarPanel: EntityAdapter, PlotOccupant, Tool {
     private func setUpComponents() {
         let energyCapBoostComponent = EnergyCapBoostComponent()
         attachComponent(energyCapBoostComponent)
+        attachComponent(RenderComponent(updatable: false))
     }
 }
 
 extension SolarPanel: SpriteRenderManagerVisitor {
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
+    func createNode(manager: SpriteRenderManager, renderer: GameRenderer) {
         manager.createNodeForEntity(solarPanel: self, in: renderer)
     }
 }
