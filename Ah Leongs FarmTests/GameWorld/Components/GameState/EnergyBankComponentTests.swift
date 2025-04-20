@@ -30,8 +30,8 @@ final class EnergyBankComponentTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(component.getCurrentEnergy(of: energyType), 5)
-        XCTAssertEqual(component.getMaxEnergy(of: energyType), 5)
+        XCTAssertEqual(component.getCurrentEnergy(of: energyType), 10)
+        XCTAssertEqual(component.getMaxEnergy(of: energyType), 10)
     }
 
     func testEnergyDepletion() {

@@ -4,37 +4,37 @@ import XCTest
 final class QuestCriteriaTests: XCTestCase {
 
     func testPlantCropCriteria_correctCropType() {
-        let criteria = PlantCropCriteria(cropType: .apple)
-        let eventData = PlantCropEventData(row: 0, column: 2, cropType: .apple, isSuccessfullyPlanted: true)
+        let criteria = PlantCropCriteria(cropType: Apple.type)
+        let eventData = PlantCropEventData(row: 0, column: 2, cropType: Apple.type, isSuccessfullyPlanted: true)
         XCTAssertEqual(criteria.calculateValue(from: eventData), 1.0)
     }
 
     func testPlantCropCriteria_incorrectCropType() {
-        let criteria = PlantCropCriteria(cropType: .apple)
-        let eventData = PlantCropEventData(row: 3, column: 0, cropType: .potato, isSuccessfullyPlanted: true)
+        let criteria = PlantCropCriteria(cropType: BokChoy.type)
+        let eventData = PlantCropEventData(row: 3, column: 0, cropType: Potato.type, isSuccessfullyPlanted: true)
         XCTAssertEqual(criteria.calculateValue(from: eventData), 0.0)
     }
 
     func testPlantCropCriteria_invalidEventData() {
-        let criteria = PlantCropCriteria(cropType: .apple)
+        let criteria = PlantCropCriteria(cropType: BokChoy.type)
         let eventData = EndTurnEventData(endTurnCount: 5)
         XCTAssertEqual(criteria.calculateValue(from: eventData), 0.0)
     }
 
     func testHarvestCropCriteria_correctCropType() {
-        let criteria = HarvestCropCriteria(cropType: .apple)
-        let eventData = HarvestCropEventData(type: .apple, quantity: 10)
+        let criteria = HarvestCropCriteria(cropType: Potato.type)
+        let eventData = HarvestCropEventData(cropType: Potato.type, quantity: 10)
         XCTAssertEqual(criteria.calculateValue(from: eventData), 10.0)
     }
 
     func testHarvestCropCriteria_incorrectCropType() {
-        let criteria = HarvestCropCriteria(cropType: .apple)
-        let eventData = HarvestCropEventData(type: .potato, quantity: 10)
+        let criteria = HarvestCropCriteria(cropType: Apple.type)
+        let eventData = HarvestCropEventData(cropType: Potato.type, quantity: 10)
         XCTAssertEqual(criteria.calculateValue(from: eventData), 0.0)
     }
 
     func testHarvestCropCriteria_invalidEventData() {
-        let criteria = HarvestCropCriteria(cropType: .apple)
+        let criteria = HarvestCropCriteria(cropType: Apple.type)
         let eventData = EndTurnEventData(endTurnCount: 5)
         XCTAssertEqual(criteria.calculateValue(from: eventData), 0.0)
     }
@@ -47,7 +47,7 @@ final class QuestCriteriaTests: XCTestCase {
 
     func testSurviveNumberOfTurnsCriteria_invalidEventData() {
         let criteria = SurviveNumberOfTurnsCriteria()
-        let eventData = HarvestCropEventData(type: .apple, quantity: 5)
+        let eventData = HarvestCropEventData(cropType: BokChoy.type, quantity: 5)
         XCTAssertEqual(criteria.calculateValue(from: eventData), 0.0)
     }
 
