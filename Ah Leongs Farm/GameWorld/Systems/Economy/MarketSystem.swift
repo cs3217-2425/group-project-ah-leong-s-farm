@@ -140,7 +140,7 @@ class MarketSystem: ISystem {
             let prevBuy  = itemPrices[type]?.buyPrice[currency] ?? baseBuy
             let prevSell = itemPrices[type]?.sellPrice[currency] ?? baseSell
 
-            let newBuy  = prevBuy * (1 - decay) + targetBuy  * decay
+            let newBuy  = prevBuy * (1 - decay) + targetBuy * decay
             let newSell = prevSell * (1 - decay) + targetSell * decay
 
             newBuyPrice[currency] = Double(max(1, Int(newBuy.rounded())))

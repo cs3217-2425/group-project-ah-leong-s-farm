@@ -30,6 +30,9 @@ class Apple: EntityAdapter, Crop {
         let healthComponent = HealthComponent()
         attachComponent(healthComponent)
 
+        let yieldComponent = YieldComponent(maxYield: 3)
+        attachComponent(yieldComponent)
+
         let persistenceComponent = PersistenceComponent(persistenceObject: self)
         attachComponent(persistenceComponent)
     }

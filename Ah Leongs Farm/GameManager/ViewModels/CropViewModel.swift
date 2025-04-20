@@ -10,11 +10,14 @@ struct CropViewModel: PlotOccupantViewModel {
     let currentGrowthTurn: Float
     let totalGrowthTurns: Int
     let currentHealth: Double
+    let currentYield: Int
+    let maxYield: Int
 
     init?(crop: Crop) {
         guard crop.getComponentByType(ofType: CropComponent.self) != nil,
               let growthComponent = crop.getComponentByType(ofType: GrowthComponent.self),
-              let healthComponent = crop.getComponentByType(ofType: HealthComponent.self)
+              let healthComponent = crop.getComponentByType(ofType: HealthComponent.self),
+              let yieldComponent = crop.getComponentByType(ofType: YieldComponent.self)
         else {
             return nil
         }
@@ -23,5 +26,7 @@ struct CropViewModel: PlotOccupantViewModel {
         currentGrowthTurn = growthComponent.currentGrowthTurn
         totalGrowthTurns = growthComponent.totalGrowthTurns
         currentHealth = healthComponent.health
+        currentYield = yieldComponent.yield
+        maxYield = yieldComponent.maxYield
     }
 }
