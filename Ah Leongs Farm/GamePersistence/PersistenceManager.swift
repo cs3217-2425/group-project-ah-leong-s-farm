@@ -28,6 +28,10 @@ class PersistenceManager {
     private(set) var gameStateMutation: (any GameStateMutation)? = CoreDataGameStateMutation()
     private(set) var gameStateQuery: (any GameStateQuery)? = CoreDataGameStateQuery()
 
+    // MARK: - AbstractSolarPanelPersistenceManager
+    private(set) var solarPanelMutation: (any SolarPanelMutation)? = CoreDataSolarPanelMutation()
+    private(set) var solarPanelQuery: (any SolarPanelQuery)? = CoreDataSolarPanelQuery()
+
     // MARK: - AbstractSeedPersistenceManager
     private(set) var seedQuery: (any SeedQuery)? = CoreDataSeedQuery()
     private(set) var appleSeedMutation: (any SeedMutation<AppleSeed>)? =
@@ -146,6 +150,10 @@ extension PersistenceManager: AbstractPlotPersistenceManager {
 
 // MARK: - AbstractGameStatePersistenceManager
 extension PersistenceManager: AbstractGameStatePersistenceManager {
+}
+
+// MARK: - AbstractSolarPanelPersistenceManager
+extension PersistenceManager: AbstractSolarPanelPersistenceManager {
 }
 
 // MARK: - AbstractSeedPersistenceManager

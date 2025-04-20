@@ -61,11 +61,18 @@
         <relationship name="crops" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AbstractCropPersistenceEntity" inverseName="session" inverseEntity="AbstractCropPersistenceEntity"/>
         <relationship name="gameState" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="GameStatePersistenceEntity" inverseName="session" inverseEntity="GameStatePersistenceEntity"/>
         <relationship name="plots" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PlotPersistenceEntity" inverseName="session" inverseEntity="PlotPersistenceEntity"/>
+        <relationship name="solarPanels" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SolarPanelPersistenceEntity" inverseName="session" inverseEntity="SolarPanelPersistenceEntity"/>
         <relationship name="seeds" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AbstractSeedPersistenceEntity" inverseName="session" inverseEntity="AbstractSeedPersistenceEntity"/>
     </entity>
     <entity name="SoilPersistenceComponent" representedClassName="SoilPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="hasWater" optional="YES" attributeType="Boolean" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="quality" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="SolarPanelPersistenceEntity" representedClassName="SolarPanelPersistenceEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isItem" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <relationship name="positionComponent" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PositionPersistenceComponent"/>
+        <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="solarPanels" inverseEntity="Session"/>
     </entity>
     <entity name="TurnPersistenceComponent" representedClassName="TurnPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="currentTurn" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

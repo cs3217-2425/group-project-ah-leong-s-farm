@@ -8,7 +8,7 @@
 protocol EventData {
 }
 
-protocol ErrorEventData {
+protocol ErrorEventData: EventData {
     var title: String { get }
     var message: String { get }
 }
@@ -95,7 +95,7 @@ struct LevelUpEventData: EventData {
     var newLevel: Int
 }
 
-struct InsufficientEnergyErrorEventData: ErrorEventData, EventData {
+struct InsufficientEnergyErrorEventData: ErrorEventData {
     var title: String = "No Energy"
     var message: String
 }

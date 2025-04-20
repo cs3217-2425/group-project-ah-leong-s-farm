@@ -14,7 +14,7 @@ class PotatoSeed: EntityAdapter, Seed, GamePersistenceObject {
         setUpComponents(persistenceId: persistenceId)
     }
 
-    convenience override init() {
+    override convenience init() {
         self.init(persistenceId: UUID())
     }
 
