@@ -1,10 +1,10 @@
 //
-//  AppDelegate+BackgroundSaveDelegate.swift
+//  AppDelegate+PersistenceSaveDelegate.swift
 //  Ah Leongs Farm
 //
 //  Created by Jerry Leong on 20/4/25.
 //
 
-// MARK: - BackgroundSaveDelegate
+// MARK: - PersistenceSaveDelegate
 extension AppDelegate: PersistenceSaveDelegate {
 }
