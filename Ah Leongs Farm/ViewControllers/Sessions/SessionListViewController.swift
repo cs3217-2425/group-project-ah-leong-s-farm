@@ -123,8 +123,8 @@ extension SessionListViewController: SessionViewCellDelegate {
             return
         }
 
-        // Delete from Core Data
-        guard let mutation = CoreDataSessionMutation(),
+        // Delete from Core Data and save context
+        guard let mutation = CoreDataSessionMutation(shouldSave: true),
               mutation.deleteSession(id: sessionId) else {
             return
         }

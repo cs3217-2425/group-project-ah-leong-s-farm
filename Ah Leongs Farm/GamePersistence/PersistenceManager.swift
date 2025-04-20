@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class PersistenceManager {
     private static let PollingPeriodSeconds: TimeInterval = 1
@@ -114,6 +115,11 @@ class PersistenceManager {
         for metaData in deletePersistenceMap.values {
             acceptToDelete(visitor: metaData.persistenceObject, persistenceId: metaData.persistenceId)
         }
+    }
+
+    func saveSession() {
+        let persistenceSaveDelegate = UIApplication.shared.delegate as? AppDelegate
+        persistenceSaveDelegate?.saveContext()
     }
 
     private func startPersistenceTimer() {

@@ -42,6 +42,13 @@ class ViewController: UIViewController {
         setupNotificationSystem()
         gameManager.addGameObserver(self)
         gameManager.registerEventObserver(gameOverViewController)
+
+        // Detect when the app is backgrounded
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appWillResignActive),
+            name: UIApplication.willResignActiveNotification, object: nil
+        )
     }
 
     private func setUpGameStatistics() {
@@ -96,6 +103,10 @@ class ViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         true
     }
+
+    @objc private func appWillResignActive() {
+        gameManager.saveSession()
+    }
 }
 
 // MARK: GameControlsViewDelegate
@@ -122,6 +133,7 @@ extension ViewController: GameControlsViewDelegate {
             // removes strong cyclic reference between game manager and view controller
             self.gameManager.removeGameObserver(self)
             self.gameManager.stopSounds()
+            self.gameManager.saveSession()
             self.dismiss(animated: true, completion: nil)
         }))
 

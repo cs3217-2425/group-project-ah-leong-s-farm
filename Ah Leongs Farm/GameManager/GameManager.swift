@@ -129,6 +129,10 @@ class GameManager {
         soundSystem?.stopBackgroundMusic()
     }
 
+    func saveSession() {
+        persistenceManager.saveSession()
+    }
+
     // MARK: - Setup Methods
 
     private func setUpBaseEntities() {

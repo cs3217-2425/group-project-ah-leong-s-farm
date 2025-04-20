@@ -11,13 +11,15 @@ import UIKit
 class CoreDataSolarPanelMutation: SolarPanelMutation {
     private let store: Store
     private let serializer: SolarPanelSerializer
+    private let shouldSave: Bool
 
-    init(store: Store) {
+    init(store: Store, shouldSave: Bool = false) {
         self.store = store
         serializer = SolarPanelSerializer(store: store)
+        self.shouldSave = shouldSave
     }
 
-    convenience init?() {
+    convenience init?(shouldSave: Bool = false) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return nil
         }
@@ -31,11 +33,13 @@ class CoreDataSolarPanelMutation: SolarPanelMutation {
             return false
         }
 
-        do {
-            try store.save()
-        } catch {
-            store.rollback()
-            return false
+        if shouldSave {
+            do {
+                try store.managedContext.save()
+            } catch {
+                store.rollback()
+                return false
+            }
         }
 
         return true
@@ -48,11 +52,13 @@ class CoreDataSolarPanelMutation: SolarPanelMutation {
 
         store.managedContext.delete(persistenceEntity)
 
-        do {
-            try store.save()
-        } catch {
-            store.rollback()
-            return false
+        if shouldSave {
+            do {
+                try store.managedContext.save()
+            } catch {
+                store.rollback()
+                return false
+            }
         }
 
         return true
