@@ -50,36 +50,84 @@ class QuestFactory {
         )
     }
 
+    static func createAddPlotObjective(amount: Int) -> QuestObjective {
+        let addPlotCriteria = AddPlotCriteria()
+        return QuestObjective(
+            description: "Add \(amount) plots",
+            criteria: addPlotCriteria,
+            target: Float(amount)
+        )
+    }
+
+    static func createWaterPlotObjective(amount: Int) -> QuestObjective {
+        let waterPlotCriteria = WaterPlotCriteria()
+        return QuestObjective(
+            description: "Water \(amount) plots",
+            criteria: waterPlotCriteria,
+            target: Float(amount)
+        )
+    }
+
+    static func createUseFertiliserObjective(type: EntityType, amount: Int) -> QuestObjective {
+        let useFertiliserCriteria = UseFertiliserCriteria(fertiliserType: type)
+        let displayName = ItemToViewDataMap.itemTypeToDisplayName[type] ?? ""
+        return QuestObjective(
+            description: "Use \(amount) \(displayName)s",
+            criteria: useFertiliserCriteria,
+            target: Float(amount)
+        )
+    }
+
+    static func createAddSolarPanelObjective(amount: Int) -> QuestObjective {
+        let addSolarPanelCriteria = AddSolarPanelCriteria()
+        return QuestObjective(
+            description: "Add \(amount) solar panels",
+            criteria: addSolarPanelCriteria,
+            target: Float(amount)
+        )
+    }
+
     // MARK: - Quest Creation System
 
     static func createAllQuests() -> [Quest] {
         // Create quest IDs for easier reference
         let questIDs = QuestPathIDs()
 
-        // Create all quests and return them as a single array
         return [
             // Tutorial Path - Getting Started
             createFirstStepsQuest(id: questIDs.tutorial.firstSteps),
-            createFarmFoundationsQuest(id: questIDs.tutorial.farmFoundations, prereqs: [questIDs.tutorial.firstSteps]),
+            createFarmFoundationsQuest(id: questIDs.tutorial.farmFoundations,
+                                       prereqs: [questIDs.tutorial.firstSteps]),
 
             // Vegetable Path
-            createVegetableApprenticeQuest(id: questIDs.vegetables.apprentice, prereqs: [questIDs.tutorial.farmFoundations]),
-            createGreenThumbQuest(id: questIDs.vegetables.greenThumb, prereqs: [questIDs.vegetables.apprentice]),
-            createVegetableMasterQuest(id: questIDs.vegetables.master, prereqs: [questIDs.vegetables.greenThumb]),
+            createVegetableApprenticeQuest(id: questIDs.vegetables.apprentice,
+                                           prereqs: [questIDs.tutorial.farmFoundations]),
+            createGreenThumbQuest(id: questIDs.vegetables.greenThumb,
+                                  prereqs: [questIDs.vegetables.apprentice]),
+            createVegetableMasterQuest(id: questIDs.vegetables.master,
+                                       prereqs: [questIDs.vegetables.greenThumb]),
 
             // Fruit Path
-            createOrchardKeeperQuest(id: questIDs.fruits.orchardKeeper, prereqs: [questIDs.tutorial.farmFoundations]),
-            createFruitEnthusiastQuest(id: questIDs.fruits.fruitEnthusiast, prereqs: [questIDs.fruits.orchardKeeper]),
-            createPomologistQuest(id: questIDs.fruits.pomologist, prereqs: [questIDs.fruits.fruitEnthusiast]),
+            createOrchardKeeperQuest(id: questIDs.fruits.orchardKeeper,
+                                     prereqs: [questIDs.tutorial.farmFoundations]),
+            createFruitEnthusiastQuest(id: questIDs.fruits.fruitEnthusiast,
+                                       prereqs: [questIDs.fruits.orchardKeeper]),
+            createPomologistQuest(id: questIDs.fruits.pomologist,
+                                  prereqs: [questIDs.fruits.fruitEnthusiast]),
 
             // Market Path
-            createMarketNoviceQuest(id: questIDs.market.novice, prereqs: [questIDs.tutorial.farmFoundations]),
-            createMarketTraderQuest(id: questIDs.market.trader, prereqs: [questIDs.market.novice]),
-            createMarketMogulQuest(id: questIDs.market.mogul, prereqs: [questIDs.market.trader]),
+            createMarketNoviceQuest(id: questIDs.market.novice,
+                                    prereqs: [questIDs.tutorial.farmFoundations]),
+            createMarketTraderQuest(id: questIDs.market.trader,
+                                    prereqs: [questIDs.market.novice]),
+            createMarketMogulQuest(id: questIDs.market.mogul,
+                                   prereqs: [questIDs.market.trader]),
 
             // Technology Path
-            createTechPioneerQuest(id: questIDs.technology.pioneer, prereqs: [questIDs.tutorial.farmFoundations]),
-            createSolarFarmerQuest(id: questIDs.technology.solarFarmer, prereqs: [questIDs.technology.pioneer]),
+            createTechPioneerQuest(id: questIDs.technology.pioneer,
+                                   prereqs: [questIDs.tutorial.farmFoundations]),
+            createSolarFarmerQuest(id: questIDs.technology.solarFarmer,
+                                   prereqs: [questIDs.technology.pioneer]),
 
             // Mastery Quests - require completion of multiple paths
             createSustainableFarmingQuest(

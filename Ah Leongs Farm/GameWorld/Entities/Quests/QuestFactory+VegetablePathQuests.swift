@@ -10,16 +10,18 @@ extension QuestFactory {
         let component = QuestComponent(
             title: "Vegetable Apprentice",
             objectives: [
-                createPlantCropObjective(type: PotatoSeed.type, plantAmount: 3),
-                createPlantCropObjective(type: BokChoySeed.type, plantAmount: 3)
+                createPlantCropObjective(type: Potato.type, plantAmount: 2),
+                createPlantCropObjective(type: BokChoy.type, plantAmount: 2),
+                createWaterPlotObjective(amount: 8)
             ],
             prerequisites: prereqs,
+            order: 3,
             id: id
         )
 
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 75),
-            RewardCurrencyComponent(currencies: [.coin: 60]),
+            RewardCurrencyComponent(currencies: [.coin: 100]),
             RewardItemComponent(itemTypes: [Fertiliser.type: 2])
         ]
 
@@ -31,15 +33,17 @@ extension QuestFactory {
             title: "Green Thumb",
             objectives: [
                 createHarvestCropObjective(type: Potato.type, harvestAmount: 5),
-                createHarvestCropObjective(type: BokChoy.type, harvestAmount: 8)
+                createHarvestCropObjective(type: BokChoy.type, harvestAmount: 8),
+                createUseFertiliserObjective(type: Fertiliser.type, amount: 3)
             ],
             prerequisites: prereqs,
+            order: 4,
             id: id
         )
 
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 100),
-            RewardCurrencyComponent(currencies: [.coin: 100]),
+            RewardCurrencyComponent(currencies: [.coin: 120]),
             RewardItemComponent(itemTypes: [
                 PotatoSeed.type: 3,
                 BokChoySeed.type: 3,
@@ -58,6 +62,7 @@ extension QuestFactory {
                 createSellItemObjective(type: BokChoy.type, sellAmount: 15)
             ],
             prerequisites: prereqs,
+            order: 5,
             id: id
         )
 
@@ -67,7 +72,8 @@ extension QuestFactory {
             RewardItemComponent(itemTypes: [
                 PremiumFertiliser.type: 2,
                 SolarPanel.type: 1
-            ])
+            ]),
+            RewardPointsComponent(amount: 2)
         ]
 
         return Quest(questComponent: component, rewardComponents: rewards)

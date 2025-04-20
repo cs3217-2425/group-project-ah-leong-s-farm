@@ -12,9 +12,11 @@ extension QuestFactory {
             objectives: [
                 createHarvestCropObjective(type: BokChoy.type, harvestAmount: 20),
                 createHarvestCropObjective(type: Potato.type, harvestAmount: 15),
-                createSurvivalObjective(days: 20)
+                createAddSolarPanelObjective(amount: 4),
+                createUseFertiliserObjective(type: PremiumFertiliser.type, amount: 5)
             ],
             prerequisites: prereqs,
+            order: 14,
             id: id
         )
 
@@ -26,7 +28,8 @@ extension QuestFactory {
                 PremiumFertiliser.type: 3,
                 PotatoSeed.type: 10,
                 BokChoySeed.type: 10
-            ])
+            ]),
+            RewardPointsComponent(amount: 4)
         ]
 
         return Quest(questComponent: component, rewardComponents: rewards)
@@ -38,9 +41,11 @@ extension QuestFactory {
             objectives: [
                 createSellItemObjective(type: Apple.type, sellAmount: 25),
                 createSellItemObjective(type: Potato.type, sellAmount: 25),
-                createSellItemObjective(type: BokChoy.type, sellAmount: 25)
+                createSellItemObjective(type: BokChoy.type, sellAmount: 25),
+                createAddSolarPanelObjective(amount: 7)
             ],
             prerequisites: prereqs,
+            order: 15,
             id: id
         )
 
@@ -52,7 +57,8 @@ extension QuestFactory {
                 PotatoSeed.type: 10,
                 BokChoySeed.type: 10,
                 PremiumFertiliser.type: 5
-            ])
+            ]),
+            RewardPointsComponent(amount: 5)
         ]
 
         return Quest(questComponent: component, rewardComponents: rewards)
@@ -65,22 +71,27 @@ extension QuestFactory {
                 createSurvivalObjective(days: 25),
                 createHarvestCropObjective(type: Apple.type, harvestAmount: 30),
                 createHarvestCropObjective(type: Potato.type, harvestAmount: 30),
-                createHarvestCropObjective(type: BokChoy.type, harvestAmount: 30)
+                createHarvestCropObjective(type: BokChoy.type, harvestAmount: 30),
+                createUseFertiliserObjective(type: Fertiliser.type, amount: 8),
+                createUseFertiliserObjective(type: PremiumFertiliser.type, amount: 5),
+                createAddSolarPanelObjective(amount: 5)
             ],
             prerequisites: prereqs,
+            order: 16,
             id: id
         )
 
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 500),
-            RewardCurrencyComponent(currencies: [.coin: 1000]),
+            RewardCurrencyComponent(currencies: [.coin: 1_000]),
             RewardItemComponent(itemTypes: [
                 AppleSeed.type: 15,
                 PotatoSeed.type: 15,
                 BokChoySeed.type: 15,
                 PremiumFertiliser.type: 10,
                 SolarPanel.type: 3
-            ])
+            ]),
+            RewardPointsComponent(amount: 8)
         ]
 
         return Quest(questComponent: component, rewardComponents: rewards)

@@ -9,4 +9,5 @@ protocol RewardEventQueuer {
     func queueRewardEvent(component: RewardXPComponent)
     func queueRewardEvent(component: RewardCurrencyComponent)
     func queueRewardEvent(component: RewardItemComponent)
+    func queueRewardEvent(component: RewardPointsComponent)
 }

@@ -20,7 +20,7 @@ class QuestSystem: ISystem {
         quests.filter { $0.status == .active }
     }
 
-    private var questEntityMap: [QuestID: QuestComponent] {
+    var questComponentMap: [QuestID: QuestComponent] {
         Dictionary(uniqueKeysWithValues: quests.map {
             ($0.id, $0)
         })
@@ -39,10 +39,9 @@ class QuestSystem: ISystem {
         updateQuestStatuses()
     }
 
-
     private func allPrerequisitesCompleted(for quest: QuestComponent) -> Bool {
         for prerequisiteId in quest.prerequisites {
-            guard let prerequisite = questEntityMap[prerequisiteId],
+            guard let prerequisite = questComponentMap[prerequisiteId],
                   prerequisite.status == .completed else {
                 return false
             }
@@ -114,12 +113,14 @@ class QuestSystem: ISystem {
         // DFS function to detect cycles
         func dfs(questID: QuestID) {
             // Quest not found (invalid reference)
-            guard let quest = questEntityMap[questID] else {
+            guard let quest = questComponentMap[questID] else {
                 fatalError("Quest not found!")
             }
 
             // Already fully explored this branch, no cycles
-            if visitState[questID] == .black { return }
+            if visitState[questID] == .black {
+                return
+            }
 
             // Node is in the current path - cycle detected!
             if visitState[questID] == .gray {
@@ -189,5 +190,12 @@ extension QuestSystem: RewardEventQueuer {
             return
         }
         eventQueueable.queueEvent(RewardItemEvent(itemTypes: component.itemTypes))
+    }
+
+    internal func queueRewardEvent(component: RewardPointsComponent) {
+        guard let eventQueueable = eventQueueable else {
+            return
+        }
+        eventQueueable.queueEvent(RewardPointsEvent(amount: component.amount))
     }
 }

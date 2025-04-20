@@ -11,9 +11,12 @@ extension QuestFactory {
         let component = QuestComponent(
             title: "Tech Pioneer",
             objectives: [
+                createAddPlotObjective(amount: 1),
+                createAddSolarPanelObjective(amount: 2),
                 createSurvivalObjective(days: 8)
             ],
             prerequisites: prereqs,
+            order: 12,
             id: id
         )
 
@@ -30,9 +33,11 @@ extension QuestFactory {
         let component = QuestComponent(
             title: "Solar Farmer",
             objectives: [
-                createSurvivalObjective(days: 15)
+                createAddSolarPanelObjective(amount: 3),
+                createAddPlotObjective(amount: 4)
             ],
             prerequisites: prereqs,
+            order: 13,
             id: id
         )
 
@@ -42,7 +47,8 @@ extension QuestFactory {
             RewardItemComponent(itemTypes: [
                 SolarPanel.type: 2,
                 PremiumFertiliser.type: 2
-            ])
+            ]),
+            RewardPointsComponent(amount: 5)
         ]
 
         return Quest(questComponent: component, rewardComponents: rewards)

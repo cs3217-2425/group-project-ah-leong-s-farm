@@ -12,21 +12,40 @@ extension GameManager: QuestDataProvider, RewardDataRetrievalVisitor {
         guard let questSystem = gameWorld.getSystem(ofType: QuestSystem.self) else {
             return []
         }
-        let filteredQuests = questSystem.getAllQuests().filter({
+
+        let allQuestComponents = questSystem.getAllQuests()
+        let questComponentMap = questSystem.questComponentMap
+
+        let filteredQuests = allQuestComponents.filter({
             $0.status == status
         })
+
         let sortedQuests = filteredQuests.sorted(by: {
             $0.order < $1.order
         })
+
         return sortedQuests.compactMap { questComponent in
             guard let questEntity = questComponent.ownerEntity as? Quest else {
                 return nil
             }
+
             let rewardComponents = questSystem.getAllRewardComponents(questEntity: questEntity)
             var rewardViewModels = rewardComponents.flatMap { $0.accept(visitor: self) }
             rewardViewModels.sort(by: {
                 $0.getIconName() < $1.getIconName()
             })
+
+            let prerequisiteViewModels = questComponent.prerequisites.compactMap { prereqId -> PrerequisiteViewModel? in
+                guard let prereqComponent = questComponentMap[prereqId] else {
+                    return nil
+                }
+
+                return PrerequisiteViewModel(
+                    id: prereqId,
+                    title: prereqComponent.title,
+                    isCompleted: prereqComponent.status == .completed
+                )
+            }
 
             return QuestViewModel(
                 title: questComponent.title,
@@ -40,7 +59,9 @@ extension GameManager: QuestDataProvider, RewardDataRetrievalVisitor {
                     )
                 },
                 isCompleted: questComponent.isCompleted,
-                rewards: rewardViewModels
+                rewards: rewardViewModels,
+                prerequisites: prerequisiteViewModels,
+                id: questComponent.id
             )
         }
     }
@@ -65,6 +86,10 @@ extension GameManager: QuestDataProvider, RewardDataRetrievalVisitor {
         return viewModels
     }
 
+    internal func retrieveData(component: RewardPointsComponent) -> [RewardViewModel] {
+        [RewardPointsViewModel(amount: component.amount)]
+    }
+
     func getActiveQuestViewModels() -> [QuestViewModel] {
         getQuestViewModels(status: .active)
     }
@@ -82,4 +107,5 @@ protocol RewardDataRetrievalVisitor {
     func retrieveData(component: RewardXPComponent) -> [RewardViewModel]
     func retrieveData(component: RewardCurrencyComponent) -> [RewardViewModel]
     func retrieveData(component: RewardItemComponent) -> [RewardViewModel]
+    func retrieveData(component: RewardPointsComponent) -> [RewardViewModel]
 }

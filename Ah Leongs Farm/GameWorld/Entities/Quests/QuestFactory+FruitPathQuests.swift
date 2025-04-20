@@ -10,9 +10,11 @@ extension QuestFactory {
         let component = QuestComponent(
             title: "Orchard Keeper",
             objectives: [
-                createPlantCropObjective(type: AppleSeed.type, plantAmount: 3)
+                createPlantCropObjective(type: Apple.type, plantAmount: 3),
+                createWaterPlotObjective(amount: 8)
             ],
             prerequisites: prereqs,
+            order: 6,
             id: id
         )
 
@@ -29,9 +31,13 @@ extension QuestFactory {
         let component = QuestComponent(
             title: "Fruit Enthusiast",
             objectives: [
-                createHarvestCropObjective(type: Apple.type, harvestAmount: 5)
+                createHarvestCropObjective(type: Apple.type, harvestAmount: 5),
+                createUseFertiliserObjective(type: Fertiliser.type, amount: 2),
+                createUseFertiliserObjective(type: PremiumFertiliser.type,
+                                             amount: 1)
             ],
             prerequisites: prereqs,
+            order: 7,
             id: id
         )
 
@@ -52,9 +58,11 @@ extension QuestFactory {
             title: "Pomologist",
             objectives: [
                 createSellItemObjective(type: Apple.type, sellAmount: 15),
-                createHarvestCropObjective(type: Apple.type, harvestAmount: 20)
+                createHarvestCropObjective(type: Apple.type, harvestAmount: 20),
+                createAddPlotObjective(amount: 3)
             ],
             prerequisites: prereqs,
+            order: 8,
             id: id
         )
 
@@ -63,8 +71,10 @@ extension QuestFactory {
             RewardCurrencyComponent(currencies: [.coin: 250]),
             RewardItemComponent(itemTypes: [
                 AppleSeed.type: 5,
-                PremiumFertiliser.type: 2
-            ])
+                PremiumFertiliser.type: 2,
+                SolarPanel.type: 1
+            ]),
+            RewardPointsComponent(amount: 2)
         ]
 
         return Quest(questComponent: component, rewardComponents: rewards)

@@ -11,16 +11,20 @@ extension QuestFactory {
             title: "First Steps",
             objectives: [
                 createSurvivalObjective(days: 2),
-                createPlantCropObjective(type: BokChoySeed.type, plantAmount: 1)
+                createWaterPlotObjective(amount: 2),
+                createPlantCropObjective(type: BokChoy.type, plantAmount: 1),
+                createAddPlotObjective(amount: 1)
             ],
             prerequisites: [],
+            order: 1,
             id: id
         )
 
         let rewards: [RewardComponent] = [
             RewardXPComponent(amount: 25),
             RewardCurrencyComponent(currencies: [.coin: 25]),
-            RewardItemComponent(itemTypes: [BokChoySeed.type: 2])
+            RewardItemComponent(itemTypes: [BokChoySeed.type: 2,
+                                            Fertiliser.type: 1])
         ]
 
         return Quest(questComponent: component, rewardComponents: rewards)
@@ -31,9 +35,11 @@ extension QuestFactory {
             title: "Farm Foundations",
             objectives: [
                 createHarvestCropObjective(type: BokChoy.type, harvestAmount: 2),
+                createUseFertiliserObjective(type: Fertiliser.type, amount: 1),
                 createSellItemObjective(type: BokChoy.type, sellAmount: 1)
             ],
             prerequisites: prereqs,
+            order: 2,
             id: id
         )
 
@@ -44,7 +50,8 @@ extension QuestFactory {
                 AppleSeed.type: 2,
                 PotatoSeed.type: 2,
                 Fertiliser.type: 1
-            ])
+            ]),
+            RewardPointsComponent(amount: 1)
         ]
 
         return Quest(questComponent: component, rewardComponents: rewards)

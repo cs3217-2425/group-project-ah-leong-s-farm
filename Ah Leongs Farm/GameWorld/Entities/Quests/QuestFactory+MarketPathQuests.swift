@@ -14,6 +14,7 @@ extension QuestFactory {
                 createSellItemObjective(type: BokChoy.type, sellAmount: 3)
             ],
             prerequisites: prereqs,
+            order: 9,
             id: id
         )
 
@@ -34,6 +35,7 @@ extension QuestFactory {
                 createSellItemObjective(type: BokChoy.type, sellAmount: 5)
             ],
             prerequisites: prereqs,
+            order: 10,
             id: id
         )
 
@@ -52,9 +54,11 @@ extension QuestFactory {
             objectives: [
                 createSellItemObjective(type: Apple.type, sellAmount: 20),
                 createSellItemObjective(type: Potato.type, sellAmount: 15),
-                createSellItemObjective(type: BokChoy.type, sellAmount: 15)
+                createSellItemObjective(type: BokChoy.type, sellAmount: 15),
+                createAddPlotObjective(amount: 3)
             ],
             prerequisites: prereqs,
+            order: 11,
             id: id
         )
 
@@ -64,8 +68,10 @@ extension QuestFactory {
             RewardItemComponent(itemTypes: [
                 AppleSeed.type: 5,
                 PotatoSeed.type: 5,
-                BokChoySeed.type: 5
-            ])
+                BokChoySeed.type: 5,
+                SolarPanel.type: 1
+            ]),
+            RewardPointsComponent(amount: 3)
         ]
 
         return Quest(questComponent: component, rewardComponents: rewards)
