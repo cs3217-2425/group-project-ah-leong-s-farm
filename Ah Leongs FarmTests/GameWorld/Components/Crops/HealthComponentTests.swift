@@ -14,5 +14,6 @@ class HealthComponentTests: XCTestCase {
 
         XCTAssertNotNil(healthComponent)
         XCTAssertEqual(healthComponent.health, 1.0)
+        XCTAssertEqual(healthComponent.maxHealth, 1.0)
     }
 }
