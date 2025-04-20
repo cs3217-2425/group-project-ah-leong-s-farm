@@ -11,6 +11,7 @@ import XCTest
 class MarketSystemTests: XCTestCase {
     var marketSystem: MarketSystem!
     var manager: EntityManager!
+    let MAX_QUANTITY = 999
 
     override func setUp() {
         super.setUp()
@@ -36,9 +37,9 @@ class MarketSystemTests: XCTestCase {
     func testGetItemStocks() {
         let itemStocks = marketSystem.getItemStocks()
 
-        XCTAssertEqual(itemStocks[BokChoySeed.type], Int.max)
-        XCTAssertEqual(itemStocks[AppleSeed.type], Int.max)
-        XCTAssertEqual(itemStocks[Potato.type], Int.max)
+        XCTAssertEqual(itemStocks[BokChoySeed.type], MAX_QUANTITY)
+        XCTAssertEqual(itemStocks[AppleSeed.type], MAX_QUANTITY)
+        XCTAssertEqual(itemStocks[Potato.type], MAX_QUANTITY)
     }
 
     func testGetBuyPrice() {
@@ -59,7 +60,7 @@ class MarketSystemTests: XCTestCase {
 
     func testGetBuyQuantity() {
         let buyQuantity = marketSystem.getBuyQuantity(for: BokChoySeed.type)
-        XCTAssertEqual(buyQuantity, Int.max)
+        XCTAssertEqual(buyQuantity, MAX_QUANTITY)
     }
 
     func testGetSellQuantity_noEntities_returnsZero() {
@@ -87,14 +88,14 @@ class MarketSystemTests: XCTestCase {
 
     func testDecreaseStock() {
         // Check initial stock
-        XCTAssertEqual(marketSystem.getBuyQuantity(for: BokChoySeed.type), Int.max)
+        XCTAssertEqual(marketSystem.getBuyQuantity(for: BokChoySeed.type), MAX_QUANTITY)
 
         // Decrease stock
         let result = marketSystem.decreaseStock(type: BokChoySeed.type, quantity: 5)
         XCTAssertTrue(result)
 
         // Check updated stock (Int.max - 5)
-        XCTAssertEqual(marketSystem.getBuyQuantity(for: BokChoySeed.type), Int.max - 5)
+        XCTAssertEqual(marketSystem.getBuyQuantity(for: BokChoySeed.type), MAX_QUANTITY - 5)
     }
 
     func testIncreaseStock() {
@@ -119,7 +120,7 @@ class MarketSystemTests: XCTestCase {
 
         // Check that stocks are reset
         let resetStocks = marketSystem.getItemStocks()
-        XCTAssertEqual(resetStocks[BokChoySeed.type], Int.max)
-        XCTAssertEqual(resetStocks[AppleSeed.type], Int.max)
+        XCTAssertEqual(resetStocks[BokChoySeed.type], MAX_QUANTITY)
+        XCTAssertEqual(resetStocks[AppleSeed.type], MAX_QUANTITY)
     }
 }
