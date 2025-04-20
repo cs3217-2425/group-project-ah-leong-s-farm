@@ -61,7 +61,7 @@ class ProgressBarManager {
                 health: crop.currentHealth
             )
             lastBar = healthBar
-            
+
             let yieldBar = setupYieldBar(
                 after: healthBar,
                 current: Float(crop.currentYield),
@@ -161,7 +161,7 @@ class ProgressBarManager {
 
         return progressBar
     }
-    
+
     private func setupYieldBar(after previousBar: ProgressBar, current: Float, max: Float) -> ProgressBar {
         let titleLabel = createTitleLabel(title: "Yield:")
         containerView.addSubview(titleLabel)

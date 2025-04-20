@@ -102,7 +102,6 @@ class SpriteRenderManager: IRenderManager {
         renderer.setRenderNode(for: ObjectIdentifier(solarPanel), node: spriteNode)
     }
 
-
     func createNodeForEntity(seed: Seed, in renderer: GameRenderer) {
         guard let textureName = getTextureFromEntity(seed: seed),
               let seedNode = createSeedNode(for: seed, textureName: textureName) else {
