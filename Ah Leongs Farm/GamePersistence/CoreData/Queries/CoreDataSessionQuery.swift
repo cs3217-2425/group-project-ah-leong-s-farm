@@ -32,4 +32,16 @@ class CoreDataSessionQuery: SessionQuery {
                 return SessionData(id: id)
             }
     }
+
+    func fetchById(sessionId: UUID) -> SessionData? {
+        let request = Session.fetchRequest()
+        let predicate = NSPredicate(format: "id == %@", sessionId as CVarArg)
+        request.predicate = predicate
+
+        guard let session = store.fetch(request: request).first else {
+            return nil
+        }
+
+        return SessionData(id: sessionId)
+    }
 }

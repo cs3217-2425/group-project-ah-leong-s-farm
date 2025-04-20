@@ -28,6 +28,15 @@ class PersistenceManager {
     private(set) var gameStateMutation: (any GameStateMutation)? = CoreDataGameStateMutation()
     private(set) var gameStateQuery: (any GameStateQuery)? = CoreDataGameStateQuery()
 
+    // MARK: - AbstractSeedPersistenceManager
+    private(set) var seedQuery: (any SeedQuery)? = CoreDataSeedQuery()
+    private(set) var appleSeedMutation: (any SeedMutation<AppleSeed>)? =
+        CoreDataSeedMutation<AppleSeed, AppleSeedPersistenceEntity>()
+    private(set) var bokChoySeedMutation: (any SeedMutation<BokChoySeed>)? =
+        CoreDataSeedMutation<BokChoySeed, BokChoySeedPersistenceEntity>()
+    private(set) var potatoSeedMutation: (any SeedMutation<PotatoSeed>)? =
+        CoreDataSeedMutation<PotatoSeed, PotatoSeedPersistenceEntity>()
+
     // MARK: - AbstractCropPersistenceManager
     private(set) var cropQuery: (any CropQuery)? = CoreDataCropQuery()
     private(set) var appleMutation: (any CropMutation<Apple>)? = CoreDataCropMutation<Apple, ApplePersistenceEntity>()
@@ -50,6 +59,32 @@ class PersistenceManager {
                 persistenceObject: visitor
             )
         }
+    }
+
+    func acceptToDelete(visitor: GamePersistenceObject, persistenceId: UUID) {
+        let isSuccessfullyDeleted = visitor.delete(manager: self, persistenceId: persistenceId)
+
+        if isSuccessfullyDeleted {
+            persistenceMap.removeValue(forKey: visitor.id)
+        }
+    }
+
+    func hasSessionPersisted() -> Bool {
+        guard let sessionQuery = sessionQuery else {
+            return false
+        }
+
+        return sessionQuery.doesSessionExist(sessionId: sessionId)
+    }
+
+    private func createSessionIfNeeded() -> Bool {
+        guard let sessionMutation = sessionMutation else {
+            return false
+        }
+
+        let sessionData = SessionData(id: sessionId)
+
+        return sessionMutation.upsertSession(session: sessionData)
     }
 
     func persist(entities: [any Entity]) {
@@ -75,24 +110,6 @@ class PersistenceManager {
         for metaData in deletePersistenceMap.values {
             acceptToDelete(visitor: metaData.persistenceObject, persistenceId: metaData.persistenceId)
         }
-    }
-
-    func acceptToDelete(visitor: GamePersistenceObject, persistenceId: UUID) {
-        let isSuccessfullyDeleted = visitor.delete(manager: self, persistenceId: persistenceId)
-
-        if isSuccessfullyDeleted {
-            persistenceMap.removeValue(forKey: visitor.id)
-        }
-    }
-
-    private func createSessionIfNeeded() -> Bool {
-        guard let sessionMutation = sessionMutation else {
-            return false
-        }
-
-        let sessionData = SessionData(id: sessionId)
-
-        return sessionMutation.upsertSession(session: sessionData)
     }
 
     private func startPersistenceTimer() {
@@ -129,6 +146,10 @@ extension PersistenceManager: AbstractPlotPersistenceManager {
 
 // MARK: - AbstractGameStatePersistenceManager
 extension PersistenceManager: AbstractGameStatePersistenceManager {
+}
+
+// MARK: - AbstractSeedPersistenceManager
+extension PersistenceManager: AbstractSeedPersistenceManager {
 }
 
 // MARK: - AbstractCropPersistenceManager

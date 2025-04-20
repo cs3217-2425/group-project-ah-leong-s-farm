@@ -214,12 +214,11 @@ class GameManager {
     // MARK: - Entity Creation Helpers
 
     private func addStartingItems() {
-        let bokChoySeeds = SeedFactory.createMultiple(type: BokChoySeed.type, quantity: 8)
+        let seeds = loadSeeds()
         let fertilisers = ToolFactory.createMultiple(type: Fertiliser.type, quantity: 3)
         let premiumFertilisers = ToolFactory.createMultiple(type: PremiumFertiliser.type, quantity: 6)
-        let appleSeeds = SeedFactory.createMultiple(type: AppleSeed.type, quantity: 3)
 
-        let allItems = bokChoySeeds + fertilisers + premiumFertilisers + appleSeeds
+        let allItems = seeds + fertilisers + premiumFertilisers
 
         gameWorld.addEntities(allItems)
 
@@ -230,5 +229,16 @@ class GameManager {
         if let inventorySystem = gameWorld.getSystem(ofType: InventorySystem.self) {
             inventorySystem.addItemsToInventory(allItems)
         }
+    }
+
+    private func loadSeeds() -> [any Entity] {
+        let startingSeeds = SeedFactory.createMultiple(type: BokChoySeed.type, quantity: 8) +
+            SeedFactory.createMultiple(type: AppleSeed.type, quantity: 3)
+
+        if persistenceManager.hasSessionPersisted() {
+            return persistenceManager.loadSeeds()
+        }
+
+        return startingSeeds
     }
 }
