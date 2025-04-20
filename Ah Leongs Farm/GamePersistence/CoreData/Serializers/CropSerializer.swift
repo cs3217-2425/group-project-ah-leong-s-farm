@@ -40,6 +40,7 @@ class CropSerializer<T: Crop, S: AbstractCropPersistenceEntity> {
     private func updateAttributes(persistenceEntity: S, crop: T) {
         // required attributes
         updateHealthAttribute(persistenceEntity: persistenceEntity, crop: crop)
+        updateYieldAttribute(persistenceEntity: persistenceEntity, crop: crop)
 
         // optional attributes
         updatePositionAttribute(persistenceEntity: persistenceEntity, crop: crop)
@@ -76,6 +77,20 @@ class CropSerializer<T: Crop, S: AbstractCropPersistenceEntity> {
             newComponent.health = healthComponent?.health ?? 0
             newComponent.maxHealth = healthComponent?.maxHealth ?? 0
             persistenceEntity.healthComponent = newComponent
+        }
+    }
+
+    private func updateYieldAttribute(persistenceEntity: S, crop: T) {
+        let yieldComponent = crop.getComponentByType(ofType: YieldComponent.self)
+
+        if let yieldPersistenceComponent = persistenceEntity.yieldComponent {
+            yieldPersistenceComponent.yield = Int64(yieldComponent?.yield ?? 0)
+            yieldPersistenceComponent.maxYield = Int64(yieldComponent?.maxYield ?? 0)
+        } else {
+            let newComponent = YieldPersistenceComponent(context: store.managedContext)
+            newComponent.yield = Int64(yieldComponent?.yield ?? 0)
+            newComponent.maxYield = Int64(yieldComponent?.maxYield ?? 0)
+            persistenceEntity.yieldComponent = newComponent
         }
     }
 
@@ -136,10 +151,5 @@ class CropSerializer<T: Crop, S: AbstractCropPersistenceEntity> {
         request.predicate = predicate
 
         return store.fetch(request: request).first
-    }
-
-    private func checkRep(crop: T) -> Bool {
-        let hasHealthComponent = crop.getComponentByType(ofType: HealthComponent.self) != nil
-        return hasHealthComponent
     }
 }
