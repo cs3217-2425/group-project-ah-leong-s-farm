@@ -11,23 +11,35 @@ class CoreDataSeedMutation<T: Seed, S: AbstractSeedPersistenceEntity>: SeedMutat
 
     private let store: Store
     private let serializer: SeedSerializer<T, S>
+    private let shouldSave: Bool
 
-    init(store: Store) {
+    init(store: Store, shouldSave: Bool = false) {
         self.store = store
         self.serializer = SeedSerializer<T, S>(store: store)
+        self.shouldSave = shouldSave
     }
-    convenience init?() {
+
+    convenience init?(shouldSave: Bool = false) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return nil
         }
 
-        self.init(store: appDelegate.persistentContainer)
+        self.init(store: appDelegate.persistentContainer, shouldSave: shouldSave)
     }
 
     func upsertSeed(sessionId: UUID, id: UUID, seed: T) -> Bool {
         guard (serializer.serialize(sessionId: sessionId, id: id, seed: seed)
                ?? serializer.serializeNew(sessionId: sessionId, id: id, seed: seed)) != nil else {
             return false
+        }
+
+        if shouldSave {
+            do {
+                try store.managedContext.save()
+            } catch {
+                store.rollback()
+                return false
+            }
         }
 
         return true
@@ -39,6 +51,15 @@ class CoreDataSeedMutation<T: Seed, S: AbstractSeedPersistenceEntity>: SeedMutat
         }
 
         store.managedContext.delete(persistenceEntity)
+
+        if shouldSave {
+            do {
+                try store.managedContext.save()
+            } catch {
+                store.rollback()
+                return false
+            }
+        }
 
         return true
     }

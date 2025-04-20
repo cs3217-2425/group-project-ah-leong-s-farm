@@ -9,17 +9,19 @@ import UIKit
 
 class CoreDataSessionMutation: SessionMutation {
     private let store: Store
+    private let shouldSave: Bool
 
-    init(store: Store) {
+    init(store: Store, shouldSave: Bool = false) {
         self.store = store
+        self.shouldSave = shouldSave
     }
 
-    convenience init?() {
+    convenience init?(shouldSave: Bool = false) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return nil
         }
 
-        self.init(store: appDelegate.persistentContainer)
+        self.init(store: appDelegate.persistentContainer, shouldSave: shouldSave)
     }
 
     func upsertSession(session: SessionData) -> Bool {
@@ -30,6 +32,15 @@ class CoreDataSessionMutation: SessionMutation {
         let newSession = Session(context: store.managedContext)
         newSession.id = session.id
 
+        if shouldSave {
+            do {
+                try store.managedContext.save()
+            } catch {
+                store.rollback()
+                return false
+            }
+        }
+
         return true
     }
 
@@ -39,6 +50,15 @@ class CoreDataSessionMutation: SessionMutation {
         }
 
         store.managedContext.delete(session)
+
+        if shouldSave {
+            do {
+                try store.managedContext.save()
+            } catch {
+                store.rollback()
+                return false
+            }
+        }
 
         return true
     }

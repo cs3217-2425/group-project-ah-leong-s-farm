@@ -10,24 +10,35 @@ import UIKit
 class CoreDataGameStateMutation: GameStateMutation {
     private let store: Store
     private let gameStateSerializer: GameStateSerializer
+    private let shouldSave: Bool
 
-    init(store: Store) {
+    init(store: Store, shouldSave: Bool = false) {
         self.store = store
         gameStateSerializer = GameStateSerializer(store: store)
+        self.shouldSave = shouldSave
     }
 
-    convenience init?() {
+    convenience init?(shouldSave: Bool = false) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return nil
         }
 
-        self.init(store: appDelegate.persistentContainer)
+        self.init(store: appDelegate.persistentContainer, shouldSave: shouldSave)
     }
 
     func upsertGameState(sessionId: UUID, gameState: GameState) -> Bool {
         guard gameStateSerializer.serialize(sessionId: sessionId, gameState: gameState) ??
             gameStateSerializer.serializeNew(sessionId: sessionId, gameState: gameState) != nil else {
             return false
+        }
+
+        if shouldSave {
+            do {
+                try store.managedContext.save()
+            } catch {
+                store.rollback()
+                return false
+            }
         }
 
         return true
@@ -39,6 +50,15 @@ class CoreDataGameStateMutation: GameStateMutation {
         }
 
         store.managedContext.delete(gameState)
+
+        if shouldSave {
+            do {
+                try store.managedContext.save()
+            } catch {
+                store.rollback()
+                return false
+            }
+        }
 
         return true
     }

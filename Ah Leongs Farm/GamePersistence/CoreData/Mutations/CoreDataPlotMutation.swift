@@ -10,24 +10,35 @@ import UIKit
 class CoreDataPlotMutation: PlotMutation {
     private let store: Store
     private let plotSerializer: PlotSerializer
+    private let shouldSave: Bool
 
-    init(store: Store) {
+    init(store: Store, shouldSave: Bool = false) {
         self.store = store
         plotSerializer = PlotSerializer(store: store)
+        self.shouldSave = shouldSave
     }
 
-    convenience init?() {
+    convenience init?(shouldSave: Bool = false) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return nil
         }
 
-        self.init(store: appDelegate.persistentContainer)
+        self.init(store: appDelegate.persistentContainer, shouldSave: shouldSave)
     }
 
     func upsertPlot(sessionId: UUID, id: UUID, plot: Plot) -> Bool {
         guard plotSerializer.serialize(sessionId: sessionId, id: id, plot: plot) ??
                 plotSerializer.serializeNew(sessionId: sessionId, id: id, plot: plot) != nil else {
             return false
+        }
+
+        if shouldSave {
+            do {
+                try store.managedContext.save()
+            } catch {
+                store.rollback()
+                return false
+            }
         }
 
         return true
@@ -39,6 +50,15 @@ class CoreDataPlotMutation: PlotMutation {
         }
 
         store.managedContext.delete(plotPersistenceEntity)
+
+        if shouldSave {
+            do {
+                try store.managedContext.save()
+            } catch {
+                store.rollback()
+                return false
+            }
+        }
 
         return true
     }

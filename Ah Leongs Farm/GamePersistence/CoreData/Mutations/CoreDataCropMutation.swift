@@ -10,24 +10,35 @@ import UIKit
 class CoreDataCropMutation<T: Crop, S: AbstractCropPersistenceEntity>: CropMutation {
     private let store: Store
     private let serializer: CropSerializer<T, S>
+    private let shouldSave: Bool
 
-    init(store: Store) {
+    init(store: Store, shouldSave: Bool = false) {
         self.store = store
         self.serializer = CropSerializer<T, S>(store: store)
+        self.shouldSave = shouldSave
     }
 
-    convenience init?() {
+    convenience init?(shouldSave: Bool = false) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return nil
         }
 
-        self.init(store: appDelegate.persistentContainer)
+        self.init(store: appDelegate.persistentContainer, shouldSave: shouldSave)
     }
 
     func upsertCrop(sessionId: UUID, id: UUID, crop: T) -> Bool {
         guard serializer.serialize(sessionId: sessionId, id: id, crop: crop) ?? serializer
             .serializeNew(sessionId: sessionId, id: id, crop: crop) != nil else {
             return false
+        }
+
+        if shouldSave {
+            do {
+                try store.managedContext.save()
+            } catch {
+                store.rollback()
+                return false
+            }
         }
 
         return true
@@ -39,6 +50,15 @@ class CoreDataCropMutation<T: Crop, S: AbstractCropPersistenceEntity>: CropMutat
         }
 
         store.managedContext.delete(persistenceEntity)
+
+        if shouldSave {
+            do {
+                try store.managedContext.save()
+            } catch {
+                store.rollback()
+                return false
+            }
+        }
 
         return false
     }

@@ -117,6 +117,11 @@ class PersistenceManager {
         }
     }
 
+    func saveSession() {
+        let persistenceSaveDelegate = UIApplication.shared.delegate as? AppDelegate
+        persistenceSaveDelegate?.saveContext()
+    }
+
     private func startPersistenceTimer() {
         timer = Timer.scheduledTimer(
             withTimeInterval: Self.PollingPeriodSeconds, repeats: true

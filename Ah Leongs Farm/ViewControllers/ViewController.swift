@@ -105,12 +105,7 @@ class ViewController: UIViewController {
     }
 
     @objc private func appWillResignActive() {
-        savePersistenceContext()
-    }
-
-    private func savePersistenceContext() {
-        let persistenceSaveDelegate = UIApplication.shared.delegate as? AppDelegate
-        persistenceSaveDelegate?.saveContext()
+        gameManager.saveSession()
     }
 }
 
@@ -138,7 +133,7 @@ extension ViewController: GameControlsViewDelegate {
             // removes strong cyclic reference between game manager and view controller
             self.gameManager.removeGameObserver(self)
             self.gameManager.stopSounds()
-            self.savePersistenceContext()
+            self.gameManager.saveSession()
             self.dismiss(animated: true, completion: nil)
         }))
 
