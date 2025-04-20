@@ -48,6 +48,19 @@ class SoundSystem: ISystem {
         backgroundMusicPlayer = nil
     }
 
+    func prepareToPlay() {
+        guard let url = Bundle.main.url(forResource: "add-plot", withExtension: "wav") else {
+            return
+        }
+
+        do {
+            let player = try AVAudioPlayer(contentsOf: url)
+            player.prepareToPlay()
+        } catch {
+            print("Failed to play sound effect: \(error)")
+        }
+    }
+
     func playSoundEffect(named filename: String, fileExtension: String = "wav") {
         guard !isMuted else {
             return
