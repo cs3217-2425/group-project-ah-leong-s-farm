@@ -72,14 +72,17 @@ class MarketSystemTests: XCTestCase {
         // Create and add bokchoy seeds with sell component
         let bokChoySeed1 = BokChoySeed()
         bokChoySeed1.attachComponent(SellComponent())
+        bokChoySeed1.attachComponent(ItemComponent())
         manager.addEntity(bokChoySeed1)
 
         let bokChoySeed2 = BokChoySeed()
         bokChoySeed2.attachComponent(SellComponent())
+        bokChoySeed2.attachComponent(ItemComponent())
         manager.addEntity(bokChoySeed2)
 
         // Add one without sell component
         let bokChoySeed3 = BokChoySeed()
+        bokChoySeed3.attachComponent(ItemComponent())
         manager.addEntity(bokChoySeed3)
 
         let sellQuantity = marketSystem.getSellQuantity(for: BokChoySeed.type)
