@@ -17,8 +17,6 @@ class PersistenceManager {
 
     private var timer: Timer?
     private var lastObservedEntities: ([any Entity])?
-    private var persistenceSaveDelegate: PersistenceSaveDelegate? =
-        UIApplication.shared.delegate as? AppDelegate
 
     private var sessionMutation: (any SessionMutation)? = CoreDataSessionMutation()
     private var sessionQuery: (any SessionQuery)? = CoreDataSessionQuery()
@@ -117,9 +115,6 @@ class PersistenceManager {
         for metaData in deletePersistenceMap.values {
             acceptToDelete(visitor: metaData.persistenceObject, persistenceId: metaData.persistenceId)
         }
-
-        // Save to context
-        persistenceSaveDelegate?.saveContext()
     }
 
     private func startPersistenceTimer() {

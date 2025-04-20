@@ -100,6 +100,11 @@ class SessionListViewController: UIViewController, UICollectionViewDataSource, U
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
     }
+
+    private func savePersistenceContext() {
+        let persistenceSaveDelegate = UIApplication.shared.delegate as? AppDelegate
+        persistenceSaveDelegate?.saveContext()
+    }
 }
 
 // MARK: - UIGestureRecognizerDelegate
@@ -128,6 +133,9 @@ extension SessionListViewController: SessionViewCellDelegate {
               mutation.deleteSession(id: sessionId) else {
             return
         }
+
+        // Save delete operation
+        savePersistenceContext()
 
         // Update UI
         sessions.remove(at: index)
