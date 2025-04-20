@@ -25,6 +25,7 @@
     </entity>
     <entity name="GrowthPersistenceComponent" representedClassName="GrowthPersistenceComponent" syncable="YES" codeGenerationType="class">
         <attribute name="currentGrowthTurn" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="totalGrowthStages" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="totalGrowthTurns" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <entity name="HarvestedPersistenceComponent" representedClassName="HarvestedPersistenceComponent" syncable="YES" codeGenerationType="class"/>

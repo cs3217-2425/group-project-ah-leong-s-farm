@@ -24,7 +24,7 @@ class Potato: EntityAdapter, Crop {
     }
 
     private func setUpComponents() {
-        let cropComponent = CropComponent(cropType: .potato)
+        let cropComponent = CropComponent()
         attachComponent(cropComponent)
 
         let healthComponent = HealthComponent()
@@ -35,7 +35,7 @@ class Potato: EntityAdapter, Crop {
     }
 
     private func setUpComponents(config: CropConfig) {
-        let cropComponent = CropComponent(cropType: .apple)
+        let cropComponent = CropComponent()
         attachComponent(cropComponent)
 
         let healthComponent = HealthComponent(
@@ -58,6 +58,7 @@ class Potato: EntityAdapter, Crop {
         if let growthConfig = config.growthConfig {
             let growthComponent = GrowthComponent(
                 totalGrowthTurns: growthConfig.totalGrowthTurns,
+                totalGrowthStages: growthConfig.totalGrowthStages,
                 currentGrowthTurn: growthConfig.currentGrowthTurn
             )
 
@@ -73,10 +74,6 @@ class Potato: EntityAdapter, Crop {
             let itemComponent = ItemComponent()
             attachComponent(itemComponent)
         }
-    }
-
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(potato: self, in: renderer)
     }
 }
 

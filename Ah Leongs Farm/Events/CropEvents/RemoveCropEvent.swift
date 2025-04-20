@@ -10,11 +10,13 @@ struct RemoveCropEvent: GameEvent {
     let column: Int
 
     func execute(in context: any EventContext, queueable: any EventQueueable) -> (any EventData)? {
-        guard let cropSystem = context.getSystem(ofType: CropSystem.self) else {
+        guard let cropSystem = context.getSystem(ofType: CropSystem.self),
+              let soundSystem = context.getSystem(ofType: SoundSystem.self) else {
             return nil
         }
 
         let isSuccessfullyRemoved = cropSystem.removeCrop(row: row, column: column)
+        soundSystem.playSoundEffect(named: "remove-crop")
 
         return RemoveCropEventData(
             row: row,

@@ -7,5 +7,17 @@
 
 import Foundation
 
-protocol Crop: SpriteRenderManagerVisitor, PlotOccupant where Self: EntityAdapter {
+protocol Crop: SpriteRenderManagerVisitor,
+               SpriteRenderManagerUpdateVisitor,
+               PlotOccupant where Self: EntityAdapter {
+}
+
+extension Crop {
+    func createNode(manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.createNodeForEntity(crop: self, in: renderer)
+    }
+
+    func transformNode(_ node: any IRenderNode, manager: SpriteRenderManager, renderer: GameRenderer) {
+        manager.transformNodeForEntity(node, crop: self, in: renderer)
+    }
 }

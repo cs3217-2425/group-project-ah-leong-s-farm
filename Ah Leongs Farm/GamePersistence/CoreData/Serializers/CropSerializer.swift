@@ -88,10 +88,12 @@ class CropSerializer<T: Crop, S: AbstractCropPersistenceEntity> {
         if let growthPersistenceComponent = persistenceEntity.growthComponent {
             growthPersistenceComponent.currentGrowthTurn = growthComponent.currentGrowthTurn
             growthPersistenceComponent.totalGrowthTurns = Int64(growthComponent.totalGrowthTurns)
+            growthPersistenceComponent.totalGrowthStages = Int64(growthComponent.totalGrowthStages)
         } else {
             let newComponent = GrowthPersistenceComponent(context: store.managedContext)
             newComponent.currentGrowthTurn = growthComponent.currentGrowthTurn
             newComponent.totalGrowthTurns = Int64(growthComponent.totalGrowthTurns)
+            newComponent.totalGrowthStages = Int64(growthComponent.totalGrowthStages)
             persistenceEntity.growthComponent = newComponent
         }
     }

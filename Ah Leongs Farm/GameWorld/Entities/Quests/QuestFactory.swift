@@ -10,21 +10,24 @@ import Foundation
 class QuestFactory {
 
     // MARK: QuestObjective helper functions
-    private static func createPlantCropObjective(type: CropType,
+    private static func createPlantCropObjective(type: EntityType,
                                                  plantAmount: Int) -> QuestObjective {
         let plantCropCriteria = PlantCropCriteria(cropType: type)
+        let displayName = ItemToViewDataMap.itemTypeToDisplayName[type] ?? ""
+
         return QuestObjective(
-            description: "Plant \(plantAmount) \(type)s",
+            description: "Plant \(plantAmount) \(displayName)s",
             criteria: plantCropCriteria,
             target: Float(plantAmount)
         )
     }
 
-    private static func createHarvestCropObjective(type: CropType,
+    private static func createHarvestCropObjective(type: EntityType,
                                                    harvestAmount: Int) -> QuestObjective {
         let harvestCropCriteria = HarvestCropCriteria(cropType: type)
+        let displayName = ItemToViewDataMap.itemTypeToDisplayName[type] ?? ""
         return QuestObjective(
-            description: "Harvest \(harvestAmount) \(type)s",
+            description: "Harvest \(harvestAmount) \(displayName)s",
             criteria: harvestCropCriteria,
             target: Float(harvestAmount)
         )
@@ -51,7 +54,7 @@ class QuestFactory {
     // MARK: - Multi-Objective Quests
 
     private static func createFarmBusinessQuest(
-        cropType: CropType = .apple,
+        cropType: EntityType = Apple.type,
         sellItemType: EntityType = Apple.type,
         harvestAmount: Int = 15,
         sellAmount: Int = 10,
@@ -59,7 +62,7 @@ class QuestFactory {
         order: Int = Int.max
     ) -> Quest {
         // First objective: Harvest crops
-        let harvestObjective = createHarvestCropObjective(type: .apple,
+        let harvestObjective = createHarvestCropObjective(type: Apple.type,
                                                           harvestAmount: harvestAmount)
 
         // Second objective: Sell crops
@@ -77,7 +80,8 @@ class QuestFactory {
         ]
 
         // Create the quest with all objectives
-        let title = "\(cropType.rawValue.capitalized) Business Venture"
+        let displayName = ItemToViewDataMap.itemTypeToDisplayName[cropType] ?? ""
+        let title = "\(displayName) Business Venture"
 
         let component = QuestComponent(
             title: title,
@@ -97,7 +101,7 @@ class QuestFactory {
             RewardCurrencyComponent(currencies: [.coin: 50])
         ]
 
-        let harvestObjective = createHarvestCropObjective(type: .apple,
+        let harvestObjective = createHarvestCropObjective(type: Apple.type,
                                                           harvestAmount: 10)
 
         let title = "Apple Collection"
@@ -155,13 +159,13 @@ class QuestFactory {
                                             PotatoSeed.type: 3])
         ]
 
-        let plantAppleObjective = createPlantCropObjective(type: .apple, plantAmount: 5)
-        let plantBokChoyObjective = createPlantCropObjective(type: .bokChoy, plantAmount: 5)
-        let plantPotatoObjective = createPlantCropObjective(type: .potato, plantAmount: 5)
+        let plantAppleObjective = createPlantCropObjective(type: Apple.type, plantAmount: 5)
+        let plantBokChoyObjective = createPlantCropObjective(type: BokChoy.type, plantAmount: 5)
+        let plantPotatoObjective = createPlantCropObjective(type: Potato.type, plantAmount: 5)
 
-        let harvestAppleObjective = createHarvestCropObjective(type: .apple, harvestAmount: 10)
-        let harvestPotatoObjective = createHarvestCropObjective(type: .potato, harvestAmount: 10)
-        let harvestBokChoyObjective = createHarvestCropObjective(type: .bokChoy, harvestAmount: 15)
+        let harvestAppleObjective = createHarvestCropObjective(type: Apple.type, harvestAmount: 10)
+        let harvestPotatoObjective = createHarvestCropObjective(type: Potato.type, harvestAmount: 10)
+        let harvestBokChoyObjective = createHarvestCropObjective(type: BokChoy.type, harvestAmount: 15)
 
         let sellAppleObjective = createSellItemObjective(type: Apple.type, sellAmount: 10)
         let sellPotatoObjective = createSellItemObjective(type: Potato.type, sellAmount: 10)
@@ -193,7 +197,7 @@ class QuestFactory {
             RewardXPComponent(amount: 25)
         ]
 
-        let harvestObjective = createHarvestCropObjective(type: .bokChoy,
+        let harvestObjective = createHarvestCropObjective(type: BokChoy.type,
                                                           harvestAmount: 3)
 
         let title = "Learning to harvest"

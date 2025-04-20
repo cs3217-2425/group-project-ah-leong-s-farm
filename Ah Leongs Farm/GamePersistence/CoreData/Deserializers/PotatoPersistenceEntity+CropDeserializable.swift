@@ -26,7 +26,8 @@ extension PotatoPersistenceEntity: CropDeserializable {
         if let growthComponent = growthComponent {
             growthConfig = GrowthConfig(
                 totalGrowthTurns: Int(growthComponent.totalGrowthTurns),
-                currentGrowthTurn: growthComponent.currentGrowthTurn
+                currentGrowthTurn: growthComponent.currentGrowthTurn,
+                totalGrowthStages: Int(growthComponent.totalGrowthStages)
             )
         }
 

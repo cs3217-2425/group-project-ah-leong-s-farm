@@ -5,7 +5,7 @@
 //  Created by Jerry Leong on 1/4/25.
 //
 
-import GameplayKit
+import Foundation
 
 class PersistenceComponent: ComponentAdapter {
     let persistenceId: UUID

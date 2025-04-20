@@ -19,6 +19,7 @@ struct CropConfig {
 struct GrowthConfig {
     let totalGrowthTurns: Int
     let currentGrowthTurn: Float
+    let totalGrowthStages: Int
 }
 
 struct HealthConfig {

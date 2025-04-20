@@ -101,6 +101,17 @@ class GameRenderer {
         for entityID in entityIDsToRemove {
             removeRenderNode(for: entityID)
         }
+
+        let entitiesToUpdateFor = getEntitiesForUpdate(allEntities: allEntities)
+
+        for renderManager in renderPipeline.iterable {
+            for entity in entitiesToUpdateFor {
+                guard let node = entityNodeMap[entity.id] else {
+                    continue
+                }
+                renderManager.transformNode(node, for: entity, in: self)
+            }
+        }
     }
 
     /// Get render nodes to create, sorted from highest to lowest priority.
@@ -138,6 +149,14 @@ class GameRenderer {
 
         return entityIDsForRemoval
     }
+
+    private func getEntitiesForUpdate(allEntities: [Entity]) -> [Entity] {
+        allEntities.filter { entity in
+            entityNodeMap[entity.id] != nil
+        }.filter {
+            $0.getComponentByType(ofType: RenderComponent.self)?.updatable == true
+        }
+    }
 }
 
 extension GameRenderer: IGameObserver {
@@ -145,8 +164,11 @@ extension GameRenderer: IGameObserver {
         guard let scene = gameScene else {
             return
         }
+        let renderEntities = entities.filter {
+            $0.getComponentByType(ofType: RenderComponent.self) != nil
+        }
 
-        executeRenderPipeline(allEntities: entities, in: scene)
+        executeRenderPipeline(allEntities: renderEntities, in: scene)
     }
 }
 

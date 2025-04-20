@@ -12,6 +12,11 @@ class MarketSystem: ISystem {
     private var sellableEntityTypes: Set<EntityType> = MarketInformation.sellableItems
     unowned var manager: EntityManager?
 
+    private var recentBuyVolumes: [EntityType: Int] = [:]
+    private var recentSellVolumes: [EntityType: Int] = [:]
+    private var netVolumeWindow: [EntityType: [Int]] = [:]
+    private let windowSize = 3
+
     required init(for manager: EntityManager) {
         self.manager = manager
     }
@@ -61,7 +66,7 @@ class MarketSystem: ISystem {
         }
 
         itemStocks[type] = currentStock - quantity
-
+        recentBuyVolumes[type, default: 0] += quantity
         return true
     }
 
@@ -74,6 +79,7 @@ class MarketSystem: ISystem {
         } else {
             itemStocks[type] = currentStock + quantity
         }
+        recentSellVolumes[type, default: 0] += quantity
     }
 
     func addEntityToSellMarket(entity: Entity) {
@@ -93,8 +99,55 @@ class MarketSystem: ISystem {
         itemStocks = MarketInformation.initialItemStocks
     }
 
-    func updateBuyandSellPrice() {
-        // To be added once buy and sell price algo is decided
+    func updateMarketPrices() {
+        for (type, basePrice) in MarketInformation.initialItemPrices {
+            let avgNet = updateAndGetAverageNet(for: type)
+            let newPrice = calculateSmoothedPrice(for: type, basePrice: basePrice, avgNet: avgNet)
+            itemPrices[type] = newPrice
+        }
+
+        recentBuyVolumes.removeAll()
+        recentSellVolumes.removeAll()
+    }
+
+    private func updateAndGetAverageNet(for type: EntityType) -> Double {
+        let net = (recentBuyVolumes[type] ?? 0) - (recentSellVolumes[type] ?? 0)
+
+        var window = netVolumeWindow[type] ?? []
+        window.append(net)
+        if window.count > windowSize {
+            window.removeFirst()
+        }
+        netVolumeWindow[type] = window
+
+        return Double(window.reduce(0, +)) / Double(max(1, window.count))
+    }
+
+    private func calculateSmoothedPrice(for type: EntityType, basePrice: Price, avgNet: Double) -> Price {
+        let α = 0.05
+        let decay = 0.90
+
+        var newBuyPrice: [CurrencyType: Double] = [:]
+        var newSellPrice: [CurrencyType: Double] = [:]
+
+        for currency in basePrice.buyPrice.keys {
+            let baseBuy  = basePrice.buyPrice[currency] ?? 0
+            let baseSell = basePrice.sellPrice[currency] ?? 0
+
+            let targetBuy  = baseBuy * (1 + α * avgNet)
+            let targetSell = baseSell * (1 + α * avgNet)
+
+            let prevBuy  = itemPrices[type]?.buyPrice[currency] ?? baseBuy
+            let prevSell = itemPrices[type]?.sellPrice[currency] ?? baseSell
+
+            let newBuy  = prevBuy * (1 - decay) + targetBuy  * decay
+            let newSell = prevSell * (1 - decay) + targetSell * decay
+
+            newBuyPrice[currency] = Double(max(1, Int(newBuy.rounded())))
+            newSellPrice[currency] = Double(max(1, Int(newSell.rounded())))
+        }
+
+        return Price(buyPrice: newBuyPrice, sellPrice: newSellPrice)
     }
 
     private func getSellableEntitiesOf(_ type: EntityType) -> [Entity] {

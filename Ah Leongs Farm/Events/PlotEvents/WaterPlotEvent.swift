@@ -10,11 +10,13 @@ struct WaterPlotEvent: GameEvent {
     let column: Int
 
     func execute(in context: any EventContext, queueable: any EventQueueable) -> (any EventData)? {
-        guard let gridSystem = context.getSystem(ofType: GridSystem.self) else {
+        guard let gridSystem = context.getSystem(ofType: GridSystem.self),
+              let soundSystem = context.getSystem(ofType: SoundSystem.self) else {
             return nil
         }
 
         gridSystem.waterPlot(row: row, column: column)
+        soundSystem.playSoundEffect(named: "water")
 
         return WaterPlotEventData(row: row, column: column, isSuccessfullyWatered: true)
     }
