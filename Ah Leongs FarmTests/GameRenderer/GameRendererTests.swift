@@ -1,5 +1,5 @@
 import XCTest
-import GameplayKit
+import SpriteKit
 @testable import Ah_Leongs_Farm
 
 class GameRendererTests: XCTestCase {
@@ -84,7 +84,8 @@ class GameRendererTests: XCTestCase {
         let tileMapNode = TileMapNode()
         tileMapNode.numberOfRows = 3
         tileMapNode.numberOfColumns = 3
-        gameRenderer.setRenderNode(for: ObjectIdentifier(GKEntity()), node: tileMapNode)
+        let entity = EntityAdapter()
+        gameRenderer.setRenderNode(for: ObjectIdentifier(entity), node: tileMapNode)
 
         gameRenderer.lightUpTile(at: 0, column: 0)
 
@@ -99,7 +100,8 @@ class GameRendererTests: XCTestCase {
         let tileMapNode = TileMapNode()
         tileMapNode.numberOfRows = 3
         tileMapNode.numberOfColumns = 3
-        gameRenderer.setRenderNode(for: ObjectIdentifier(GKEntity()), node: tileMapNode)
+        let entity = EntityAdapter()
+        gameRenderer.setRenderNode(for: ObjectIdentifier(entity), node: tileMapNode)
 
         gameRenderer.lightUpTile(at: 0, column: 0)
         gameRenderer.unlightAllTiles()

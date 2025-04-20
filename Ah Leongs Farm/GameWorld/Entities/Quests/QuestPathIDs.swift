@@ -12,7 +12,7 @@ struct QuestPathIDs {
     let fruits = FruitPathIDs()
     let market = MarketPathIDs()
     let technology = TechnologyPathIDs()
-    let mastery = MasteryPathIDs()
+    let pro = ProPathIDs()
 
     struct TutorialPathIDs {
         let firstSteps = UUID()
@@ -22,7 +22,7 @@ struct QuestPathIDs {
     struct VegetablePathIDs {
         let apprentice = UUID()
         let greenThumb = UUID()
-        let master = UUID()
+        let pro = UUID()
     }
 
     struct FruitPathIDs {
@@ -42,7 +42,7 @@ struct QuestPathIDs {
         let solarFarmer = UUID()
     }
 
-    struct MasteryPathIDs {
+    struct ProPathIDs {
         let sustainableFarming = UUID()
         let farmEmpire = UUID()
         let agriculturalLegend = UUID()

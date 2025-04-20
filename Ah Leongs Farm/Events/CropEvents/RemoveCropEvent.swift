@@ -25,7 +25,7 @@ struct RemoveCropEvent: GameEvent {
             energySystem.useEnergy(of: .base, amount: 1)
             soundSystem.playSoundEffect(named: "remove-crop")
         }
-        
+
         return RemoveCropEventData(
             row: row,
             column: column,

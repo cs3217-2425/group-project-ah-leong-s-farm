@@ -104,8 +104,8 @@ class QuestFactory {
                                            prereqs: [questIDs.tutorial.farmFoundations]),
             createGreenThumbQuest(id: questIDs.vegetables.greenThumb,
                                   prereqs: [questIDs.vegetables.apprentice]),
-            createVegetableMasterQuest(id: questIDs.vegetables.master,
-                                       prereqs: [questIDs.vegetables.greenThumb]),
+            createVegetableProQuest(id: questIDs.vegetables.pro,
+                                    prereqs: [questIDs.vegetables.greenThumb]),
 
             // Fruit Path
             createOrchardKeeperQuest(id: questIDs.fruits.orchardKeeper,
@@ -131,16 +131,16 @@ class QuestFactory {
 
             // Mastery Quests - require completion of multiple paths
             createSustainableFarmingQuest(
-                id: questIDs.mastery.sustainableFarming,
+                id: questIDs.pro.sustainableFarming,
                 prereqs: [questIDs.vegetables.greenThumb, questIDs.technology.solarFarmer]
             ),
             createFarmEmpireQuest(
-                id: questIDs.mastery.farmEmpire,
-                prereqs: [questIDs.market.mogul, questIDs.fruits.pomologist, questIDs.vegetables.master]
+                id: questIDs.pro.farmEmpire,
+                prereqs: [questIDs.market.mogul, questIDs.fruits.pomologist, questIDs.vegetables.pro]
             ),
             createAgriculturalLegendQuest(
-                id: questIDs.mastery.agriculturalLegend,
-                prereqs: [questIDs.mastery.sustainableFarming, questIDs.mastery.farmEmpire]
+                id: questIDs.pro.agriculturalLegend,
+                prereqs: [questIDs.pro.sustainableFarming, questIDs.pro.farmEmpire]
             )
         ]
     }

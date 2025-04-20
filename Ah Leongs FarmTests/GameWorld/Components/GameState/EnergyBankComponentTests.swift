@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import GameplayKit
+import Foundation
 @testable import Ah_Leongs_Farm
 
 final class EnergyBankComponentTests: XCTestCase {

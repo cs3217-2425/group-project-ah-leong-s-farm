@@ -31,6 +31,6 @@ class TileMapRenderManager: IRenderManager {
         tileMapNode.enableAutomapping = false
         tileMapNode.isUserInteractionEnabled = false
 
-        renderer.setRenderNode(for: ObjectIdentifier(entity), node: tileMapNode)
+        renderer.setRenderNode(for: entity.id, node: tileMapNode)
     }
 }

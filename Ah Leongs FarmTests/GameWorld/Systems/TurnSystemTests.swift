@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import GameplayKit
 @testable import Ah_Leongs_Farm
 
 final class TurnSystemTests: XCTestCase {
