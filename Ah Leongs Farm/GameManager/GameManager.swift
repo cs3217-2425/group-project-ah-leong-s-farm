@@ -88,11 +88,11 @@ class GameManager {
         return upgradeSystem.getUpgradePoints()
     }
 
-    func ensureTargetActiveQuestCount(target: Int = 3) {
+    func initialiseQuests() {
         guard let questSystem = gameWorld.getSystem(ofType: QuestSystem.self) else {
             return
         }
-        questSystem.ensureTargetActiveQuestCount(target: target)
+        questSystem.initialiseQuestGraph()
     }
 
     func getCurrentLevel() -> Int {
@@ -208,7 +208,7 @@ class GameManager {
         for quest in quests {
             gameWorld.addEntity(quest)
         }
-        ensureTargetActiveQuestCount()
+        initialiseQuests()
     }
 
     // MARK: - Entity Creation Helpers

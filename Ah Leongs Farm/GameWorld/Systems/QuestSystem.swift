@@ -20,6 +20,12 @@ class QuestSystem: ISystem {
         quests.filter { $0.status == .active }
     }
 
+    private var questEntityMap: [QuestID: QuestComponent] {
+        Dictionary(uniqueKeysWithValues: quests.map {
+            ($0.id, $0)
+        })
+    }
+
     func getCurrentQuests() -> [QuestComponent] {
         currentQuests
     }
@@ -28,25 +34,27 @@ class QuestSystem: ISystem {
         quests
     }
 
-    func moveToNextQuest() {
-        guard !quests.isEmpty else {
-            return
-        }
-
-        let sortedInactiveQuests = quests
-            .filter { $0.status == .inactive }
-            .sorted { $0.order < $1.order }
-
-        if let nextQuest = sortedInactiveQuests.first {
-            nextQuest.status = .active
-        }
+    func initialiseQuestGraph() {
+        validateQuestGraph()
+        updateQuestStatuses()
     }
 
-    func ensureTargetActiveQuestCount(target: Int = 2) {
-        let activeQuestsCount = quests.filter { $0.status == .active }.count
 
-        for _ in 0..<(target - activeQuestsCount) {
-            moveToNextQuest()
+    private func allPrerequisitesCompleted(for quest: QuestComponent) -> Bool {
+        for prerequisiteId in quest.prerequisites {
+            guard let prerequisite = questEntityMap[prerequisiteId],
+                  prerequisite.status == .completed else {
+                return false
+            }
+        }
+        return true
+    }
+
+    func updateQuestStatuses() {
+        for quest in quests {
+            if quest.status == .inactive && allPrerequisitesCompleted(for: quest) {
+                quest.status = .active
+            }
         }
     }
 
@@ -88,7 +96,61 @@ class QuestSystem: ISystem {
         for rewardComponent in rewardComponents {
             rewardComponent.processReward(with: self)
         }
-        ensureTargetActiveQuestCount()
+        updateQuestStatuses()
+    }
+
+    private func validateQuestGraph() {
+        enum VisitState { case white, gray, black }
+        var visitState: [QuestID: VisitState] = [:]
+
+        // Initialize all quests as unvisited
+        for quest in quests {
+            visitState[quest.id] = .white
+        }
+
+        // Path tracking for cycle reporting
+        var currentPath: [QuestID] = []
+
+        // DFS function to detect cycles
+        func dfs(questID: QuestID) {
+            // Quest not found (invalid reference)
+            guard let quest = questEntityMap[questID] else {
+                fatalError("Quest not found!")
+            }
+
+            // Already fully explored this branch, no cycles
+            if visitState[questID] == .black { return }
+
+            // Node is in the current path - cycle detected!
+            if visitState[questID] == .gray {
+                // Find where the cycle starts in the current path
+                if let cycleStart = currentPath.firstIndex(of: questID) {
+                    let cycle = Array(currentPath[cycleStart...]) + [questID]
+                    fatalError("Cyclic dependency found in quests: \(cycle)")
+                } else {
+                    // Shouldn't happen, but just in case
+                    fatalError("Cycli dependency found in quests: \(currentPath), \(questID)")
+                }
+            }
+
+            // Mark as being visited in current recursion path
+            visitState[questID] = .gray
+            currentPath.append(questID)
+
+            // Visit all prerequisites (children in the dependency graph)
+            for prereqID in quest.prerequisites {
+                dfs(questID: prereqID)
+            }
+
+            // Done exploring this node, mark as fully visited
+            visitState[questID] = .black
+            currentPath.removeLast()
+        }
+
+        // Run DFS from each unvisited quest
+        for quest in quests where visitState[quest.id] == .white {
+            dfs(questID: quest.id)
+        }
     }
 }
 
