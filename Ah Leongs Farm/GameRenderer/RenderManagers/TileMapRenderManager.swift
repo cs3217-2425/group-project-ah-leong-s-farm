@@ -1,5 +1,5 @@
 //
-//  SpriteRenderSystem.swift
+//  TileMapRenderManager.swift
 //  Ah Leongs Farm
 //
 //  Created by Jerry Leong on 14/3/25.

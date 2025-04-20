@@ -18,7 +18,9 @@ class GameRendererTests: XCTestCase {
 
         let entity = EntityAdapter()
         let gridComponent = GridComponent(rows: 3, columns: 3)
+        let renderComponent = RenderComponent(updatable: true)
         entity.addComponent(gridComponent)
+        entity.addComponent(renderComponent)
         let entities = [entity]
 
         gameRenderer.observe(entities: entities)
@@ -33,7 +35,9 @@ class GameRendererTests: XCTestCase {
 
         let entity = EntityAdapter()
         let gridComponent = GridComponent(rows: 3, columns: 3)
+        let renderComponent = RenderComponent(updatable: true)
         entity.addComponent(gridComponent)
+        entity.addComponent(renderComponent)
         let entities = [entity]
 
         gameRenderer.observe(entities: entities)

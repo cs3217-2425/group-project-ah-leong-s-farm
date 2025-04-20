@@ -10,7 +10,7 @@ import XCTest
 
 class GrowthComponentTests: XCTestCase {
     func testInit() {
-        let growthComponent = GrowthComponent(totalGrowthTurns: 5)
+        let growthComponent = GrowthComponent(totalGrowthTurns: 5, totalGrowthStages: 3)
 
         XCTAssertNotNil(growthComponent)
         XCTAssertEqual(growthComponent.totalGrowthTurns, 5)
@@ -19,14 +19,14 @@ class GrowthComponentTests: XCTestCase {
     }
 
     func testCanHarvest_currentGrowthTurnIsGreaterThanTotalGrowthTurns() {
-        let growthComponent = GrowthComponent(totalGrowthTurns: 5)
+        let growthComponent = GrowthComponent(totalGrowthTurns: 5, totalGrowthStages: 1)
         growthComponent.currentGrowthTurn = 6
 
         XCTAssertTrue(growthComponent.canHarvest)
     }
 
     func testCanHarvest_currentGrowthTurnIsEqualToTotalGrowthTurns() {
-        let growthComponent = GrowthComponent(totalGrowthTurns: 5)
+        let growthComponent = GrowthComponent(totalGrowthTurns: 5, totalGrowthStages: 1)
         growthComponent.currentGrowthTurn = 5
 
         XCTAssertTrue(growthComponent.canHarvest)

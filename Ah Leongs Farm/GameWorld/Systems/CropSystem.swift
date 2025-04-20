@@ -70,7 +70,8 @@ class CropSystem: ISystem {
         }
         manager?.addComponent(GrowthComponent(
             totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: crop.type),
-            totalGrowthStages: CropSystem.getTotalGrowthStages(for: crop.type)), to: crop)
+            totalGrowthStages: CropSystem.getTotalGrowthStages(for: crop.type),
+            currentGrowthTurn: currentGrowthTurn), to: crop)
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
         manager?.addComponent(SpriteComponent(visitor: crop,
                                               updateVisitor: crop), to: crop)

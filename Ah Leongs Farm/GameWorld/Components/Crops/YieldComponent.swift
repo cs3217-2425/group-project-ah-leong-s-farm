@@ -16,9 +16,13 @@ class YieldComponent: ComponentAdapter {
         fatalError("init(coder:) not implemented")
     }
 
-    init(maxYield: Int) {
-        self.yield = maxYield
+    init(yield: Int, maxYield: Int) {
+        self.yield = yield
         self.maxYield = maxYield
         super.init()
+    }
+
+    convenience init(maxYield: Int) {
+        self.init(yield: maxYield, maxYield: maxYield)
     }
 }
