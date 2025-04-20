@@ -80,7 +80,7 @@ struct PrerequisiteViewModel {
     let isCompleted: Bool
 
     var displayText: String {
-        return "\(title) - \(isCompleted ? "Completed ✓" : "Not Completed ⨯")"
+        "\(title) - \(isCompleted ? "Completed ✓" : "Not Completed ⨯")"
     }
 }
 

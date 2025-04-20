@@ -25,8 +25,8 @@ class CoreDataSeedMutation<T: Seed, S: AbstractSeedPersistenceEntity>: SeedMutat
     }
 
     func upsertSeed(sessionId: UUID, id: UUID, seed: T) -> Bool {
-        guard let persistenceEntity = serializer.serialize(sessionId: sessionId, id: id, seed: seed)
-            ?? serializer.serializeNew(sessionId: sessionId, id: id, seed: seed) else {
+        guard (serializer.serialize(sessionId: sessionId, id: id, seed: seed)
+               ?? serializer.serializeNew(sessionId: sessionId, id: id, seed: seed)) != nil else {
             return false
         }
 

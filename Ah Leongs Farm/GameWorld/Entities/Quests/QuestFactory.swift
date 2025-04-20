@@ -62,7 +62,7 @@ class QuestFactory {
     static func createWaterPlotObjective(amount: Int) -> QuestObjective {
         let waterPlotCriteria = WaterPlotCriteria()
         return QuestObjective(
-            description: "Water \(amount) plots",
+            description: "Water a plot \(amount) times",
             criteria: waterPlotCriteria,
             target: Float(amount)
         )

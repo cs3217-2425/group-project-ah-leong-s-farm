@@ -55,9 +55,12 @@ class PrerequisitesView: UIView {
             prerequisitesContainer.bottomAnchor.constraint(equalTo: bottomAnchor),
 
             prerequisitesStackView.topAnchor.constraint(equalTo: prerequisitesContainer.topAnchor, constant: 10),
-            prerequisitesStackView.leadingAnchor.constraint(equalTo: prerequisitesContainer.leadingAnchor, constant: 10),
-            prerequisitesStackView.trailingAnchor.constraint(equalTo: prerequisitesContainer.trailingAnchor, constant: -10),
-            prerequisitesStackView.bottomAnchor.constraint(equalTo: prerequisitesContainer.bottomAnchor, constant: -10)
+            prerequisitesStackView.leadingAnchor.constraint(equalTo: prerequisitesContainer.leadingAnchor,
+                                                            constant: 10),
+            prerequisitesStackView.trailingAnchor.constraint(equalTo: prerequisitesContainer.trailingAnchor,
+                                                             constant: -10),
+            prerequisitesStackView.bottomAnchor.constraint(equalTo: prerequisitesContainer.bottomAnchor,
+                                                           constant: -10)
         ])
     }
 
