@@ -45,7 +45,7 @@ class ProgressBarManager {
         var lastBar = soilBar
 
         // Add crop-specific bars if a crop exists
-        if let crop = plotViewModel.crop {
+        if let crop = plotViewModel.occupant as? CropViewModel {
             // Setup growth bar
             let growthBar = setupGrowthBar(
                 after: soilBar,

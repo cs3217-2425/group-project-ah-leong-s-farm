@@ -11,20 +11,23 @@ import UIKit
 class ItemSelectionManager: NSObject {
 
     enum SelectionMode {
-        case seeds, fertilisers
+        case seeds, fertilisers, solarPanels
     }
 
     // MARK: - Properties
     let collectionView: UICollectionView
     private let seedItems: [PlotDisplayItemViewModel]
     private let fertiliserItems: [PlotDisplayItemViewModel]
+    private let solarPanelItems: [PlotDisplayItemViewModel]
     private var currentMode: SelectionMode = .seeds
     private var onSeedSelected: ((EntityType) -> Void)?
     private var onFertiliserSelected: ((EntityType) -> Void)?
+    private var onSolarPanelSelected: ((EntityType) -> Void)?
 
     private lazy var itemProviders: [SelectionMode: () -> [PlotDisplayItemViewModel]] = [
         .seeds: { self.seedItems },
-        .fertilisers: { self.fertiliserItems }
+        .fertilisers: { self.fertiliserItems },
+        .solarPanels: { self.solarPanelItems }
     ]
 
     private lazy var selectionHandlers: [SelectionMode: (Int) -> Void] = [
@@ -39,6 +42,12 @@ class ItemSelectionManager: NSObject {
                 return
             }
             self.onFertiliserSelected?(self.fertiliserItems[index].type)
+        },
+        .solarPanels: { [weak self] index in
+            guard let self = self, index < self.solarPanelItems.count else {
+                return
+            }
+            self.onSolarPanelSelected?(self.solarPanelItems[index].type)
         }
     ]
 
@@ -46,15 +55,18 @@ class ItemSelectionManager: NSObject {
     init(collectionView: UICollectionView,
          seedItems: [PlotDisplayItemViewModel],
          fertiliserItems: [PlotDisplayItemViewModel],
+         solarPanelItems: [PlotDisplayItemViewModel],
          onSeedSelected: @escaping (EntityType) -> Void,
-         onFertiliserSelected: @escaping (EntityType) -> Void) {
+         onFertiliserSelected: @escaping (EntityType) -> Void,
+         onSolarPanelSelected: @escaping (EntityType) -> Void) {
 
         self.collectionView = collectionView
         self.seedItems = seedItems
         self.fertiliserItems = fertiliserItems
+        self.solarPanelItems = solarPanelItems
         self.onSeedSelected = onSeedSelected
         self.onFertiliserSelected = onFertiliserSelected
-
+        self.onSolarPanelSelected = onSolarPanelSelected
         super.init()
 
         setupCollectionView()

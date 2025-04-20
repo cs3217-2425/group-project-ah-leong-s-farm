@@ -61,6 +61,8 @@ class PlotActionViewController: UIViewController {
             collectionView: collectionView,
             seedItems: inventoryDataProvider?.getSeedItemViewModels() ?? [],
             fertiliserItems: inventoryDataProvider?.getFertiliserItemViewModels() ?? [],
+            solarPanelItems:
+                inventoryDataProvider?.getSolarPanelItemViewModels() ?? [],
             onSeedSelected: { [weak self] seedType in
                 guard let self = self else {
                     return
@@ -80,6 +82,16 @@ class PlotActionViewController: UIViewController {
                     row: self.plotViewModel.row,
                     column: self.plotViewModel.column,
                     fertiliserType: fertiliserType
+                )
+                self.dismiss(animated: true)
+            },
+            onSolarPanelSelected: { [weak self] _ in
+                guard let self = self else {
+                    return
+                }
+                self.plotDataProvider?.placeSolarPanel(
+                    row: self.plotViewModel.row,
+                    column: self.plotViewModel.column
                 )
                 self.dismiss(animated: true)
             }
@@ -181,6 +193,15 @@ extension PlotActionViewController: ActionButtonDelegate {
 
     func didTapAddCropButton() {
         itemSelectionManager?.toggleMode(.seeds)
+    }
+
+    func didTapPlaceSolarPanelButton() {
+        itemSelectionManager?.toggleMode(.solarPanels)
+    }
+
+    func didTapRemoveSolarPanelButton() {
+        plotDataProvider?.removeSolarPanel(row: plotViewModel.row, column: plotViewModel.column)
+        dismiss(animated: true)
     }
 
     func didTapHarvestCropButton() {

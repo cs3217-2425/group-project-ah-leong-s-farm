@@ -5,7 +5,7 @@
 //  Created by Jerry Leong on 5/4/25.
 //
 
-struct CropViewModel {
+struct CropViewModel: PlotOccupantViewModel {
     let cropType: CropType
     let canHarvest: Bool
     let currentGrowthTurn: Float
@@ -15,7 +15,8 @@ struct CropViewModel {
     init?(crop: Crop) {
         guard let cropComponent = crop.getComponentByType(ofType: CropComponent.self),
               let growthComponent = crop.getComponentByType(ofType: GrowthComponent.self),
-              let healthComponent = crop.getComponentByType(ofType: HealthComponent.self) else {
+              let healthComponent = crop.getComponentByType(ofType: HealthComponent.self)
+        else {
             return nil
         }
 

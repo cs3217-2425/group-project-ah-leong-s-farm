@@ -8,7 +8,8 @@
 import Foundation
 
 protocol Crop: SpriteRenderManagerVisitor,
-               SpriteRenderManagerUpdateVisitor where Self: EntityAdapter {
+               SpriteRenderManagerUpdateVisitor,
+               PlotOccupant where Self: EntityAdapter {
 
 }
 
