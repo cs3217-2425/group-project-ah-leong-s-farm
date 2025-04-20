@@ -39,7 +39,7 @@ class BokChoySeed: EntityAdapter, Seed, GamePersistenceObject {
     }
 
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(bokChoySeed: self, in: renderer)
+        manager.createNodeForEntity(seed: self, in: renderer)
     }
 
     func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {

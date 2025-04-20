@@ -17,12 +17,13 @@ struct HarvestCropEvent: GameEvent {
               let energySystem = context.getSystem(ofType: EnergySystem.self),
               let levelSystem = context.getSystem(ofType: LevelSystem.self),
               let inventorySystem = context.getSystem(ofType: InventorySystem.self),
+              let soundSystem = context.getSystem(ofType: SoundSystem.self),
               let marketSystem = context.getSystem(ofType: MarketSystem.self) else {
             return nil
         }
 
         guard energySystem.getCurrentEnergy(of: .base) >= ENERGY_USAGE else {
-            return nil
+            return InsufficientEnergyErrorEventData(message: "Not enough energy for harvest!")
         }
 
         guard let harvestedCrop = cropSystem.harvestCrop(row: row, column: column),
@@ -37,7 +38,8 @@ struct HarvestCropEvent: GameEvent {
         levelSystem.addXP(XP_AMOUNT)
         inventorySystem.addItemToInventory(harvestedCrop)
         marketSystem.addEntityToSellMarket(entity: harvestedCrop)
+        soundSystem.playSoundEffect(named: "remove-crop")
 
-        return HarvestCropEventData(type: cropComponent.cropType, quantity: harvestedQuantity)
+        return HarvestCropEventData(cropType: harvestedCrop.type, quantity: harvestedQuantity)
     }
 }

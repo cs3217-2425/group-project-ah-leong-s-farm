@@ -25,16 +25,14 @@ struct PlantCropEvent: GameEvent {
             return nil
         }
 
-        guard let energySystem = context.getSystem(ofType: EnergySystem.self) else {
-            return nil
-        }
-
-        guard let levelSystem = context.getSystem(ofType: LevelSystem.self) else {
+        guard let energySystem = context.getSystem(ofType: EnergySystem.self),
+              let levelSystem = context.getSystem(ofType: LevelSystem.self),
+              let soundSystem = context.getSystem(ofType: SoundSystem.self) else {
             return nil
         }
 
         guard energySystem.getCurrentEnergy(of: .base) >= ENERGY_USAGE else {
-            return nil
+            return InsufficientEnergyErrorEventData(message: "Not enough energy to plant!")
         }
 
         if cropSystem.isOccupied(row: row, column: column) {
@@ -50,13 +48,13 @@ struct PlantCropEvent: GameEvent {
         if isSuccessfullyPlanted {
             energySystem.useEnergy(of: .base, amount: ENERGY_USAGE)
             levelSystem.addXP(XP_AMOUNT)
+            soundSystem.playSoundEffect(named: "plant-crop")
         }
 
         return PlantCropEventData(
             row: row,
             column: column,
-            // TODO: CHANGE LOGIC after getting rid of CropType!!!
-            cropType: .apple,
+            cropType: crop.type,
             isSuccessfullyPlanted: isSuccessfullyPlanted
         )
     }

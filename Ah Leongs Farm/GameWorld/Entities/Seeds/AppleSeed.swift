@@ -39,7 +39,7 @@ class AppleSeed: EntityAdapter, Seed, GamePersistenceObject {
     }
 
     func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(appleSeed: self, in: renderer)
+        manager.createNodeForEntity(seed: self, in: renderer)
     }
 
     func save(manager: PersistenceManager, persistenceId: UUID) -> Bool {
