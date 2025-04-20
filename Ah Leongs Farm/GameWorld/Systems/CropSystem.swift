@@ -7,14 +7,24 @@ class CropSystem: ISystem {
         self.manager = manager
     }
 
-    static let cropsToGrowthMap: [EntityType: Int] = [
+    static let cropsToGrowthTurnsMap: [EntityType: Int] = [
         BokChoy.type: 5,
         Apple.type: 10,
         Potato.type: 6
     ]
 
+    static let cropsToGrowthStagesMap: [EntityType: Int] = [
+        BokChoy.type: 2,
+        Apple.type: 3,
+        Potato.type: 1
+    ]
+
     static func getTotalGrowthTurns(for type: EntityType) -> Int {
-        cropsToGrowthMap[type] ?? 0
+        cropsToGrowthTurnsMap[type] ?? 0
+    }
+
+    static func getTotalGrowthStages(for type: EntityType) -> Int {
+        cropsToGrowthStagesMap[type] ?? 0
     }
 
     private var grid: GridComponent? {
@@ -59,9 +69,12 @@ class CropSystem: ISystem {
             return false
         }
         manager?.addComponent(GrowthComponent(
-            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: crop.type)), to: crop)
+            totalGrowthTurns: CropSystem.getTotalGrowthTurns(for: crop.type),
+            totalGrowthStages: CropSystem.getTotalGrowthStages(for: crop.type)), to: crop)
         manager?.addComponent(PositionComponent(x: CGFloat(row), y: CGFloat(column)), to: crop)
-        manager?.addComponent(SpriteComponent(visitor: crop), to: crop)
+        manager?.addComponent(SpriteComponent(visitor: crop,
+                                              updateVisitor: crop), to: crop)
+        manager?.addComponent(RenderComponent(updatable: true), to: crop)
         plotOccupantSlot.plotOccupant = crop
         return true
     }
@@ -90,6 +103,7 @@ class CropSystem: ISystem {
         manager?.removeComponent(ofType: GrowthComponent.self, from: crop)
         manager?.removeComponent(ofType: PositionComponent.self, from: crop)
         manager?.removeComponent(ofType: SpriteComponent.self, from: crop)
+        manager?.removeComponent(ofType: RenderComponent.self, from: crop)
         manager?.addComponent(HarvestedComponent(), to: crop)
         plotOccupantSlot.plotOccupant = nil
         return crop

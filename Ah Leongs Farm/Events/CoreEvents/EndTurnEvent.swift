@@ -24,6 +24,7 @@ struct EndTurnEvent: GameEvent {
         marketSystem.resetItemStocks()
         gridSystem.updateHealth()
         gridSystem.unwaterPlots()
+        marketSystem.updateMarketPrices()
 
         if !shouldContinue {
             queueable.queueEvent(GameOverEvent())
