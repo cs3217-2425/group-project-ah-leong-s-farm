@@ -85,3 +85,43 @@ struct SellItemCriteria: QuestCriteria {
         return Float(sellData.quantity)
     }
 }
+
+struct AddPlotCriteria: QuestCriteria {
+    func calculateValue(from eventData: EventData) -> Float {
+        guard eventData is AddPlotEventData else {
+            return 0
+        }
+
+        return 1
+    }
+}
+
+struct WaterPlotCriteria: QuestCriteria {
+    func calculateValue(from eventData: EventData) -> Float {
+        guard let waterPlotData = eventData as? WaterPlotEventData,
+              waterPlotData.isSuccessfullyWatered == true else {
+            return 0
+        }
+        return 1
+    }
+}
+
+struct UseFertiliserCriteria: QuestCriteria {
+    let fertiliserType: EntityType
+    func calculateValue(from eventData: EventData) -> Float {
+        guard let useFertiliserData = eventData as? UseFertiliserEventData,
+              useFertiliserData.fertiliserType == fertiliserType else {
+            return 0
+        }
+        return 1
+    }
+}
+
+struct AddSolarPanelCriteria: QuestCriteria {
+    func calculateValue(from eventData: EventData) -> Float {
+        guard eventData is AddSolarPanelEventData else {
+            return 0
+        }
+        return 1
+    }
+}

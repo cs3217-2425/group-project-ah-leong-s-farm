@@ -50,6 +50,6 @@ struct PlaceSolarPanelEvent: GameEvent {
             levelSystem.addXP(XP_AMOUNT)
         }
 
-        return nil
+        return AddSolarPanelEventData()
     }
 }

@@ -99,3 +99,7 @@ struct InsufficientEnergyErrorEventData: ErrorEventData {
     var title: String = "No Energy"
     var message: String
 }
+
+struct AddSolarPanelEventData: EventData {
+
+}

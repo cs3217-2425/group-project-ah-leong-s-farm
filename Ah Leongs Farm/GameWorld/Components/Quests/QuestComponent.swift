@@ -1,18 +1,25 @@
 import Foundation
 
+typealias QuestID = UUID
 class QuestComponent: ComponentAdapter {
     let title: String
     var status: QuestStatus
     var objectives: [QuestObjective]
-    let order: Int  // Lower number = earlier in sequence
+    let order: Int
+    var prerequisites: [QuestID]
+    let id: QuestID
 
     init(title: String,
          objectives: [QuestObjective],
-         order: Int = Int.max) {
+         prerequisites: [QuestID],
+         order: Int,
+         id: QuestID = UUID()) {
         self.title = title
         self.status = .inactive
         self.objectives = objectives
+        self.prerequisites = prerequisites
         self.order = order
+        self.id = id
         super.init()
     }
 

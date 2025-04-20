@@ -14,6 +14,7 @@ class QuestCollectionViewCell: UICollectionViewCell {
     private let statusBadge = UILabel()
     private var objectiveViews: [ObjectiveView] = []
     private let rewardsView = RewardsView()
+    private let prerequisitesView = PrerequisitesView()
 
     // MARK: - Initialization
     override init(frame: CGRect) {
@@ -41,6 +42,8 @@ class QuestCollectionViewCell: UICollectionViewCell {
 
         // Configure objectives
         configureObjectives(with: quest.objectives)
+
+        prerequisitesView.configure(with: quest.prerequisites)
 
         // Configure rewards
         rewardsView.configure(with: quest.rewards)
@@ -80,8 +83,14 @@ class QuestCollectionViewCell: UICollectionViewCell {
         setupStatusBadge(in: cardView)
         setupTitleLabel()
         setupContentStackView()
+        setupPrerequisitesView()
         setupRewardsView()
         setupConstraints(cardView: cardView)
+    }
+
+    private func setupPrerequisitesView() {
+        prerequisitesView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(prerequisitesView)
     }
 
     private func setupCardView() -> UIView {
@@ -158,14 +167,19 @@ class QuestCollectionViewCell: UICollectionViewCell {
             titleLabel.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 8),
             titleLabel.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -8),
 
-            // Content stack view constraints
+            // Content stack view constraints for objectives
             contentStackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             contentStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 8),
             contentStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -8),
             contentStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -16),
 
-            // Rewards view constraints
-            rewardsView.topAnchor.constraint(equalTo: contentStackView.bottomAnchor, constant: 16),
+            // Prerequisites view constraints - after objectives, before rewards
+            prerequisitesView.topAnchor.constraint(equalTo: contentStackView.bottomAnchor, constant: 16),
+            prerequisitesView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 8),
+            prerequisitesView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -8),
+
+            // Rewards view constraints - now after prerequisites
+            rewardsView.topAnchor.constraint(equalTo: prerequisitesView.bottomAnchor, constant: 16),
             rewardsView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 8),
             rewardsView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -8),
             rewardsView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -12)

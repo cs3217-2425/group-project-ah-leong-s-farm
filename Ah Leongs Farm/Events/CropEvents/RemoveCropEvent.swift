@@ -11,13 +11,21 @@ struct RemoveCropEvent: GameEvent {
 
     func execute(in context: any EventContext, queueable: any EventQueueable) -> (any EventData)? {
         guard let cropSystem = context.getSystem(ofType: CropSystem.self),
-              let soundSystem = context.getSystem(ofType: SoundSystem.self) else {
+              let soundSystem = context.getSystem(ofType: SoundSystem.self),
+              let energySystem = context.getSystem(ofType: EnergySystem.self) else {
             return nil
         }
 
-        let isSuccessfullyRemoved = cropSystem.removeCrop(row: row, column: column)
-        soundSystem.playSoundEffect(named: "remove-crop")
+        guard energySystem.getCurrentEnergy(of: .base) > 0 else {
+            return InsufficientEnergyErrorEventData(message: "Not enough energy to remove crop!")
+        }
 
+        let isSuccessfullyRemoved = cropSystem.removeCrop(row: row, column: column)
+        if isSuccessfullyRemoved {
+            energySystem.useEnergy(of: .base, amount: 1)
+            soundSystem.playSoundEffect(named: "remove-crop")
+        }
+        
         return RemoveCropEventData(
             row: row,
             column: column,

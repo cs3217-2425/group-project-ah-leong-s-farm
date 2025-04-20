@@ -62,12 +62,36 @@ struct RewardItemViewModel: RewardViewModel {
     }
 }
 
+struct RewardPointsViewModel: RewardViewModel {
+    let amount: Int
+
+    func getDisplayText() -> String {
+        "\(amount) upgrade points"
+    }
+
+    func getIconName() -> String {
+        "upgrade"
+    }
+}
+
+struct PrerequisiteViewModel {
+    let id: QuestID
+    let title: String
+    let isCompleted: Bool
+
+    var displayText: String {
+        "\(title) - \(isCompleted ? "Completed ✓" : "Not Completed ⨯")"
+    }
+}
+
 struct QuestViewModel {
     let title: String
     let status: QuestStatus
     let objectives: [QuestObjectiveViewModel]
     let isCompleted: Bool
     let rewards: [RewardViewModel]
+    let prerequisites: [PrerequisiteViewModel]
+    let id: QuestID
 }
 
 protocol QuestDataProvider {
