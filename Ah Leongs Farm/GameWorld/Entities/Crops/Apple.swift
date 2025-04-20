@@ -47,6 +47,12 @@ class Apple: EntityAdapter, Crop {
         )
         attachComponent(healthComponent)
 
+        let yieldComponent = YieldComponent(
+            yield: config.yieldConfig.yield,
+            maxYield: config.yieldConfig.maxYield
+        )
+        attachComponent(yieldComponent)
+
         let persistenceComponent = PersistenceComponent(
             persistenceObject: self,
             persistenceId: config.persistenceID

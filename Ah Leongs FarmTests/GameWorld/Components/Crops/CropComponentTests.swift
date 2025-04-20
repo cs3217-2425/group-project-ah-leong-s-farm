@@ -10,9 +10,8 @@ import XCTest
 
 class CropComponentTests: XCTestCase {
     func testInit() {
-        let cropComponent = CropComponent(cropType: .apple)
+        let cropComponent = CropComponent()
 
         XCTAssertNotNil(cropComponent)
-        XCTAssertEqual(cropComponent.cropType, .apple)
     }
 }
