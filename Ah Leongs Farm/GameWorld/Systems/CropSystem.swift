@@ -76,7 +76,6 @@ class CropSystem: ISystem {
         manager?.addComponent(SpriteComponent(visitor: crop,
                                               updateVisitor: crop), to: crop)
         manager?.addComponent(RenderComponent(updatable: true), to: crop)
-        cropSlot.crop = crop
         plotOccupantSlot.plotOccupant = crop
         return true
     }
