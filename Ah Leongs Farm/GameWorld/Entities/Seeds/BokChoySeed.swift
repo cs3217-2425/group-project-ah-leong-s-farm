@@ -26,8 +26,4 @@ class BokChoySeed: EntityAdapter, Seed {
     func toCrop() -> Crop {
         BokChoy()
     }
-
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(bokChoySeed: self, in: renderer)
-    }
 }

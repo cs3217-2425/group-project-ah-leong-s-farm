@@ -13,6 +13,8 @@ protocol ActionButtonDelegate: AnyObject {
     func didTapAddCropButton()
     func didTapHarvestCropButton()
     func didTapRemoveCropButton()
+    func didTapPlaceSolarPanelButton()
+    func didTapRemoveSolarPanelButton()
 }
 
 /// Manages the action buttons for plot interactions
@@ -55,20 +57,25 @@ class ActionButtonManager {
         }
 
         // Always add water button
-        addWaterButton()
-
-        // Always add fertiliser button
-        addFertiliserButton()
-
-        // Add crop-specific buttons
-        if let crop = plotViewModel.crop {
-            addHarvestButton(enabled: crop.canHarvest)
-
-            if !crop.canHarvest {
-                addRemoveCropButton()
+        if let occupant = plotViewModel.occupant {
+            if let crop = occupant as? CropViewModel {
+                // show water, harvest, and maybe remove crop
+                addWaterButton()
+                addFertiliserButton()
+                addHarvestButton(enabled: crop.canHarvest)
+                if !crop.canHarvest {
+                    addRemoveCropButton()
+                }
+            } else if occupant is SolarPanelViewModel {
+                // show remove solar panel button
+                addRemoveSolarPanelButton()
             }
         } else {
+            // show default actions
+            addWaterButton()
+            addFertiliserButton()
             addAddCropButton()
+            addPlaceSolarPanelButton()
         }
     }
 
@@ -87,6 +94,26 @@ class ActionButtonManager {
             title: "Use Fertiliser",
             color: .systemOrange,
             action: #selector(fertiliserButtonTapped)
+        )
+        containerView.addArrangedSubview(button)
+        buttons.append(button)
+    }
+
+    private func addPlaceSolarPanelButton() {
+        let button = createButton(
+            title: "Place Solar Panel",
+            color: .systemCyan,
+            action: #selector(placeSolarPanelButtonTapped)
+        )
+        containerView.addArrangedSubview(button)
+        buttons.append(button)
+    }
+
+    private func addRemoveSolarPanelButton() {
+        let button = createButton(
+            title: "Remove Solar Panel",
+            color: .systemRed,
+            action: #selector(removeSolarPanelButtonTapped)
         )
         containerView.addArrangedSubview(button)
         buttons.append(button)
@@ -141,6 +168,14 @@ class ActionButtonManager {
 
     @objc private func fertiliserButtonTapped() {
         delegate?.didTapFertiliserButton()
+    }
+
+    @objc private func placeSolarPanelButtonTapped() {
+        delegate?.didTapPlaceSolarPanelButton()
+    }
+
+    @objc private func removeSolarPanelButtonTapped() {
+        delegate?.didTapRemoveSolarPanelButton()
     }
 
     @objc private func addCropButtonTapped() {

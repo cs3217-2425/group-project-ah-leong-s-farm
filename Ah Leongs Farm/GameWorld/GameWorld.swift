@@ -27,6 +27,7 @@ class GameWorld {
         addSystem(CropSystem(for: entityManager))
         addSystem(GridSystem(for: entityManager))
         addSystem(MarketSystem(for: entityManager))
+        addSystem(SolarPanelSystem(for: entityManager))
         addSystem(SoilSystem(for: entityManager))
         addSystem(UpgradeSystem(for: entityManager))
 

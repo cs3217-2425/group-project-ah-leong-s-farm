@@ -14,7 +14,8 @@ struct ItemToViewDataMap {
         PotatoSeed.type: "potato_seed",
         Potato.type: "potato_harvested",
         Fertiliser.type: "fertiliser",
-        PremiumFertiliser.type: "premium_fertiliser"
+        PremiumFertiliser.type: "premium_fertiliser",
+        SolarPanel.type: "solar_panel"
     ]
 
     static let itemTypeToDisplayName: [EntityType: String] = [
@@ -25,7 +26,8 @@ struct ItemToViewDataMap {
         PotatoSeed.type: "Potato seed",
         Potato.type: "Potato",
         Fertiliser.type: "Fertiliser",
-        PremiumFertiliser.type: "Premium fertiliser"
+        PremiumFertiliser.type: "Premium fertiliser",
+        SolarPanel.type: "Solar panel"
     ]
 
 }

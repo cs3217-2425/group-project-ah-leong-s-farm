@@ -18,4 +18,8 @@ class SpriteNode: SKSpriteNode, IRenderNode {
     func getSKNode() -> SKNode {
         self
     }
+
+    func updateTexture(image: String) {
+        self.texture = SKTexture(imageNamed: image)
+    }
 }
