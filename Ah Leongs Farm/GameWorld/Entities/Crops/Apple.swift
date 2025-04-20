@@ -25,8 +25,4 @@ class Apple: EntityAdapter, Crop {
         let healthComponent = HealthComponent()
         attachComponent(healthComponent)
     }
-
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(apple: self, in: renderer)
-    }
 }

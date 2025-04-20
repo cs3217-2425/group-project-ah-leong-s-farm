@@ -8,12 +8,12 @@
 struct PlotViewModel {
     let row: Int
     let column: Int
-    let crop: CropViewModel?
+    let occupant: PlotOccupantViewModel?
     let soilQuality: Float
     let maxSoilQuality: Float
 
-    var hasCrop: Bool {
-        crop != nil
+    var hasOccupant: Bool {
+        occupant != nil
     }
 }
 
@@ -29,4 +29,9 @@ protocol PlotDataProvider: AnyObject {
     func removeCrop(row: Int, column: Int)
 
     func waterPlot(row: Int, column: Int)
+
+    func placeSolarPanel(row: Int, column: Int)
+
+    func removeSolarPanel(row: Int, column: Int)
+
 }

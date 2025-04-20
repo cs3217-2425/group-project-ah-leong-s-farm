@@ -38,6 +38,10 @@ class InventorySystem: ISystem {
         }
     }
 
+    func removeItemFromInventory(_ entity: Entity) {
+        manager?.removeComponent(ofType: ItemComponent.self, from: entity)
+    }
+
     func removeItem(_ item: ItemComponent) {
         guard let itemToRemove = items.first(where: { $0 == item }) else {
             return

@@ -25,8 +25,4 @@ class BokChoy: EntityAdapter, Crop {
         let healthComponent = HealthComponent()
         attachComponent(healthComponent)
     }
-
-    func visitSpriteRenderManager(manager: SpriteRenderManager, renderer: GameRenderer) {
-        manager.createNodeForEntity(bokChoy: self, in: renderer)
-    }
 }

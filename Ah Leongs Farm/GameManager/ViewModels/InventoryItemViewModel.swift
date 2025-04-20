@@ -17,4 +17,5 @@ protocol InventoryDataProvider: AnyObject {
     func getInventoryItemViewModels() -> [InventoryItemViewModel]
     func getFertiliserItemViewModels() -> [PlotDisplayItemViewModel]
     func getSeedItemViewModels() -> [PlotDisplayItemViewModel]
+    func getSolarPanelItemViewModels() -> [PlotDisplayItemViewModel]
 }

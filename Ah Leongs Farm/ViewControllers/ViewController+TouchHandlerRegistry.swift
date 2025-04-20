@@ -18,4 +18,10 @@ extension ViewController: TouchHandlerRegistry {
             node.setHandler(self)
         }
     }
+
+    func setTouchHandler(for node: SolarPanelSpriteNode) {
+        if node.handler !== self {
+            node.setHandler(self)
+        }
+    }
 }
