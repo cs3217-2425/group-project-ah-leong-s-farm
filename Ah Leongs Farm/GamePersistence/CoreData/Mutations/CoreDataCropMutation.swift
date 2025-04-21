@@ -60,7 +60,7 @@ class CoreDataCropMutation<T: Crop, S: AbstractCropPersistenceEntity>: CropMutat
             }
         }
 
-        return false
+        return true
     }
 
     private func fetchCropById(id: UUID) -> S? {
